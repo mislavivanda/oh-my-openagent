@@ -1,0 +1,59 @@
+F2 remediation verification
+
+
+=== jev-triage-tests ===
+$ bun test packages/omo-opencode/src/features/jev
+bun test v1.4.0 (34cbb9a40)
+
+ 10 pass
+ 0 fail
+ 132 expect() calls
+Ran 10 tests across 2 files. [137.00ms]
+exit=0
+
+=== plugin-tests ===
+$ bun test packages/omo-opencode/src/plugin
+bun test v1.4.0 (34cbb9a40)
+
+ 587 pass
+ 0 fail
+ 1591 expect() calls
+Ran 587 tests across 72 files. [8.29s]
+exit=0
+
+=== jev-tsgo ===
+$ ./node_modules/.bin/tsgo --noEmit -p packages/omo-opencode/tsconfig.json
+exit=0
+
+=== test-fast ===
+$ bun run test:fast
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 317 pass
+ 0 fail
+ 896 expect() calls
+Ran 317 tests across 31 files. [5.70s]
+exit=0
+
+=== logger-count ===
+$ sh -c test "$(grep -c "logger(" packages/omo-opencode/src/features/jev/model-error-triage.ts)" -eq 1
+exit=0
+
+=== index-first-line ===
+$ sh -c test "$(head -1 packages/omo-opencode/src/features/jev/index.ts | grep -c "@oh-my-opencode/")" -eq 0
+exit=0
+
+=== stop-check ===
+$ sh -c ! grep -rnw "Stop" packages/jev-core/src --include="*.ts" --exclude="*.test.ts"
+exit=0
+
+=== pure LOC ===
+packages/omo-opencode/src/plugin/event-model-fallback.ts	307
+packages/omo-opencode/src/features/jev/model-error-triage.test.ts	259
+
+=== rationale ===
+WHAT WAS TESTED: comment-only SIZE_OK remediation and requested Jev/plugin/typecheck/fast/mechanical gates.
+WHAT WAS OBSERVED: both markers are first-line comments; logic and first-line invariants were untouched; all commands above exited 0.
+WHY IT IS ENOUGH: the two F2 file-size findings are documented with specific cohesive ownership and future split guidance, while the requested behavior and mechanical gates remain green.
+WHAT WAS OMITTED: no secrets or environment dumps were recorded; real OpenCode server was not disturbed.

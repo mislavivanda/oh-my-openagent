@@ -1,3 +1,5 @@
+// allow: SIZE_OK - adapter cases share one injected backend/heuristic/logger harness for the degradation paths; future additions should split by failure class.
+
 import { describe, expect, mock, test } from "bun:test"
 import {
   choiceAnswer,

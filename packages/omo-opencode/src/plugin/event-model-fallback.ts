@@ -1,3 +1,5 @@
+// allow: SIZE_OK - Jev triage reservation state and its three handlers must stay colocated so the ABA identity check and deletion refcount remain local; future edits should split by handler once the shared reservation state has its own module.
+
 import type { OhMyOpenCodeConfig } from "../config";
 import { getMainSessionID, getSessionAgent } from "../features/claude-code-session-state";
 import type { JevModelErrorTriage } from "../features/jev";
