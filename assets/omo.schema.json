@@ -9017,6 +9017,82 @@
           ],
           "additionalProperties": false
         },
+        "jev": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean"
+            },
+            "backend": {
+              "default": "real",
+              "type": "string",
+              "enum": [
+                "real",
+                "mock",
+                "llm-adapter"
+              ]
+            },
+            "model": {
+              "default": "jev-latest",
+              "type": "string",
+              "minLength": 1
+            },
+            "timeout_ms": {
+              "default": 1500,
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 30000
+            },
+            "wires": {
+              "default": {
+                "model_error_triage": {
+                  "enabled": false,
+                  "confidence_threshold": 0.8
+                }
+              },
+              "type": "object",
+              "properties": {
+                "model_error_triage": {
+                  "default": {
+                    "enabled": false,
+                    "confidence_threshold": 0.8
+                  },
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "default": false,
+                      "type": "boolean"
+                    },
+                    "confidence_threshold": {
+                      "default": 0.8,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "enabled",
+                    "confidence_threshold"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "model_error_triage"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "enabled",
+            "backend",
+            "model",
+            "timeout_ms",
+            "wires"
+          ],
+          "additionalProperties": false
+        },
         "ralph_loop": {
           "type": "object",
           "propertyNames": {
@@ -21007,6 +21083,82 @@
                   "enabled",
                   "auto_start",
                   "default_max_iterations"
+                ],
+                "additionalProperties": false
+              },
+              "jev": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "backend": {
+                    "default": "real",
+                    "type": "string",
+                    "enum": [
+                      "real",
+                      "mock",
+                      "llm-adapter"
+                    ]
+                  },
+                  "model": {
+                    "default": "jev-latest",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "timeout_ms": {
+                    "default": 1500,
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 30000
+                  },
+                  "wires": {
+                    "default": {
+                      "model_error_triage": {
+                        "enabled": false,
+                        "confidence_threshold": 0.8
+                      }
+                    },
+                    "type": "object",
+                    "properties": {
+                      "model_error_triage": {
+                        "default": {
+                          "enabled": false,
+                          "confidence_threshold": 0.8
+                        },
+                        "type": "object",
+                        "properties": {
+                          "enabled": {
+                            "default": false,
+                            "type": "boolean"
+                          },
+                          "confidence_threshold": {
+                            "default": 0.8,
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "required": [
+                          "enabled",
+                          "confidence_threshold"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "model_error_triage"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "backend",
+                  "model",
+                  "timeout_ms",
+                  "wires"
                 ],
                 "additionalProperties": false
               },
