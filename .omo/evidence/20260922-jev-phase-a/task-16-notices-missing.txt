@@ -1,0 +1,4 @@
+- @opentui/core
+- @opentui/keymap
+- @opentui/solid
+- zod

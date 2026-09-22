@@ -1,0 +1,26 @@
+WHAT WAS TESTED: Todo 13 path gate, test:fast, registration audit, and package.json script lookup.
+Path gate:
+checked=11 missing=0
+test:fast output:
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 317 pass
+ 0 fail
+ 896 expect() calls
+Ran 317 tests across 31 files. [5.70s]
+wall_seconds=6 exit=0
+registration audit output:
+bun test v1.4.0 (34cbb9a40)
+
+ 6 pass
+ 0 fail
+ 12 expect() calls
+Ran 6 tests across 1 file. [244.00ms]
+registration_audit_exit=0
+node script lookup:
+bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+node_lookup_exit=0
+WHY IT IS ENOUGH: Exact requested paths were checked before execution; the configured fast suite and independent registration audit passed; Node printed the configured script.
+WHAT WAS OMITTED: No secrets or credential-bearing logs were recorded.
+exit=0

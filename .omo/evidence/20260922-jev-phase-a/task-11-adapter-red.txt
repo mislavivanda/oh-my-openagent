@@ -1,0 +1,16 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/model-error-triage.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './model-error-triage' from '<repo>/packages/omo-opencode/src/features/jev/model-error-triage.test.ts'
+-------------------------------
+
+
+ 2 pass
+ 1 fail
+ 1 error
+ 101 expect() calls
+Ran 3 tests across 2 files. [141.00ms]
+exit=1

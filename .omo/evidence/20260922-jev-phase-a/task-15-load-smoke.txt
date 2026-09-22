@@ -1,0 +1,6 @@
+real_db=$HOME/.local/share/opencode/opencode.db
+surface=opencode-server+sse
+db_sessions_before=320
+enabled: P0=pass P1=pass P2=pass jev_lines=1 all_lines_mock_fell_through_unscripted=true uncaught=0
+disabled: P0=pass P1=pass P2=pass jev_lines=0 uncaught=0
+db_sessions_before=320 after=320

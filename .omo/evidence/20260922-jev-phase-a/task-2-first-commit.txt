@@ -1,0 +1,14 @@
+commit cfc0fcc519356ef40caa73a240ca6ffb33400cc4
+Author: Mislav Ivanda <mislavivanda454@gmail.com>
+Date:   Tue Sep 22 11:37:29 2026 +0000
+
+    docs(jev): add integration handoff and dogfood log
+    
+    Ultraworked with [Sisyphus](https://github.com/code-yeongyu/oh-my-openagent)
+    
+    Co-authored-by: Sisyphus <clio-agent@sisyphuslabs.ai>
+
+ docs/jev/HANDOFF.md     | 135 ++++++++++++++++++++++++++++++++++++++++++++++++
+ docs/jev/dogfood-log.md |  12 +++++
+ 2 files changed, 147 insertions(+)
+exit=0

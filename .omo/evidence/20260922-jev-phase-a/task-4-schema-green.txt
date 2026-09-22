@@ -1,0 +1,7 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 6 pass
+ 0 fail
+ 9 expect() calls
+Ran 6 tests across 1 file. [148.00ms]
+exit=0

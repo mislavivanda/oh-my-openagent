@@ -1,0 +1,301 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/real-backend.test.ts:
+63 |     const fake = createJsonFetch(validBody)
+64 |     const backend = createBackend(fake.fetch, undefined)
+65 | 
+66 |     const outcome = await backend.decide({ state: null, questions })
+67 | 
+68 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "missing_api_key" })
+                         ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "missing_api_key",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:68:21)
+(fail) createRealDecisionBackend > #given case (1) a missing API key #when deciding #then it is unavailable without fetching [0.81ms]
+73 |     const fake = createJsonFetch(validBody)
+74 |     const backend = createBackend(fake.fetch)
+75 | 
+76 |     const outcome = await backend.decide({ state: { error: "overloaded" }, questions })
+77 | 
+78 |     expect(outcome.status).toBe("decided")
+                                ^
+error: expect(received).toBe(expected)
+
+Expected: "decided"
+Received: "unavailable"
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:78:28)
+(fail) createRealDecisionBackend > #given case (2) a wire-shaped 200 response #when deciding #then it returns the decision and sends the authenticated request [0.25ms]
+103 |     const fake = createJsonFetch({ error: { message: "rate limited" } }, 429)
+104 |     const backend = createBackend(fake.fetch)
+105 | 
+106 |     const outcome = await backend.decide({ state: null, questions })
+107 | 
+108 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "api_error" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "api_error",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:108:21)
+(fail) createRealDecisionBackend > #given case (3) a 429 response #when deciding #then it is an API error with no retry [0.13ms]
+118 |     }
+119 |     const backend = createBackend(fetch)
+120 | 
+121 |     const outcome = await backend.decide({ state: null, questions })
+122 | 
+123 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "transport_error" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "transport_error",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:123:21)
+(fail) createRealDecisionBackend > #given case (4) a fetch TypeError #when deciding #then it is a transport error without retry [0.11ms]
+144 |     }
+145 |     const backend = createBackend(fetch, API_KEY, 50)
+146 | 
+147 |     const outcome = await backend.decide({ state: null, questions })
+148 | 
+149 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "timeout" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "timeout",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:149:21)
+(fail) createRealDecisionBackend > #given case (5) a fetch pending past 50ms #when the SDK aborts it #then it is a timeout [0.10ms]
+154 |     const fake = createJsonFetch({ ...validBody, answers: {} })
+155 |     const backend = createBackend(fake.fetch)
+156 | 
+157 |     const outcome = await backend.decide({ state: null, questions })
+158 | 
+159 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "malformed_response", detail: "triage" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,4 +1,4 @@
+  {
+-   "detail": "triage",
+-   "reason": "malformed_response",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:159:21)
+(fail) createRealDecisionBackend > #given case (6) a response missing the triage answer #when deciding #then it is malformed [0.12ms]
+166 |     })
+167 |     const backend = createBackend(fake.fetch)
+168 | 
+169 |     const outcome = await backend.decide({ state: null, questions })
+170 | 
+171 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "malformed_response", detail: "triage" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,4 +1,4 @@
+  {
+-   "detail": "triage",
+-   "reason": "malformed_response",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:171:21)
+(fail) createRealDecisionBackend > #given case (7) a response choice outside the criteria #when deciding #then it is malformed [0.14ms]
+178 |     })
+179 |     const backend = createBackend(fake.fetch)
+180 | 
+181 |     const outcome = await backend.decide({ state: null, questions })
+182 | 
+183 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "malformed_response", detail: "triage" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,4 +1,4 @@
+  {
+-   "detail": "triage",
+-   "reason": "malformed_response",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:183:21)
+(fail) createRealDecisionBackend > #given case (7b) empty probabilities #when deciding #then the nested answer is malformed [0.17ms]
+195 |     })
+196 |     const backend = createBackend(fake.fetch)
+197 | 
+198 |     const outcome = await backend.decide({ state: null, questions })
+199 | 
+200 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "malformed_response", detail: "triage" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,4 +1,4 @@
+  {
+-   "detail": "triage",
+-   "reason": "malformed_response",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:200:21)
+(fail) createRealDecisionBackend > #given case (7b) a non-numeric probability #when deciding #then the nested answer is malformed [0.18ms]
+207 |     })
+208 |     const backend = createBackend(fake.fetch)
+209 | 
+210 |     const outcome = await backend.decide({ state: null, questions })
+211 | 
+212 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "malformed_response", detail: "triage" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,4 +1,4 @@
+  {
+-   "detail": "triage",
+-   "reason": "malformed_response",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:212:21)
+(fail) createRealDecisionBackend > #given case (7b) confidence above one #when deciding #then the nested answer is malformed [0.14ms]
+217 |     const fake = createJsonFetch({ error: { message: `invalid key ${key}` } }, 401)
+218 |     const backend = createBackend(fake.fetch, key)
+219 | 
+220 |     const outcome = await backend.decide({ state: null, questions })
+221 | 
+222 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "api_error" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "api_error",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:222:21)
+(fail) createRealDecisionBackend > #given case (7c) a 401 body echoing the key #when deciding #then the API detail is redacted and bounded [0.14ms]
+236 |     }
+237 |     const backend = createBackend(fetch, key)
+238 | 
+239 |     const outcome = await backend.decide({ state: null, questions })
+240 | 
+241 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "transport_error" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "transport_error",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:241:21)
+(fail) createRealDecisionBackend > #given case (7c) a transport message echoing the key #when deciding #then the transport detail is redacted [0.16ms]
+267 |     const fake = createJsonFetch({ model: MODEL, answers: { triage: validAnswer } })
+268 |     const backend = createBackend(fake.fetch)
+269 | 
+270 |     const outcome = await backend.decide({ state: null, questions })
+271 | 
+272 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "malformed_response" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "malformed_response",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:272:21)
+(fail) createRealDecisionBackend > #given case (9) a response missing usage #when deciding #then it is malformed [0.23ms]
+276 |     const fake = createJsonFetch(null)
+277 |     const backend = createBackend(fake.fetch)
+278 | 
+279 |     const outcome = await backend.decide({ state: null, questions })
+280 | 
+281 |     expect(outcome).toMatchObject({ status: "unavailable", reason: "malformed_response" })
+                          ^
+error: expect(received).toMatchObject(expected)
+
+@@ -1,3 +1,4 @@
+  {
+-   "reason": "malformed_response",
++   "latencyMs": 0,
++   "reason": "not_implemented",
+    "status": "unavailable",
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (<repo>/packages/jev-core/src/real-backend.test.ts:281:21)
+(fail) createRealDecisionBackend > #given case (9) a null response body #when deciding #then it is malformed without throwing [0.14ms]
+
+ 2 pass
+ 14 fail
+ 17 expect() calls
+Ran 16 tests across 2 files. [129.00ms]
+exit=1

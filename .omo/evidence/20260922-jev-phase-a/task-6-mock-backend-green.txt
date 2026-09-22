@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="45" assertions="47" failures="0" skipped="0" time="0.137441769">
+  <testsuite name="packages/jev-core/src/answer-validation.test.ts" file="packages/jev-core/src/answer-validation.test.ts" tests="38" assertions="38" failures="0" skipped="0" time="0.086791243" hostname="ip-10-6-1-165">
+    <testsuite name="isRecord" file="packages/jev-core/src/answer-validation.test.ts" line="122" tests="3" assertions="3" failures="0" skipped="0" time="0" hostname="ip-10-6-1-165">
+      <testcase name="#given a plain object #when checking the value #then it is a record" classname="isRecord" time="0.000511" file="packages/jev-core/src/answer-validation.test.ts" line="123" assertions="1" />
+      <testcase name="#given null #when checking the value #then it is not a record" classname="isRecord" time="0.00007" file="packages/jev-core/src/answer-validation.test.ts" line="130" assertions="1" />
+      <testcase name="#given an array #when checking the value #then it is not a record" classname="isRecord" time="0.000035" file="packages/jev-core/src/answer-validation.test.ts" line="130" assertions="1" />
+    </testsuite>
+    <testsuite name="validateAnswer" file="packages/jev-core/src/answer-validation.test.ts" line="135" tests="33" assertions="33" failures="0" skipped="0" time="0" hostname="ip-10-6-1-165">
+      <testcase name="#given a well-formed choice #when validating #then it is accepted" classname="validateAnswer" time="0.00027" file="packages/jev-core/src/answer-validation.test.ts" line="136" assertions="1" />
+      <testcase name="#given unknown choice #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000044" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given missing probability key #when validating a choice #then it is rejected" classname="validateAnswer" time="0.00003" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given extra probability key #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000034" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given non-numeric probability #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000039" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given non-finite probability #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000056" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given probability 1.2 #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000072" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given confidence 1.5 #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000048" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given non-finite confidence #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000055" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given empty probabilities record #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000035" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given probabilities array #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000026" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given probabilities sum 3 #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000028" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given probabilities sum 0.98 #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000036" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given choice is not the argmax #when validating a choice #then it is rejected" classname="validateAnswer" time="0.000039" file="packages/jev-core/src/answer-validation.test.ts" line="141" assertions="1" />
+      <testcase name="#given probabilities sum 0.99 #when validating a choice #then the tolerance boundary is accepted" classname="validateAnswer" time="0.000092" file="packages/jev-core/src/answer-validation.test.ts" line="150" assertions="1" />
+      <testcase name="#given probabilities sum 1.01 #when validating a choice #then the tolerance boundary is accepted" classname="validateAnswer" time="0.000029" file="packages/jev-core/src/answer-validation.test.ts" line="150" assertions="1" />
+      <testcase name="#given tied maximum probabilities #when validating the selected choice #then the tie is accepted" classname="validateAnswer" time="0.000048" file="packages/jev-core/src/answer-validation.test.ts" line="154" assertions="1" />
+      <testcase name="#given noul 0.5 #when validating #then it is accepted" classname="validateAnswer" time="0.000041" file="packages/jev-core/src/answer-validation.test.ts" line="164" assertions="1" />
+      <testcase name="#given noul -0.1 #when validating #then it is rejected" classname="validateAnswer" time="0.000061" file="packages/jev-core/src/answer-validation.test.ts" line="171" assertions="1" />
+      <testcase name="#given non-finite noul #when validating #then it is rejected" classname="validateAnswer" time="0.000029" file="packages/jev-core/src/answer-validation.test.ts" line="171" assertions="1" />
+      <testcase name="#given score 1.6 with its weighted probabilities #when validating #then the between-level score is accepted" classname="validateAnswer" time="0.000084" file="packages/jev-core/src/answer-validation.test.ts" line="175" assertions="1" />
+      <testcase name="#given score legend is null #when validating a score #then it is rejected" classname="validateAnswer" time="0.000031" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score legend is missing key 2 #when validating a score #then it is rejected" classname="validateAnswer" time="0.000044" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score legend description is wrong #when validating a score #then it is rejected" classname="validateAnswer" time="0.000027" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score has an extra probability key #when validating a score #then it is rejected" classname="validateAnswer" time="0.000024" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score has a non-numeric probability #when validating a score #then it is rejected" classname="validateAnswer" time="0.000036" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score has an out-of-range probability #when validating a score #then it is rejected" classname="validateAnswer" time="0.000031" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score probabilities do not sum to one #when validating a score #then it is rejected" classname="validateAnswer" time="0.000026" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score confidence 1.5 #when validating a score #then it is rejected" classname="validateAnswer" time="0.000028" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score -0.5 #when validating a score #then it is rejected" classname="validateAnswer" time="0.000035" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score 2.5 #when validating a score #then it is rejected" classname="validateAnswer" time="0.000053" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score is non-finite #when validating a score #then it is rejected" classname="validateAnswer" time="0.000039" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+      <testcase name="#given score 0.2 is inconsistent with weighted level 1.6 #when validating a score #then it is rejected" classname="validateAnswer" time="0.00004" file="packages/jev-core/src/answer-validation.test.ts" line="180" assertions="1" />
+    </testsuite>
+    <testsuite name="validateAnswers" file="packages/jev-core/src/answer-validation.test.ts" line="187" tests="2" assertions="2" failures="0" skipped="0" time="0" hostname="ip-10-6-1-165">
+      <testcase name="#given every requested answer and an extra field #when validating #then requested answers are accepted" classname="validateAnswers" time="0.000104" file="packages/jev-core/src/answer-validation.test.ts" line="188" assertions="1" />
+      <testcase name="#given one requested answer is missing #when validating #then the answer map is rejected" classname="validateAnswers" time="0.000051" file="packages/jev-core/src/answer-validation.test.ts" line="199" assertions="1" />
+    </testsuite>
+  </testsuite>
+  <testsuite name="packages/jev-core/src/mock-backend.test.ts" file="packages/jev-core/src/mock-backend.test.ts" tests="7" assertions="9" failures="0" skipped="0" time="0.001595115" hostname="ip-10-6-1-165">
+    <testsuite name="createMockDecisionBackend" file="packages/jev-core/src/mock-backend.test.ts" line="18" tests="7" assertions="9" failures="0" skipped="0" time="0" hostname="ip-10-6-1-165">
+      <testcase name="#given a scripted answer #when deciding #then it is returned under the same id" classname="createMockDecisionBackend" time="0.000409" file="packages/jev-core/src/mock-backend.test.ts" line="19" assertions="2" />
+      <testcase name="#given an unscripted id #when deciding #then it is unavailable with reason unscripted" classname="createMockDecisionBackend" time="0.000124" file="packages/jev-core/src/mock-backend.test.ts" line="32" assertions="1" />
+      <testcase name="#given a noul answer for a choice question #when deciding #then the type mismatch is unscripted" classname="createMockDecisionBackend" time="0.000093" file="packages/jev-core/src/mock-backend.test.ts" line="40" assertions="1" />
+      <testcase name="#given a scripted unknown choice #when deciding #then the fixture is unscripted" classname="createMockDecisionBackend" time="0.00008" file="packages/jev-core/src/mock-backend.test.ts" line="48" assertions="1" />
+      <testcase name="#given a scripted choice missing one probability key #when deciding #then the fixture is unscripted" classname="createMockDecisionBackend" time="0.000071" file="packages/jev-core/src/mock-backend.test.ts" line="62" assertions="1" />
+      <testcase name="#given retry at 0.9 and three options #when building choiceAnswer probabilities #then they sum to one" classname="createMockDecisionBackend" time="0.000067" file="packages/jev-core/src/mock-backend.test.ts" line="76" assertions="2" />
+      <testcase name="#given a scripted decision #when deciding #then latencyMs is non-negative" classname="createMockDecisionBackend" time="0.000117" file="packages/jev-core/src/mock-backend.test.ts" line="84" assertions="1" />
+    </testsuite>
+  </testsuite>
+</testsuites>
+exit=0

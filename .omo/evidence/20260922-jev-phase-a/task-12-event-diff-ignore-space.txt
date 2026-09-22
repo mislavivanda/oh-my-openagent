@@ -1,0 +1,59 @@
+diff --git a/packages/omo-opencode/src/plugin/event.ts b/packages/omo-opencode/src/plugin/event.ts
+index cf04be07c..61decb822 100644
+--- a/packages/omo-opencode/src/plugin/event.ts
++++ b/packages/omo-opencode/src/plugin/event.ts
+@@ -5,6 +5,7 @@ import type { Managers } from "../create-managers";
+ import type { PluginContext } from "./types";
+ 
+ import { getMainSessionID, subagentSessions, syncSubagentSessions } from "../features/claude-code-session-state";
++import { createJevModelErrorTriage, type JevModelErrorTriage } from "../features/jev";
+ import { invalidateContextWindowUsageCache } from "../shared/dynamic-truncator";
+ import { resolveSessionEventID } from "../shared/event-session-id";
+ import { log } from "../shared/logger";
+@@ -32,6 +33,7 @@ export function createEventHandler(args: {
+   firstMessageVariantGate: FirstMessageVariantGate;
+   managers: Managers;
+   hooks: CreatedHooks;
++  jevTriage?: JevModelErrorTriage;
+ }): (input: EventInput) => Promise<void> {
+   const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks } = args;
+   const tmuxIntegrationEnabled = pluginConfig.tmux?.enabled ?? false;
+@@ -50,6 +52,7 @@ export function createEventHandler(args: {
+   const recentAnyIdles = new Map<string, number>();
+   const dedupWindowMs = 500;
+   const teamHandlers = createEventTeamHandlers({ pluginConfig, pluginContext, managers });
++  const jevTriage = args.jevTriage ?? createJevModelErrorTriage({ jevConfig: pluginConfig.jev });
+ 
+   const shouldAutoRetrySession = (sessionID: string): boolean => {
+     if (syncSubagentSessions.has(sessionID)) return true;
+@@ -66,6 +69,7 @@ export function createEventHandler(args: {
+     isRuntimeFallbackEnabled,
+     shouldAutoRetrySession,
+     isSessionStopped: (sessionID) => hooks.stopContinuationGuard?.isStopped(sessionID) ?? false,
++    jevTriage,
+   });
+ 
+   const shouldDispatchIdleEvent = (sessionID: string, now: number): boolean => {
+@@ -128,6 +132,13 @@ export function createEventHandler(args: {
+       }
+     }
+ 
++    let deletedSessionID: string | undefined;
++    if (input.event.type === "session.deleted") {
++      deletedSessionID = getEventSessionID(input);
++      if (deletedSessionID) modelFallbackHandler.cancelPendingJevTriage(deletedSessionID);
++    }
++
++    try {
+       await dispatchToHooks(input);
+       if (syntheticIdle) await dispatchSyntheticIdle(syntheticIdle);
+ 
+@@ -238,5 +249,8 @@ export function createEventHandler(args: {
+ 
+         await runEventHookSafely("teamMemberErrorHandler", teamHandlers.teamMemberErrorHandler, input);
+       }
++    } finally {
++      if (deletedSessionID) modelFallbackHandler.finishJevTriageDeletion(deletedSessionID);
++    }
+   };
+ }

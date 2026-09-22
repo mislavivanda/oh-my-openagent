@@ -1,0 +1,7 @@
+baseline_failure_lines=22
+baseline_unique_failures=21
+current_failure_lines=22
+current_unique_failures=21
+new_failure_count=0
+missing_baseline_failure_count=0
+comparison=current failure set is a subset of the frozen baseline after timing suffix normalization

@@ -1,0 +1,6 @@
+session_id=<redacted>
+prompt_http=204
+provider_hits_after_readiness=1
+model_fallback_lines=1
+jev_lines=1
+db_sessions_before=320 after=320

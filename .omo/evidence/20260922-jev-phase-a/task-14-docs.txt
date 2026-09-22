@@ -1,0 +1,58 @@
+=== todo 14: docs pass (jev-core AGENTS.md, packages/AGENTS.md, HANDOFF.md, dogfood-log.md) ===
+captured: 2026-09-22T16:59:33Z
+worktree: oh-my-openagent-jev-phase-a, branch jev/phase-a (docs STAGED, not committed)
+revision: re-captured after correcting swapped seam-site labels in HANDOFF.md
+
+WHAT WAS TESTED: the four documentation files written/edited by todo 14, staged with
+  git add so the markdown-link audit (which reads git ls-files) sees them, then the
+  plan's acceptance greps plus the repo-wide markdown-link audit.
+
+--- git status of staged docs ---
+M  docs/jev/HANDOFF.md
+M  docs/jev/dogfood-log.md
+M  packages/AGENTS.md
+M  packages/jev-core/AGENTS.md
+
+--- GROUND TRUTH: handler declarations + site literals in event-model-fallback.ts ---
+137:  const handleAssistantMessageUpdated = async (params: {
+167:          { site: "message.updated", sessionID: params.sessionID },
+204:  const handleSessionStatus = async (params: {
+233:          { site: "session.status", sessionID: params.sessionID },
+272:  const handleSessionError = async (params: {
+294:          { site: "session.error", sessionID: params.sessionID },
+
+--- HANDOFF.md handler/site pairing (must match the ground truth above) ---
+85:  `jevTriage.shouldRetry(...)`, one per handler: `handleAssistantMessageUpdated` (site
+86:  `message.updated`, around `:165`), `handleSessionStatus` (site `session.status`, around
+87:  `:231`), and `handleSessionError` (site `session.error`, around `:292`). **Anchor on the
+220:    `handleAssistantMessageUpdated`/`message.updated`, `handleSessionStatus`/`session.status`,
+221:    `handleSessionError`/`session.error`. Re-derive numbers with grep before trusting them.
+
+--- acceptance greps ---
+$ grep -c jev-core packages/AGENTS.md  (expect >= 2)
+2
+$ grep -c systemOne docs/jev/HANDOFF.md  (expect >= 1)
+2
+$ grep -c 'Revision log' docs/jev/HANDOFF.md  (expect 1)
+1
+$ grep -c 'Dogfood config' docs/jev/HANDOFF.md  (expect 1)
+1
+
+--- no machine-local paths in the four docs ---
+(none)
+
+--- core package count in packages/AGENTS.md ---
+7:43 sibling packages across 6 roles (20 of them Core). `omo-opencode` is the **build entry** for the main npm dist (`packages/omo-opencode/src/index.ts` → bundled into root `dist/`). The root `package.json` `files` array ships `dist/` + `bin/` + `postinstall.mjs` plus selected sibling artifacts (`lsp-tools-mcp`, `lsp-daemon`, `git-bash-mcp` `dist/`; `shared-skills`; the `omo-codex` plugin bundle; and `.opencode`/`.agents` command+skill dirs). Everything else is a sibling with its own package boundary; check the package docs before assuming a publication, deployment, or local-install surface.
+15:| **Core packages** | 20 | `utils`, `model-core`, `prompts-core`, `rules-engine` (was `rules-core`), `agents-md-core`, `comment-checker-core`, `hashline-core`, `boulder-state`, `telemetry-core`, `lsp-core`, `mcp-stdio-core`, `tmux-core`, `claude-code-compat-core`, `skills-loader-core`, `mcp-client-core`, `openclaw-core`, `team-core`, `delegate-core`, `omo-config-core`, `jev-core` |
+
+--- dogfood-log.md tail ---
+- 2026-09-22 | other | no loop misbehavior observed during Phase A todos 1-13 | jev-phase-a execution
+
+--- bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts ---
+bun test v1.4.0 (34cbb9a40)
+
+ 16 pass
+ 0 fail
+ 21 expect() calls
+Ran 16 tests across 1 file. [295.00ms]
+exit=0
