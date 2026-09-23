@@ -74,3 +74,4 @@ task-9-barrel-keys.txt	artifact	-
 task-9-selector-green.txt	green	0
 task-9-selector-red.txt	red	1
 task-F2-remediation.txt	gate	0
+task-F5-post-merge.txt	baseline	1

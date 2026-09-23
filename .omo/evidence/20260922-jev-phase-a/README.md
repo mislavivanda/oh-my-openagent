@@ -205,3 +205,7 @@ The resolution was a documented justification using the repo's established `// a
 **WHY IT IS ENOUGH:** F1 and F3 are independent reproductions rather than re-readings, so the committed transcripts are corroborated by fresh runs on final HEAD. F2 covers the one quality dimension the mechanical gates do not enforce, and its REJECT proves the review was capable of failing. F4 bounds the change set against the plan, which is what keeps a deferred installer integration from silently leaking into this phase. The manifest recount closes the one integrity regression the wave introduced.
 
 **WHAT WAS OMITTED:** Raw review transcripts, provider credentials, scratch sandbox roots, and machine-local paths were not retained. The F5 merge is out of scope for this record because it has not happened. The five modified generated `dist` files in the working tree come from `bun install`'s `prepare` script, are known-acceptable, and were never staged.
+
+## F5 post-merge verification
+
+The post-merge run on `jev/foundation` recorded 12,762 passes, 3 skips, and 22 failures with `exit=1` under Bun 1.4.0. Mechanical timing-normalized comparison found 21 unique failure names, all within the user-approved frozen baseline, with zero new failures and zero missing baseline failures. This baseline-relative result intentionally replaces the plan's literal zero-failure gate; raw installer output, credentials, machine-local paths, and private environment state were not retained.
