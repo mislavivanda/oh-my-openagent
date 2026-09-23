@@ -1,0 +1,31 @@
+surface=opencode-serve+global-sse
+opencode_version=1.18.32
+db_sessions_before=330
+scenario=0 provider_status=200 provider_message=control success provider_requests=1 jev_lines=0
+scenario=1 provider_status=429 provider_message=rate limit exceeded, please retry later provider_requests=1 jev_lines=1
+scenario=2 provider_status=429 provider_message=quota exceeded for this month provider_requests=1 jev_lines=1
+scenario=4 provider_status=503 provider_message=service unavailable, try again provider_requests=1 jev_lines=1
+scenario=5 provider_status=400 provider_message=context length exceeded provider_requests=3 jev_lines=3
+db_sessions_after=330
+matrix_segment_complete=4 5
+key_leak_matches=0
+scenario=3 provider_status=401 provider_message=permission denied for this resource provider_requests=1 jev_lines=2
+db_sessions_after=331
+matrix_segment_complete=3
+key_leak_matches=0
+scenario=6 provider_status=502 provider_message=upstream connect error or disconnect/reset before headers provider_requests=1 jev_lines=1
+scenario=7 provider_status=502 provider_message=socket hang up provider_requests=1 jev_lines=1
+scenario=8 provider_status=500 provider_message=the model is currently experiencing high demand provider_requests=1 jev_lines=1
+scenario=9 provider_status=500 provider_message=サーバーが混雑しています provider_requests=1 jev_lines=1
+scenario=10 provider_status=400 provider_message=invalid json in request body: unexpected token at position 42 provider_requests=1 jev_lines=2
+scenario=11 provider_status=403 provider_message=your account has been permanently suspended for policy violation provider_requests=1 jev_lines=2
+db_sessions_after=332
+matrix_segment_complete=6 7 8 9 10 11
+key_leak_matches=0
+w4_discrimination_segment_real_api_calls=8
+w4_discrimination_db_sessions_before_after=332:332
+w4_discrimination_backend_non_real=0
+w4_discrimination_missing_required_fields=0
+w4_discrimination_utf8_exact_matches=1
+w4_discrimination_retained_output_path_matches=0
+w4_discrimination_oqa_proc_holders=0
