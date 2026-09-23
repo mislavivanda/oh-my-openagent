@@ -9,6 +9,7 @@ const corePackagePaths: readonly string[] = [
   "packages/model-core",
   "packages/omo-config-core",
   "packages/delegate-core",
+  "packages/jev-core",
   "packages/prompts-core",
   "packages/rules-engine",
   "packages/agents-md-core",

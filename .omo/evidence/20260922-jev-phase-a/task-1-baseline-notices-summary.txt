@@ -1,0 +1,4 @@
+exit=1
+missing_count=4
+lines=5
+raw_output_omitted=true

@@ -1,0 +1,2 @@
+PASS: Todo 15 real-harness load smoke via server+SSE
+exit=0

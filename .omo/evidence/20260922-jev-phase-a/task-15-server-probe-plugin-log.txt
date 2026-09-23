@@ -1,0 +1,4 @@
+[2026-09-22T17:17:02.940Z] [oh-my-openagent] ENTRY - plugin loading {"directory":"<sandbox>/proj"}
+[2026-09-22T17:17:04.816Z] [jev] model-error-triage {"wire":"model_error_triage","questionVersion":1,"site":"session.status","sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","backend":"mock","status":"fell_through","reason":"unscripted","choice":null,"confidence":null,"probabilities":null,"threshold":0.8,"model":null,"latencyMs":null,"heuristicShouldRetry":true,"shouldRetry":true,"errorName":null,"errorMessageHead":"rate limit exceeded, please retry later"}
+[2026-09-22T17:17:04.817Z] [model-fallback] Set pending fallback for session: ses_f35e10368ffeR66Tw2R1SPSY8Q, agent: Sisyphus - ultraworker 
+[2026-09-22T17:17:05.033Z] [oh-my-openagent] ENTRY - plugin loading {"directory":"<repo-root>"}

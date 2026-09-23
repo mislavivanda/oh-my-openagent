@@ -1,0 +1,156 @@
+data: {"payload":{"id":"evt_0ca1ee4d1001GTHuUeH5Cc3Srs","type":"server.connected","properties":{}}}
+
+data: {"directory":"global","project":"global","payload":{"type":"project.updated","properties":{"id":"global","worktree":"/","sandboxes":[],"time":{"created":1790097418450,"updated":1790097418450}},"id":"evt_0ca1ee8d6001iDuC5ZMjwwS7Vl"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efc98001gkCsEiK9oAT6R4","type":"session.created","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","version":"1.18.32","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097423511}}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1efc98001gkCsEiK9oAT6R4","type":"session.created.1","seq":0,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","version":"1.18.32","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097423511}}}},"id":"evt_0ca1efc98001gkCsEiK9oAT6R4"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efcee0015s98UjR966tCQm","type":"session.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","agent":"Sisyphus - ultraworker","model":{"id":"gpt-fake","providerID":"openai","variant":"default"},"version":"1.18.32","cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097423597}}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1efcee0015s98UjR966tCQm","type":"session.updated.1","seq":1,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","agent":"Sisyphus - ultraworker","model":{"id":"gpt-fake","providerID":"openai","variant":"default"},"version":"1.18.32","cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097423597}}}},"id":"evt_0ca1efcee0015s98UjR966tCQm"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efd08001eTI6B3deVA7aFk","type":"message.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"msg_0ca1efced001plIhxtU3Yx486K","role":"user","sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","time":{"created":1790097423597},"agent":"Sisyphus - ultraworker","model":{"providerID":"openai","modelID":"gpt-fake"}}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1efd08001eTI6B3deVA7aFk","type":"message.updated.1","seq":2,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"msg_0ca1efced001plIhxtU3Yx486K","role":"user","sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","time":{"created":1790097423597},"agent":"Sisyphus - ultraworker","model":{"providerID":"openai","modelID":"gpt-fake"}}}},"id":"evt_0ca1efd08001eTI6B3deVA7aFk"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efe8b001ecGQNJRRZLU9N4","type":"tui.toast.show","properties":{"title":"⚠️ Provider Cache Missing","message":"Model filtering disabled. RESTART OpenCode to enable full functionality.","variant":"warning","duration":6000}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efeb90013CjiE4R5b07kD2","type":"message.part.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","part":{"type":"text","text":"say hi","messageID":"msg_0ca1efced001plIhxtU3Yx486K","sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","id":"prt_0ca1efcf30010g2xqEpB3HokYG"},"time":1790097424057}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1efeb90013CjiE4R5b07kD2","type":"message.part.updated.1","seq":3,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","part":{"type":"text","text":"say hi","messageID":"msg_0ca1efced001plIhxtU3Yx486K","sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","id":"prt_0ca1efcf30010g2xqEpB3HokYG"},"time":1790097424057}},"id":"evt_0ca1efeb90013CjiE4R5b07kD2"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efebd001i74SWUBEMrHpc0","type":"session.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","agent":"Sisyphus - ultraworker","model":{"id":"gpt-fake","providerID":"openai","variant":"default"},"version":"1.18.32","cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097424060}}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1efebd001i74SWUBEMrHpc0","type":"session.updated.1","seq":4,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","agent":"Sisyphus - ultraworker","model":{"id":"gpt-fake","providerID":"openai","variant":"default"},"version":"1.18.32","cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097424060}}}},"id":"evt_0ca1efebd001i74SWUBEMrHpc0"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efec2001qQmGWcUaIAs2l7","type":"session.status","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","status":{"type":"busy"}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1efec500121uqdCCYg2PiWX","type":"message.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"msg_0ca1efec50017Yz4EVRhQHpAY5","parentID":"msg_0ca1efced001plIhxtU3Yx486K","role":"assistant","mode":"Sisyphus - ultraworker","agent":"Sisyphus - ultraworker","path":{"cwd":"<sandbox>/proj","root":"/"},"cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"modelID":"gpt-fake","providerID":"openai","time":{"created":1790097424069},"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q"}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1efec500121uqdCCYg2PiWX","type":"message.updated.1","seq":5,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"msg_0ca1efec50017Yz4EVRhQHpAY5","parentID":"msg_0ca1efced001plIhxtU3Yx486K","role":"assistant","mode":"Sisyphus - ultraworker","agent":"Sisyphus - ultraworker","path":{"cwd":"<sandbox>/proj","root":"/"},"cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"modelID":"gpt-fake","providerID":"openai","time":{"created":1790097424069},"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q"}}},"id":"evt_0ca1efec500121uqdCCYg2PiWX"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f000b001LISbLDY7eDFjE8","type":"session.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","agent":"Sisyphus - ultraworker","model":{"id":"gpt-fake","providerID":"openai","variant":"default"},"version":"1.18.32","summary":{"additions":0,"deletions":0,"files":0},"cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097424395}}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1f000b001LISbLDY7eDFjE8","type":"session.updated.1","seq":6,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"ses_f35e10368ffeR66Tw2R1SPSY8Q","slug":"shiny-squid","projectID":"global","directory":"<sandbox>/proj","path":"tmp/oqa-xdg.NeB9gk/proj","title":"jev todo15 server probe","agent":"Sisyphus - ultraworker","model":{"id":"gpt-fake","providerID":"openai","variant":"default"},"version":"1.18.32","summary":{"additions":0,"deletions":0,"files":0},"cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"time":{"created":1790097423511,"updated":1790097424395}}}},"id":"evt_0ca1f000b001LISbLDY7eDFjE8"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f000d001fs5dq91dj7m8lp","type":"session.diff","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","diff":[]}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f000f001tt9wOMJAsxEGFK","type":"message.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"role":"user","time":{"created":1790097423597},"agent":"Sisyphus - ultraworker","model":{"providerID":"openai","modelID":"gpt-fake"},"id":"msg_0ca1efced001plIhxtU3Yx486K","sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","summary":{"diffs":[]}}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1f000f001tt9wOMJAsxEGFK","type":"message.updated.1","seq":7,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"role":"user","time":{"created":1790097423597},"agent":"Sisyphus - ultraworker","model":{"providerID":"openai","modelID":"gpt-fake"},"id":"msg_0ca1efced001plIhxtU3Yx486K","sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","summary":{"diffs":[]}}}},"id":"evt_0ca1f000f001tt9wOMJAsxEGFK"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f003e0013A3lvc78kjK7W5","type":"plugin.added","properties":{"id":"core/config-reference"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f003f001VzbuMKbilgy8Lo","type":"plugin.added","properties":{"id":"agent"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f003f002D48j2zLDWxyRaD","type":"plugin.added","properties":{"id":"command"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0040001UAg93L3ObY7bDw","type":"plugin.added","properties":{"id":"skill"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0041001g9JzzGMmghsv8G","type":"plugin.added","properties":{"id":"models-dev"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0042001cIDYqP1pTZVbJu","type":"plugin.added","properties":{"id":"config-agent"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0042002PX4zpt3IpS3cCe","type":"plugin.added","properties":{"id":"config-command"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0043001x7wHPRn58NEgEJ","type":"plugin.added","properties":{"id":"config-skill"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0043002n1lhIvAbSuXFfC","type":"plugin.added","properties":{"id":"alibaba"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0044001FSQdIzQB9y8IJh","type":"plugin.added","properties":{"id":"amazon-bedrock"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0044002wN2QQ4GVqKWuk7","type":"plugin.added","properties":{"id":"anthropic"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0045001LZ2MCWzcX3v5tr","type":"plugin.added","properties":{"id":"azure-cognitive-services"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0054001z0J7E0OWlJFfM1","type":"plugin.added","properties":{"id":"azure"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0054002QNtygiJfZfTIG9","type":"plugin.added","properties":{"id":"cerebras"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f005500133aC7P4a04VTQ1","type":"plugin.added","properties":{"id":"cloudflare-ai-gateway"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0056001Dv3kHIaj1Rk6sG","type":"plugin.added","properties":{"id":"cloudflare-workers-ai"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0056002ryQW6L6YqScqOG","type":"plugin.added","properties":{"id":"cohere"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0056003Ub7q2FneeFOgf1","type":"plugin.added","properties":{"id":"deepinfra"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0057001m7dUD27CQYDXOW","type":"plugin.added","properties":{"id":"gateway"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0057002e349fvWNDUgG4L","type":"plugin.added","properties":{"id":"github-copilot"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f00580014fKLoA3CtdJ2IL","type":"plugin.added","properties":{"id":"gitlab"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0058002WKhYkIy3jZM64s","type":"plugin.added","properties":{"id":"google"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0058003XoNgGSZWVr7jj5","type":"plugin.added","properties":{"id":"google-vertex-anthropic"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0059001vvS1sgv1tab8Ez","type":"plugin.added","properties":{"id":"google-vertex"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0059002ez2WMPdEi0I74O","type":"plugin.added","properties":{"id":"groq"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0067001YfBvB5SRS7krGf","type":"plugin.added","properties":{"id":"kilo"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0067002od0l2qsNWMouu5","type":"plugin.added","properties":{"id":"llmgateway"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f00680016G0ZbqKMbYGK8e","type":"plugin.added","properties":{"id":"mistral"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0068002oYJbGuPhHv4Zos","type":"plugin.added","properties":{"id":"nvidia"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006a001V8a5wyoWLPP3OP","type":"plugin.added","properties":{"id":"opencode"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006a002PGsAs5FuwaTg23","type":"plugin.added","properties":{"id":"snowflake-cortex"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006b001id6GCWsfx8ClAN","type":"plugin.added","properties":{"id":"openai-compatible"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006b002UXFjtK4NfNLr6K","type":"plugin.added","properties":{"id":"openai"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006c001qw10uH8hUZcPEI","type":"plugin.added","properties":{"id":"openrouter"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006c002ZLjhPXa5JwAN3L","type":"plugin.added","properties":{"id":"perplexity"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006d0012AOpCa4uZFC3sn","type":"plugin.added","properties":{"id":"sap-ai-core"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f006d002kz0hslC9o9hmkk","type":"plugin.added","properties":{"id":"togetherai"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01020015viXbMN1B34IqA","type":"catalog.updated","properties":{}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0103001P1gKVver369Ov0","type":"plugin.added","properties":{"id":"vercel"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0103002XBGJVsLB8KT6js","type":"plugin.added","properties":{"id":"venice"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0103003QiN2wiJcWhWOQx","type":"plugin.added","properties":{"id":"xai"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0103004lxNF9ds5OqSbGA","type":"plugin.added","properties":{"id":"zenmux"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0104001xvbbqccaMyJ9bu","type":"plugin.added","properties":{"id":"dynamic-provider"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01060015GW70JZgDRDmyb","type":"plugin.added","properties":{"id":"config-plugin"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0106002lfKRFGnRODVmjJ","type":"plugin.added","properties":{"id":"config-provider"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01070015TJydPB8AFugT7","type":"plugin.added","properties":{"id":"variant"}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0108001xoSILLDYEcMQWJ","type":"reference.updated","properties":{}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f011b001nHyTFo3moYZXMi","type":"integration.updated","properties":{}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f0169001QzJqWlbLiosCx4","type":"catalog.updated","properties":{}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01870019Ho6MKX354np1a","type":"session.status","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","status":{"type":"busy"}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01af001JGMxXJRiKmN356","type":"session.status","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","status":{"type":"retry","attempt":1,"message":"rate limit exceeded, please retry later","next":1790097427090}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01b4001wf7UItRS2fmz97","type":"message.updated","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"msg_0ca1efec50017Yz4EVRhQHpAY5","parentID":"msg_0ca1efced001plIhxtU3Yx486K","role":"assistant","mode":"Sisyphus - ultraworker","agent":"Sisyphus - ultraworker","path":{"cwd":"<sandbox>/proj","root":"/"},"cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"modelID":"gpt-fake","providerID":"openai","time":{"created":1790097424069,"completed":1790097424820},"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q"}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"type":"sync","syncEvent":{"id":"evt_0ca1f01b4001wf7UItRS2fmz97","type":"message.updated.1","seq":8,"aggregateID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","data":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","info":{"id":"msg_0ca1efec50017Yz4EVRhQHpAY5","parentID":"msg_0ca1efced001plIhxtU3Yx486K","role":"assistant","mode":"Sisyphus - ultraworker","agent":"Sisyphus - ultraworker","path":{"cwd":"<sandbox>/proj","root":"/"},"cost":0,"tokens":{"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}},"modelID":"gpt-fake","providerID":"openai","time":{"created":1790097424069,"completed":1790097424820},"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q"}}},"id":"evt_0ca1f01b4001wf7UItRS2fmz97"}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01b80016fHgHjmzmsFwQz","type":"session.status","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q","status":{"type":"idle"}}}}
+
+data: {"directory":"<sandbox>/proj","project":"global","payload":{"id":"evt_0ca1f01b8002FwHYInXqs2w8Sd","type":"session.idle","properties":{"sessionID":"ses_f35e10368ffeR66Tw2R1SPSY8Q"}}}
+
+data: {"directory":"global","project":"10951427e006a991b75e63efabee685e40e9e90f","payload":{"type":"project.updated","properties":{"id":"10951427e006a991b75e63efabee685e40e9e90f","worktree":"<repo-root>","vcs":"git","sandboxes":[],"time":{"created":1790097425004,"updated":1790097425004}},"id":"evt_0ca1f026d001xDYlVDv4d2IXFc"}}
+
+data: {"payload":{"id":"evt_0ca1f0bea001utVldgQ3AwYN47","type":"server.heartbeat","properties":{}}}
+

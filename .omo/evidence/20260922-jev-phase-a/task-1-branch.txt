@@ -1,0 +1,26 @@
+worktree branch: jev/phase-a
+worktree root: <repo>
+main branch: jev/foundation
+v4.19.4 ancestor: yes
+HANDOFF.md: present
+tsgo executable: yes
+evidence directory: .omo/evidence/20260922-jev-phase-a
+full baseline: exit=1
+full baseline frozen failures: 22
+frozen failure names: 22
+typecheck: exit=0
+plain notices exit: exit=1
+plain notices missing list: exact
+ship notices: exit=0
+worktree status:
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? docs/jev/HANDOFF.md
+main status:
+?? docs/jev/HANDOFF.md
+manifest exact rows: pass
+manifest completeness: pass
+manifest exit contracts: pass

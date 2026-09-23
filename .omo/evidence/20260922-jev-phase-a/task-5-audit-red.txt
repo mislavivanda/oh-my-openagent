@@ -1,0 +1,28 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/package-registration-audit.test.ts:
+242 |       .map((entry) => entry[0])
+243 |       .toSorted()
+244 | 
+245 |     // then
+246 |     expect(unknownWorkspacePaths).toEqual([])
+247 |     expect(actualWorkspacePaths).toEqual(managedWorkspacePaths.toSorted())
+                                       ^
+error: expect(received).toEqual(expected)
+
+@@ -8,3 +8,2 @@
+    "packages/hashline-core",
+-   "packages/jev-core",
+    "packages/lsp-core",
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (<repo>/script/package-registration-audit.test.ts:247:34)
+(fail) package registration audit > #given managed packages #when root registration is audited #then workspaces typecheck and dev deps stay aligned [2.64ms]
+
+ 5 pass
+ 1 fail
+ 10 expect() calls
+Ran 6 tests across 1 file. [254.00ms]
+exit=1

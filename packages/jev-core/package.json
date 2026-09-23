@@ -1,0 +1,22 @@
+{
+  "name": "@oh-my-opencode/jev-core",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Harness-neutral Jev (TypeSafe System One) decision-backend primitives for oh-my-opencode.",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "types": "./index.d.ts",
+  "scripts": {
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "test": "bun test src/*.test.ts"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "0.6.0"
+  },
+  "sideEffects": false
+}

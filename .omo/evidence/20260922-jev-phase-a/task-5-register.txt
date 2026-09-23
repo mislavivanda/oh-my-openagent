@@ -1,0 +1,157 @@
+SDK version: 0.6.0
+
+Source: installed node_modules/@typesafe-ai/sdk/dist/index.d.mts
+
+Authority: on-disk declarations below override the plan transcription for Todos 6-9.
+
+Comparison note: the on-disk bundle spells ChoiceCriteria values as Description, where Description is declared as an alias of EntryType; the plan Scope transcription inlines EntryType. The shapes are equivalent. The bundle also emits interfaces where the Scope transcription uses object notation. The task named 19 declarations despite calling them 18; all 19 named declarations are recorded below.
+
+
+
+type JsonValue = string | number | boolean | null | JsonValue[] | {
+  [key: string]: JsonValue;
+};
+
+type EntryType = string | {
+  [key: string]: JsonValue;
+} | JsonValue[] | null;
+
+type ChoiceCriteria = {
+  [label: string]: Description;
+};
+
+type ScoreCriteria = readonly [EntryType, EntryType, ...EntryType[]];
+
+interface ChoiceQuestion<T extends ChoiceCriteria = ChoiceCriteria> {
+  type: "choice";
+  /** The question as text, a JSON object, or an array; optional or `null`. */
+  instructions?: EntryType;
+  /** Descriptions of the available outcomes. */
+  criteria: T;
+}
+
+interface NoulQuestion {
+  type: "noul";
+  /** The question as text, a JSON object, or an array; optional or `null`. */
+  instructions?: EntryType;
+  /** Optional descriptions of the yes and no outcomes. */
+  criteria?: {
+    /** Description of the yes outcome. */
+    true?: EntryType;
+    /** Description of the no outcome. */
+    false?: EntryType;
+  } | null;
+}
+
+interface ScoreQuestion<T extends ScoreCriteria = ScoreCriteria> {
+  type: "score";
+  /** The question as text, a JSON object, or an array; optional or `null`. */
+  instructions?: EntryType;
+  /** Descriptions of the available outcomes. */
+  criteria: T;
+}
+
+interface Questions {
+  [name: string]: Question;
+}
+
+interface SystemOneRequest<Q extends Questions = Questions> {
+  /** Text, a JSON object or array, or `null` to evaluate. */
+  state: EntryType;
+  /** Nonempty questions keyed by the names used to identify their answers. */
+  questions: Q;
+  /** Model override; omitted values inherit `defaultModel`. */
+  model?: string;
+}
+
+interface ChoiceResponse<T extends ChoiceCriteria = ChoiceCriteria> {
+  readonly type: "choice";
+  /** The selected label. */
+  readonly choice: keyof T & string;
+  /** Reported confidence in the selected label. */
+  readonly confidence: number;
+  /** Probabilities keyed by label. */
+  readonly probabilities: { readonly [label in keyof T]: number; };
+}
+
+interface NoulResponse {
+  readonly type: "noul";
+  /** Probability of a yes answer, from zero to one. */
+  readonly noul: number;
+}
+
+type ScoreOf<T extends ScoreCriteria> = number extends T["length"] ? number : Extract<keyof T, `${number}`>;
+
+type ScoreLegend<T extends ScoreCriteria> = { readonly [score in ScoreOf<T>]: T[score]; };
+
+interface ScoreResponse<T extends ScoreCriteria = ScoreCriteria> {
+  readonly type: "score";
+  /** Expected score, which may fall between integer rubric levels. */
+  readonly score: number;
+  /** Reported confidence in the score. */
+  readonly confidence: number;
+  /** Rubric descriptions keyed by score. */
+  readonly legend: ScoreLegend<T>;
+  /** Probabilities keyed by score. */
+  readonly probabilities: { readonly [score in ScoreOf<T>]: number; };
+}
+
+interface Usage {
+  /** Number of input tokens used. */
+  readonly input_tokens: number;
+  /** Number of output tokens used. */
+  readonly output_tokens: number;
+}
+
+interface TypeSafeClientConfig {
+  /** Required API key; falls back to `TYPESAFE_API_KEY`. */
+  apiKey?: string;
+  /** API root; falls back to `TYPESAFE_BASE_URL`, then `https://api.typesafe.ai`. */
+  baseURL?: string;
+  /** Default model; falls back to `TYPESAFE_DEFAULT_MODEL`, then `jev-latest`. */
+  defaultModel?: string;
+  /**
+   * Log level; falls back to `TYPESAFE_LOG_LEVEL`, then `warn`.
+   * `info` logs request summaries; `debug` adds headers and bodies.
+   * Known credential headers are redacted; bodies are not.
+   */
+  logLevel?: LogLevel;
+  /** Logger filtered to `logLevel` and above. Default: prefixed `console`. */
+  logger?: Logger;
+  /** Retry overrides; omitted fields use the defaults in `RetryPolicy`. */
+  retry?: Partial<RetryPolicy>;
+  /** Timeout per attempt in milliseconds, without a total retry budget. Default: 10000. */
+  timeout?: number;
+  /** Additional request headers; per-call headers take precedence. */
+  defaultHeaders?: Record<string, string>;
+  /** Allow browser use, exposing the API key to page users. Default: false. */
+  dangerouslyAllowBrowser?: boolean;
+  /** Custom HTTP fetch implementation for transport configuration or tests. Default: global `fetch`. */
+  fetch?: Fetch;
+}
+
+interface RequestOptions {
+  /** Cancellation signal for the request and pending retries. */
+  signal?: AbortSignal;
+  /** Timeout per attempt in milliseconds; there is no total retry budget. */
+  timeout?: number;
+  /** Retry overrides for this call; omitted fields inherit client settings. */
+  retry?: Partial<RetryPolicy>;
+  /** Additional headers, merged over `defaultHeaders`. */
+  headers?: Record<string, string>;
+}
+
+type Fetch = (input: string, init?: RequestInit) => Promise<Response>;
+
+interface Logger {
+  debug(message: string, ...args: unknown[]): void;
+  info(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  error(message: string, ...args: unknown[]): void;
+}
+
+Todo 7 error-shape and timeout verification (2026-09-22):
+
+- `APIError` exposes the HTTP status as readonly property `status: number` and the parsed response body as readonly property `body: unknown`. A live injected-fetch probe returning HTTP 401 JSON observed `status === 401` and `body` equal to the parsed nested object.
+- `TypeSafeClient.attempt()` sets `timedOut = true` before aborting its internal `AbortController`; when the injected fetch rejected with an `AbortError` from that signal, the installed SDK produced `APITimeoutError` with message `Request timed out after 20ms.`. It is also an `APIConnectionError` subclass, so consumers must test `APITimeoutError` first.
+- `retry: { maxRetries: 0 }` makes `retriesLeft` zero on the initial attempt, so HTTP, timeout, and connection failures are thrown without another fetch.

@@ -5,6 +5,7 @@ import type { Managers } from "../create-managers";
 import type { PluginContext } from "./types";
 
 import { getMainSessionID, subagentSessions, syncSubagentSessions } from "../features/claude-code-session-state";
+import { createJevModelErrorTriage, type JevModelErrorTriage } from "../features/jev";
 import { invalidateContextWindowUsageCache } from "../shared/dynamic-truncator";
 import { resolveSessionEventID } from "../shared/event-session-id";
 import { log } from "../shared/logger";
@@ -32,6 +33,7 @@ export function createEventHandler(args: {
   firstMessageVariantGate: FirstMessageVariantGate;
   managers: Managers;
   hooks: CreatedHooks;
+  jevTriage?: JevModelErrorTriage;
 }): (input: EventInput) => Promise<void> {
   const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks } = args;
   const tmuxIntegrationEnabled = pluginConfig.tmux?.enabled ?? false;
@@ -50,6 +52,7 @@ export function createEventHandler(args: {
   const recentAnyIdles = new Map<string, number>();
   const dedupWindowMs = 500;
   const teamHandlers = createEventTeamHandlers({ pluginConfig, pluginContext, managers });
+  const jevTriage = args.jevTriage ?? createJevModelErrorTriage({ jevConfig: pluginConfig.jev });
 
   const shouldAutoRetrySession = (sessionID: string): boolean => {
     if (syncSubagentSessions.has(sessionID)) return true;
@@ -66,6 +69,7 @@ export function createEventHandler(args: {
     isRuntimeFallbackEnabled,
     shouldAutoRetrySession,
     isSessionStopped: (sessionID) => hooks.stopContinuationGuard?.isStopped(sessionID) ?? false,
+    jevTriage,
   });
 
   const shouldDispatchIdleEvent = (sessionID: string, now: number): boolean => {
@@ -128,115 +132,125 @@ export function createEventHandler(args: {
       }
     }
 
-    await dispatchToHooks(input);
-    if (syntheticIdle) await dispatchSyntheticIdle(syntheticIdle);
-
-    const { event } = input;
-    managers.tuiStateMirror?.onEvent(event);
-    const props = event.properties as Record<string, unknown> | undefined;
-
-    if (tmuxIntegrationEnabled && TMUX_ACTIVITY_EVENT_TYPES.has(event.type)) {
-      managers.tmuxSessionManager.onEvent?.(event as { type: string; properties?: Record<string, unknown> });
+    let deletedSessionID: string | undefined;
+    if (input.event.type === "session.deleted") {
+      deletedSessionID = getEventSessionID(input);
+      if (deletedSessionID) modelFallbackHandler.cancelPendingJevTriage(deletedSessionID);
     }
 
-    if (event.type === "session.created") {
-      await handleSessionCreatedEvent({
-        event,
-        props,
-        tmuxIntegrationEnabled,
-        pluginConfig,
-        pluginContext,
-        managers,
-        firstMessageVariantGate,
-      });
-    }
+    try {
+      await dispatchToHooks(input);
+      if (syntheticIdle) await dispatchSyntheticIdle(syntheticIdle);
 
-    if (event.type === "session.deleted") {
-      await handleSessionDeletedEvent({
-        props,
-        tmuxIntegrationEnabled,
-        pluginConfig,
-        pluginContext,
-        managers,
-        firstMessageVariantGate,
-        clearModelFallbackSession: modelFallbackHandler.clearSession,
-      });
-      await runEventHookSafely("teamLeadOrphanHandler", teamHandlers.teamLeadOrphanHandler, input);
-      await runEventHookSafely("teamMemberStatusHandler", teamHandlers.teamMemberStatusHandler, input);
-    }
+      const { event } = input;
+      managers.tuiStateMirror?.onEvent(event);
+      const props = event.properties as Record<string, unknown> | undefined;
 
-    if (event.type === "message.removed") handleMessageRemovedEvent(props);
-
-    if (event.type === "session.idle") {
-      const sessionID = resolveSessionEventID(props);
-      if (sessionID) {
-        await dispatchOpenClawSessionEvent({ pluginConfig, pluginContext, managers, rawEvent: event.type, sessionID });
+      if (tmuxIntegrationEnabled && TMUX_ACTIVITY_EVENT_TYPES.has(event.type)) {
+        managers.tmuxSessionManager.onEvent?.(event as { type: string; properties?: Record<string, unknown> });
       }
-      await dispatchIdleOnlyHooks(input);
-      await Promise.resolve().then(() => managers.monitorManager?.handleEvent({
-        type: "session.idle",
-        sessionId: resolveSessionEventID(props) ?? "",
-      }));
-    }
 
-    if (event.type === "message.updated") {
-      const state = handleMessageUpdatedSessionState({
-        props,
-        noteSessionModel: modelFallbackHandler.setLastKnownModel,
-      });
-      if (state.sessionID && ((typeof state.info?.finish === "string" && state.info.finish.length > 0) || state.info?.finish === true)) {
-        invalidateContextWindowUsageCache(pluginContext as PluginInput, state.sessionID);
+      if (event.type === "session.created") {
+        await handleSessionCreatedEvent({
+          event,
+          props,
+          tmuxIntegrationEnabled,
+          pluginConfig,
+          pluginContext,
+          managers,
+          firstMessageVariantGate,
+        });
       }
-      if (state.sessionID && state.role === "assistant") {
-        try {
-          const shouldStop = await modelFallbackHandler.handleAssistantMessageUpdated({
-            sessionID: state.sessionID,
-            info: state.info ?? {},
-            agent: state.agent,
-          });
-          if (shouldStop) return;
-        } catch (err) {
-          log("[event] model-fallback error in message.updated:", {
-            sessionID: state.sessionID,
-            error: err instanceof Error ? err : String(err),
-          });
+
+      if (event.type === "session.deleted") {
+        await handleSessionDeletedEvent({
+          props,
+          tmuxIntegrationEnabled,
+          pluginConfig,
+          pluginContext,
+          managers,
+          firstMessageVariantGate,
+          clearModelFallbackSession: modelFallbackHandler.clearSession,
+        });
+        await runEventHookSafely("teamLeadOrphanHandler", teamHandlers.teamLeadOrphanHandler, input);
+        await runEventHookSafely("teamMemberStatusHandler", teamHandlers.teamMemberStatusHandler, input);
+      }
+
+      if (event.type === "message.removed") handleMessageRemovedEvent(props);
+
+      if (event.type === "session.idle") {
+        const sessionID = resolveSessionEventID(props);
+        if (sessionID) {
+          await dispatchOpenClawSessionEvent({ pluginConfig, pluginContext, managers, rawEvent: event.type, sessionID });
+        }
+        await dispatchIdleOnlyHooks(input);
+        await Promise.resolve().then(() => managers.monitorManager?.handleEvent({
+          type: "session.idle",
+          sessionId: resolveSessionEventID(props) ?? "",
+        }));
+      }
+
+      if (event.type === "message.updated") {
+        const state = handleMessageUpdatedSessionState({
+          props,
+          noteSessionModel: modelFallbackHandler.setLastKnownModel,
+        });
+        if (state.sessionID && ((typeof state.info?.finish === "string" && state.info.finish.length > 0) || state.info?.finish === true)) {
+          invalidateContextWindowUsageCache(pluginContext as PluginInput, state.sessionID);
+        }
+        if (state.sessionID && state.role === "assistant") {
+          try {
+            const shouldStop = await modelFallbackHandler.handleAssistantMessageUpdated({
+              sessionID: state.sessionID,
+              info: state.info ?? {},
+              agent: state.agent,
+            });
+            if (shouldStop) return;
+          } catch (err) {
+            log("[event] model-fallback error in message.updated:", {
+              sessionID: state.sessionID,
+              error: err instanceof Error ? err : String(err),
+            });
+          }
         }
       }
-    }
 
-    if (event.type === "session.status") {
-      const sessionID = resolveSessionEventID(props);
-      const status = props?.status as { type?: string; attempt?: number; message?: string; next?: number } | undefined;
-      if (sessionID) {
+      if (event.type === "session.status") {
+        const sessionID = resolveSessionEventID(props);
+        const status = props?.status as { type?: string; attempt?: number; message?: string; next?: number } | undefined;
+        if (sessionID) {
+          try {
+            if (await modelFallbackHandler.handleSessionStatus({ sessionID, status })) return;
+          } catch (err) {
+            log("[event] model-fallback error in session.status:", {
+              sessionID,
+              error: err instanceof Error ? err : String(err),
+            });
+          }
+        }
+      }
+
+      if (event.type === "session.error") {
         try {
-          if (await modelFallbackHandler.handleSessionStatus({ sessionID, status })) return;
+          const sessionID = resolveSessionEventID(props);
+          const error = props?.error;
+          const errorName = extractErrorName(error);
+          const errorMessage = extractErrorMessage(error);
+          if (sessionID) {
+            await modelFallbackHandler.handleSessionError({ sessionID, errorName, errorMessage, props });
+          }
         } catch (err) {
-          log("[event] model-fallback error in session.status:", {
+          const sessionID = resolveSessionEventID(props);
+          log("[event] model-fallback error in session.error:", {
             sessionID,
             error: err instanceof Error ? err : String(err),
           });
         }
-      }
-    }
 
-    if (event.type === "session.error") {
-      try {
-        const sessionID = resolveSessionEventID(props);
-        const error = props?.error;
-        const errorName = extractErrorName(error);
-        const errorMessage = extractErrorMessage(error);
-        if (sessionID) {
-          await modelFallbackHandler.handleSessionError({ sessionID, errorName, errorMessage, props });
-        }
-      } catch (err) {
-        const sessionID = resolveSessionEventID(props);
-        log("[event] model-fallback error in session.error:", {
-          sessionID,
-          error: err instanceof Error ? err : String(err),
-        });
+        await runEventHookSafely("teamMemberErrorHandler", teamHandlers.teamMemberErrorHandler, input);
       }
-
-      await runEventHookSafely("teamMemberErrorHandler", teamHandlers.teamMemberErrorHandler, input);
+    } finally {
+      if (deletedSessionID) modelFallbackHandler.finishJevTriageDeletion(deletedSessionID);
     }
   };
 }

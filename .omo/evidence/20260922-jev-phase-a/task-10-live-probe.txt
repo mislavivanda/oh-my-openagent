@@ -1,0 +1,4 @@
+{"id":"retryable_message_patterns-1","label":"retry","status":"decided","choice":"retry","confidence":0.96,"probabilities":{"retry":0.97,"ignore":0,"stop":0.03},"model":"jev-1.13.0","latencyMs":303.039625,"reason":null}
+{"id":"stop_message_patterns-2","label":"stop","status":"decided","choice":"stop","confidence":1,"probabilities":{"ignore":0,"stop":1,"retry":0},"model":"jev-1.13.0","latencyMs":175.361937,"reason":null}
+{"id":"non_retryable_error_names-1","label":"ignore","status":"decided","choice":"ignore","confidence":0.82,"probabilities":{"stop":0.01,"retry":0.11,"ignore":0.88},"model":"jev-1.13.0","latencyMs":159.28719100000006,"reason":null}
+probe_exit=0

@@ -84,6 +84,12 @@ Generator/checker note: update this file with the audited component list, then r
 - Upstream URL: https://www.npmjs.com/package/@opencode-ai/sdk
 - Where-bundled: root production dependency for OpenCode API access.
 
+### @typesafe-ai/sdk@0.6.0
+- License: MIT, from node_modules/@typesafe-ai/sdk/LICENSE.
+- Copyright: Copyright (c) 2026 TypeSafe.
+- Upstream URL: https://github.com/typesafe-ai/typesafe-sdk-js
+- Where-bundled: root production dependency (consumed by packages/jev-core, bundled into dist/index.js).
+
 ### CodeGraph bundled Node.js runtime
 - License: Node.js MIT license plus bundled third-party licenses for runtime components such as OpenSSL and V8. The inspected CodeGraph platform tarballs include the Node.js binary but no separate Node LICENSE or NOTICE files; the Codex CodeGraph component therefore ships Node.js v24.16.0 license text at `packages/omo-codex/plugin/components/codegraph/NODE-RUNTIME-LICENSES.md`.
 - Copyright: Node.js contributors, OpenSSL Software Foundation, V8 authors, and other Node.js third-party contributors.

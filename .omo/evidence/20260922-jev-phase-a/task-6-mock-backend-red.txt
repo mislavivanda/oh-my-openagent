@@ -1,0 +1,23 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/answer-validation.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './answer-validation' from '<repo>/packages/jev-core/src/answer-validation.test.ts'
+-------------------------------
+
+
+packages/jev-core/src/mock-backend.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './mock-backend' from '<repo>/packages/jev-core/src/mock-backend.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 2 fail
+ 2 errors
+Ran 2 tests across 2 files. [118.00ms]
+exit=1

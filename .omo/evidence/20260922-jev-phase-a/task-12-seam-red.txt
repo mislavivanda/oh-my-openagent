@@ -1,0 +1,125 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts:
+306 |       hooks: { modelFallback: createModelFallbackHook() },
+307 |     })
+308 | 
+309 |     await handler(messageUpdatedEvent(sessionID))
+310 | 
+311 |     expect(abortCalls).toEqual([])
+                             ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "ses_jev_ignore",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (<repo>/packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts:311:24)
+(fail) createEventHandler - Jev model fallback seam > (B) confident Jev ignore suppresses heuristic retry for message.updated [151.79ms]
+326 |       hooks: { modelFallback: createModelFallbackHook() },
+327 |     })
+328 | 
+329 |     await handler(messageUpdatedEvent(sessionID, UNRELATED_ERROR))
+330 | 
+331 |     expect(abortCalls).toEqual([sessionID])
+                             ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "ses_jev_add_retry",
+- ]
++ []
+
+- Expected  - 3
++ Received  + 1
+
+      at <anonymous> (<repo>/packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts:331:24)
+(fail) createEventHandler - Jev model fallback seam > (C) confident Jev retry adds a fallback for a heuristic-negative message.updated error [0.61ms]
+370 |     setMainSession(errorSessionID)
+371 |     await handler(sessionErrorEvent(errorSessionID))
+372 |     setMainSession(statusSessionID)
+373 |     await handler(sessionStatusEvent(statusSessionID))
+374 | 
+375 |     expect(abortCalls).toEqual([])
+                             ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "ses_jev_session_error",
++   "ses_jev_session_status",
++ ]
+
+- Expected  - 1
++ Received  + 4
+
+      at <anonymous> (<repo>/packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts:375:24)
+(fail) createEventHandler - Jev model fallback seam > (F) confident Jev ignore suppresses session.error and session.status at their own sites [305.43ms]
+(fail) createEventHandler - Jev model fallback seam > (G) concurrent duplicate message.updated events reserve once and dispatch once [5001.25ms]
+  ^ this test timed out after 5000ms.
+(fail) createEventHandler - Jev model fallback seam > (H) session deletion cancels a pending decision before fallback state mutates [5001.39ms]
+  ^ this test timed out after 5000ms.
+(fail) createEventHandler - Jev model fallback seam > (H2) an old reservation finally cannot delete a newer reservation for the same key [5001.40ms]
+  ^ this test timed out after 5000ms.
+(fail) createEventHandler - Jev model fallback seam > (H3) deletion cancellation takes effect while monitor shutdown is blocked [5000.23ms]
+  ^ this test timed out after 5000ms.
+(fail) createEventHandler - Jev model fallback seam > (H4) a new event is refused during deletion and accepted after deletion finishes [5001.28ms]
+  ^ this test timed out after 5000ms.
+526 |     })
+527 | 
+528 |     await expect(handler(sessionDeletedEvent(sessionID))).rejects.toThrow("monitor boom")
+529 |     await handler(messageUpdatedEvent(sessionID))
+530 | 
+531 |     expect(observed.shouldRetry).toHaveBeenCalledTimes(1)
+                                       ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (<repo>/packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts:531:34)
+(fail) createEventHandler - Jev model fallback seam > (H5a) rejecting monitor shutdown does not leak a deletion marker without a reservation [151.57ms]
+(fail) createEventHandler - Jev model fallback seam > (H5b) rejecting monitor shutdown cancels a reservation without leaking the deletion marker [5000.18ms]
+  ^ this test timed out after 5000ms.
+582 |     stopBlocked.resolve()
+583 |     await deletion
+584 |     setMainSession(sessionID)
+585 |     await handler(payload)
+586 | 
+587 |     expect(observed.shouldRetry).toHaveBeenCalledTimes(1)
+                                       ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (<repo>/packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts:587:34)
+(fail) createEventHandler - Jev model fallback seam > (H5c) refused session.status retry does not poison dedupe while deletion is blocked [152.66ms]
+(fail) createEventHandler - Jev model fallback seam > (H5d) cancelled session.status retry remains triageable after rejecting monitor shutdown [5001.64ms]
+  ^ this test timed out after 5000ms.
+(fail) createEventHandler - Jev model fallback seam > (H6) deletion cancels a reservation before the first event hook can block [5000.20ms]
+  ^ this test timed out after 5000ms.
+679 |     expect(observed.shouldRetry).toHaveBeenCalledTimes(0)
+680 |     stopBlocked[1]?.resolve()
+681 |     await secondDeletion
+682 |     await handler(payload)
+683 | 
+684 |     expect(observed.shouldRetry).toHaveBeenCalledTimes(1)
+                                       ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (<repo>/packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts:684:34)
+(fail) createEventHandler - Jev model fallback seam > (H7) overlapping deletions keep the session refused until the last deletion finishes [303.51ms]
+
+ 3 pass
+ 14 fail
+ 17 expect() calls
+Ran 17 tests across 1 file. [41.66s]
+exit=1

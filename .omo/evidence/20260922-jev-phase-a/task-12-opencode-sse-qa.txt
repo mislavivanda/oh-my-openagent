@@ -1,0 +1,6 @@
+surface=real opencode HTTP server + SSE event hook
+session_deleted_event=1
+session_delete_http=200
+host_session_count_before=317
+host_session_count_after=317
+exit=0

@@ -1,0 +1,11 @@
+After checkpoint commit bc0a7a3ec, both required commands produced empty output:
+
+GIT_MASTER=1 git diff --stat jev/foundation...HEAD -- packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts
+
+GIT_MASTER=1 git status --porcelain -- packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts
+
+The base-relative event-session-lifecycle diff was also empty:
+
+GIT_MASTER=1 git diff jev/foundation...HEAD -- packages/omo-opencode/src/plugin/event-session-lifecycle.ts
+
+exit=0
