@@ -199,6 +199,12 @@ grep -c '"model_fallback": true' ~/.omo/omo.jsonc
 seam sites sit behind `shouldHandleModelFallback()`, which returns false when runtime
 fallback is enabled, so a jev config alone changes nothing. Restart opencode after editing.
 
+**Warning: `runtime_fallback.enabled: true` silently disables W4.** `shouldHandleModelFallback()`
+requires model-fallback on AND runtime-fallback off, so flipping runtime-fallback on makes all
+three seam sites go inert with zero `[jev]` lines and no error or log saying why. `runtime_fallback`
+defaults to `false`, so W4 is active out of the box; this only bites if you turn runtime-fallback
+on deliberately. If you enable W4 and see zero `[jev]` lines, check this first.
+
 ## Revision log
 - 2026-09-19 Phase A audit against `v4.19.4` (line numbers re-verified 2026-09-22):
   - API shape corrected to `new TypeSafeClient(...).systemOne({ state, questions, model? })`;
