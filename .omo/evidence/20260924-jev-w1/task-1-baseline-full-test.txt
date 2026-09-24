@@ -1,0 +1,457 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/sync-lazycodex-marketplace.test.ts:
+[sync-lazycodex-marketplace] previous-payload reconstruction: skipping missing LSP daemon dist at /tmp/omo-sync-prev-source-5xYHPC/packages/lsp-daemon/dist
+[sync-lazycodex-marketplace] previous-payload reconstruction: skipping missing OMO root CLI dist at /tmp/omo-sync-prev-source-5xYHPC/dist/cli
+[sync-lazycodex-marketplace] previous-payload reconstruction: skipping missing OMO node fallback CLI dist at /tmp/omo-sync-prev-source-5xYHPC/dist/cli-node
+[materialize] wrote 148 frontend reference files from submodules
+[materialize] wrote 148 frontend reference files from submodules
+[materialize] wrote 148 frontend reference files from submodules
+Bundled 646 modules in 31ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 15ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 29ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 14ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 28ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 14ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 33ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 13ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 32ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 14ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 29ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 16ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 31ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 14ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 31ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 16ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+
+packages/omo-senpi/src/extension/compose.test.ts:
+omo-senpi component disabled by flag {
+  component: "beta",
+}
+
+packages/omo-senpi/src/extension/index.test.ts:
+omo-senpi ulw-loop inactive; omo binary not found undefined
+config-watch skipped: events capability missing undefined
+omo-senpi ulw-loop inactive; omo binary not found undefined
+config-watch skipped: events capability missing undefined
+
+packages/senpi-task/src/__adversarial__/chaos-bench.test.ts:
+[chaos] seed=senpi-task-w1-chaos base=2337725802 iterations=200
+
+packages/omo-opencode/src/shared/module-resolution-failure.test.ts:
+26 | 
+27 | describe("isModuleResolutionFailure", () => {
+28 |   it("#given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance", async () => {
+29 |     const resolveMessage = await captureRealImportFailure()
+30 | 
+31 |     expect(resolveMessage instanceof Error).toBe(false)
+                                                 ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/module-resolution-failure.test.ts:31:45)
+(fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance [0.47ms]
+
+packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:
+42 | 	return items
+43 | }
+44 | 
+45 | function getRunTmuxCommandCall(index: number): [string, string[]] {
+46 | 	const call = Reflect.get(runTmuxCommandMock.mock.calls, index)
+47 | 	const command = Reflect.get(call, 0)
+               ^
+TypeError: Reflect.get requires the first argument be an object
+      at get (1:11)
+      at getRunTmuxCommandCall (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:47:26)
+      at getSplitWindowCommand (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:57:20)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:187:16)
+(fail) spawnTmuxPane runner integration > cmux environment > #given isCmuxCompatEnvironment=true #when spawnTmuxPane called #then split-window uses opencode attach command not placeholder [0.29ms]
+212 | 				"-h",
+213 | 				createDeps(),
+214 | 			)
+215 | 
+216 | 			// then
+217 | 			expect(result).toEqual({ success: true, paneId: "%42" })
+                        ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "paneId": "%42",
+-   "success": true,
++   "success": false,
+  }
+
+- Expected  - 2
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:217:19)
+(fail) spawnTmuxPane runner integration > cmux environment > #given CMUX_SOCKET_PATH without TMUX #when spawnTmuxPane called #then reaches eager split-window attach [0.26ms]
+42 | 	return items
+43 | }
+44 | 
+45 | function getRunTmuxCommandCall(index: number): [string, string[]] {
+46 | 	const call = Reflect.get(runTmuxCommandMock.mock.calls, index)
+47 | 	const command = Reflect.get(call, 0)
+               ^
+TypeError: Reflect.get requires the first argument be an object
+      at get (1:11)
+      at getRunTmuxCommandCall (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:47:26)
+      at getSplitWindowCommand (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:57:20)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:246:16)
+(fail) spawnTmuxPane runner integration > cmux environment > #given cmux + dir with spaces #when spawnTmuxPane called #then directory is shell-escaped same as pre-change (regression guard) [0.15ms]
+299 | 
+300 | 			// when
+301 | 			const result = await spawnTmuxPane("session-headless", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", "/tmp/omo-project", "%0", "-h", createHeadlessDeps())
+302 | 
+303 | 			// then
+304 | 			expect(result).toEqual({ success: true, paneId: "%42" })
+                        ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "paneId": "%42",
+-   "success": true,
++   "success": false,
+  }
+
+- Expected  - 2
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts:304:19)
+(fail) spawnTmuxPane runner integration > eligibility gate (headless cmux: CMUX_SOCKET_PATH without TMUX) > #given CMUX_SOCKET_PATH set and TMUX unset #when spawnTmuxPane called #then split-window runs opencode attach eagerly [0.28ms]
+[lsp] ignored connection error notification failure during cleanup: Cannot call write after a stream was destroyed
+[lsp] ignored shutdown request failure during cleanup: LSP server workspace-edit-fixture at /tmp/lsp-apply-edit-x5TWdB exited with code 0
+
+packages/team-core/src/team-layout-tmux/layout.test.ts:
+523 |       await createTeamLayout("run-first", members, tmuxMgr as never)
+524 | 
+525 |       // then
+526 |       const commands = getCommands()
+527 |       const splitCalls = commands.filter((args) => args[0] === "split-window")
+528 |       expect(splitCalls).toEqual([
+                               ^
+error: expect(received).toEqual(expected)
+
+@@ -3,2 +3,4 @@
+      "split-window",
++     "-e",
++     "OPENCODE_SERVER_PASSWORD=kyqvin-xumgyn-8wokNe",
+      "-t",
+
+- Expected  - 0
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/team-core/src/team-layout-tmux/layout.test.ts:528:26)
+(fail) team-layout-tmux > createTeamLayout - focus/grid window topology > #given first teammate #when layout runs #then it splits the caller pane horizontally for teammate area [0.25ms]
+
+packages/omo-opencode/src/__tests__/perf/plugin-init.test.ts:
+empty-project: cold=32.5ms warm=[17.6, 17.2] median=17.6ms
+in-tree-fixture: cold=21.5ms warm=[17.8, 17.1] median=17.8ms
+
+  ⚙ read_file filePath=/src/index.ts  
+
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:
+26 | 
+27 |       // when
+28 |       const result = await getLatestVersion("beta")
+29 | 
+30 |       // then
+31 |       expect(result).toBe("2.0.0-beta.1")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "2.0.0-beta.1"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:31:22)
+(fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter [0.33ms]
+37 | 
+38 |       // when
+39 |       const result = await getLatestVersion("latest")
+40 | 
+41 |       // then
+42 |       expect(result).toBe("1.0.0")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "1.0.0"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:42:22)
+(fail) auto-update-checker/checker > getLatestVersion > accepts latest channel [0.17ms]
+48 | 
+49 |       // when
+50 |       const result = await getLatestVersion()
+51 | 
+52 |       // then
+53 |       expect(result).toBe("1.0.0")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "1.0.0"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:53:22)
+(fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest) [0.20ms]
+61 | 
+62 |       // when
+63 |       const result = await getLatestVersion("nonexistent-channel")
+64 | 
+65 |       // then
+66 |       expect(result).toBe("1.0.0")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "1.0.0"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:66:22)
+(fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing [0.17ms]
+72 | 
+73 |       // when
+74 |       const result = await getLatestVersion()
+75 | 
+76 |       // then
+77 |       expect(result).toBeNull()
+                          ^
+error: expect(received).toBeNull()
+
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:77:22)
+(fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status [0.18ms]
+
+packages/omo-opencode/src/shared/tmux/tmux-utils/window-spawn.test.ts:
+88 | 		const firstCall = harness.getRunTmuxCommandCall(0)
+89 | 		const secondCall = harness.getRunTmuxCommandCall(1)
+90 | 		expect(result).toEqual({ success: true, paneId: "%42" })
+91 | 		expect(firstCall[1].slice(0, 7)).toEqual(["new-window", "-d", "-n", "omo-agents", "-P", "-F", "#{pane_id}"])
+92 | 		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-worker"])
+93 | 		expect(harness.getNewWindowCommand()).toContain("Focus this pane to attach.")
+                                             ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "Focus this pane to attach."
+Received: "-e"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/window-spawn.test.ts:93:41)
+(fail) spawnTmuxWindow runner integration > #given healthy tmux environment #when spawnTmuxWindow called #then delegates new-window and select-pane to shared runner [0.62ms]
+101 | 
+102 | 		// when
+103 | 		await spawnTmuxWindow("session-1", "worker with spaces", enabledTmuxConfig, "http://127.0.0.1:1234", "/path with spaces/here", harness.deps)
+104 | 
+105 | 		// then
+106 | 		expect(harness.getNewWindowCommand()).toContain("OMO subagent pane ready: worker with spaces")
+                                              ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "OMO subagent pane ready: worker with spaces"
+Received: "-e"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/window-spawn.test.ts:106:41)
+(fail) spawnTmuxWindow runner integration > #given description with spaces #when spawnTmuxWindow called #then includes it in the placeholder [0.21ms]
+123 | 
+124 | 		// when
+125 | 		await spawnTmuxWindow("session-1", 'worker "$(whoami)"', enabledTmuxConfig, "http://127.0.0.1:1234", "/path/with'quote", harness.deps)
+126 | 
+127 | 		// then
+128 | 		expect(harness.getNewWindowCommand()).toContain('\\"')
+                                              ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "\\\""
+Received: "-e"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/window-spawn.test.ts:128:41)
+(fail) spawnTmuxWindow runner integration > #given description with shell metacharacters #when spawnTmuxWindow called #then escapes the placeholder [0.15ms]
+
+packages/omo-opencode/src/shared/tmux/tmux-utils/pane-replace.test.ts:
+108 | 		const sendKeysCall = getRunTmuxCommandCall(0)
+109 | 		const respawnCall = getRunTmuxCommandCall(1)
+110 | 		const selectPaneCall = getRunTmuxCommandCall(2)
+111 | 		expect(result).toEqual({ success: true, paneId: "%42" })
+112 | 		expect(sendKeysCall[1]).toEqual(["send-keys", "-t", "%42", "C-c"])
+113 | 		expect(respawnCall[1].slice(0, 4)).toEqual(["respawn-pane", "-k", "-t", "%42"])
+                                           ^
+error: expect(received).toEqual(expected)
+
+@@ -3,4 +3,4 @@
+    "-k",
+-   "-t",
+-   "%42",
++   "-e",
++   "OPENCODE_SERVER_PASSWORD=kyqvin-xumgyn-8wokNe",
+  ]
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/pane-replace.test.ts:113:38)
+(fail) replaceTmuxPane runner integration > #given existing pane #when replaceTmuxPane called #then delegates send-keys, respawn-pane, and select-pane to shared runner [0.60ms]
+123 | 
+124 | 		// when
+125 | 		await replaceTmuxPane("%42", "session-1", "worker with spaces", enabledTmuxConfig, "http://127.0.0.1:1234", "/path with spaces/here", createDeps())
+126 | 
+127 | 		// then
+128 | 		expect(getRespawnCommand()).toContain("OMO subagent pane ready: worker with spaces")
+                                    ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "OMO subagent pane ready: worker with spaces"
+Received: "-t"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/pane-replace.test.ts:128:31)
+(fail) replaceTmuxPane runner integration > #given description with spaces #when replaceTmuxPane called #then includes it in the placeholder [0.26ms]
+145 | 
+146 | 		// when
+147 | 		await replaceTmuxPane("%42", "session-1", 'worker "$(whoami)"', enabledTmuxConfig, "http://127.0.0.1:1234", "/path/with'quote", createDeps())
+148 | 
+149 | 		// then
+150 | 		expect(getRespawnCommand()).toContain('\\"')
+                                    ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "\\\""
+Received: "-t"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/pane-replace.test.ts:150:31)
+(fail) replaceTmuxPane runner integration > #given description with shell metacharacters #when replaceTmuxPane called #then escapes the placeholder [0.20ms]
+
+packages/omo-opencode/src/shared/tmux/tmux-utils/pane-spawn-runner.test.ts:
+113 | 		const firstCall = getRunTmuxCommandCall(0)
+114 | 		const secondCall = getRunTmuxCommandCall(1)
+115 | 		expect(result).toEqual({ success: true, paneId: "%42" })
+116 | 		expect(firstCall[1].slice(0, 8)).toEqual(["split-window", "-h", "-d", "-P", "-F", "#{pane_id}", "-t", "%0"])
+117 | 		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-worker"])
+118 | 		expect(getSplitWindowCommand()).toContain("Focus this pane to attach.")
+                                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "Focus this pane to attach."
+Received: "-e"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/pane-spawn-runner.test.ts:118:35)
+(fail) spawnTmuxPane runner integration > #given healthy tmux environment #when spawnTmuxPane called #then delegates split-window and select-pane to shared runner [0.74ms]
+126 | 
+127 | 		// when
+128 | 		await spawnTmuxPane("session-1", "worker with spaces", enabledTmuxConfig, "http://127.0.0.1:1234", "/path with spaces/here", "%0", "-h", createDeps())
+129 | 
+130 | 		// then
+131 | 		expect(getSplitWindowCommand()).toContain("OMO subagent pane ready: worker with spaces")
+                                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "OMO subagent pane ready: worker with spaces"
+Received: "-e"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/pane-spawn-runner.test.ts:131:35)
+(fail) spawnTmuxPane runner integration > #given description with spaces #when spawnTmuxPane called #then includes it in the placeholder [0.34ms]
+148 | 
+149 | 		// when
+150 | 		await spawnTmuxPane("session-1", 'worker "$(whoami)"', enabledTmuxConfig, "http://127.0.0.1:1234", "/path/with'quote", "%0", "-h", createDeps())
+151 | 
+152 | 		// then
+153 | 		expect(getSplitWindowCommand()).toContain('\\"')
+                                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "\\\""
+Received: "-e"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/tmux/tmux-utils/pane-spawn-runner.test.ts:153:35)
+(fail) spawnTmuxPane runner integration > #given description with shell metacharacters #when spawnTmuxPane called #then escapes the placeholder [0.28ms]
+
+packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts:
+107 |         requireFromHere.resolve("definitely-not-a-real-package-omo-doctor-test/package.json")
+108 |         throw new Error("expected the require.resolve probe to fail")
+109 |       } catch (error) {
+110 |         resolveMessage = error
+111 |       }
+112 |       expect(resolveMessage instanceof Error).toBe(false)
+                                                    ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts:112:47)
+(fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing [0.28ms]
+
+packages/omo-opencode/src/features/team-mode/team-layout-tmux/layout.test.ts:
+548 |       await createTeamLayout("run-first", members, tmuxMgr as never)
+549 | 
+550 |       // then
+551 |       const commands = getCommands()
+552 |       const splitCalls = commands.filter((args) => args[0] === "split-window")
+553 |       expect(splitCalls).toEqual([
+                               ^
+error: expect(received).toEqual(expected)
+
+@@ -3,2 +3,4 @@
+      "split-window",
++     "-e",
++     "OPENCODE_SERVER_PASSWORD=kyqvin-xumgyn-8wokNe",
+      "-t",
+
+- Expected  - 0
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/team-mode/team-layout-tmux/layout.test.ts:553:26)
+(fail) team-layout-tmux > createTeamLayout - focus/grid window topology > #given first teammate #when layout runs #then it splits the caller pane horizontally for teammate area [0.28ms]
+
+ 12762 pass
+ 3 skip
+ 22 fail
+ 1 snapshots, 84474 expect() calls
+Ran 12787 tests across 1678 files. [125.67s]
+exit=1

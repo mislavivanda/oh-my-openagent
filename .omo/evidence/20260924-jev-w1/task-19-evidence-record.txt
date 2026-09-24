@@ -1,0 +1,39 @@
+TODO 19 EVIDENCE RECORD
+
+WHAT WAS TESTED
+- Loaded and followed the opencode-qa Case A and Case B isolation rules with OpenCode 1.18.32.
+- Ran one long-lived password-protected `opencode serve` in an isolated HOME plus four XDG roots. Turn 1 invoked `opencode run --attach "$URL" --format json` without `--session`; turns 2 through 32 invoked the same command with the parsed session id.
+- Drove the committed 32-turn JSONL script through a local OpenAI Responses-compatible fake model provider. The script includes 15 zero-call turns, 10 single-call turns, 7 many-call turns, mixed category and subagent fan-out, duplicate targets, 11 `call_omo_agent` attempts, one task call carrying only `task_id`, two continuation-style prompts, and one repeated prompt pair.
+- Used `backend: "real"`, a sandbox-only dummy `TYPESAFE_API_KEY`, local `OMO_JEV_BASE_URL`, and exact model `jev-2026-09-24`. The local fake Jev server returned valid `systemOne` answers and echoed that pinned model. No production Jev endpoint was reachable.
+- Ran the same 32-turn script in a separate wire-disabled sandbox.
+- Ran `bun run script/jev-w1-report.ts --root "$S/home/.omo/jev"` against the enabled sink.
+- Read the real OpenCode SQLite DB with `sqlite3 -readonly` and recursively manifested every real `~/.omo` entry with path, type, size, nanosecond mtime, and content SHA-256 before and after the final enabled run.
+- Verified every directly spawned PID and every bound port from both driver runs through the external receipt directories. Cleanup addressed only those recorded identities.
+
+WHAT WAS OBSERVED
+- Enabled driver exit: 0. Disabled driver exit: 0. Report exit: 0.
+- Enabled sink: 32 sealed observations, 4 counter deltas, one shared session id, and 32 `session_idle` seals.
+- Fan-out cohorts: zero=15, one=10, many=7.
+- Completed prediction reuse: 1. Jev requests: 31. `[jev] intent-routing` decision logs: 31.
+- Observed attempts include 11 `call_omo_agent` calls, one `unscorable_resume`, and one `isContinuationCandidate: true` record.
+- Correlation statuses: reliable=32, censored=0, overlap_ambiguous=0.
+- `censored` is unreachable because this sequential driver waits for idle instead of seal timeout or dispose. `overlap_ambiguous` is unreachable because every `opencode run` reaches `session.idle` before the next prompt, so no predecessor can seal by `next_turn` and receive a successor observation.
+- The report records `records_created=32`, sealed=32, evicted=0, in_flight=0, and identity status=ok. It labels the corpus sufficient at 32 records. Accuracy is reported without a threshold; this canned fake's live agreement is intentionally not a merge gate.
+- Disabled control: zero intent-routing decision logs, zero Jev requests, and zero sink files.
+- Real OpenCode session count: 420 before and 420 after the final enabled run. Recursive real `~/.omo` manifest diff: EMPTY.
+- Receipt verification found 36 PIDs and 3 ports per run, all exited or individually terminated. No global process matcher was used.
+- OpenCode 1.18.32 attached runs completed and persisted real message events but emitted zero CLI stdout bytes. The driver keeps the required `run --attach --format json` calls and, only when stdout is empty, consumes the same server's authenticated global SSE JSON to parse and retain the session events. Standalone `opencode run --format json` emitted normally during diagnosis; the gap is attach-specific.
+- The assigned em dash was pre-existing. `git blame` attributes it to commit `a562d5367f`, before the W1 branch.
+
+WHY IT IS ENOUGH
+- A shared observation session id plus completed-prediction reuse proves all 32 turns reached one plugin instance with one in-memory turn store and reuse cache.
+- Exact equality between local Jev request count and intent-routing log count proves every actual dispatch was observed, while the repeated prompt explains the one fewer dispatch than turn count.
+- Tool attempts are captured by the real OpenCode `tool.execute.before` hook. Invalid QA-only category targets and disabled QA-only named agents prevent child sessions from polluting the one-session corpus; the record contract explicitly scores attempts rather than tool success.
+- The disabled control isolates the wire gate from provider and model traffic.
+- Read-only DB equality, byte-sensitive recursive manifests, and PID plus port receipts cover host-state and cleanup isolation.
+- Unit tests from todo 12 remain the evidence for `next_turn`, overlap marking, and deferred finalization. This sequential live driver does not fake those races.
+
+WHAT WAS OMITTED
+- Raw sandbox paths, auth headers, server passwords, environment dumps, and full OpenCode/plugin logs were not copied into committed evidence.
+- The dummy keys are fixed local literals with no external authority. No real TypeSafe key or paid Jev call was used.
+- Ephemeral sandbox DBs, per-turn SSE captures, provider request bodies, and sink JSONL remain outside the committed evidence set.

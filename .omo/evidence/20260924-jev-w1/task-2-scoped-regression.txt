@@ -1,0 +1,15 @@
+SCOPED REGRESSION SWEEP FOR THE CONFIG-SCHEMA CHANGE
+WHEN: 2026-09-24T15:42:41Z
+WHAT WAS TESTED: every test file that references model_error_triage or either generated schema asset,
+found with: grep -rln 'model_error_triage|oh-my-opencode.schema.json|omo.schema.json' --include=*.test.ts
+This covers tests/omo-schema-freshness.test.ts, which fails if a generated asset is stale.
+packages/jev-core is deliberately excluded: a concurrent worker owns it for todo 3.
+---
+$ bun test tests/omo-schema-freshness.test.ts packages/omo-config-core/src packages/omo-opencode/src/config packages/omo-opencode/src/config-migration packages/omo-opencode/src/features/jev packages/omo-opencode/src/cli/config-manager packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/plugin/consensus-removal.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 386 pass
+ 0 fail
+ 1025 expect() calls
+Ran 386 tests across 65 files. [2.28s]
+exit=0

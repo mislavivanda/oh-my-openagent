@@ -1,4 +1,17 @@
 export type * from "./types"
+export type * from "./intent-routing-record"
+export {
+  INTENT_ROUTING_CONTINUATION_LEXICON,
+  INTENT_ROUTING_PROMPT_HEAD_MAX_CHARS,
+  INTENT_ROUTING_SCHEMA_VERSION,
+  isIntentRoutingContinuationCandidate,
+} from "./intent-routing-record"
+export {
+  validateIntentRoutingCounterDelta,
+  validateIntentRoutingEntry,
+  validateIntentRoutingObservationRecord,
+} from "./intent-routing-record-validation"
+export { resolveIntentRoutingCounterDeltas } from "./intent-routing-counter-reader"
 export {
   choiceAnswer,
   createMockDecisionBackend,
@@ -28,3 +41,24 @@ export {
   type ModelErrorTriageFixture,
   type ModelErrorTriageFixtureSource,
 } from "./model-error-triage-fixtures"
+export {
+  INTENT_ROUTING_MAX_CHOICE_OPTIONS,
+  INTENT_ROUTING_NONE_OPTION,
+  INTENT_ROUTING_QUESTION_VERSION,
+  IntentRoutingVocabularyError,
+  buildIntentRoutingQuestions,
+  type IntentRoutingVocabulary,
+  type IntentRoutingVocabularyEntry,
+} from "./intent-routing"
+export { INTENT_ROUTING_SUBAGENT_VOCABULARY, derivePredictedRoute, deriveRoute, normalizeObservedDelegation } from "./intent-routing-normalization"
+export {
+  INTENT_ROUTING_FIXTURES,
+  INTENT_ROUTING_FIXTURE_CATEGORIES,
+  INTENT_ROUTING_FIXTURE_INTENTS,
+  INTENT_ROUTING_FIXTURE_SOURCES,
+  type IntentRoutingFixture,
+  type IntentRoutingFixtureIntent,
+  type IntentRoutingFixtureLabel,
+  type IntentRoutingFixtureSource,
+} from "./intent-routing-fixtures"
+export { decideIntentRouting, type IntentRoutingDecisionAnswers, type IntentRoutingDecisionChoiceAnswer, type IntentRoutingDecisionLabel, type IntentRoutingDecisionResult } from "./intent-routing-decision"

@@ -1,0 +1,41 @@
+TYPECHECK AFTER THE SCHEMA CHANGE
+WHEN: 2026-09-24T15:39:20Z
+---
+$ bun run typecheck
+packages/jev-core/src/intent-routing-record.test.ts(15,32): error TS2307: Cannot find module './intent-routing-record' or its corresponding type declarations.
+exit=2
+
+The single error above is NOT from this change. packages/jev-core/src/intent-routing-record.test.ts is
+todo 3, owned by a concurrent worker in this same worktree, and its implementation file does not exist yet.
+This change touches only packages/omo-opencode/src/config/schema/. Scoped proof follows.
+
+$ bunx tsgo --noEmit -p packages/omo-opencode/tsconfig.json
+exit=0
+
+$ bunx tsgo --noEmit   (root project, includes script/ entrypoints and the schema builders)
+exit=0
+
+$ bunx tsgo --noEmit -p script/tsconfig.json
+exit=0
+
+=== TEST FILE TYPECHECK ===
+Both tsconfig.json and packages/omo-opencode/tsconfig.json exclude '**/*.test.ts', so the project runs
+above do NOT cover jev.test.ts. Checked explicitly with the same compiler settings:
+$ bunx tsgo --noEmit --ignoreConfig --strict --skipLibCheck --target esnext --module esnext --moduleResolution bundler --types bun-types packages/omo-opencode/src/config/schema/jev.test.ts
+exit=0
+
+That command is proven to actually check the file: appending 'const __probe: number = "not a number"'
+made it report packages/omo-opencode/src/config/schema/jev.test.ts(173,7): error TS2322 and exit 2.
+The probe line was removed again before this capture.
+
+=== LSP DIAGNOSTICS ===
+lsp_diagnostics was requested three times on packages/omo-opencode/src/config/schema/jev.ts and each
+call returned 'LSP daemon unreachable' for socket ~/.omo/lsp-daemon/v0.1.0/daemon.sock, and lsp_status
+returned the same. The language server is unavailable in this environment, so the tsgo runs above stand
+in for it: they use the same TypeScript compiler the LSP would, over both changed files, at strict.
+
+=== ASSET STATE RECHECK AFTER THE TEST FILE WAS RESTORED ===
+$ shasum -a 256 assets/oh-my-opencode.schema.json assets/omo.schema.json
+89e8a2116c33f8d480b83c9dc1d7af5ede62ee5c00a4f60974a90f3a6517caca  assets/oh-my-opencode.schema.json
+bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1  assets/omo.schema.json
+(expected 89e8a2116c33f8d480b83c9dc1d7af5ede62ee5c00a4f60974a90f3a6517caca and bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1, matching task-2-both-schemas.txt)

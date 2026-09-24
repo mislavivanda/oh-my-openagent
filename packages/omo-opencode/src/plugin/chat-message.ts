@@ -1,6 +1,10 @@
 import type { OhMyOpenCodeConfig } from "../config"
 
 import { updateSessionAgent } from "../features/claude-code-session-state"
+import {
+  createPluginJevIntentRouting,
+  type JevIntentRouting,
+} from "../features/jev"
 import { detectSlashCommand, extractPromptText } from "../hooks/auto-slash-command/detector"
 import { isSyntheticOrInternalOnlyTextParts, log } from "../shared"
 import { applyUltraworkModelOverrideOnMessage } from "./ultrawork-model-override"
@@ -76,11 +80,13 @@ export function createChatMessageHandler(args: {
   pluginConfig: OhMyOpenCodeConfig
   firstMessageVariantGate: FirstMessageVariantGate
   hooks: ChatMessageHooks
+  intentRouting?: JevIntentRouting
 }): (
   input: ChatMessageInput,
   output: ChatMessageHandlerOutput
 ) => Promise<void> {
   const { ctx, pluginConfig, firstMessageVariantGate, hooks } = args
+  const intentRouting = args.intentRouting ?? createPluginJevIntentRouting(pluginConfig)
   const pluginContext = ctx as PluginContextWithTui
   const runtimeFallbackEnabled = isRuntimeFallbackEnabled(hooks, pluginConfig)
 
@@ -89,6 +95,7 @@ export function createChatMessageHandler(args: {
     output: ChatMessageHandlerOutput,
   ): Promise<void> => {
     const nativeGoalCommand = consumeNativeGoalCommandMarker(output.parts)
+    intentRouting.observe(input, output)
     if (isSyntheticOrInternalOnlyTextParts(output.parts)) {
       log("[chat-message] Skipping synthetic/internal-only message", {
         sessionID: input.sessionID,

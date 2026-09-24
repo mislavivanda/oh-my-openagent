@@ -1,0 +1,164 @@
+TASK 13 RED: per-process intent-routing JSONL sink
+WHAT WAS TESTED: HOME=$(mktemp -d) bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+EXPECTED: assertion failures against the behaviorless sink skeleton, not module resolution failures.
+TEST_HOME=/tmp/tmp.Mpe4Ia3kY3
+REAL_HOME JEV BEFORE:
+ls: cannot access '/home/opencode/.omo/jev': No such file or directory
+REAL_HOME recursive listing hash BEFORE: c58651988f72b39a1824732cead202af6eeafed9b43ab2d774c55f70520af1d3  -
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:
+179 | describe("intent-routing JSONL sink", () => {
+180 |   test("#given an observation #when appended and read #then it round-trips byte-identically", () => {
+181 |     const sink = createTestSink(testHome())
+182 |     const entry = fullyPopulatedObservation()
+183 |
+184 |     expect(sink.append(entry)).toBe(true)
+                                     ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:184:32)
+(fail) intent-routing JSONL sink > #given an observation #when appended and read #then it round-trips byte-identically [0.96ms]
+192 |   test("#given counter snapshots #when read #then the highest sequence replaces rather than sums", () => {
+193 |     const sink = createTestSink(testHome())
+194 |     const first = counterDelta(1, counters({ turnsSeen: 5 }))
+195 |     const second = counterDelta(2, counters({ turnsSeen: 8 }))
+196 |
+197 |     expect(sink.append(first)).toBe(true)
+                                     ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:197:32)
+(fail) intent-routing JSONL sink > #given counter snapshots #when read #then the highest sequence replaces rather than sums [0.24ms]
+209 |     sink.updateCounters(counters({ turnsSeen: 3, recordsCreated: 2 }))
+210 |
+211 |     sink.dispose()
+212 |
+213 |     const result = readIntentRoutingSink(dirname(sink.filePath))
+214 |     expect(result.entries).toHaveLength(1)
+                                 ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 1
+Received length: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:214:28)
+(fail) intent-routing JSONL sink > #given no observations #when disposed #then a cumulative counter entry is emitted [0.19ms]
+232 |     })
+233 |     sink.updateCounters(counters({ turnsSeen: 4 }))
+234 |
+235 |     scheduled?.()
+236 |
+237 |     expect(scheduledMs).toBe(INTENT_ROUTING_SINK_COUNTER_INTERVAL_MS)
+                              ^
+error: expect(received).toBe(expected)
+
+Expected: 30000
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:237:25)
+(fail) intent-routing JSONL sink > #given a scheduled interval #when it fires #then counters flush at the bounded interval [0.21ms]
+241 |
+242 |   test("#given a fresh sink #when it writes #then directory and file permissions are restrictive", () => {
+243 |     const sink = createTestSink(testHome())
+244 |     sink.append(fullyPopulatedObservation())
+245 |
+246 |     expect(existsSync(sink.filePath)).toBe(true)
+                                            ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:246:39)
+(fail) intent-routing JSONL sink > #given a fresh sink #when it writes #then directory and file permissions are restrictive [0.18ms]
+256 |     expect(sink.append(fullyPopulatedObservation())).toBe(false)
+257 |     sink.dispose()
+258 |
+259 |     const result = readIntentRoutingSink(dirname(sink.filePath))
+260 |     expect(result.entries.filter((entry) => entry.kind === "observation")).toEqual([])
+261 |     expect(result.countersByProcess.get(PROCESS_ID)?.counters.malformedWriteRejections).toBe(1)
+                                                                                              ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: undefined
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:261:89)
+(fail) intent-routing JSONL sink > #given an entry above max line size #when appended #then it is rejected and counted without truncation [0.19ms]
+263 |
+264 |   test("#given a malformed trailing line #when read #then valid rows survive and malformedLines increments", () => {
+265 |     const sink = createTestSink(testHome())
+266 |     const entry = fullyPopulatedObservation()
+267 |     sink.append(entry)
+268 |     expect(existsSync(sink.filePath)).toBe(true)
+                                            ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:268:39)
+(fail) intent-routing JSONL sink > #given a malformed trailing line #when read #then valid rows survive and malformedLines increments [0.18ms]
+295 |     first.dispose()
+296 |     second.dispose()
+297 |
+298 |     const result = readIntentRoutingSink(dirname(first.filePath))
+299 |
+300 |     expect(result.files.map(basename).sort()).toEqual([
+                                                    ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "w1-20260924-4101-1790251200000000000-aaaaaaaaaaaa.jsonl",
+-   "w1-20260924-4102-1790251200000000001-bbbbbbbbbbbb.jsonl",
+- ]
++ []
+
+- Expected  - 4
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:300:47)
+(fail) intent-routing JSONL sink > #given two simulated process writers #when read #then files stay distinct and counters resolve per process [0.29ms]
+319 |       sink.append(fullyPopulatedObservation({ turnOrdinal: ordinal, dedupKey: `dedup-${ordinal}` }))
+320 |       sink.flushCounters()
+321 |       ordinal += 1
+322 |     }
+323 |
+324 |     expect(sink.getCounterEpoch()).toBe(1)
+                                         ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:324:36)
+(fail) intent-routing JSONL sink > #given a configured size cap #when writes reach it #then the file truncates once and warns [0.26ms]
+348 |     const resolved = result.countersByProcess.get(PROCESS_ID)
+349 |     const retained = result.entries.filter(
+350 |       (entry) => entry.kind === "observation" && entry.counterEpoch === resolved?.counterEpoch,
+351 |     ).length
+352 |
+353 |     expect(resolved?.counterEpoch).toBe(1)
+                                         ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: undefined
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:353:36)
+(fail) intent-routing JSONL sink > #given pre-truncation counters #when a new epoch is written #then it supersedes rather than adds [0.38ms]
+
+ 0 pass
+ 10 fail
+ 12 expect() calls
+Ran 10 tests across 1 file. [146.00ms]
+TEST_EXIT=1
+WHY THIS IS RED: assertions require append/read, secure modes, counters, tolerance, process isolation, cap truncation, and epochs; the skeleton implements none.
+WHAT WAS OMITTED: no credentials, environment dump, prompts outside synthetic fixtures, or private logs were captured.

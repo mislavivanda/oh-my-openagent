@@ -33,6 +33,7 @@ Complete reference for Oh My OpenCode plugin configuration. Every omo harness re
   - [Runtime Fallback](#runtime-fallback)
   - [Model Capabilities](#model-capabilities)
   - [Hashline Edit](#hashline-edit)
+  - [Jev Intent Routing](#jev-intent-routing)
   - [Experimental](#experimental)
 - [Reference](#reference)
   - [Environment Variables](#environment-variables)
@@ -639,7 +640,7 @@ Run background subagents in separate tmux panes. Requires running inside tmux wi
 | ---------------------- | --------------- | ----------------------------------------------------------------------------------- |
 | `enabled`              | `false`         | Enable tmux pane spawning                                                           |
 | `layout`               | `main-vertical` | `main-vertical` / `main-horizontal` / `tiled` / `even-horizontal` / `even-vertical` |
-| `main_pane_size`       | `60`            | Main pane % (20–80)                                                                 |
+| `main_pane_size`       | `60`            | Main pane % (20-80)                                                                 |
 | `main_pane_min_width`  | `120`           | Min main pane columns                                                               |
 | `agent_pane_min_width` | `40`            | Min agent pane columns                                                              |
 
@@ -766,7 +767,7 @@ Auto-switches to backup models on API errors.
 | ----------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `enabled`               | `false`             | Enable runtime fallback                                                                                                        |
 | `retry_on_errors`       | `[429,500,502,503,504]` | HTTP codes that trigger fallback. Also handles classified provider key errors.                                              |
-| `max_fallback_attempts` | `3`                 | Max fallback attempts per session (1–20)                                                                                       |
+| `max_fallback_attempts` | `3`                 | Max fallback attempts per session (1-20)                                                                                       |
 | `cooldown_seconds`      | `60`                | Seconds before retrying a failed model                                                                                         |
 | `timeout_seconds`       | `30`                | Seconds before forcing next fallback. **Set to `0` to disable timeout-based escalation and `message.updated` provider retry signal detection.** Structured `session.status` retry events can still trigger fallback. |
 | `notify_on_fallback`    | `true`              | Toast notification on model switch                                                                                             |
@@ -1032,6 +1033,43 @@ Replaces the built-in `Edit` tool with a hash-anchored version using `LINE#ID` r
 
 When enabled, OmO registers the hash-anchored `edit` tool and activates the `hashline-read-enhancer` companion hook, which annotates Read output with `LINE#ID` markers. Opt in by setting `hashline_edit: true`. Disable the companion hook via `disabled_hooks` if needed.
 
+### Jev Intent Routing
+
+An observation-only measurement wire under `jev.wires.intent_routing`. Disabled by default.
+
+**It changes no routing and no behavior.** When enabled it asks the Jev decision backend what it would have predicted for a turn, records that beside the delegation the agent actually made, and appends both to a JSONL file. Nothing in OmO is gated on the answer, and agent output is byte-identical with the wire on or off, including when the backend fails or times out. The wire needs `jev.enabled: true` as well; either flag being false means nothing is dispatched and no record is written.
+
+```jsonc
+{
+  "jev": {
+    "enabled": true,
+    "wires": {
+      "intent_routing": {
+        "enabled": true,
+        "observe_only": true,
+        "confidence_threshold": 0.8,
+        "timeout_ms": 2500,
+        "turn_seal_timeout_ms": 120000,
+        "max_prompt_chars": 8000,
+        "max_inflight": 8
+      }
+    }
+  }
+}
+```
+
+| Option                 | Default  | Description                                                                                                                                                     |
+| ---------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`              | `false`  | Enable the wire. When false nothing is dispatched and no record is written.                                                                                      |
+| `observe_only`         | `true`   | Schema-only field with no runtime reader. Only `true` is accepted; `false` is rejected at parse time because acting on a prediction ships with the apply phase. |
+| `confidence_threshold` | `0.8`    | Minimum calibrated confidence used ONLY to label a record (0 to 1). This wire gates nothing on it.                                                               |
+| `timeout_ms`           | `2500`   | Per-decision timeout for this wire (100 to 30000), overriding the global `jev.timeout_ms`. This wire sends 4 questions where model-error triage sends 1.        |
+| `turn_seal_timeout_ms` | `120000` | How long a turn record stays open for late delegations (1000 to 600000). Must be strictly greater than `timeout_ms` or the config is rejected.                   |
+| `max_prompt_chars`     | `8000`   | Upper bound on the prompt payload in characters (minimum 256). Longer input is truncated and the record is flagged.                                              |
+| `max_inflight`         | `8`      | Upper bound on concurrent in-flight dispatches (1 to 64). Dispatches beyond the bound are dropped and counted.                                                   |
+
+Records are written as one JSONL file per process under `~/.omo/jev/`, named `w1-<YYYYMMDD>-<processId>.jsonl`, with file mode `0600` inside a `0700` directory and a 66 MiB cap that truncates and warns. Only a bounded prompt head plus a SHA-256 of the full prompt is retained, never the whole prompt. The Jev API key is read only from the `TYPESAFE_API_KEY` environment variable and never from config.
+
 ### Experimental
 
 ```json
@@ -1072,7 +1110,7 @@ When enabled, OmO registers the hash-anchored `edit` tool and activates the `has
 | `task_system`                            | `false`    | Enable Sisyphus task system                                                          |
 | `dynamic_context_pruning.enabled`        | `false`    | Auto-prune old tool outputs to manage context window                                 |
 | `dynamic_context_pruning.notification`   | `detailed` | Pruning notifications: `off` / `minimal` / `detailed`                                |
-| `turn_protection.turns`                  | `3`        | Recent turns protected from pruning (1–10)                                           |
+| `turn_protection.turns`                  | `3`        | Recent turns protected from pruning (1-10)                                           |
 | `strategies.deduplication`               | `true`     | Remove duplicate tool calls                                                          |
 | `strategies.supersede_writes`            | `true`     | Prune write inputs when file later read                                              |
 | `strategies.supersede_writes.aggressive` | `false`    | Prune any write if ANY subsequent read exists                                        |
@@ -1112,7 +1150,7 @@ When enabled, OmO registers the hash-anchored `edit` tool and activates the `has
 
 ### LSP Install Decisions
 
-When an LSP tool hits a language server that is not installed, it asks once per server and persists the answer to `~/.codex/lsp-install-decisions.json` (override with `LSP_TOOLS_MCP_INSTALL_DECISIONS`). A `declined` entry collapses all future diagnostics for that server to a one-line note. To get prompted again — or to re-enable a server that an agent declined on your behalf — delete the file (or the server's entry in it).
+When an LSP tool hits a language server that is not installed, it asks once per server and persists the answer to `~/.codex/lsp-install-decisions.json` (override with `LSP_TOOLS_MCP_INSTALL_DECISIONS`). A `declined` entry collapses all future diagnostics for that server to a one-line note. To get prompted again - or to re-enable a server that an agent declined on your behalf - delete the file (or the server's entry in it).
 
 ### Codex Light Git Bash MCP
 

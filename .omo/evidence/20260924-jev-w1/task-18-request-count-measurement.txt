@@ -1,0 +1,28 @@
+Task 18 pre-spend request-count, latency, token, and billing evidence
+Recorded before the paid accuracy run on 2026-09-24.
+
+WHAT WAS TESTED
+Command: env -u JEV_W1_REAL_API -u TYPESAFE_API_KEY bun test packages/jev-core/src/intent-routing-accuracy.test.ts
+Surface: createRealDecisionBackend through the TypeSafe JavaScript SDK with one 4-question System One request and an injected counting fetch returning a local JSON response.
+Purpose: establish the HTTP request count without spending money, and prove that the outcome carries measured latency plus input and output token usage.
+
+WHAT WAS OBSERVED
+Command exit: 0
+Questions in the call: 4
+HTTP requests issued: 1
+Measured local-stub outcome latency: 1.463 ms
+Reported usage from the controlled local response: 321 input tokens and 7 output tokens
+The usage values above are controlled response data, not a claim about production token volume. The paid baseline records actual production token totals and latency separately.
+The SDK configuration used by the production backend sets maxRetries to 0, so the initial attempt has no SDK retry. The injected fetch ceiling blocks request 18 before it is issued.
+
+BILLING STATEMENT
+Resolution method: official TypeSafe AI pricing documentation.
+Source URL: https://docs.typesafe.ai/models
+Exact quote: "Price: Charged per input token. Output tokens are free. A Btok is a billion tokens and an Mtok is a million tokens."
+The same page lists Jev 1.13 at $0.042 per million input tokens. Billing is therefore budgeted from actual input-token usage, not inferred from HTTP request count.
+
+WHY IT IS ENOUGH
+The counting fetch observes the SDK's HTTP boundary and proves that one 4-question System One call produces one HTTP request under the configured no-retry policy. The returned outcome proves the exact latency and usage fields consumed by the paid-run artifact. The official pricing quote closes the billing premise without converting request count into billing units.
+
+WHAT WAS OMITTED
+Credentials, authorization headers, request bodies, environment dumps, and machine-local paths were not retained. The local credential value was synthetic and was not written here.

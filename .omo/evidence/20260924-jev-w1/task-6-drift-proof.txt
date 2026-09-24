@@ -1,0 +1,81 @@
+DRIFT RED: removed oracle from INTENT_ROUTING_SUBAGENT_VOCABULARY
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-normalization.test.ts:
+104 |         routeClass: "none",
+105 |       },
+106 |     },
+107 |   ])("#given $rule #when normalizing observed args #then the route class is preserved", ({ args, expected }) => {
+108 |     const { normalizeObservedDelegation } = requireNormalizationModule()
+109 |     expect(normalizeObservedDelegation(args)).toEqual(expected)
+                                                    ^
+error: expect(received).toEqual(expected)
+
+@@ -2,4 +2,4 @@
+    "normalizedCategory": "none",
+-   "normalizedSubagent": "oracle",
+-   "routeClass": "subagent",
++   "normalizedSubagent": "none",
++   "routeClass": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:109:47)
+(fail) intent-routing observed delegation normalization > #given requested subagent precedence #when normalizing observed args #then the route class is preserved [0.33ms]
+172 |     const { INTENT_ROUTING_SUBAGENT_VOCABULARY } = requireNormalizationModule()
+173 |     const documentedExclusions: Readonly<Record<string, string>> = {}
+174 |     const missing = BuiltinAgentNameSchema.options.filter(
+175 |       (agent) => !INTENT_ROUTING_SUBAGENT_VOCABULARY.includes(agent) && !(agent in documentedExclusions),
+176 |     )
+177 |     expect(missing, `missing built-in subagents: ${missing.join(", ")}`).toEqual([])
+                                                                               ^
+error: missing built-in subagents: oracle
+
+- []
++ [
++   "oracle",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:177:74)
+(fail) intent-routing subagent vocabulary > #given the live built-in enum #when comparing the vocabulary #then no member drifts without an exclusion [0.19ms]
+181 |     const { INTENT_ROUTING_SUBAGENT_VOCABULARY } = requireNormalizationModule()
+182 |     const liveNames = [...new Set([
+183 |       ...BuiltinAgentNameSchema.options,
+184 |       ...OverridableAgentNameSchema.options,
+185 |     ])]
+186 |     expect(INTENT_ROUTING_SUBAGENT_VOCABULARY).toEqual(liveNames)
+                                                     ^
+error: expect(received).toEqual(expected)
+
+@@ -4,3 +4,2 @@
+    "prometheus",
+-   "oracle",
+    "librarian",
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:186:48)
+(fail) intent-routing subagent vocabulary > #given both live agent enums #when comparing the vocabulary #then only admitted names are present [0.10ms]
+
+ 16 pass
+ 3 fail
+ 37 expect() calls
+Ran 19 tests across 1 file. [134.00ms]
+
+drift_red_exit_code=1
+
+DRIFT GREEN: restored oracle
+bun test v1.4.0 (34cbb9a40)
+
+ 19 pass
+ 0 fail
+ 38 expect() calls
+Ran 19 tests across 1 file. [169.00ms]
+
+drift_green_exit_code=0

@@ -1,4 +1,9 @@
 import { log } from "./shared"
+import type { OhMyOpenCodeConfig } from "./config"
+import {
+  createPluginJevIntentRouting,
+  type JevIntentRouting,
+} from "./features/jev"
 
 export type PluginDispose = () => Promise<void>
 
@@ -10,8 +15,11 @@ export function createPluginDispose(args: {
     disconnectAll: () => Promise<void>
   }
   disposeHooks: () => void
+  pluginConfig?: OhMyOpenCodeConfig
+  intentRouting?: JevIntentRouting
 }): PluginDispose {
   const { backgroundManager, skillMcpManager, disposeHooks } = args
+  const intentRouting = args.intentRouting ?? createPluginJevIntentRouting(args.pluginConfig)
   let disposePromise: Promise<void> | null = null
 
   return async (): Promise<void> => {
@@ -24,17 +32,26 @@ export function createPluginDispose(args: {
       try {
         await backgroundManager.shutdown()
       } catch (error) {
-        log("[plugin-dispose] backgroundManager.shutdown() error:", error)
+        const detail = error instanceof Error ? error : String(error)
+        log("[plugin-dispose] backgroundManager.shutdown() error:", detail)
       }
       try {
         await skillMcpManager.disconnectAll()
       } catch (error) {
-        log("[plugin-dispose] skillMcpManager.disconnectAll() error:", error)
+        const detail = error instanceof Error ? error : String(error)
+        log("[plugin-dispose] skillMcpManager.disconnectAll() error:", detail)
       }
       try {
         disposeHooks()
       } catch (error) {
-        log("[plugin-dispose] disposeHooks() error:", error)
+        const detail = error instanceof Error ? error : String(error)
+        log("[plugin-dispose] disposeHooks() error:", detail)
+      }
+      try {
+        await intentRouting.dispose()
+      } catch (error) {
+        const detail = error instanceof Error ? error : String(error)
+        log("[plugin-dispose] intentRouting.dispose() error:", detail)
       }
     })()
 

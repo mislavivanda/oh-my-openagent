@@ -1,0 +1,24 @@
+== RUN 1 green before tamper ==
+
+ 7 pass
+ 0 fail
+ 45 expect() calls
+Ran 7 tests across 1 file. [126.00ms]
+
+== tampered line (fixture subagent-oracle-1) ==
+118:    label: { intent: "review", category: NONE, subagent: "nonexistent-agent", ambiguous: false },
+
+== RUN 2 tampered ==
+error: fixture subagent-oracle-1 labels subagent "nonexistent-agent" which the question set cannot produce
+Expected: true
+Received: false
+(fail) intent-routing fixtures > #given each fixture #when its subagent label is checked #then it is inside the subagent option set [0.23ms]
+ 6 pass
+ 1 fail
+
+== RUN 3 reverted ==
+
+ 7 pass
+ 0 fail
+ 45 expect() calls
+Ran 7 tests across 1 file. [138.00ms]

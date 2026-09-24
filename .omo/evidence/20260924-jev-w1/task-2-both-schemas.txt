@@ -1,0 +1,86 @@
+TWO-SCHEMA REGENERATION PROOF
+WHEN: 2026-09-24T15:38:31Z
+WHAT WAS TESTED: that BOTH assets/oh-my-opencode.schema.json and assets/omo.schema.json carry the new
+jev.wires.intent_routing block, and which build script is responsible for each file.
+
+=== STEP 0: baseline, both assets untouched vs HEAD ===
+$ git diff --exit-code assets/oh-my-opencode.schema.json assets/omo.schema.json
+exit=0  (0 means both assets match HEAD before any regen)
+
+=== STEP 1: run ONLY bun run build:schema ===
+$ bun run build:schema
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+exit=0
+
+$ git diff --exit-code assets/omo.schema.json
+exit=1  (non-zero means assets/omo.schema.json changed)
+$ git diff --exit-code assets/oh-my-opencode.schema.json
+exit=1  (non-zero means assets/oh-my-opencode.schema.json changed)
+$ shasum -a 256 assets/omo.schema.json
+bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1  assets/omo.schema.json
+
+=== STEP 2: run bun run build:omo-schema ===
+$ bun run build:omo-schema
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+exit=0
+
+$ git diff --exit-code assets/omo.schema.json
+exit=1
+$ shasum -a 256 assets/omo.schema.json
+bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1  assets/omo.schema.json
+
+=== STEP 3: WHAT WAS OBSERVED, and the one deviation from the plan's wording ===
+The plan expected 'git diff --exit-code assets/omo.schema.json' to return to ZERO after build:omo-schema.
+It stays at 1, and that expectation cannot hold in this repo: script/build-schema.ts:12 and
+script/build-omo-schema.ts:9 BOTH emit createOmoJsonSchema() from script/build-omo-schema-document.ts,
+so the second build rewrites assets/omo.schema.json with byte-identical content (sha256 above matches
+before and after). git diff compares against HEAD, so it reports 1 for as long as the regeneration is
+uncommitted, which is the intended end state of this todo.
+
+=== STEP 4: the direction in which ONE BUILD REALLY IS INSUFFICIENT ===
+Running only build:omo-schema leaves the legacy asset stale. Demonstrated by resetting both assets to HEAD:
+$ git checkout -- assets/oh-my-opencode.schema.json assets/omo.schema.json
+exit=0
+$ bun run build:omo-schema
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+exit=0
+$ git diff --exit-code assets/omo.schema.json
+exit=1  (non-zero: the unified omo asset picked up the new wire)
+$ git diff --exit-code assets/oh-my-opencode.schema.json
+exit=0  (ZERO: the legacy asset is STALE, build:omo-schema never writes it)
+$ grep -c turn_seal_timeout_ms assets/oh-my-opencode.schema.json
+0
+exit=1  (0 occurrences: stale legacy asset would ship without the new wire)
+
+=== STEP 5: run build:schema too, so BOTH assets are regenerated ===
+$ bun run build:schema
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+exit=0
+$ git diff --exit-code assets/oh-my-opencode.schema.json assets/omo.schema.json
+exit=1  (non-zero: both assets now carry the change, pending commit)
+$ grep -c turn_seal_timeout_ms assets/oh-my-opencode.schema.json assets/omo.schema.json
+assets/oh-my-opencode.schema.json:4
+assets/omo.schema.json:8
+exit=0
+$ shasum -a 256 assets/oh-my-opencode.schema.json assets/omo.schema.json
+89e8a2116c33f8d480b83c9dc1d7af5ede62ee5c00a4f60974a90f3a6517caca  assets/oh-my-opencode.schema.json
+bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1  assets/omo.schema.json
+
+=== STEP 6: idempotency, re-running BOTH builds changes nothing further ===
+$ bun run build:schema && bun run build:omo-schema
+exit=0
+$ shasum -a 256 assets/oh-my-opencode.schema.json assets/omo.schema.json
+89e8a2116c33f8d480b83c9dc1d7af5ede62ee5c00a4f60974a90f3a6517caca  assets/oh-my-opencode.schema.json
+bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1  assets/omo.schema.json
+
+WHY IT IS ENOUGH: both generated assets are proven to contain the new wire, the legacy asset is proven
+to be reachable only through build:schema, and a second run of both builds is proven byte-stable, so CI
+cannot produce an auto-commit schema diff after this change lands.

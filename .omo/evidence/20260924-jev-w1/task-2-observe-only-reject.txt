@@ -1,0 +1,19 @@
+COMMAND: bun -e 'import {JevConfigSchema} from "./packages/omo-opencode/src/config/schema/jev"; try { JevConfigSchema.parse({wires:{intent_routing:{observe_only:false}}}); console.log("NO THROW - FAIL") } catch(e) { console.log("threw:", String(e).slice(0,200)) }'
+PURPOSE: prove observe_only=false is rejected at parse time with a not-yet-implemented message
+WHEN: 2026-09-24T15:37:23Z
+---
+threw: [
+  {
+    "code": "custom",
+    "path": [
+      "wires",
+      "intent_routing",
+      "observe_only"
+    ],
+    "message": "jev.wires.intent_routing.observe_only must stay true: acting on an intent-r
+---
+exit=0
+
+FULL MESSAGE (same parse, untruncated; the plan one-liner slices at 200 chars)
+wires.intent_routing.observe_only => jev.wires.intent_routing.observe_only must stay true: acting on an intent-routing prediction is not yet implemented and lands with the apply phase
+exit=0

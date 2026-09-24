@@ -1,0 +1,129 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing.test.ts:
+106 |   return typeof value === "function"
+107 | }
+108 | 
+109 | function decisionFunction(): ExpectedDecisionFunction {
+110 |   const candidate: unknown = Reflect.get(intentRoutingModule, "decideIntentRouting")
+111 |   expect(typeof candidate).toBe("function")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "function"
+Received: "undefined"
+
+      at decisionFunction (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:111:28)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:328:28)
+(fail) decideIntentRouting > #given valid answers above the confidence threshold > #when deciding all four questions #then choice answers are labelled would_apply and ambiguous has no confidence or label [0.62ms]
+106 |   return typeof value === "function"
+107 | }
+108 | 
+109 | function decisionFunction(): ExpectedDecisionFunction {
+110 |   const candidate: unknown = Reflect.get(intentRoutingModule, "decideIntentRouting")
+111 |   expect(typeof candidate).toBe("function")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "function"
+Received: "undefined"
+
+      at decisionFunction (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:111:28)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:357:28)
+(fail) decideIntentRouting > #given one answer below the confidence threshold > #when deciding #then only that question is labelled would_fall_through without gating the result [0.16ms]
+106 |   return typeof value === "function"
+107 | }
+108 | 
+109 | function decisionFunction(): ExpectedDecisionFunction {
+110 |   const candidate: unknown = Reflect.get(intentRoutingModule, "decideIntentRouting")
+111 |   expect(typeof candidate).toBe("function")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "function"
+Received: "undefined"
+
+      at decisionFunction (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:111:28)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:385:28)
+(fail) decideIntentRouting > #given a mock answer whose choice is outside the declared option set > #when deciding #then the raw choice is retained, marked invalid, and counted [0.26ms]
+106 |   return typeof value === "function"
+107 | }
+108 | 
+109 | function decisionFunction(): ExpectedDecisionFunction {
+110 |   const candidate: unknown = Reflect.get(intentRoutingModule, "decideIntentRouting")
+111 |   expect(typeof candidate).toBe("function")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "function"
+Received: "undefined"
+
+      at decisionFunction (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:111:28)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:409:28)
+(fail) decideIntentRouting > #given a decided outcome missing one question key > #when deciding #then the missing raw fields remain explicit undefined values and count as invalid [0.30ms]
+106 |   return typeof value === "function"
+107 | }
+108 | 
+109 | function decisionFunction(): ExpectedDecisionFunction {
+110 |   const candidate: unknown = Reflect.get(intentRoutingModule, "decideIntentRouting")
+111 |   expect(typeof candidate).toBe("function")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "function"
+Received: "undefined"
+
+      at decisionFunction (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:111:28)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:438:28)
+(fail) decideIntentRouting > #given an unavailable backend outcome > #when deciding #then prediction fails and propagates the unavailable reason [0.23ms]
+468 |           confidenceThreshold: 0.8,
+469 |           maxPromptChars: 8000,
+470 |         })
+471 |       }
+472 | 
+473 |       expect(invoke).not.toThrow()
+                               ^
+error: expect(received).not.toThrow()
+
+Error name: "Error"
+Error message: "expect(received).toBe(expected)\n\nExpected: \"function\"\nReceived: \"undefined\"\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:473:26)
+(fail) decideIntentRouting > #given a backend whose decide method rejects > #when deciding with a throwing backend #then prediction fails and no exception escapes [0.19ms]
+106 |   return typeof value === "function"
+107 | }
+108 | 
+109 | function decisionFunction(): ExpectedDecisionFunction {
+110 |   const candidate: unknown = Reflect.get(intentRoutingModule, "decideIntentRouting")
+111 |   expect(typeof candidate).toBe("function")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "function"
+Received: "undefined"
+
+      at decisionFunction (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:111:28)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:490:28)
+(fail) decideIntentRouting > #given a prompt longer than maxPromptChars > #when deciding #then the structured state carries a bounded prompt and truncatedInput true [0.21ms]
+106 |   return typeof value === "function"
+107 | }
+108 | 
+109 | function decisionFunction(): ExpectedDecisionFunction {
+110 |   const candidate: unknown = Reflect.get(intentRoutingModule, "decideIntentRouting")
+111 |   expect(typeof candidate).toBe("function")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "function"
+Received: "undefined"
+
+      at decisionFunction (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:111:28)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:519:28)
+(fail) decideIntentRouting > #given a disabled backend > #when deciding #then it short-circuits without calling decide [0.12ms]
+
+ 13 pass
+ 8 fail
+ 131 expect() calls
+Ran 21 tests across 1 file. [128.00ms]
+
+exit=1

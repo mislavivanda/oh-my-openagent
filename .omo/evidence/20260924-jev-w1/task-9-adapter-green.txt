@@ -1,0 +1,11 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+intent-routing synchronous p99: 0.009ms
+
+ 10 pass
+ 0 fail
+ 25 expect() calls
+Ran 10 tests across 1 file. [387.00ms]
+
+EXIT_CODE=0

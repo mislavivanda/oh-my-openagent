@@ -1,0 +1,102 @@
+COMMAND: bun test packages/omo-opencode/src/config/schema/jev.test.ts
+PHASE: RED (tests written before the schema change)
+WHEN: 2026-09-24T15:36:09Z
+---
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/config/schema/jev.test.ts:
+19 | 
+20 |     // when
+21 |     const result = JevConfigSchema.parse(input)
+22 | 
+23 |     // then
+24 |     expect(result).toEqual({
+                        ^
+error: expect(received).toEqual(expected)
+
+@@ -6,11 +6,2 @@
+    "wires": {
+-     "intent_routing": {
+-       "confidence_threshold": 0.8,
+-       "enabled": false,
+-       "max_inflight": 8,
+-       "max_prompt_chars": 8000,
+-       "observe_only": true,
+-       "timeout_ms": 2500,
+-       "turn_seal_timeout_ms": 120000,
+-     },
+      "model_error_triage": {
+
+- Expected  - 9
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/config/schema/jev.test.ts:24:20)
+(fail) JevConfigSchema > #given an empty object #when parsed #then every field falls back to the default-off shape [1.01ms]
+77 | 
+78 |     // when
+79 |     const result = JevConfigSchema.parse(input)
+80 | 
+81 |     // then
+82 |     expect(result.wires.intent_routing.enabled).toBe(false)
+                             ^
+TypeError: undefined is not an object (evaluating 'result.wires.intent_routing.enabled')
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/config/schema/jev.test.ts:82:25)
+(fail) JevIntentRoutingWireConfigSchema > #given an empty object #when parsed #then the intent-routing wire is off and observe-only [0.16ms]
+89 | 
+90 |     // when
+91 |     const parse = () => JevConfigSchema.parse(input)
+92 | 
+93 |     // then
+94 |     expect(parse).toThrow(/not yet implemented/i)
+                       ^
+error: expect(received).toThrow(expected)
+
+Expected pattern: /not yet implemented/i
+
+Received function did not throw
+Received value: {
+  enabled: false,
+  backend: "real",
+  model: "jev-latest",
+  timeout_ms: 1500,
+  wires: {
+    model_error_triage: {
+      enabled: false,
+      confidence_threshold: 0.8,
+    },
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/config/schema/jev.test.ts:94:19)
+(fail) JevIntentRoutingWireConfigSchema > #given observe_only set to false #when parsed #then it throws naming the wire not yet implemented [0.17ms]
+111 | 
+112 |     // when
+113 |     const wire = JevConfigSchema.parse(input).wires.intent_routing
+114 | 
+115 |     // then
+116 |     expect(wire.turn_seal_timeout_ms).toBe(120000)
+                 ^
+TypeError: undefined is not an object (evaluating 'wire.turn_seal_timeout_ms')
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/config/schema/jev.test.ts:116:12)
+(fail) JevIntentRoutingWireConfigSchema > #given an empty object #when parsed #then the seal timeout defaults to 120000 and outlasts the prediction timeout [0.13ms]
+126 |     // when
+127 |     const equalResult = JevConfigSchema.safeParse(equal)
+128 |     const invertedResult = JevConfigSchema.safeParse(inverted)
+129 | 
+130 |     // then
+131 |     expect(equalResult.success).toBe(false)
+                                      ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/config/schema/jev.test.ts:131:33)
+(fail) JevIntentRoutingWireConfigSchema > #given a seal timeout at or below the prediction timeout #when safe-parsed #then the ordering refine rejects it [0.21ms]
+
+ 7 pass
+ 5 fail
+ 13 expect() calls
+Ran 12 tests across 1 file. [137.00ms]
+---
+exit=1

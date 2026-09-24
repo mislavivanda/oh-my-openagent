@@ -1,0 +1,66 @@
+R4 SIZE SPLIT AND TEST CONSERVATION
+
+MEASUREMENT METHOD
+Physical line counts came from `wc -l`. Test and assertion counts came from focused `bun test` runs before and after each split. Modifier counts came from a source scan for `.skip`, `.skipIf`, `.only`, and `.todo` in the affected test files.
+
+CORE QUESTION AND DECISION TEST SPLIT
+Before:
+- packages/jev-core/src/intent-routing.test.ts: 537 lines
+- 21 tests across 1 file
+- 21 pass, 0 fail
+- 189 expect() calls
+- skip/only/todo modifiers: 0/0/0
+
+After:
+- packages/jev-core/src/intent-routing.test.ts: 159 lines, question-builder and version scenarios
+- packages/jev-core/src/intent-routing-test-vocabulary.ts: 57 lines, shared question vocabulary fixture
+- packages/jev-core/src/intent-routing-decision-test-support.ts: 128 lines, decision test backend and assertion support
+- packages/jev-core/src/intent-routing-decision-answers.test.ts: 113 lines, filled-answer and invalid-answer scenarios
+- packages/jev-core/src/intent-routing-decision-failures.test.ts: 110 lines, unavailable, rejection, truncation, and disabled scenarios
+- 21 tests across 3 test files
+- 21 pass, 0 fail
+- 189 expect() calls
+- skip/only/todo modifiers: 0/0/0
+
+Conservation:
+- tests: 21 before, 21 after, delta 0
+- expect() calls: 189 before, 189 after, delta 0
+- `.skip`, `.only`, or `.todo` introduced: 0
+
+ACCURACY HARNESS SPLIT
+Before:
+- packages/jev-core/src/intent-routing-accuracy.test.ts: 517 lines
+- 8 tests across 1 file
+- 7 pass, 1 conditional skip, 0 fail
+- 35 expect() calls
+- skip/only/todo modifiers: 2 conditional `test.skipIf`, 0, 0
+- invalid plan-based SIZE_OK waiver present
+
+After:
+- packages/jev-core/src/intent-routing-accuracy.test.ts: 96 lines, mock, dry-run, ceiling, and partial-artifact scenarios
+- packages/jev-core/src/intent-routing-accuracy-real.test.ts: 125 lines, local and explicitly gated real-backend scenarios
+- packages/jev-core/src/intent-routing-accuracy-contract.ts: 155 lines, artifact and measurement contract
+- packages/jev-core/src/intent-routing-accuracy-fixtures.ts: 61 lines, vocabulary and request assembly
+- packages/jev-core/src/intent-routing-accuracy-harness.ts: 161 lines, fixture execution and artifact construction
+- 8 tests across 2 test files
+- 7 pass, 1 conditional skip, 0 fail
+- 35 expect() calls
+- skip/only/todo modifiers: the same 2 conditional `test.skipIf`, 0, 0
+- SIZE_OK waiver removed
+
+Conservation:
+- tests: 8 before, 8 after, delta 0
+- expect() calls: 35 before, 35 after, delta 0
+- conditional skip sites: 2 before, 2 after, delta 0
+- `.skip`, `.only`, or `.todo` introduced: 0
+
+REPORT TEST WAIVER
+Before:
+- script/jev-w1-report.test.ts: 156 lines with an unnecessary SIZE_OK waiver
+
+After:
+- script/jev-w1-report.test.ts: 155 lines with no waiver
+- focused result: 11 pass, 0 fail, 149 expect() calls
+
+RESULT
+Every resulting split file is below 200 physical lines. No test or assertion was lost, no test was weakened with a new modifier, and neither oversized test retains a waiver.

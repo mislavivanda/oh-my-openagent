@@ -1,0 +1,109 @@
+# task-17 test:fast scope proof
+# WHAT WAS TESTED: test:fast is a HARDCODED file list in package.json, so a new test outside its
+#   paths never runs in the fast gate. Seven new W1 test files sit outside the directories the list
+#   already covers. They were APPENDED; no existing entry was dropped or reordered.
+# WHAT WAS OBSERVED: the appended paths run, the grep count for "intent-routing" is non-zero, and
+#   the gate stays green with a larger file count than the todo-14 reading of 41 files.
+# WHY IT IS ENOUGH: the per-file roster below shows each new path executing inside the gate run
+#   itself, not in a separate invocation, which is the property the hardcoded list can silently break.
+# WHAT WAS OMITTED: nothing sensitive is produced by this gate.
+
+=== test:fast BEFORE (verbatim) ===
+bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+
+=== test:fast AFTER (verbatim) ===
+bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts packages/omo-opencode/src/plugin/intent-routing-inert.child.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts script/jev-w1-report.test.ts
+
+=== APPEND-ONLY CHECK ===
+$ node -e <after starts with before + " ">
+append_only=true
+appended_paths:
+  packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts
+  packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts
+  packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+  packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts
+  packages/omo-opencode/src/plugin/intent-routing-inert.child.test.ts
+  packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+  script/jev-w1-report.test.ts
+
+=== HAPPY PATH: grep -c for the new file names ===
+$ bun run test:fast 2>&1 | grep -c "intent-routing"
+9
+
+=== the seven appended paths, as they appear in the gate output ===
+chat-message.intent-routing-budget.test.ts           occurrences_in_output=2
+chat-message.intent-routing-hanging.test.ts          occurrences_in_output=2
+chat-message.intent-routing-inert.test.ts            occurrences_in_output=1
+intent-routing-handler-wiring.test.ts                occurrences_in_output=2
+intent-routing-inert.child.test.ts                   occurrences_in_output=1
+tool-execute-before.intent-routing-inert.test.ts     occurrences_in_output=1
+jev-w1-report.test.ts                                occurrences_in_output=1
+
+Note: intent-routing-inert.child.test.ts is a child-process DRIVER guarded by TASK15_CHILD_MODE.
+It contributes 0 tests when that variable is unset, so it never appears in the per-file roster.
+It is listed in the gate for completeness and exits 0; the hanging suite spawns it explicitly.
+
+=== FULL PASS/FAIL SUMMARY ===
+$ bun run test:fast
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts packages/omo-opencode/src/plugin/intent-routing-inert.child.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts script/jev-w1-report.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+mock-accuracy-artifact={"status":"complete","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"decisionCallCount":17,"networkCallCount":0,"errorName":null,"confusionMatrix":{"intent":{"explain":{"explain":3},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":6},"investigate":{"investigate":3},"review":{"review":1},"continue":{"continue":2}},"category":{"none":{"none":10},"writing":{"writing":1},"quick":{"quick":2},"ultrabrain":{"ultrabrain":1},"unspecified-low":{"unspecified-low":1},"unspecified-high":{"unspecified-high":1},"visual-engineering":{"visual-engineering":1}},"subagent":{"none":{"none":13},"explore":{"explore":3},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":11},"true":{"true":6}}}}
+zero-network-calls=0
+dry-run built=17 decision-calls=0 network-calls=0
+ceiling-abort-proof ceiling=17 calls=17 error=IntentRoutingCallCeilingError
+partial-accuracy-artifact={"status":"partial","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1"],"decisionCallCount":8,"networkCallCount":0,"errorName":"IntentRoutingFixtureError","confusionMatrix":{"intent":{"explain":{"explain":2},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":1},"investigate":{"investigate":1},"review":{"review":1}},"category":{"none":{"none":5},"writing":{"writing":1},"quick":{"quick":1}},"subagent":{"none":{"none":5},"explore":{"explore":1},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":7}}}}
+
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:
+chat.message non-awaited proof: 0.091ms
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts:
+TASK15_NO_AWAIT dispatcherHandlerMs=0.254 dispatcherInFlight=1
+TASK15_NO_AWAIT fetchHandlerMs=0.113 fetchInFlight=1
+TASK15_P99 samples=200 p99Ms=0.117613 boundMs=1
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_STRESS addedWallMs=1.644 enabledWallMs=4.558 disabledWallMs=2.913 maxInFlight=4 dispatchesDropped=46 fetchStarts=4 heapGrowthBytes=914366 observations=50 childExitCode=0 childElapsedMs=130.053 home=/tmp/task-15-stress-home-8jqewL
+TASK15_STRESS_CLEANUP removed=/tmp/task-15-stress-home-8jqewL
+TASK15_UNREF childExitCode=0 childElapsedMs=105.165 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-hRIRTg
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-hRIRTg
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+intent-routing synchronous p99: 0.109ms
+
+ 469 pass
+ 1 skip
+ 0 fail
+ 1708 expect() calls
+Ran 470 tests across 48 files. [6.16s]
+
+TESTFAST_EXIT=0
+
+=== VERDICT ===
+grep -c "intent-routing" = 9, non-zero as required.
+469 pass, 1 skip, 0 fail across 48 files, exit 0. The todo-14 reading was 446 pass across 41 files;
+the delta is the seven appended paths, six of which carry tests.
+
+=== GATE: bun run typecheck ===
+$ bun run typecheck
+TYPECHECK_EXIT=0 (root tsgo + typecheck:script + 28 workspace projects, no diagnostics)
+
+=== GATE: both schema assets regenerated, zero diff ===
+$ bun run build:schema          -> exit 0, wrote assets/omo.schema.json, assets/oh-my-opencode.schema.json, dist/oh-my-opencode.schema.json
+$ bun run build:omo-schema      -> exit 0, wrote assets/omo.schema.json only
+$ git diff --exit-code assets/oh-my-opencode.schema.json assets/omo.schema.json -> exit 0
+sha256 before and after both builds, identical:
+89e8a2116c33f8d480b83c9dc1d7af5ede62ee5c00a4f60974a90f3a6517caca  assets/oh-my-opencode.schema.json
+bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1  assets/omo.schema.json
+Neither asset changed. Todo 2 already committed the regenerated pair, and build:schema alone
+refreshes BOTH assets, so the reverse staleness direction cannot occur here.
+
+=== GATE: no landed suite regressed ===
+$ bun test --timeout 20000
+current : 12916 pass, 4 skip, 22 fail across 1695 files, exit 1
+baseline: 12762 pass, 3 skip, 22 fail across 1678 files, exit 1 (task-1-baseline-totals.txt)
+The pass count rose with the W1 suites landed in todos 2-16. The FAILING SET is what matters:
+$ <normalized (fail) lines, sorted, ANSI and timings stripped> | diff - task-1-baseline-failures.txt
+<no output>
+FAILSET_DIFF_EXIT=0, 22 of 22 failures byte-identical to the frozen todo-1 baseline. Zero new failures.

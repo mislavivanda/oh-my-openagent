@@ -1,0 +1,67 @@
+=== todo 4 QA: typecheck, diagnostics, harness neutrality ===
+cwd: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+date: 2026-09-24T15:56:31Z
+
+LSP NOTE: lsp_diagnostics was attempted on both changed files and the LSP daemon is UNREACHABLE in
+this worktree. The language server refused to initialize with: 'The TypeScript of the workspace
+(TypeScript 7.0.2 at node_modules/typescript/lib) provides no tsserver.js.' That is the repo's
+@typescript/native-preview toolchain, which ships no tsserver. Per the task fallback, scoped
+tsgo --noEmit -p packages/jev-core/tsconfig.json is substituted and is authoritative here.
+
+CONCURRENCY NOTE: a concurrent worker owns todo 6 in this SAME worktree and is actively editing
+packages/jev-core/src/intent-routing-normalization{.ts,.test.ts} while this ran. That in-progress
+foreign file is the SOLE cause of the shared-gate errors recorded below. It is not mine, it is not
+staged by this commit, and the path-limited commit cannot include it.
+
+--- 1. shared gate: bun run typecheck ---
+exit=2
+packages/jev-core/src/intent-routing-normalization.test.ts(186,56): error TS2769: No overload matches this call.
+attribution: every error line above, if any, names intent-routing-normalization, owned by todo 6.
+
+--- 2. scoped gate: tsgo -p packages/jev-core/tsconfig.json ---
+packages/jev-core/src/intent-routing-normalization.test.ts(186,56): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '("OpenCode-Builder" | "atlas" | "build" | "explore" | "hephaestus" | "librarian" | "metis" | "momus" | "multimodal-looker" | "oracle" | "plan" | "prometheus" | "sisyphus" | "sisyphus-junior")[]' is not assignable to parameter of type 'readonly ["sisyphus", "hephaestus", "prometheus", "oracle", "librarian", "explore", "multimodal-looker", "metis", "momus", "atlas", "sisyphus-junior", "build", "plan", "OpenCode-Builder"]'.
+      Target requires 14 element(s) but source may have fewer.
+exit=2
+
+--- 3. scoped gate with ONLY the foreign in-progress file excluded ---
+tsconfig used:
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["src/intent-routing-normalization.test.ts"]
+}
+exit=0
+(empty output above means zero diagnostics)
+This is the diagnostics substitute for packages/jev-core/src/intent-routing.ts and
+packages/jev-core/src/intent-routing.test.ts. The temp tsconfig is deleted immediately after this
+run and is never staged.
+
+--- 4. harness neutrality guard ---
+
+ 3 pass
+ 0 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [158.00ms]
+exit=0
+
+--- 5. import surface of the new module ---
+1:import type { ChoiceQuestion, NoulQuestion, Questions } from "./types"
+(no forbidden OpenCode import in either file)
+
+--- 6. my own test file ---
+
+ 13 pass
+ 0 fail
+ 122 expect() calls
+Ran 13 tests across 1 file. [123.00ms]
+exit=0
+
+--- 7. jev-core package suite, failures grouped by owning test file ---
+
+ 129 pass
+ 0 fail
+ 495 expect() calls
+Ran 129 tests across 10 files. [218.00ms]
+exit=0
+failing suites:

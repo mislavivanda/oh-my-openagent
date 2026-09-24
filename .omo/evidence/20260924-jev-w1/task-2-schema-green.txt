@@ -1,0 +1,26 @@
+COMMAND: bun test packages/omo-opencode/src/config/schema/jev.test.ts
+PHASE: GREEN (after adding JevIntentRoutingWireConfigSchema)
+WHEN: 2026-09-24T15:41:31Z
+---
+bun test v1.4.0 (34cbb9a40)
+
+ 12 pass
+ 0 fail
+ 19 expect() calls
+Ran 12 tests across 1 file. [142.00ms]
+---
+exit=0
+
+PER-TEST ROSTER (same file re-run with --reporter=junit; junit hostname attribute omitted)
+"#given an empty object #when parsed #then every field falls back to the default-off shape"
+"#given an unknown backend #when safe-parsed #then it is rejected"
+"#given an out-of-range timeout #when safe-parsed #then it is rejected at both bounds"
+"#given a confidence threshold above 1 #when safe-parsed #then the wire is rejected"
+"#given an empty object #when parsed #then the intent-routing wire is off and observe-only"
+"#given observe_only set to false #when parsed #then it throws naming the wire not yet implemented"
+"#given the shared wire schema #when its shape is read #then W4 keys are untouched"
+"#given an empty object #when parsed #then the seal timeout defaults to 120000 and outlasts the prediction timeout"
+"#given a seal timeout at or below the prediction timeout #when safe-parsed #then the ordering refine rejects it"
+"#given a valid seal timeout above the prediction timeout #when safe-parsed #then it is accepted"
+"#given a config without jev #when parsed #then jev stays undefined"
+"#given jev enabled with no wire settings #when parsed #then the wire stays off"

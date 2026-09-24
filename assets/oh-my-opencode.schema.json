@@ -7850,6 +7850,15 @@
             "model_error_triage": {
               "enabled": false,
               "confidence_threshold": 0.8
+            },
+            "intent_routing": {
+              "enabled": false,
+              "observe_only": true,
+              "confidence_threshold": 0.8,
+              "timeout_ms": 2500,
+              "turn_seal_timeout_ms": 120000,
+              "max_prompt_chars": 8000,
+              "max_inflight": 8
             }
           },
           "type": "object",
@@ -7877,10 +7886,73 @@
                 "confidence_threshold"
               ],
               "additionalProperties": false
+            },
+            "intent_routing": {
+              "default": {
+                "enabled": false,
+                "observe_only": true,
+                "confidence_threshold": 0.8,
+                "timeout_ms": 2500,
+                "turn_seal_timeout_ms": 120000,
+                "max_prompt_chars": 8000,
+                "max_inflight": 8
+              },
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "observe_only": {
+                  "default": true,
+                  "type": "boolean"
+                },
+                "confidence_threshold": {
+                  "default": 0.8,
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "timeout_ms": {
+                  "default": 2500,
+                  "type": "integer",
+                  "minimum": 100,
+                  "maximum": 30000
+                },
+                "turn_seal_timeout_ms": {
+                  "default": 120000,
+                  "type": "integer",
+                  "minimum": 1000,
+                  "maximum": 600000
+                },
+                "max_prompt_chars": {
+                  "default": 8000,
+                  "type": "integer",
+                  "minimum": 256,
+                  "maximum": 9007199254740991
+                },
+                "max_inflight": {
+                  "default": 8,
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 64
+                }
+              },
+              "required": [
+                "enabled",
+                "observe_only",
+                "confidence_threshold",
+                "timeout_ms",
+                "turn_seal_timeout_ms",
+                "max_prompt_chars",
+                "max_inflight"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
-            "model_error_triage"
+            "model_error_triage",
+            "intent_routing"
           ],
           "additionalProperties": false
         }

@@ -1,0 +1,45 @@
+R3 SYNTHETIC FIGURE RESTATEMENT
+
+No retained evidence artifact was rewritten. This note supersedes only the affected synthetic coverage figures.
+
+ARTIFACT: .omo/evidence/20260924-jev-w1/task-16-report-output.txt
+Old headline category coverage:
+  category_coverage 17/23, rate 0.739130
+New headline category coverage:
+  category_coverage 18/23, rate 0.782609
+Old headline cardinality-weighted category coverage:
+  category_cardinality_weighted_coverage 20/26, rate 0.769231
+New headline cardinality-weighted category coverage:
+  category_cardinality_weighted_coverage 21/26, rate 0.807692
+Old affected cross-tab at fan_out=one sealed_by=next_turn:
+  category_coverage 1/2, rate 0.500000
+  category_cardinality_weighted_coverage 1/2, rate 0.500000
+New affected cross-tab at fan_out=one sealed_by=next_turn:
+  category_coverage 2/2, rate 1.000000
+  category_cardinality_weighted_coverage 2/2, rate 1.000000
+
+ARTIFACT: .omo/evidence/20260924-jev-w1/task-16-report-red.txt
+The Received report embedded at line 135 carries the same old headline and cross-tab figures listed above. They are historical RED output. The corrected figures are the new values listed above.
+
+ARTIFACT: .omo/evidence/20260924-jev-w1/F5-integrity.txt
+Old renderer figures recorded by the verifier:
+  category_coverage 17/23
+  category_cardinality_weighted_coverage 20/26
+New renderer figures:
+  category_coverage 18/23
+  category_cardinality_weighted_coverage 21/26
+F5 already computed 18/23 and 21/26 independently and identified the old values as the rejection defect. R3 makes the renderer agree with that independent computation.
+
+ARTIFACT: .omo/evidence/20260924-jev-w1/R3-coverage-red.txt
+The old 17/23 and 20/26 values are intentionally retained as the failing-first reproduction. The corrected 18/23 and 21/26 output is recorded in R3-coverage-green.txt.
+
+WHY THE NEW FIGURES ARE CORRECT
+The synthetic record at script/jev-w1-report.fixtures.ts:149 has observed category quick and predicted category quick. Its separate subagent answer oracle makes the derived route incoherent, but does not make the category Choice answer wrong. Per-question coverage is set membership for that question, so this record contributes one category hit and one cardinality-weighted category hit. Exact route agreement and coherence_rate continue to report the incoherence separately and are unchanged.
+
+UNCHANGED RELATED FIGURES
+exact_route_agreement remains 12/19.
+subagent_coverage remains 19/23.
+subagent_cardinality_weighted_coverage remains 20/24.
+none_recall remains 4/5.
+none_precision remains 4/7.
+coherence_rate remains 22/23.

@@ -16,6 +16,7 @@ import { createToolExecuteBeforeHandler } from "./plugin/tool-execute-before"
 
 import type { CreatedHooks } from "./create-hooks"
 import type { Managers } from "./create-managers"
+import type { JevIntentRouting } from "./features/jev"
 
 export function createPluginInterface(args: {
   ctx: PluginContext
@@ -29,6 +30,7 @@ export function createPluginInterface(args: {
   managers: Managers
   hooks: CreatedHooks
   tools: ToolsRecord
+  intentRouting?: JevIntentRouting
 }): PluginInterface {
   const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks, tools } =
     args
@@ -70,6 +72,7 @@ export function createPluginInterface(args: {
       pluginConfig,
       firstMessageVariantGate,
       hooks,
+      intentRouting: args.intentRouting,
     }),
 
     "experimental.chat.messages.transform": createMessagesTransformHandler({
@@ -89,6 +92,7 @@ export function createPluginInterface(args: {
       firstMessageVariantGate,
       managers,
       hooks,
+      intentRouting: args.intentRouting,
     }),
 
     "tool.definition": createToolDefinitionHandler({
@@ -98,7 +102,9 @@ export function createPluginInterface(args: {
     "tool.execute.before": createToolExecuteBeforeHandler({
       ctx,
       hooks,
+      pluginConfig,
       backgroundManager: managers.backgroundManager,
+      intentRouting: args.intentRouting,
     }),
 
     "tool.execute.after": createToolExecuteAfterHandler({

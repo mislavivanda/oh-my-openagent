@@ -1,0 +1,986 @@
+F3 INDEPENDENT RE-DRIVE
+VERDICT: REJECT
+
+Reason for rejection
+
+The enabled run failed two mandatory isolation assertions. The read-only real OpenCode session count changed from 425 to 426, and the recursive real ~/.omo manifest diff contained 14 lines. The task states that either failure requires REJECT. The functional sink, disabled control, report identity, driver-integrity review, and scoped cleanup checks passed.
+
+Scope
+
+Audited worktree: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+Audited branch substitution: jev/w1-fffe
+Plan read from main checkout: /home/opencode/projects/oh-my-openagent/.omo/plans/jev-w1-intent-routing.md lines 254-277
+Skill loaded: opencode-qa
+
+COMMAND 1
+F3_SANDBOX="$(mktemp -d)"; F3_RECEIPTS="$(mktemp -d)"; printf 'F3_SANDBOX=%s\nF3_RECEIPTS=%s\n' "$F3_SANDBOX" "$F3_RECEIPTS"
+
+EXIT: 0
+OUTPUT:
+F3_SANDBOX=/tmp/tmp.ieYSdgALYp
+F3_RECEIPTS=/tmp/tmp.vN1VfcrQFc
+
+Driver integrity review
+
+Files read:
+- .omo/evidence/20260924-jev-w1/task-19-drive.sh
+- .omo/evidence/20260924-jev-w1/task-19-fake-jev-server.ts
+- .omo/evidence/20260924-jev-w1/task-19-fake-model-provider.ts
+- .omo/evidence/20260924-jev-w1/task-19-turn-script.jsonl
+
+Result: PASS
+
+The driver does not synthesize or replay sink records. It starts one real `opencode serve` process, loads the audited plugin from packages/omo-opencode/src/index.ts, and drives each scripted prompt through a real `opencode run --attach` invocation. Turn 1 obtains a real session id. Turns 2 through 32 pass that id with `--session` to the same long-lived server. The fake model implements the local OpenAI Responses HTTP surface and supplies scripted text or tool-call responses only after OpenCode sends an HTTP request. The fake Jev server implements the local `/v1/systemone` HTTP surface and supplies prediction answers only after the plugin sends a request. Neither fake server writes the Jev sink. The plugin created the sink during the real OpenCode turns.
+
+Independent runtime receipts support that path: 32 per-turn OpenCode output files, 49 fake-model HTTP requests, 31 fake-Jev HTTP requests, and 32 observation records. The repeated prompt reused one completed prediction, accounting for one fewer Jev request than turns.
+
+COMMAND 2
+REAL_DB="$HOME/.local/share/opencode/opencode.db"
+sqlite3 -readonly "$REAL_DB" 'SELECT count(*) FROM session'
+create a recursive manifest of every entry under "$HOME/.omo" with path, type, size, mtime_ns, and SHA-256 content hash
+bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox "/tmp/tmp.ieYSdgALYp" --receipts "/tmp/tmp.vN1VfcrQFc" --wire enabled --keep
+create the same recursive manifest after the drive
+sqlite3 -readonly "$REAL_DB" 'SELECT count(*) FROM session'
+diff -u /tmp/tmp.vN1VfcrQFc/home-manifest-before.tsv /tmp/tmp.vN1VfcrQFc/home-manifest-after.tsv
+
+The manifest hashes file bytes, symlink targets, and sorted directory entries. It does not follow symlinks.
+
+EXIT: 1
+OUTPUT:
+COMMAND: sqlite3 -readonly /home/opencode/.local/share/opencode/opencode.db SELECT_count_session_before
+EXIT: 0
+OUTPUT: 425
+COMMAND: recursive manifest before to /tmp/tmp.vN1VfcrQFc/home-manifest-before.tsv
+EXIT: 0
+OUTPUT: entries=1014
+curl: (7) Failed to connect to 127.0.0.1 port 41681 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 37645 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 37645 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 37645 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 37645 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 37645 after 0 ms: Couldn't connect to server
+FAIL: real OpenCode session count changed
+COMMAND: bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox /tmp/tmp.ieYSdgALYp --receipts /tmp/tmp.vN1VfcrQFc --wire enabled --keep
+EXIT: 1
+COMMAND: recursive manifest after to /tmp/tmp.vN1VfcrQFc/home-manifest-after.tsv
+EXIT: 0
+OUTPUT: entries=1014
+COMMAND: sqlite3 -readonly /home/opencode/.local/share/opencode/opencode.db SELECT_count_session_after
+EXIT: 0
+OUTPUT: 426
+--- /tmp/tmp.vN1VfcrQFc/home-manifest-before.tsv
++++ /tmp/tmp.vN1VfcrQFc/home-manifest-after.tsv
+@@ -994,9 +994,9 @@
+ "codegraph/projects/oh-my-openagent-c39a8dfce3ae781a/.gitignore" file 229 1789745362897582542 47c0dacebca9f56c9020b68584470dfc51f07650a3719904e98f4b447a5dd003
+ "codegraph/projects/oh-my-openagent-c39a8dfce3ae781a/codegraph.db" file 386662400 1789745399961849929 2d99a193a7b9a7c28a903d02d5703f2a6e7bb41907caa41df4bf025778de7cab
+ "codegraph/projects/oh-my-openagent-c39a8dfce3ae781a/source.json" file 77 1790243041111878341 5ffbbbfa33d17c5f0f738e2adb6e7e601e7bec9ce1e90a0a380b582a5d854ce9
+-"codegraph/worker-sweep.stamp" file 25 1790277927127000000 efd026e3e32fbdb62316cdfe95a09bdd1b5cea6e516eb72ffaea248e53e60048
++"codegraph/worker-sweep.stamp" file 25 1790277980691000000 69c8a4d202fac17ed11321eb94576d02906613a234eae268ce9d7836c2afda85
+ "codegraph/zombie-sweep.stamp" file 25 1790277922685000000 73025de3612aeb7e300a0bb6041d5943c2b735126f49b3ef90cb9d61fee4a90a
+-"jev" directory 4096 1790275490070335869 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
++"jev" directory 4096 1790277994064183931 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+ "lsp-daemon" directory 4096 1788448157608975135 d74d37dee566a8def294971d0f78c0a0125fdebaf90561d6ee17c30258a181c9
+ "lsp-daemon/lsp-proxy-sweep.stamp" file 25 1790238583503000000 802519984505adb832e25b60baf079114d4027ab63574dbdbc98d97d4b54e12b
+ "lsp-daemon/v0.1.0" directory 4096 1790264600456831373 58cd9429ce858e31176b657a0d0e560a670d6952ed361a0842edc9d46d898ff6
+COMMAND: diff -u manifest-before manifest-after
+EXIT: 1
+OUTPUT_LINES: 14
+DB_BEFORE=425
+DB_AFTER=426
+
+COMMAND 3
+jq -s '.' /tmp/tmp.ieYSdgALYp/home/.omo/jev/w1-*.jsonl and independently assert observation count, observation session ids, all fan-out cohorts, real DB count, and recursive manifest equality
+
+EXIT: 2
+OUTPUT:
+sink_files=1
+observations=32
+counter_deltas=4
+unique_observation_sessions=1
+observation_session_ids=["ses_f2b1e84e2ffeEqJnJubeH5uOIQ"]
+fan_out_zero=15
+fan_out_one=10
+fan_out_many=7
+turn_output_files=32
+fake_model_http_requests=49
+fake_jev_http_requests=31
+real_db_before=425
+real_db_after=426
+manifest_diff_lines=14
+PASS at_least_30_observations
+PASS one_observation_session_id
+PASS zero_cohort_nonempty
+PASS one_cohort_nonempty
+PASS many_cohort_nonempty
+FAIL real_session_count_unchanged
+FAIL recursive_home_omo_manifest_diff_empty
+EXIT: 2
+
+COMMAND 4
+F3_DISABLED_SANDBOX="$(mktemp -d)"; F3_DISABLED_RECEIPTS="$(mktemp -d)"; printf 'F3_DISABLED_SANDBOX=%s\nF3_DISABLED_RECEIPTS=%s\n' "$F3_DISABLED_SANDBOX" "$F3_DISABLED_RECEIPTS"
+
+EXIT: 0
+OUTPUT:
+F3_DISABLED_SANDBOX=/tmp/tmp.Tch0inzSHz
+F3_DISABLED_RECEIPTS=/tmp/tmp.9sBg5Tdb6q
+
+COMMAND 5
+bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox "/tmp/tmp.Tch0inzSHz" --receipts "/tmp/tmp.9sBg5Tdb6q" --wire disabled --keep
+
+EXIT: 0
+OUTPUT:
+curl: (7) Failed to connect to 127.0.0.1 port 37081 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34087 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34087 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34087 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34087 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34087 after 0 ms: Couldn't connect to server
+curl: (28) Operation timed out after 2003 milliseconds with 0 bytes received
+curl: (18) transfer closed with outstanding read data remaining
+wire=disabled
+turns=32
+session_id=ses_f2b1ba64cffeVdPtJl0bFc3Nnn
+intent_routing_logs=0
+jev_requests=0
+sink_files=0
+real_session_count_before=426
+real_session_count_after=426
+
+COMMAND 6
+independently count `[jev] intent-routing` lines in /tmp/tmp.Tch0inzSHz/tmp/oh-my-open*.log and regular files below /tmp/tmp.Tch0inzSHz/home/.omo/jev
+
+EXIT: 0
+OUTPUT:
+plugin_log_files=1
+intent_routing_log_lines=0
+sink_files=0
+fake_jev_requests=0
+PASS disabled_intent_routing_logs_zero
+PASS disabled_sink_files_zero
+EXIT: 0
+
+COMMAND 7
+bun run script/jev-w1-report.ts --root "/tmp/tmp.ieYSdgALYp/home/.omo/jev"
+
+EXIT: 0
+OUTPUT:
+DENOMINATORS
+turns_seen=32
+turns_gated_out=0
+turns_synthetic=0
+records_created=32
+records_with_prediction=32
+records_sealed_by_next_turn=0
+records_sealed_by_session_idle=32
+records_sealed_by_seal_timeout=0
+records_sealed_by_dispose=0
+records_sealed_by_session_deleted=0
+records_evicted=0
+in_flight=0
+orphan_observations=0
+unscorable_resume_calls=1
+resume_only_records=1
+unscorable_unknown_calls=0
+unknown_only_records=0
+unrepresentable_route_mismatches=0
+dispatches_dropped=0
+invalid_answers=0
+incoherent_predictions=31
+malformed_lines=0
+malformed_write_rejections=0
+records_lost_to_cap=0
+sink_truncations=0
+prediction_reused=1
+truncated_input=0
+prediction_status_filled=32
+prediction_status_failed=0
+prediction_status_timeout=0
+prediction_status_not_dispatched=0
+correlation_status_reliable=32
+correlation_status_censored=0
+correlation_status_overlap_ambiguous=0
+counter_process_snapshots=1
+records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+
+ELIGIBILITY
+headline_eligibility correlation_status=reliable censored_excluded=0 overlap_ambiguous_excluded=0
+prediction_rate_eligibility filled=32 failed_excluded=0 timeout_excluded=0 not_dispatched_excluded=0
+scoring_audit resume_only_excluded=1 unknown_scored=0 mixed_resume_routes_retained=0
+scored_incorrect invalid=0 incoherent=31
+observed_delegations=attempts_not_successes
+minimum_data sealed_records=32 required=30 status=sufficient
+
+RATES
+exact_route_agreement numerator=0 denominator=26 rate=0.000000
+multi_route_turns=5
+category_coverage numerator=0 denominator=31 distinct_target_cardinality=11 rate=0.000000
+category_cardinality_weighted_coverage numerator=0 denominator=33 distinct_target_cardinality=11 rate=0.000000
+subagent_coverage numerator=0 denominator=31 distinct_target_cardinality=10 rate=0.000000
+subagent_cardinality_weighted_coverage numerator=0 denominator=32 distinct_target_cardinality=10 rate=0.000000
+none_recall numerator=0 denominator=15 rate=0.000000
+none_precision numerator=0 denominator=0 rate=insufficient data
+coherence_rate numerator=0 denominator=31 rate=0.000000
+
+FAN-OUT BY SEALED-BY CROSS-TAB
+fan_out=zero sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_idle records=15 exact_route_agreement=0/15:0.000000 category_coverage=0/15:0.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/15:0.000000 subagent_coverage=0/15:0.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/15:0.000000 none_recall=0/15:0.000000 none_precision=0/0:insufficient data coherence_rate=0/15:0.000000
+fan_out=zero sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_idle records=9 exact_route_agreement=0/9:0.000000 category_coverage=0/9:0.000000 distinct_target_cardinality=4 category_cardinality_weighted_coverage=0/9:0.000000 subagent_coverage=0/9:0.000000 distinct_target_cardinality=5 subagent_cardinality_weighted_coverage=0/9:0.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/9:0.000000
+fan_out=one sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_idle records=7 exact_route_agreement=0/2:0.000000 category_coverage=0/7:0.000000 distinct_target_cardinality=7 category_cardinality_weighted_coverage=0/9:0.000000 subagent_coverage=0/7:0.000000 distinct_target_cardinality=5 subagent_cardinality_weighted_coverage=0/8:0.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/7:0.000000
+fan_out=many sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+CONTINUATION COHORT
+continuation_candidate records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+FIXTURE-SCORED ONLY: no live harness ground truth
+intent_coverage live_ground_truth=unavailable
+ambiguous_coverage live_ground_truth=unavailable
+
+LIMITATIONS
+live_disagreements_reproducible=false fixture_growth=manual prompt_head_chars_retained=200
+PROMPT SHA-256 RECURRENCE
+prompt_full_sha256=0890c8aa25c1ff284257e74f04e530b489b9006ca80d41f1bf399678799c358e count=1
+prompt_full_sha256=1139ecc78a07536e22eccb46bca864b01c1fe816148cee46f8ff14da04e666d2 count=1
+prompt_full_sha256=1a6242bce400b9b1726e06a80cd57818e64a53d8468778e13f7c76a538d53e64 count=1
+prompt_full_sha256=1aa71ab0acff4cb4b90763651098098be27a02531c62cea7523afafab0b8c61b count=1
+prompt_full_sha256=2123a232b311b9712e8dabf6f2f96ef146414419871cbe8379105900100403e2 count=1
+prompt_full_sha256=21ed4b410133fe409459b22eae77c57f0c627a607ec6ac937f448cdbc1c14a37 count=2
+prompt_full_sha256=26ca5639c9e7ee3cbbbed77340503aaf591c4a27e10000699c39914997d6ceeb count=1
+prompt_full_sha256=2f164c18d35e82354013b1e87169fe251d8b9be84b9714cb0a085f5fab9cf7a9 count=1
+prompt_full_sha256=384ecf5f545bfd0bf5e0b4205f3c58664452b78ab70fb784adf35316425eae55 count=1
+prompt_full_sha256=3f3bdf4135ab4bc4ab9ea4bac5748f164e8777e74a029e0635f877a74212bc06 count=1
+prompt_full_sha256=496ae8096a9716778934f7a775c8f7ca4074534b6f8ede1dda796881b08b417c count=1
+prompt_full_sha256=53fba3b76222256b87b4efcf9030fa14b4f13606bbaacf3c148182b92be99603 count=1
+prompt_full_sha256=584059162f01cdff7417da6354f6c38ff4103d16e94d6e6662bfb305d41f4986 count=1
+prompt_full_sha256=642c06e660a478ebfa165abe255acf736867925be5d630f4bd4e6e1e4e2b6295 count=1
+prompt_full_sha256=6f3d5268db1a6ca8bbf6f0b606517f594e5c5437498136534214b6f6ec29301a count=1
+prompt_full_sha256=83681796dc5a92186172932c110e54e30be88af16ed491d870b3317f9073c821 count=1
+prompt_full_sha256=90cd7e0f37bef343796acb157700af117d3db6d53e9a72207a348a268af1deeb count=1
+prompt_full_sha256=92017ab7702b8165e42a9d9cc40b1a21f1ef670a638511bcfeda23083d520e7c count=1
+prompt_full_sha256=95347e8a451266abc953664999fb198655d64bcda2251bd78983614faf83d581 count=1
+prompt_full_sha256=9d1e4261ae52748735731c32b8003f0730a05db0cdf74b9bf608142f4e14f774 count=1
+prompt_full_sha256=b359baa4cf3252397e4820f09c0a1016c81ebe7ed2e6e081416772ce00bbcf2e count=1
+prompt_full_sha256=b39eb6b90cae7a0b4689ee198964b506e6ad55755b5d5698dc11a2f5a60cb050 count=1
+prompt_full_sha256=b932ab17e25f6d392b26e7344e0243ef8a53740f1116a0d1cc5c1e7d28ad39df count=1
+prompt_full_sha256=ccc34b4b122dfecc99aa3bbfbb68eeb98aad51bb60987c0358db9279dbbfc776 count=1
+prompt_full_sha256=d42ca800b940cec8350650257043b81cba80d27f9cde314e8c247720878376de count=1
+prompt_full_sha256=ddd8627780d27f46d93fb88753fd772cc66aad1ad94c1692dde09b2c61437af1 count=1
+prompt_full_sha256=e1497853911e3410e8d7de8cd54f31e7db2ab5c3f18c9e36c69fe29d6600cebb count=1
+prompt_full_sha256=e256ee8e7aff6957a781d8328f0f68e26996564c81fa458da59fbca2305138ad count=1
+prompt_full_sha256=eb9f39dd7379acf4a6fdcadacda988dfdf69f3f02c1846f0b99c8cb290b8f1d7 count=1
+prompt_full_sha256=fb6c8941f6c605f25fdcc0af5b7b95a642039a510ee7fccbfe86250ad81635db count=1
+prompt_full_sha256=fc2cbcf60861eeed254be1d379dc291350ea568258e41537783985456d6f735f count=1
+
+COMMAND 8
+parse the report output and assert the DENOMINATORS heading plus records_created == all sealed reasons + records_evicted + in_flight
+
+EXIT: 0
+OUTPUT:
+first_line=DENOMINATORS
+records_created=32
+sealed=32
+records_evicted=0
+in_flight=0
+rhs=32
+identity_line=records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+PASS denominator_block_rendered
+PASS records_created_identity
+EXIT: 0
+
+COMMAND 9
+rm -rf "/tmp/tmp.ieYSdgALYp"
+rm -rf "/tmp/tmp.Tch0inzSHz"
+bash -c 'while read -r pid; do kill -0 "$pid" 2>/dev/null && echo "SURVIVED $pid"; done < "/tmp/tmp.vN1VfcrQFc/pids"'
+bash -c 'while read -r port; do (exec 3<>/dev/tcp/127.0.0.1/"$port") 2>/dev/null && echo "PORT_STILL_BOUND $port"; done < "/tmp/tmp.vN1VfcrQFc/ports"'
+[ ! -d "/tmp/tmp.ieYSdgALYp" ]
+bash -c 'while read -r pid; do kill -0 "$pid" 2>/dev/null && echo "SURVIVED $pid"; done < "/tmp/tmp.9sBg5Tdb6q/pids"'
+bash -c 'while read -r port; do (exec 3<>/dev/tcp/127.0.0.1/"$port") 2>/dev/null && echo "PORT_STILL_BOUND $port"; done < "/tmp/tmp.9sBg5Tdb6q/ports"'
+[ ! -d "/tmp/tmp.Tch0inzSHz" ]
+
+EXIT: 0 for the aggregate cleanup assertion
+OUTPUT:
+rm enabled sandbox exit=0
+rm disabled sandbox exit=0
+enabled PID survival command exit=1 output=<empty>
+enabled port binding command exit=1 output=<empty>
+enabled sandbox absent exit=0
+disabled PID survival command exit=1 output=<empty>
+disabled port binding command exit=1 output=<empty>
+disabled sandbox absent exit=0
+CLEANUP_FAILURES=0
+
+The PID and port loops return 1 when no tested PID survives and no tested port accepts a connection because the final conditional is false. Their required stdout was empty. The aggregate assertion checked empty stdout and returned 0.
+
+ENABLED TERMINATIONS RECEIPT
+role pid status exit
+opencode-run-01 1099196 exited 0
+opencode-run-02 1099578 exited 0
+opencode-run-03 1099747 exited 0
+opencode-run-04 1099836 exited 0
+opencode-run-05 1099937 exited 0
+opencode-run-06 1100155 exited 0
+opencode-run-07 1100403 exited 0
+opencode-run-08 1100485 exited 0
+opencode-run-09 1100579 exited 0
+opencode-run-10 1100798 exited 0
+opencode-run-11 1100995 exited 0
+opencode-run-12 1101210 exited 0
+opencode-run-13 1101319 exited 0
+opencode-run-14 1101523 exited 0
+opencode-run-15 1101610 exited 0
+opencode-run-16 1101908 exited 0
+opencode-run-17 1102221 exited 0
+opencode-run-18 1102476 exited 0
+opencode-run-19 1102614 exited 0
+opencode-run-20 1102875 exited 0
+opencode-run-21 1103128 exited 0
+opencode-run-22 1103235 exited 0
+opencode-run-23 1103508 exited 0
+opencode-run-24 1103651 exited 0
+opencode-run-25 1103870 exited 0
+opencode-run-26 1103974 exited 0
+opencode-run-27 1104298 exited 0
+opencode-run-28 1104499 exited 0
+opencode-run-29 1104702 exited 0
+opencode-run-30 1104785 exited 0
+opencode-run-31 1104877 exited 0
+opencode-run-32 1105233 exited 0
+opencode-global-event 1099061 terminated 143
+fake-jev 1098960 terminated 0
+fake-model 1098959 terminated 0
+opencode-serve 1098992 terminated 0
+
+ENABLED PORT TERMINATIONS RECEIPT
+role port status
+opencode-serve 37645 terminated
+fake-model 41681 terminated
+fake-jev 40247 terminated
+opencode-serve 37645 terminated
+fake-model 41681 terminated
+fake-jev 40247 terminated
+
+DISABLED TERMINATIONS RECEIPT
+role pid status exit
+opencode-run-01 1131034 exited 0
+opencode-run-02 1132432 exited 0
+opencode-run-03 1132721 exited 0
+opencode-run-04 1132912 exited 0
+opencode-run-05 1132995 exited 0
+opencode-run-06 1133288 exited 0
+opencode-run-07 1133367 exited 0
+opencode-run-08 1133514 exited 0
+opencode-run-09 1133676 exited 0
+opencode-run-10 1133754 exited 0
+opencode-run-11 1133813 exited 0
+opencode-run-12 1133892 exited 0
+opencode-run-13 1133978 exited 0
+opencode-run-14 1134176 exited 0
+opencode-run-15 1134431 exited 0
+opencode-run-16 1134658 exited 0
+opencode-run-17 1134718 exited 0
+opencode-run-18 1134772 exited 0
+opencode-run-19 1134831 exited 0
+opencode-run-20 1135118 exited 0
+opencode-run-21 1135179 exited 0
+opencode-run-22 1135235 exited 0
+opencode-run-23 1135289 exited 0
+opencode-run-24 1135345 exited 0
+opencode-run-25 1135520 exited 0
+opencode-run-26 1135608 exited 0
+opencode-run-27 1135755 exited 0
+opencode-run-28 1135809 exited 0
+opencode-run-29 1135867 exited 0
+opencode-run-30 1135927 exited 0
+opencode-run-31 1135982 exited 0
+opencode-run-32 1136036 exited 0
+opencode-serve 1130116 terminated 0
+fake-jev 1130059 terminated 0
+fake-model 1130058 terminated 0
+opencode-global-event 1130859 terminated 18
+
+DISABLED PORT TERMINATIONS RECEIPT
+role port status
+fake-jev 40351 terminated
+fake-model 37081 terminated
+opencode-serve 34087 terminated
+
+Final assertion table
+
+PASS: at least 30 observations. Observed 32.
+PASS: one sessionID across observation entries. Observed ses_f2b1e84e2ffeEqJnJubeH5uOIQ.
+PASS: zero, one, and many fan-out cohorts non-empty. Observed 15, 10, and 7.
+FAIL: real OpenCode session count unchanged. Observed 425 before and 426 after.
+FAIL: recursive real ~/.omo manifest diff empty. Observed 14 diff lines.
+PASS: disabled control intent-routing log lines zero.
+PASS: disabled control sink files zero.
+PASS: report denominator block rendered.
+PASS: records_created identity. Observed 32 == 32 + 0 + 0.
+PASS: enabled receipt PID survival output empty.
+PASS: enabled receipt port binding output empty.
+PASS: enabled sandbox absent.
+PASS: disabled receipt PID survival output empty.
+PASS: disabled receipt port binding output empty.
+PASS: disabled sandbox absent.
+
+WHAT WAS OMITTED
+
+No secret-bearing environment dump, auth header, or private credential was copied. Local dummy keys and local server passwords were not copied. No todo-19 sink or prior todo-19 sandbox was read.
+
+============================================================
+ROUND 2 RE-VERIFICATION
+============================================================
+
+ROUND 2 VERDICT: APPROVE
+
+Round 2 used fresh enabled and disabled sandboxes. All functional, attributed isolation, report, and cleanup assertions passed. The real ~/.omo/jev path was absent before the enabled drive, after the enabled drive, after the disabled drive, and after final cleanup.
+
+COMMAND R2-1
+F3R2_SANDBOX="$(mktemp -d)"; F3R2_RECEIPTS="$(mktemp -d)"
+
+EXIT: 0
+OUTPUT:
+F3R2_SANDBOX=/tmp/tmp.rHcKKCtIkh
+F3R2_RECEIPTS=/tmp/tmp.U30Uj9bWfF
+
+ROUND 2 DRIVER AND FIX REVIEW
+
+Files read again:
+- .omo/evidence/20260924-jev-w1/task-19-drive.sh
+- .omo/evidence/20260924-jev-w1/task-19-fake-jev-server.ts
+- .omo/evidence/20260924-jev-w1/task-19-fake-model-provider.ts
+- packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+- packages/omo-opencode/src/features/jev/intent-routing-sink-reader.ts
+
+Driver judgment: PASS.
+
+The driver still starts one real `opencode serve`, drives 32 real `opencode run --attach` turns, reuses one real session id after turn 1, and receives local HTTP responses from the fake model and fake Jev servers. Neither fake server writes the sink. The audited plugin writes the sink in response to real driven turns.
+
+The source remediation is present. `resolveIntentRoutingSinkRoot` reads `process.env.HOME` when the sink root is resolved. The sink begins with `hasWritableState=false`; `flushCounters` returns before writing while that state is false. Filesystem creation occurs in `appendRaw` only after a writable entry exists.
+
+COMMAND R2-2
+sqlite3 -readonly -header -separator TAB "$HOME/.local/share/opencode/opencode.db" 'PRAGMA table_info(session);'
+[ ! -e "$HOME/.omo/jev" ]
+
+EXIT: 0
+OUTPUT:
+cid name type notnull dflt_value pk
+0 id TEXT 0  1
+1 project_id TEXT 1  0
+2 parent_id TEXT 0  0
+3 slug TEXT 1  0
+4 directory TEXT 1  0
+5 title TEXT 1  0
+6 version TEXT 1  0
+7 share_url TEXT 0  0
+8 summary_additions INTEGER 0  0
+9 summary_deletions INTEGER 0  0
+10 summary_files INTEGER 0  0
+11 summary_diffs TEXT 0  0
+12 revert TEXT 0  0
+13 permission TEXT 0  0
+14 time_created INTEGER 1  0
+15 time_updated INTEGER 1  0
+16 time_compacting INTEGER 0  0
+17 time_archived INTEGER 0  0
+18 workspace_id TEXT 0  0
+19 path TEXT 0  0
+20 agent TEXT 0  0
+21 model TEXT 0  0
+22 cost REAL 1 0 0
+23 tokens_input INTEGER 1 0 0
+24 tokens_output INTEGER 1 0 0
+25 tokens_reasoning INTEGER 1 0 0
+26 tokens_cache_read INTEGER 1 0 0
+27 tokens_cache_write INTEGER 1 0 0
+28 metadata TEXT 0  0
+real_jev_absent_exit=0
+real_jev_state=absent
+
+COMMAND R2-3
+Sample the real read-only DB count and recursive ~/.omo manifest.
+bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox "/tmp/tmp.rHcKKCtIkh" --receipts "/tmp/tmp.U30Uj9bWfF" --wire enabled --keep
+Resample the real read-only DB count and recursive ~/.omo manifest.
+Enumerate real sessions with time_created inside the measured window.
+diff -u home-manifest-before.tsv home-manifest-after.tsv
+
+EXIT: 0
+OUTPUT:
+WINDOW_START_MS=1790279997754
+WINDOW_START_UTC=2026-09-24T19:59:57.755Z
+DB_BEFORE=430
+REAL_JEV_ABSENT_BEFORE_EXIT=0
+MANIFEST_BEFORE_EXIT=0
+MANIFEST_BEFORE_ENTRIES=1013
+curl: (7) Failed to connect to 127.0.0.1 port 37751 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 42529 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 42529 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 42529 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 42529 after 0 ms: Couldn't connect to server
+curl: (28) Operation timed out after 2002 milliseconds with 0 bytes received
+curl: (18) transfer closed with outstanding read data remaining
+wire=enabled
+turns=32
+session_id=ses_f2afefa8affe3r9Qgc8xToAxT3
+observations=32
+counter_deltas=16
+fan_out_zero=15
+fan_out_one=10
+fan_out_many=7
+prediction_reused=1
+call_omo_agent_calls=11
+unscorable_resume_calls=1
+continuation_candidates=1
+correlation_reliable=32
+correlation_censored=0
+correlation_overlap_ambiguous=0
+intent_routing_logs=31
+jev_requests=31
+records_created=32
+records_evicted=0
+in_flight=0
+records_created_identity=ok
+real_session_count_before=430
+real_session_count_after=430
+correlation_unreachable=censored,overlap_ambiguous; sequential opencode run calls seal on session_idle before the next prompt
+next_turn_unreachable=sequential opencode run calls reach session.idle before the next prompt
+WINDOW_END_MS=1790280123134
+WINDOW_END_UTC=2026-09-24T20:02:03.135Z
+DB_AFTER=430
+DB_DELTA=0
+REAL_JEV_ABSENT_AFTER_EXIT=0
+MANIFEST_AFTER_EXIT=0
+MANIFEST_AFTER_ENTRIES=1013
+WINDOW_QUERY_EXIT=0
+MANIFEST_DIFF_EXIT=1
+MANIFEST_DIFF_LINES=11
+
+FULL MANIFEST DIFF
+--- /tmp/tmp.U30Uj9bWfF/home-manifest-before.tsv
++++ /tmp/tmp.U30Uj9bWfF/home-manifest-after.tsv
+@@ -994,7 +994,7 @@
+ "codegraph/projects/oh-my-openagent-c39a8dfce3ae781a/.gitignore" file 229 1789745362897582542 47c0dacebca9f56c9020b68584470dfc51f07650a3719904e98f4b447a5dd003
+ "codegraph/projects/oh-my-openagent-c39a8dfce3ae781a/codegraph.db" file 386662400 1789745399961849929 2d99a193a7b9a7c28a903d02d5703f2a6e7bb41907caa41df4bf025778de7cab
+ "codegraph/projects/oh-my-openagent-c39a8dfce3ae781a/source.json" file 77 1790243041111878341 5ffbbbfa33d17c5f0f738e2adb6e7e601e7bec9ce1e90a0a380b582a5d854ce9
+-"codegraph/worker-sweep.stamp" file 25 1790279820787000000 8b8829405348ce1408175ca09dc6b69a3836f61a79e494b01f1f930aed1669bb
++"codegraph/worker-sweep.stamp" file 25 1790280072505000000 d0dff27ebdc11a238a85eb0b0ec8b40fa277046f133335dd9338f938ea2bb6f6
+ "codegraph/zombie-sweep.stamp" file 25 1790279762784000000 befda261761df79f8010a3b622634036b84721c03e3a23a4e023ea2aa6ec94a3
+ "lsp-daemon" directory 4096 1788448157608975135 d74d37dee566a8def294971d0f78c0a0125fdebaf90561d6ee17c30258a181c9
+ "lsp-daemon/lsp-proxy-sweep.stamp" file 25 1790238583503000000 802519984505adb832e25b60baf079114d4027ab63574dbdbc98d97d4b54e12b
+
+MANIFEST DIFF LINE ATTRIBUTION
+1: before-file diff header, diff metadata only.
+2: after-file diff header, diff metadata only.
+3: hunk header, diff metadata only.
+4: unchanged .gitignore context.
+5: unchanged codegraph.db context.
+6: unchanged source.json context.
+7: old codegraph/worker-sweep.stamp state, attributed to the live codegraph worker sweep.
+8: new codegraph/worker-sweep.stamp state, attributed to the live codegraph worker sweep.
+9: unchanged zombie-sweep.stamp context.
+10: unchanged lsp-daemon directory context.
+11: unchanged lsp-proxy-sweep.stamp context.
+
+No diff line names `jev` or a child of `jev`. No diff line is unattributed.
+
+DB SESSION ATTRIBUTION
+
+The real count did not move: 430 before and 430 after. The read-only window query returned zero sessions between 1790279997754 and 1790280123134. Therefore zero new sessions carry the sandbox directory, and zero sessions are attributable to this drive in the real database.
+
+COMMAND R2-4
+Independently parse the new enabled sink and assert functional behavior plus attributed DB and manifest isolation.
+
+EXIT: 0
+OUTPUT:
+sink_files=1
+observations=32
+counter_deltas=16
+unique_observation_sessions=1
+observation_session_ids=["ses_f2afefa8affe3r9Qgc8xToAxT3"]
+fan_out_zero=15
+fan_out_one=10
+fan_out_many=7
+prediction_reused=1
+call_omo_agent_calls=11
+unscorable_resume_calls=1
+continuation_candidates=1
+correlation_reliable=32
+records_created=32
+records_evicted=0
+in_flight=0
+turn_output_files=32
+fake_model_http_requests=49
+fake_jev_http_requests=31
+intent_routing_log_lines=31
+real_db_before=430
+real_db_after=430
+real_db_delta=0
+window_session_rows=0
+sandbox_attributable_session_rows=0
+manifest_changed_lines=2
+manifest_jev_lines=0
+manifest_unattributed_lines=0
+real_jev_absent_exit=0
+round1_comparison=observations 32->32, zero 15->15, one 10->10, many 7->7
+MANIFEST ATTRIBUTION:
+- codegraph/worker-sweep.stamp live_codegraph_daemon
++ codegraph/worker-sweep.stamp live_codegraph_daemon
+WINDOW SESSION ATTRIBUTION:
+<none>
+PASS at_least_30_observations
+PASS counter_delta_present
+PASS one_observation_session_id
+PASS zero_cohort_nonempty
+PASS one_cohort_nonempty
+PASS many_cohort_nonempty
+PASS prediction_reuse_present
+PASS call_omo_agent_present
+PASS unscorable_resume_present
+PASS continuation_candidate_present
+PASS reliable_correlation_present
+PASS intent_logs_match_jev_requests
+PASS records_identity
+PASS zero_sandbox_attributable_real_sessions
+PASS zero_jev_manifest_diff_lines
+PASS zero_unattributed_manifest_diff_lines
+PASS real_jev_directory_absent
+EXIT: 0
+
+ROUND 1 FUNCTIONAL COUNT COMPARISON
+
+The requested functional counts did not change after remediation:
+- observations: 32 in round 1, 32 in round 2
+- fan_out_zero: 15 in round 1, 15 in round 2
+- fan_out_one: 10 in round 1, 10 in round 2
+- fan_out_many: 7 in round 1, 7 in round 2
+
+Counter delta snapshots changed from 4 to 16. This is not a sealed-record or fan-out change. The final counter state remains 32 created, 32 sealed, 0 evicted, and 0 in flight.
+
+COMMAND R2-5
+F3R2_DISABLED_SANDBOX="$(mktemp -d)"; F3R2_DISABLED_RECEIPTS="$(mktemp -d)"
+
+EXIT: 0
+OUTPUT:
+F3R2_DISABLED_SANDBOX=/tmp/tmp.l3fqtCAbH7
+F3R2_DISABLED_RECEIPTS=/tmp/tmp.qnrEqMW9x9
+
+COMMAND R2-6
+bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox "/tmp/tmp.l3fqtCAbH7" --receipts "/tmp/tmp.qnrEqMW9x9" --wire disabled --keep
+
+EXIT: 0
+OUTPUT:
+curl: (7) Failed to connect to 127.0.0.1 port 45449 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34687 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34687 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34687 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 34687 after 0 ms: Couldn't connect to server
+curl: (28) Operation timed out after 2002 milliseconds with 0 bytes received
+wire=disabled
+turns=32
+session_id=ses_f2afbba03ffeLBR2Zk8z067r0V
+intent_routing_logs=0
+jev_requests=0
+sink_files=0
+real_session_count_before=430
+real_session_count_after=430
+
+COMMAND R2-7
+Independently count disabled intent-routing lines and sink files, then check the real ~/.omo/jev path.
+
+EXIT: 0
+OUTPUT:
+plugin_log_files=1
+intent_routing_log_lines=0
+sink_files=0
+fake_jev_requests=0
+real_jev_absent_exit=0
+PASS disabled_intent_routing_logs_zero
+PASS disabled_sink_files_zero
+PASS real_jev_directory_absent_after_disabled
+EXIT: 0
+
+COMMAND R2-8
+bun run script/jev-w1-report.ts --root "/tmp/tmp.rHcKKCtIkh/home/.omo/jev"
+
+EXIT: 0
+OUTPUT:
+DENOMINATORS
+turns_seen=32
+turns_gated_out=0
+turns_synthetic=0
+records_created=32
+records_with_prediction=32
+records_sealed_by_next_turn=0
+records_sealed_by_session_idle=32
+records_sealed_by_seal_timeout=0
+records_sealed_by_dispose=0
+records_sealed_by_session_deleted=0
+records_evicted=0
+in_flight=0
+orphan_observations=0
+unscorable_resume_calls=1
+resume_only_records=1
+unscorable_unknown_calls=12
+unknown_only_records=7
+unrepresentable_route_mismatches=9
+dispatches_dropped=0
+invalid_answers=0
+incoherent_predictions=31
+malformed_lines=0
+malformed_write_rejections=0
+records_lost_to_cap=0
+sink_truncations=0
+prediction_reused=1
+truncated_input=0
+prediction_status_filled=32
+prediction_status_failed=0
+prediction_status_timeout=0
+prediction_status_not_dispatched=0
+correlation_status_reliable=32
+correlation_status_censored=0
+correlation_status_overlap_ambiguous=0
+counter_process_snapshots=1
+records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+
+ELIGIBILITY
+headline_eligibility correlation_status=reliable censored_excluded=0 overlap_ambiguous_excluded=0
+prediction_rate_eligibility filled=32 failed_excluded=0 timeout_excluded=0 not_dispatched_excluded=0
+scoring_audit resume_only_excluded=1 unknown_scored=9 mixed_resume_routes_retained=0
+scored_incorrect invalid=0 incoherent=31
+observed_delegations=attempts_not_successes
+minimum_data sealed_records=32 required=30 status=sufficient
+
+RATES
+exact_route_agreement numerator=0 denominator=30 rate=0.000000
+multi_route_turns=1
+category_coverage numerator=0 denominator=31 distinct_target_cardinality=0 rate=0.000000
+category_cardinality_weighted_coverage numerator=0 denominator=31 distinct_target_cardinality=0 rate=0.000000
+subagent_coverage numerator=0 denominator=31 distinct_target_cardinality=10 rate=0.000000
+subagent_cardinality_weighted_coverage numerator=0 denominator=32 distinct_target_cardinality=10 rate=0.000000
+none_recall numerator=0 denominator=15 rate=0.000000
+none_precision numerator=0 denominator=0 rate=insufficient data
+coherence_rate numerator=0 denominator=31 rate=0.000000
+
+FAN-OUT BY SEALED-BY CROSS-TAB
+fan_out=zero sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_idle records=15 exact_route_agreement=0/15:0.000000 category_coverage=0/15:0.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/15:0.000000 subagent_coverage=0/15:0.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/15:0.000000 none_recall=0/15:0.000000 none_precision=0/0:insufficient data coherence_rate=0/15:0.000000
+fan_out=zero sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_idle records=9 exact_route_agreement=0/9:0.000000 category_coverage=0/9:0.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/9:0.000000 subagent_coverage=0/9:0.000000 distinct_target_cardinality=5 subagent_cardinality_weighted_coverage=0/9:0.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/9:0.000000
+fan_out=one sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_idle records=7 exact_route_agreement=0/6:0.000000 category_coverage=0/7:0.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/7:0.000000 subagent_coverage=0/7:0.000000 distinct_target_cardinality=5 subagent_cardinality_weighted_coverage=0/8:0.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/7:0.000000
+fan_out=many sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+CONTINUATION COHORT
+continuation_candidate records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+FIXTURE-SCORED ONLY: no live harness ground truth
+intent_coverage live_ground_truth=unavailable
+ambiguous_coverage live_ground_truth=unavailable
+
+LIMITATIONS
+live_disagreements_reproducible=false fixture_growth=manual prompt_head_chars_retained=200
+PROMPT SHA-256 RECURRENCE
+prompt_full_sha256=0890c8aa25c1ff284257e74f04e530b489b9006ca80d41f1bf399678799c358e count=1
+prompt_full_sha256=1139ecc78a07536e22eccb46bca864b01c1fe816148cee46f8ff14da04e666d2 count=1
+prompt_full_sha256=1a6242bce400b9b1726e06a80cd57818e64a53d8468778e13f7c76a538d53e64 count=1
+prompt_full_sha256=1aa71ab0acff4cb4b90763651098098be27a02531c62cea7523afafab0b8c61b count=1
+prompt_full_sha256=2123a232b311b9712e8dabf6f2f96ef146414419871cbe8379105900100403e2 count=1
+prompt_full_sha256=21ed4b410133fe409459b22eae77c57f0c627a607ec6ac937f448cdbc1c14a37 count=2
+prompt_full_sha256=26ca5639c9e7ee3cbbbed77340503aaf591c4a27e10000699c39914997d6ceeb count=1
+prompt_full_sha256=2f164c18d35e82354013b1e87169fe251d8b9be84b9714cb0a085f5fab9cf7a9 count=1
+prompt_full_sha256=384ecf5f545bfd0bf5e0b4205f3c58664452b78ab70fb784adf35316425eae55 count=1
+prompt_full_sha256=3f3bdf4135ab4bc4ab9ea4bac5748f164e8777e74a029e0635f877a74212bc06 count=1
+prompt_full_sha256=496ae8096a9716778934f7a775c8f7ca4074534b6f8ede1dda796881b08b417c count=1
+prompt_full_sha256=53fba3b76222256b87b4efcf9030fa14b4f13606bbaacf3c148182b92be99603 count=1
+prompt_full_sha256=584059162f01cdff7417da6354f6c38ff4103d16e94d6e6662bfb305d41f4986 count=1
+prompt_full_sha256=642c06e660a478ebfa165abe255acf736867925be5d630f4bd4e6e1e4e2b6295 count=1
+prompt_full_sha256=6f3d5268db1a6ca8bbf6f0b606517f594e5c5437498136534214b6f6ec29301a count=1
+prompt_full_sha256=83681796dc5a92186172932c110e54e30be88af16ed491d870b3317f9073c821 count=1
+prompt_full_sha256=90cd7e0f37bef343796acb157700af117d3db6d53e9a72207a348a268af1deeb count=1
+prompt_full_sha256=92017ab7702b8165e42a9d9cc40b1a21f1ef670a638511bcfeda23083d520e7c count=1
+prompt_full_sha256=95347e8a451266abc953664999fb198655d64bcda2251bd78983614faf83d581 count=1
+prompt_full_sha256=9d1e4261ae52748735731c32b8003f0730a05db0cdf74b9bf608142f4e14f774 count=1
+prompt_full_sha256=b359baa4cf3252397e4820f09c0a1016c81ebe7ed2e6e081416772ce00bbcf2e count=1
+prompt_full_sha256=b39eb6b90cae7a0b4689ee198964b506e6ad55755b5d5698dc11a2f5a60cb050 count=1
+prompt_full_sha256=b932ab17e25f6d392b26e7344e0243ef8a53740f1116a0d1cc5c1e7d28ad39df count=1
+prompt_full_sha256=ccc34b4b122dfecc99aa3bbfbb68eeb98aad51bb60987c0358db9279dbbfc776 count=1
+prompt_full_sha256=d42ca800b940cec8350650257043b81cba80d27f9cde314e8c247720878376de count=1
+prompt_full_sha256=ddd8627780d27f46d93fb88753fd772cc66aad1ad94c1692dde09b2c61437af1 count=1
+prompt_full_sha256=e1497853911e3410e8d7de8cd54f31e7db2ab5c3f18c9e36c69fe29d6600cebb count=1
+prompt_full_sha256=e256ee8e7aff6957a781d8328f0f68e26996564c81fa458da59fbca2305138ad count=1
+prompt_full_sha256=eb9f39dd7379acf4a6fdcadacda988dfdf69f3f02c1846f0b99c8cb290b8f1d7 count=1
+prompt_full_sha256=fb6c8941f6c605f25fdcc0af5b7b95a642039a510ee7fccbfe86250ad81635db count=1
+prompt_full_sha256=fc2cbcf60861eeed254be1d379dc291350ea568258e41537783985456d6f735f count=1
+
+COMMAND R2-9
+Parse the round-2 report denominator block and conservation identity.
+
+EXIT: 0
+OUTPUT:
+first_line=DENOMINATORS
+records_created=32
+sealed=32
+records_evicted=0
+in_flight=0
+rhs=32
+identity_line=records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+PASS denominator_block_rendered
+PASS records_created_identity
+EXIT: 0
+
+COMMAND R2-10
+rm -rf "/tmp/tmp.rHcKKCtIkh"
+rm -rf "/tmp/tmp.l3fqtCAbH7"
+bash -c 'while read -r pid; do kill -0 "$pid" 2>/dev/null && echo "SURVIVED $pid"; done < "/tmp/tmp.U30Uj9bWfF/pids"'
+bash -c 'while read -r port; do (exec 3<>/dev/tcp/127.0.0.1/"$port") 2>/dev/null && echo "PORT_STILL_BOUND $port"; done < "/tmp/tmp.U30Uj9bWfF/ports"'
+[ ! -d "/tmp/tmp.rHcKKCtIkh" ]
+bash -c 'while read -r pid; do kill -0 "$pid" 2>/dev/null && echo "SURVIVED $pid"; done < "/tmp/tmp.qnrEqMW9x9/pids"'
+bash -c 'while read -r port; do (exec 3<>/dev/tcp/127.0.0.1/"$port") 2>/dev/null && echo "PORT_STILL_BOUND $port"; done < "/tmp/tmp.qnrEqMW9x9/ports"'
+[ ! -d "/tmp/tmp.l3fqtCAbH7" ]
+[ ! -e "$HOME/.omo/jev" ]
+
+EXIT: 0 for aggregate cleanup assertion
+OUTPUT:
+rm_enabled_exit=0
+rm_disabled_exit=0
+enabled_pid_check_exit=1
+enabled_pid_check_output=<empty>
+enabled_port_check_exit=1
+enabled_port_check_output=<empty>
+enabled_sandbox_absent_exit=0
+disabled_pid_check_exit=1
+disabled_pid_check_output=<empty>
+disabled_port_check_exit=1
+disabled_port_check_output=<empty>
+disabled_sandbox_absent_exit=0
+real_jev_absent_final_exit=0
+CLEANUP_FAILURES=0
+
+The PID and port loops return 1 when the final tested PID is absent or the final tested port is closed. Their required stdout is empty. The aggregate assertion checked empty stdout and returned 0.
+
+ROUND 2 ENABLED TERMINATIONS RECEIPT
+role pid status exit
+opencode-run-01 1249537 exited 0
+opencode-run-02 1250124 exited 0
+opencode-run-03 1250179 exited 0
+opencode-run-04 1250361 exited 0
+opencode-run-05 1250536 exited 0
+opencode-run-06 1250704 exited 0
+opencode-run-07 1250758 exited 0
+opencode-run-08 1250820 exited 0
+opencode-run-09 1251028 exited 0
+opencode-run-10 1251200 exited 0
+opencode-run-11 1251255 exited 0
+opencode-run-12 1251507 exited 0
+opencode-run-13 1251641 exited 0
+opencode-run-14 1251741 exited 0
+opencode-run-15 1252001 exited 0
+opencode-run-16 1252216 exited 0
+opencode-run-17 1252389 exited 0
+opencode-run-18 1252443 exited 0
+opencode-run-19 1252503 exited 0
+opencode-run-20 1252909 exited 0
+opencode-run-21 1252970 exited 0
+opencode-run-22 1253193 exited 0
+opencode-run-23 1253277 exited 0
+opencode-run-24 1253578 exited 0
+opencode-run-25 1253866 exited 0
+opencode-run-26 1254045 exited 0
+opencode-run-27 1254256 exited 0
+opencode-run-28 1254494 exited 0
+opencode-run-29 1254745 exited 0
+opencode-run-30 1254881 exited 0
+opencode-run-31 1254998 exited 0
+opencode-run-32 1255278 exited 0
+opencode-serve 1249159 terminated 0
+fake-model 1249120 terminated 0
+fake-jev 1249121 terminated 0
+opencode-global-event 1249522 terminated 18
+
+ROUND 2 ENABLED PORT TERMINATIONS RECEIPT
+role port status
+opencode-serve 42529 terminated
+fake-model 37751 terminated
+fake-jev 33235 terminated
+
+ROUND 2 DISABLED TERMINATIONS RECEIPT
+role pid status exit
+opencode-run-01 1264766 exited 0
+opencode-run-02 1265223 exited 0
+opencode-run-03 1265263 exited 0
+opencode-run-04 1265326 exited 0
+opencode-run-05 1265371 exited 0
+opencode-run-06 1265412 exited 0
+opencode-run-07 1265478 exited 0
+opencode-run-08 1265638 exited 0
+opencode-run-09 1265695 exited 0
+opencode-run-10 1265879 exited 0
+opencode-run-11 1265919 exited 0
+opencode-run-12 1265959 exited 0
+opencode-run-13 1266112 exited 0
+opencode-run-14 1266168 exited 0
+opencode-run-15 1266440 exited 0
+opencode-run-16 1266480 exited 0
+opencode-run-17 1266635 exited 0
+opencode-run-18 1266675 exited 0
+opencode-run-19 1266715 exited 0
+opencode-run-20 1266755 exited 0
+opencode-run-21 1266802 exited 0
+opencode-run-22 1267069 exited 0
+opencode-run-23 1267109 exited 0
+opencode-run-24 1267151 exited 0
+opencode-run-25 1267193 exited 0
+opencode-run-26 1267348 exited 0
+opencode-run-27 1267388 exited 0
+opencode-run-28 1267428 exited 0
+opencode-run-29 1267468 exited 0
+opencode-run-30 1267510 exited 0
+opencode-run-31 1267612 exited 0
+opencode-run-32 1267850 exited 0
+fake-jev 1264615 terminated 0
+fake-model 1264614 terminated 0
+opencode-global-event 1264758 terminated 143
+opencode-serve 1264726 terminated 0
+
+ROUND 2 DISABLED PORT TERMINATIONS RECEIPT
+role port status
+fake-jev 38113 terminated
+opencode-serve 34687 terminated
+fake-model 45449 terminated
+
+ROUND 2 FINAL ASSERTION TABLE
+
+PASS: driver uses real OpenCode turns and does not fabricate the sink.
+PASS: 32 observations, all sharing one sessionID.
+PASS: zero, one, and many cohorts are 15, 10, and 7.
+PASS: prediction reuse, call_omo_agent, resume, continuation, and reliable correlation are present.
+PASS: real DB count is 430 before and 430 after.
+PASS: zero real DB sessions in the measured window are attributable to the sandbox.
+PASS: every manifest diff line is attributed. The only changed entry is the live codegraph worker sweep stamp.
+PASS: zero manifest changes are attributable to the Jev sink.
+PASS: real ~/.omo/jev stayed absent throughout the re-drive.
+PASS: disabled control emitted zero intent-routing lines and wrote zero sink files.
+PASS: report denominator block rendered and 32 == 32 sealed + 0 evicted + 0 in flight.
+PASS: all enabled and disabled receipt-listed PIDs are absent.
+PASS: all enabled and disabled receipt-listed ports are closed.
+PASS: both sandboxes are removed.
+
+ROUND 2 WHAT WAS OMITTED
+
+No secret-bearing environment dump, auth header, or private credential was copied. Local dummy keys and local server passwords were not copied. No prior todo-19 sink or sandbox was read.

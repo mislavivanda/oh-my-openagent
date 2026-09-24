@@ -1,0 +1,91 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin-dispose.test.ts:
+64 |
+65 |     // when
+66 |     await dispose()
+67 |
+68 |     // then
+69 |     expect(disposeSpy).toHaveBeenCalledTimes(1)
+                            ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin-dispose.test.ts:69:24)
+(fail) createPluginDispose > #given an injected intent-routing instance #when dispose() is called #then its bounded flush runs [0.23ms]
+
+packages/omo-opencode/src/testing/create-plugin-module.test.ts:
+325 |         client: {},
+326 |       } as Parameters<typeof pluginModule.server>[0])
+327 |       await hooks.dispose?.()
+328 |
+329 |       // then
+330 |       expect(mockCreateJevIntentRouting).toHaveBeenCalledTimes(1)
+                                               ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/testing/create-plugin-module.test.ts:330:42)
+(fail) createPluginModule() > #given one serverPlugin initialization > #then one intent-routing instance reaches the interface and its bounded dispose flush [1.68ms]
+
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:
+ 99 |     }))
+100 |     await plugin.event?.(unsafeTestValue({
+101 |       event: { type: "session.deleted", properties: { info: { id: "session-main" } } },
+102 |     }))
+103 |
+104 |     expect(calls).toEqual([
+                        ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "chat.message",
+-   "tool.execute.before",
+-   "event:session-main:idle",
+-   "event:session-main:deleted",
+- ]
++ []
+
+- Expected  - 6
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:104:19)
+(fail) Jev intent-routing plugin handler wiring > #given one override #when chat, tool, and lifecycle handlers run #then the same object receives all calls without input mutation [4.61ms]
+chat.message non-awaited proof: 0.149ms
+146 |       { message: {}, parts: [{ type: "text", text: "do not wait" }] },
+147 |     )
+148 |     const elapsedMs = performance.now() - startedAt
+149 |     console.log(`chat.message non-awaited proof: ${elapsedMs.toFixed(3)}ms`)
+150 |
+151 |     expect(dispatcher).toHaveBeenCalledTimes(1)
+                             ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:151:24)
+(fail) Jev intent-routing plugin handler wiring > #given a dispatcher that takes three seconds #when chat.message runs #then the handler starts it without awaiting it [0.51ms]
+158 |       { input: { sessionID: "main", mainSessionID: undefined, isSubagentSession: false }, expected: false },
+159 |       { input: { sessionID: "child", mainSessionID: "main", isSubagentSession: false }, expected: false },
+160 |       { input: { sessionID: "main", mainSessionID: "main", isSubagentSession: true }, expected: false },
+161 |     ] as const
+162 |
+163 |     expect(isIntentRoutingCaptureSessionEligible).toBe(isJevIntentRoutingSessionEligible)
+                                                        ^
+error: expect(received).toBe(expected)
+
+Expected: [Function: isJevIntentRoutingSessionEligible]
+Received: [Function: isIntentRoutingCaptureSessionEligible]
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:163:51)
+(fail) Jev intent-routing plugin handler wiring > #given identical session facts #when dispatch and capture check eligibility #then both call sites share one predicate [0.21ms]
+
+ 20 pass
+ 5 fail
+ 55 expect() calls
+Ran 25 tests across 3 files. [406.00ms]

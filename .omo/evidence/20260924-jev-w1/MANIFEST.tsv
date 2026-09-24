@@ -1,0 +1,113 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260924-jev-w1/task-1-worktree-fffe.txt	artifact	Worktree proof: branch jev/w1-fffe at 82460563f, jev/foundation ancestry check exit 0, clean git status
+1	.omo/evidence/20260924-jev-w1/task-1-install-fffe.txt	artifact	bun install full output, 544 packages installed, exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-test-fast.txt	baseline	bun run test:fast baseline: 317 pass, 0 fail across 31 files, exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-full-test.txt	baseline	bun test --timeout 20000 full output with trailing exit line, exit 1
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt	baseline	Frozen failing-test set: 22 lines of testfile TAB test name, sorted, ANSI and timings stripped
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-totals.txt	baseline	Full-suite totals: 12762 pass, 3 skip, 22 fail, 12787 tests across 1678 files, exit 1
+1	.omo/evidence/20260924-jev-w1/task-1-typecheck-baseline.txt	baseline	bun run typecheck baseline across root, script, and 28 workspace projects, exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt	baseline	check-third-party-notices heading plus 4 missing-entry lines only, no exit line, for byte-for-byte diff
+1	.omo/evidence/20260924-jev-w1/task-1-notices-exit.txt	baseline	check-third-party-notices exit status only, exit=1, kept apart from the heading list
+1	.omo/evidence/20260924-jev-w1/task-1-manifest-selfcheck.txt	qa	Self-check proving the manifest header is exact and every listed artifact exists and is non-empty
+2	.omo/evidence/20260924-jev-w1/task-2-schema-red.txt	red	RED run of jev.test.ts before the schema change: 5 fail, 7 pass, exit 1, failures name the missing wires.intent_routing
+2	.omo/evidence/20260924-jev-w1/task-2-schema-green.txt	green	GREEN run of jev.test.ts after adding JevIntentRoutingWireConfigSchema: 12 pass, 0 fail, exit 0, plus the per-test roster
+2	.omo/evidence/20260924-jev-w1/task-2-both-schemas.txt	artifact	Two-schema regeneration proof with every command and exit code, sha256 of both assets, and the build:omo-schema-only staleness demo
+2	.omo/evidence/20260924-jev-w1/task-2-schema-diff.txt	artifact	Recorded git diff of assets/oh-my-opencode.schema.json and assets/omo.schema.json for review
+2	.omo/evidence/20260924-jev-w1/task-2-observe-only-reject.txt	qa	observe_only false rejected at parse time, plan one-liner output plus the untruncated refine message
+2	.omo/evidence/20260924-jev-w1/task-2-typecheck.txt	qa	bun run typecheck plus scoped tsgo runs over both changed files, the concurrent jev-core error attributed, LSP daemon unreachable recorded
+2	.omo/evidence/20260924-jev-w1/task-2-scoped-regression.txt	qa	386 pass 0 fail across every test file touching model_error_triage or a generated schema asset, incl. omo-schema-freshness
+3	.omo/evidence/20260924-jev-w1/task-3-record-red.txt	red	RED focused contract run: 11 failures name the missing shared intent-routing record contract
+3	.omo/evidence/20260924-jev-w1/task-3-record-green.txt	green	GREEN focused contract run: 11 pass, 0 fail, covering both entry arms and counter resolution
+3	.omo/evidence/20260924-jev-w1/task-3-guard-proof.txt	qa	Harness-neutrality guard runs green, catches a transient OpenCode import, then returns green after revert
+4	.omo/evidence/20260924-jev-w1/task-4-questions-red.txt	red	RED in two phases: test alone fails on the missing module, then a deliberately incomplete stub fails 12 contract assertions naming the missing 4th key and the missing none options
+4	.omo/evidence/20260924-jev-w1/task-4-questions-green.txt	green	GREEN run of intent-routing.test.ts: 13 pass, 0 fail, 122 expect calls, plus the per-test roster and the acceptance-criteria coverage map
+4	.omo/evidence/20260924-jev-w1/task-4-empty-vocab.txt	qa	Empty vocabulary throws IntentRoutingVocabularyError by name, per-list proof for categories, subagents, and intents, plus the same proof through the package barrel
+4	.omo/evidence/20260924-jev-w1/task-4-typecheck.txt	qa	Scoped tsgo clean on both new files with the LSP daemon unreachable recorded, harness-neutrality guard green, concurrent todo-6 typecheck error attributed
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-red.txt	red	RED focused run before implementation: 19 failures carry the explicit missing normalization assertion, exit 1
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-green.txt	green	GREEN focused run: 19 pass, 0 fail, covering normalization, total route derivation, prediction coherence, and vocabulary drift
+6	.omo/evidence/20260924-jev-w1/task-6-resume-unscorable.txt	qa	Direct task resume probe returns unscorable_resume with both normalized targets set to none, exit 0
+6	.omo/evidence/20260924-jev-w1/task-6-drift-proof.txt	qa	Removing oracle fails the drift test by name, then restoring it returns the 19-test suite to green
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-red.txt	red	RED run against a deliberately incomplete stub corpus: 4 assertion failures naming the missing none labels, missing non-English prompts, and the absent source classes
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-green.txt	green	GREEN run of intent-routing-fixtures.test.ts: 7 pass, 0 fail, 45 expect calls over the 17 hand-labeled fixtures
+7	.omo/evidence/20260924-jev-w1/task-7-bad-label-proof.txt	qa	Bad-label guard proof in three runs: green, then a tampered subagent label failing by fixture id subagent-oracle-1, then green again after revert
+5	.omo/evidence/20260924-jev-w1/task-5-decide-red.txt	red	RED focused run: 8 decision tests fail with assertion output showing decideIntentRouting is undefined, while all 13 todo-4 tests pass
+5	.omo/evidence/20260924-jev-w1/task-5-decide-green.txt	green	GREEN focused run: 21 pass, 0 fail, covering labels, invalid accounting, failure mapping, truncation, and todo-4 questions
+5	.omo/evidence/20260924-jev-w1/task-5-throwing-backend.txt	qa	Targeted rejecting-backend proof: 1 pass, 0 fail, asserting synchronous invocation does not throw and the awaited result is failed
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-red.txt	red	RED accuracy-harness run: 5 assertion failures for scoring, dry-run builds, ceiling abort, partial retention, and real-API gate; exit 1
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-mock.txt	green	Mock accuracy harness scores all 17 fixtures with four confusion matrices, proves zero network calls, dry-run zero calls, partial retention, scoped tsgo exit 0, and focused tests exit 0
+8	.omo/evidence/20260924-jev-w1/task-8-ceiling-abort.txt	qa	Focused stub-counter proof aborts call 18 at the hard ceiling of 17 with IntentRoutingCallCeilingError; exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-red.txt	red	Focused adapter RED run: 8 behavioral assertion failures from the typed placeholder, 2 pass, exit 1
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-green.txt	green	Focused adapter GREEN run: 10 pass, 0 fail, 25 assertions, synchronous p99 reported, exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-no-unhandled-rejection.txt	qa	Rejecting dispatcher proof: synchronous return, failure log, and no unhandledRejection event, exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-inflight-bounded.txt	qa	Never-resolving dispatcher proof: in-flight bounded at max_inflight and exactly three dispatches dropped, exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-macrotask-ordering-proof.txt	qa	queueMicrotask regression fails ordering, restored unrefed setTimeout macrotask passes, exits 1 then 0
+11	.omo/evidence/20260924-jev-w1/task-11-capture-red.txt	red	Focused RED run: 10 assertion failures name the absent capture module, exit 1
+11	.omo/evidence/20260924-jev-w1/task-11-capture-green.txt	green	Focused GREEN run: 10 pass, 0 fail, covering both delegation tools, resume, ordering, counts, gates, drift, and args immutability
+11	.omo/evidence/20260924-jev-w1/task-11-allowlist-drift-proof.txt	qa	Removing call_omo_agent fails its capture case and registry-drift guard, then restored suite returns green
+11	.omo/evidence/20260924-jev-w1/task-11-resume-regression-proof.txt	qa	Omitting task_id makes resume normalize to spurious none, then restored suite returns green
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-red.txt	red	Focused RED run against the typed scaffold: 12 behavioral assertion failures, 6 pass, exit 1
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused GREEN run: 18 pass, 0 fail, 48 assertions covering ordinals, reuse, terminal states, cleanup, timeout, and normalization
+10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Default-cap proof drives 133 turns, counts exactly 5 evictions, and retains ordinals 6 through 133
+13	.omo/evidence/20260924-jev-w1/task-13-sink-red.txt	red	Focused sink RED run: 10 assertion failures against the behaviorless scaffold, isolated HOME, exit 1
+13	.omo/evidence/20260924-jev-w1/task-13-sink-green.txt	green	Focused sink GREEN run: 10 pass, 0 fail, measured 1724-byte observation, 17,240,000 bytes/day assumption, 66 MiB cap, real home unchanged
+13	.omo/evidence/20260924-jev-w1/task-13-malformed-tolerance.txt	qa	Focused malformed-tail proof: valid row retained, malformedLines equals 1, no throw, isolated HOME, exit 0
+12	.omo/evidence/20260924-jev-w1/task-12-seal-red.txt	red	Focused RED run: 11 assertion failures name the absent seal controller module, 1 config-refine test passes, exit 1
+12	.omo/evidence/20260924-jev-w1/task-12-seal-green.txt	green	Focused GREEN run: 12 pass, 0 fail, covering seal triggers, bias classification, deferred finalization, exactly-once append, and bounded dispose flush
+12	.omo/evidence/20260924-jev-w1/task-12-overlap-both-sides.txt	qa	Ordered overlap proof marks predecessor and successor overlap_ambiguous before finalization; report-level exclusion deferred to todo 16
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-red.txt	red	RED wiring run: five assertion failures prove missing single construction, handler identity, dispose flush, non-awaited dispatch, and shared gate predicate
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-green.txt	green	bun run test:fast: 446 pass, 1 skip, 0 fail across 41 files, exit 0
+14	.omo/evidence/20260924-jev-w1/task-14-not-awaited.txt	qa	Injected 3000ms dispatcher starts once while chat.message resolves in 1.347ms, under the 50ms ceiling
+14	.omo/evidence/20260924-jev-w1/task-14-opencode-qa-live.txt	qa	Real isolated OpenCode run loads local dist, emits a JEV decision, seals one sink record on session_idle, and leaves host DB count unchanged
+14	.omo/evidence/20260924-jev-w1/task-14-opencode-qa-summary.txt	artifact	Reviewer-readable OpenCode QA scope, observations, sufficiency argument, isolation proof, and omitted sensitive material
+16	.omo/evidence/20260924-jev-w1/task-16-report-red.txt	red	RED focused report run: 8 failures against the behaviorless scaffold, including missing denominators and rates, exit 1
+16	.omo/evidence/20260924-jev-w1/task-16-report-output.txt	green	Generated 32-record corpus report with denominators first, known rates, overlap exclusion, CLI isolation check, and exit 0
+16	.omo/evidence/20260924-jev-w1/task-16-empty-corpus.txt	qa	Empty sink report with every denominator zero, explicit insufficient data labels, and exit 0
+15	.omo/evidence/20260924-jev-w1/task-15-inert-red.txt	red	Mutation-backed RED run: enabled output differs byte-for-byte from disabled output across all three backend failure shapes, exit 1
+15	.omo/evidence/20260924-jev-w1/task-15-inert-green.txt	green	Part A and B proof plus gates: 12 focused tests green, p99 over 200 samples, final typecheck exit 0, plugin 603 pass, Jev 219 pass 1 skip, test:fast 446 pass 1 skip
+15	.omo/evidence/20260924-jev-w1/task-15-hanging-backend-stress.txt	qa	Real dispatcher and sink stress under hanging fetch: 50 turns, bounded wall-clock, max_inflight 4, 46 drops, bounded heap, clean child exit, isolated HOME, and empty W4 scope diff
+15	.omo/evidence/20260924-jev-w1/task-15-mutation-detected.txt	qa	Temporary output mutation produces a readable byte-identity diff for all failure shapes, then the reverted focused suite returns green
+15	.omo/evidence/20260924-jev-w1/task-15-unref-proof.txt	qa	Removing dispatcher timer unref makes the hanging-backend child time out, then restoring unref yields exit 0 within the bound
+17	.omo/evidence/20260924-jev-w1/task-17-testfast-scope.txt	artifact	test:fast before and after verbatim, append-only check, grep -c intent-routing = 9, 469 pass 1 skip 0 fail across 48 files, exit 0
+17	.omo/evidence/20260924-jev-w1/task-17-markdown-audit-proof.txt	qa	Markdown audit negative proof in three runs: green, then RED naming docs/jev/HANDOFF.md:346 after a transient /home path, then green after revert
+17	.omo/evidence/20260924-jev-w1/task-17-notices-diff.txt	baseline	check-third-party-notices output byte-identical to the todo-1 baseline, zero new missing entries, exit status 1 unchanged
+18	.omo/evidence/20260924-jev-w1/task-18-request-count-measurement.txt	artifact	Pre-spend counting-fetch proof: one HTTP request for four questions, measured latency and usage fields, plus official input-token billing quote
+18	.omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt	baseline	Single paid run: resolved model, question version, 17 request ceiling, token totals, latency range, per-fixture metrics, and four confusion matrices
+18	.omo/evidence/20260924-jev-w1/task-18-missing-key.txt	qa	Missing-credential path evaluates all 17 fixtures as unavailable with zero HTTP requests and exits cleanly
+18	.omo/evidence/20260924-jev-w1/task-18-secret-scan.txt	qa	Recursive retained-evidence credential scan returns no matches after redacting two synthetic assignments from earlier RED transcripts
+19	.omo/evidence/20260924-jev-w1/task-19-drive.sh	artifact	Reusable isolated single-server driver with required sandbox, receipts, wire, and keep contract
+19	.omo/evidence/20260924-jev-w1/task-19-turn-script.jsonl	artifact	32 deterministic turns covering pure, single, many, mixed, duplicate, direct-agent, resume-only, continuation, and reuse scenarios
+19	.omo/evidence/20260924-jev-w1/task-19-fake-jev-server.ts	artifact	Local systemOne-compatible fake that returns valid answers and echoes exact model jev-2026-09-24
+19	.omo/evidence/20260924-jev-w1/task-19-fake-model-provider.ts	artifact	Local OpenAI Responses-compatible scripted provider that deterministically emits the committed tool attempts
+19	.omo/evidence/20260924-jev-w1/task-19-dogfood-session.txt	qa	Enabled real OpenCode dogfood: 32 shared-session observations, all required cohorts, 31 matched dispatch logs, reuse, resume, continuation, and host count 420 to 420
+19	.omo/evidence/20260924-jev-w1/task-19-report.txt	qa	Full denominator and rate report with 32 sealed records and records-created identity status ok
+19	.omo/evidence/20260924-jev-w1/task-19-control-disabled.txt	qa	Separate disabled sandbox: 32 turns, zero intent-routing logs, zero Jev requests, zero sink files, and unchanged host count
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-before.tsv	baseline	Recursive real home .omo baseline with path, type, size, nanosecond mtime, and content SHA-256 for every entry
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-after.tsv	qa	Recursive real home .omo after-manifest in the same complete entry format
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt	qa	Empty recursive manifest diff proof with diff exit 0 and zero diff lines
+19	.omo/evidence/20260924-jev-w1/task-19-receipts.txt	qa	Every enabled and disabled harness PID and port listed with individual exited or terminated status; no global matcher
+19	.omo/evidence/20260924-jev-w1/task-19-evidence-record.txt	qa	Reviewer-readable tested, observed, sufficiency, and omissions record including unreachable correlation statuses
+19	.omo/evidence/20260924-jev-w1/task-19-gates.txt	green	Shell, JSONL, strict evidence tsgo, no-excuse, full typecheck, 45 focused tests, and 471-test fast suite all exit 0
+R1	.omo/evidence/20260924-jev-w1/R1-jev-core-red.txt	red	Failing-first proof: unknown category normalized as category and fixture intents differed from production, 25 pass 2 fail, exit 1
+R1	.omo/evidence/20260924-jev-w1/R1-jev-core-green.txt	green	Focused fixes green, mock harness zero-network green, jev-core 152 pass 1 skip, final typecheck exit 0, LSP environment limitation recorded
+R1	.omo/evidence/20260924-jev-w1/R1-accuracy-baseline-note.txt	artifact	Paid todo-18 intent baseline marked stale after seven fixture options were replaced by the six production options; paid run not repeated
+R3	.omo/evidence/20260924-jev-w1/R3-coverage-red.txt	red	Failing-first proofs: category coverage reported 17/23 instead of 18/23, and none recall/precision reused route agreement; focused exits 1
+R3	.omo/evidence/20260924-jev-w1/R3-coverage-green.txt	green	Corrected synthetic report: category coverage 18/23, weighted 21/26, neighbouring metric audit recorded, 11 focused tests pass
+R3	.omo/evidence/20260924-jev-w1/R3-figure-restatement.txt	artifact	Restates retained synthetic coverage figures without rewriting historical evidence and names unchanged related metrics
+R2	.omo/evidence/20260924-jev-w1/R2-isolation-red.txt	red	Failing-first sink proof: zero-state dispose created .omo/jev and post-load HOME resolved to /home/opencode, 0 pass 2 fail, exit 1
+R2	.omo/evidence/20260924-jev-w1/R2-isolation-green.txt	green	Lazy zero-state sink and call-time HOME regressions pass; proven-empty real /home/opencode/.omo/jev removed with rmdir
+R2	.omo/evidence/20260924-jev-w1/R2-plugin-red.txt	red	Failing-first handler proof: synthetic turn count stayed zero and deduped idle sealed once, 0 pass 2 fail, exit 1
+R2	.omo/evidence/20260924-jev-w1/R2-plugin-green.txt	green	Handler regressions pass; final typecheck retry, 677-test scoped suite, and 479-pass 1-skip fast suite exit 0
+R2	.omo/evidence/20260924-jev-w1/R2-size-review.txt	artifact	Rejected sink, turn-store, and plugin-init test waivers split at named seams; seven retained waivers carry invariant-specific reasons and 15 split tests pass
+R4	.omo/evidence/20260924-jev-w1/R4-category-red.txt	red	Failing-first three-case category proof: the built-in passed but an offered custom category normalized as unknown, 19 pass 1 fail
+R4	.omo/evidence/20260924-jev-w1/R4-category-green.txt	green	Runtime offered vocabulary proof: built-in and configured custom categories normalize as category while never-offered remains unknown; focused suites green
+R4	.omo/evidence/20260924-jev-w1/R4-drift-proof.txt	qa	Category drift guard passes, fails naming writing after temporary removal, then passes after restoration
+R4	.omo/evidence/20260924-jev-w1/R4-size-conservation.txt	qa	Both oversized tests split below 200 lines with test and expect counts conserved; report waiver removed; no skip only or todo introduced
+R4	.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt	artifact	Todo-19 turns_synthetic marked pre-R2 and non-current; F3 ROUND 2 named as current post-R2 live evidence; unaffected figures enumerated
+R5	.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt	artifact	Amended todo-19 correction enumerates all seven moved report figures with old and F3 ROUND 2 values
+R5	.omo/evidence/20260924-jev-w1/R5-budget-instrument.txt	qa	High-resolution per-thread CPU p99 keeps the strict one-millisecond gate, reports wall p99, and fails under temporary synchronous work
+R5	.omo/evidence/20260924-jev-w1/R5-testfast-stability.txt	green	Three consecutive test:fast runs pass 481 with identical counts; CPU and informational wall p99 values plus typecheck and LSP outcomes recorded
+F1	.omo/evidence/20260924-jev-w1/F1-compliance.txt	qa	Plan-compliance audit, 4 rounds, final APPROVE: manifest header, artifact existence, todos 1-19 coverage, commit-count reasoning, N1/N3/N4 raised and closed
+F2	.omo/evidence/20260924-jev-w1/F2-quality.txt	qa	Code-quality review, 4 rounds, REJECT then REJECT then APPROVE: 6 then 3 defects found, baseline-relative suite comparison, size-waiver audit, final APPROVE
+F3	.omo/evidence/20260924-jev-w1/F3-redrive.txt	qa	Independent live re-drive, 2 rounds, REJECT then APPROVE: caught the real-home sink leak, then attributed isolation correctly after the fix
+F4	.omo/evidence/20260924-jev-w1/F4-scope.txt	qa	Scope-fidelity audit, 3 rounds, all APPROVE: full Must-NOT-Have sweep, changed-file inventory, prose blocks sha256-identical to base
+F5	.omo/evidence/20260924-jev-w1/F5-integrity.txt	qa	Measurement-integrity audit, 3 rounds, REJECT then APPROVE: caught coverage gated by coherence, verified metric computations not labels

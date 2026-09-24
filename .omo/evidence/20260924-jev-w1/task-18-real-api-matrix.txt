@@ -1,0 +1,80 @@
+Task 18 one-time real-API intent-routing accuracy baseline
+
+WHAT WAS TESTED
+Command: JEV_W1_REAL_API=1 bun test packages/jev-core/src/intent-routing-accuracy.test.ts
+Credential sourcing: both main-checkout credential files were sourced read-only, then the required credential was asserted non-empty before the command started. The value existed only in the process environment.
+Call controls: the SDK retry policy was maxRetries 0, the decision ceiling was 17, and the injected counting fetch rejected request 18 before issuing it.
+
+WHAT WAS OBSERVED
+Command exit: 0
+Artifact status: complete
+Resolved model: jev-1.13.0
+Question version: 1
+Fixtures completed: 17 of 17
+Decision calls: 17
+HTTP requests: 17 of 17 allowed
+Input tokens: 19890
+Output tokens: 5658
+Latency range: 105.711 to 242.373 ms
+Unavailable outcomes: 0
+
+PER-FIXTURE RESULTS
+fixture_id	status	input_tokens	output_tokens	latency_ms
+none-pure-question-1	filled	1160	332	242.373
+none-pure-explanation-1	filled	1183	332	123.825
+none-acknowledgement-1	filled	1154	334	123.000
+category-writing-1	filled	1179	331	181.016
+category-quick-1	filled	1171	331	131.357
+subagent-explore-1	filled	1173	335	117.673
+subagent-oracle-1	filled	1172	331	132.852
+ambiguous-make-it-faster-1	filled	1156	331	116.085
+ambiguous-clean-up-1	filled	1162	331	106.205
+multilingual-ko-1	filled	1195	335	165.321
+multilingual-ja-1	filled	1193	336	120.082
+multilingual-de-1	filled	1173	332	151.028
+continuation-continue-1	filled	1149	331	112.226
+continuation-go-on-1	filled	1150	331	119.593
+adversarial-question-as-order-1	filled	1165	334	143.525
+adversarial-order-as-question-1	filled	1176	332	105.711
+category-visual-engineering-1	filled	1179	339	123.055
+
+PER-QUESTION CONFUSION MATRICES
+Rows are expected labels. Columns shown after each row are predicted-label=count.
+
+intent, accuracy 14/17 = 82.35%
+explain: explain=3
+acknowledge: acknowledge=1
+author: author=1
+implement: implement=4, review=1, investigate=1
+investigate: investigate=2, explain=1
+review: review=1
+continue: continue=2
+
+category, accuracy 12/17 = 70.59%
+none: none=9, deep=1
+writing: writing=1
+quick: quick=1, none=1
+ultrabrain: quick=1
+unspecified-low: writing=1
+unspecified-high: none=1
+visual-engineering: visual-engineering=1
+
+subagent, accuracy 13/17 = 76.47%
+none: none=11, OpenCode-Builder=2
+explore: explore=2, build=1
+oracle: none=1
+
+ambiguous, accuracy 9/17 = 52.94%
+false: false=3, true=8
+true: true=6
+
+BILLING BASIS
+Official source: https://docs.typesafe.ai/models
+Exact quote: "Price: Charged per input token. Output tokens are free. A Btok is a billion tokens and an Mtok is a million tokens."
+The page lists Jev 1.13 at $0.042 per million input tokens. The observed 19890 input tokens correspond to $0.00083538 at that published rate. HTTP request count was not treated as a billing unit.
+
+WHY IT IS ENOUGH
+This is the only paid accuracy run. It retained all fixture ids, per-fixture status, usage and latency, the resolved versioned model id, the question version, exact request and token totals, and all four confusion matrices. It is a regression baseline for detecting silent decision changes after a future model-version move. No accuracy threshold gates the result; the 52.94% ambiguous-question score and every other mismatch are retained as findings.
+
+WHAT WAS OMITTED
+Credentials, authorization headers, request bodies, environment dumps, raw SDK traffic, and machine-local paths were not retained.

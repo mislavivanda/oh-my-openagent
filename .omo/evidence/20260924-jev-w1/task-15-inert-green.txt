@@ -1,0 +1,132 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts:
+TASK15_NO_AWAIT dispatcherHandlerMs=0.133 dispatcherInFlight=1
+TASK15_NO_AWAIT fetchHandlerMs=0.116 fetchInFlight=1
+TASK15_P99 samples=200 p99Ms=0.153856 boundMs=1
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_STRESS addedWallMs=1.535 enabledWallMs=4.535 disabledWallMs=2.999 maxInFlight=4 dispatchesDropped=46 fetchStarts=4 heapGrowthBytes=913307 observations=50 childExitCode=0 childElapsedMs=129.043 home=/tmp/task-15-stress-home-jCpe2I
+TASK15_STRESS_CLEANUP removed=/tmp/task-15-stress-home-jCpe2I
+TASK15_UNREF childExitCode=0 childElapsedMs=104.245 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-76U7Sh
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-76U7Sh
+
+ 12 pass
+ 0 fail
+ 58 expect() calls
+Ran 12 tests across 4 files. [412.00ms]
+
+exit=0
+
+verification_gates_begin
+lsp_diagnostics=UNREACHABLE: workspace TypeScript 7.0.2 has no tsserver.js; substituting scoped tsgo as required
+
+GATE_BEGIN scoped_tsgo
+GATE_END scoped_tsgo exit=0
+
+GATE_BEGIN typecheck
+$ tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages
+packages/omo-opencode/src/plugin/intent-routing-inert-test-support.ts(6,33): error TS6059: File '/home/opencode/projects/oh-my-openagent-jev-w1-fffe/test-support/unsafe-test-value.ts' is not under 'rootDir' '/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src'. 'rootDir' is expected to contain all source files.
+GATE_END typecheck exit=2
+
+GATE_BEGIN jev_suites
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+mock-accuracy-artifact={"status":"complete","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"decisionCallCount":17,"networkCallCount":0,"errorName":null,"confusionMatrix":{"intent":{"explain":{"explain":3},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":6},"investigate":{"investigate":3},"review":{"review":1},"continue":{"continue":2}},"category":{"none":{"none":10},"writing":{"writing":1},"quick":{"quick":2},"ultrabrain":{"ultrabrain":1},"unspecified-low":{"unspecified-low":1},"unspecified-high":{"unspecified-high":1},"visual-engineering":{"visual-engineering":1}},"subagent":{"none":{"none":13},"explore":{"explore":3},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":11},"true":{"true":6}}}}
+zero-network-calls=0
+dry-run built=17 decision-calls=0 network-calls=0
+ceiling-abort-proof ceiling=17 calls=17 error=IntentRoutingCallCeilingError
+partial-accuracy-artifact={"status":"partial","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1"],"decisionCallCount":8,"networkCallCount":0,"errorName":"IntentRoutingFixtureError","confusionMatrix":{"intent":{"explain":{"explain":2},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":1},"investigate":{"investigate":1},"review":{"review":1}},"category":{"none":{"none":5},"writing":{"writing":1},"quick":{"quick":1}},"subagent":{"none":{"none":5},"explore":{"explore":1},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":7}}}}
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+intent-routing synchronous p99: 0.215ms
+
+ 219 pass
+ 1 skip
+ 0 fail
+ 1024 expect() calls
+Ran 220 tests across 19 files. [366.00ms]
+GATE_END jev_suites exit=0
+
+GATE_BEGIN plugin_suite
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:
+chat.message non-awaited proof: 0.140ms
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts:
+TASK15_NO_AWAIT dispatcherHandlerMs=0.179 dispatcherInFlight=1
+TASK15_NO_AWAIT fetchHandlerMs=0.098 fetchInFlight=1
+TASK15_P99 samples=200 p99Ms=0.130374 boundMs=1
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_STRESS addedWallMs=2.394 enabledWallMs=4.948 disabledWallMs=2.553 maxInFlight=4 dispatchesDropped=46 fetchStarts=4 heapGrowthBytes=913604 observations=50 childExitCode=0 childElapsedMs=139.663 home=/tmp/task-15-stress-home-yWtpBd
+TASK15_STRESS_CLEANUP removed=/tmp/task-15-stress-home-yWtpBd
+TASK15_UNREF childExitCode=0 childElapsedMs=110.112 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-Znd5Uc
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-Znd5Uc
+
+ 603 pass
+ 0 fail
+ 1666 expect() calls
+Ran 603 tests across 77 files. [8.63s]
+GATE_END plugin_suite exit=0
+
+GATE_BEGIN test_fast
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+mock-accuracy-artifact={"status":"complete","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"decisionCallCount":17,"networkCallCount":0,"errorName":null,"confusionMatrix":{"intent":{"explain":{"explain":3},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":6},"investigate":{"investigate":3},"review":{"review":1},"continue":{"continue":2}},"category":{"none":{"none":10},"writing":{"writing":1},"quick":{"quick":2},"ultrabrain":{"ultrabrain":1},"unspecified-low":{"unspecified-low":1},"unspecified-high":{"unspecified-high":1},"visual-engineering":{"visual-engineering":1}},"subagent":{"none":{"none":13},"explore":{"explore":3},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":11},"true":{"true":6}}}}
+zero-network-calls=0
+dry-run built=17 decision-calls=0 network-calls=0
+ceiling-abort-proof ceiling=17 calls=17 error=IntentRoutingCallCeilingError
+partial-accuracy-artifact={"status":"partial","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1"],"decisionCallCount":8,"networkCallCount":0,"errorName":"IntentRoutingFixtureError","confusionMatrix":{"intent":{"explain":{"explain":2},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":1},"investigate":{"investigate":1},"review":{"review":1}},"category":{"none":{"none":5},"writing":{"writing":1},"quick":{"quick":1}},"subagent":{"none":{"none":5},"explore":{"explore":1},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":7}}}}
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+intent-routing synchronous p99: 0.278ms
+
+ 446 pass
+ 1 skip
+ 0 fail
+ 1489 expect() calls
+Ran 447 tests across 41 files. [5.88s]
+GATE_END test_fast exit=0
+
+verification_gates_exit=1
+
+GATE_RETRY_BEGIN typecheck_after_test_support_rename
+$ tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages
+packages/omo-opencode/src/plugin/intent-routing-inert.test-support.ts(6,33): error TS6059: File '/home/opencode/projects/oh-my-openagent-jev-w1-fffe/test-support/unsafe-test-value.ts' is not under 'rootDir' '/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src'. 'rootDir' is expected to contain all source files.
+GATE_RETRY_END typecheck_after_test_support_rename exit=2
+final_verification_gates_exit=2
+
+GATE_RETRY_BEGIN typecheck_after_fixture_boundary_fix
+$ tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages
+$ tsgo --noEmit -p script/tsconfig.json
+$ tsgo --noEmit -p packages/rules-engine/tsconfig.json && tsgo --noEmit -p packages/delegate-core/tsconfig.json && tsgo --noEmit -p packages/jev-core/tsconfig.json && tsgo --noEmit -p packages/mcp-stdio-core/tsconfig.json && tsgo --noEmit -p packages/mcp-client-core/tsconfig.json && tsgo --noEmit -p packages/git-bash-mcp/tsconfig.json && tsgo --noEmit -p packages/lsp-core/tsconfig.json && tsgo --noEmit -p packages/utils/tsconfig.json && tsgo --noEmit -p packages/model-core/tsconfig.json && tsgo --noEmit -p packages/omo-config-core/tsconfig.json && tsgo --noEmit -p packages/prompts-core/tsconfig.json && tsgo --noEmit -p packages/comment-checker-core/tsconfig.json && tsgo --noEmit -p packages/hashline-core/tsconfig.json && tsgo --noEmit -p packages/tmux-core/tsconfig.json && tsgo --noEmit -p packages/team-core/tsconfig.json && tsgo --noEmit -p packages/openclaw-core/tsconfig.json && tsgo --noEmit -p packages/boulder-state/tsconfig.json && tsgo --noEmit -p packages/telemetry-core/tsconfig.json && tsgo --noEmit -p packages/claude-code-compat-core/tsconfig.json && tsgo --noEmit -p packages/skills-loader-core/tsconfig.json && tsgo --noEmit -p packages/agents-md-core/tsconfig.json && tsgo --noEmit -p packages/omo-codex/plugin/shared/tsconfig.json && tsgo --noEmit -p packages/omo-codex/tsconfig.json && tsgo --noEmit -p packages/omo-senpi/tsconfig.json && tsgo --noEmit -p packages/senpi-task/tsconfig.json && tsgo --noEmit -p packages/pi-goal/tsconfig.json && tsgo --noEmit -p packages/pi-webfetch/tsconfig.json && tsgo --noEmit -p packages/omo-opencode/tsconfig.json
+GATE_RETRY_END typecheck_after_fixture_boundary_fix exit=0
+final_verification_gates_exit=0
+
+GATE_RETRY_BEGIN plugin_suite_after_fixture_boundary_fix
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:
+chat.message non-awaited proof: 0.106ms
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts:
+TASK15_NO_AWAIT dispatcherHandlerMs=0.195 dispatcherInFlight=1
+TASK15_NO_AWAIT fetchHandlerMs=0.144 fetchInFlight=1
+TASK15_P99 samples=200 p99Ms=0.121067 boundMs=1
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_STRESS addedWallMs=2.807 enabledWallMs=5.343 disabledWallMs=2.536 maxInFlight=4 dispatchesDropped=46 fetchStarts=4 heapGrowthBytes=914778 observations=50 childExitCode=0 childElapsedMs=128.609 home=/tmp/task-15-stress-home-fB6g7o
+TASK15_STRESS_CLEANUP removed=/tmp/task-15-stress-home-fB6g7o
+TASK15_UNREF childExitCode=0 childElapsedMs=104.248 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-oxRlsh
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-oxRlsh
+
+ 603 pass
+ 0 fail
+ 1666 expect() calls
+Ran 603 tests across 78 files. [8.60s]
+GATE_RETRY_END plugin_suite_after_fixture_boundary_fix exit=0

@@ -1,0 +1,33 @@
+curl: (7) Failed to connect to 127.0.0.1 port 38353 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 45179 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 45179 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 45179 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 45179 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 45179 after 0 ms: Couldn't connect to server
+curl: (28) Operation timed out after 2002 milliseconds with 0 bytes received
+wire=enabled
+turns=32
+session_id=ses_f2b28ca88ffeKJJHPrEq6kxBgO
+observations=32
+counter_deltas=4
+fan_out_zero=15
+fan_out_one=10
+fan_out_many=7
+prediction_reused=1
+call_omo_agent_calls=11
+unscorable_resume_calls=1
+continuation_candidates=1
+correlation_reliable=32
+correlation_censored=0
+correlation_overlap_ambiguous=0
+intent_routing_logs=31
+jev_requests=31
+records_created=32
+records_evicted=0
+in_flight=0
+records_created_identity=ok
+real_session_count_before=420
+real_session_count_after=420
+correlation_unreachable=censored,overlap_ambiguous; sequential opencode run calls seal on session_idle before the next prompt
+next_turn_unreachable=sequential opencode run calls reach session.idle before the next prompt
+driver_exit=0

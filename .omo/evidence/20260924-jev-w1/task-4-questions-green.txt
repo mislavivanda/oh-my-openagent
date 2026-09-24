@@ -1,0 +1,35 @@
+=== GREEN, todo 4: intent-routing question set ===
+cwd: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+date: 2026-09-24T15:54:27Z
+command: bun test packages/jev-core/src/intent-routing.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+ 13 pass
+ 0 fail
+ 122 expect() calls
+Ran 13 tests across 1 file. [119.00ms]
+exit=0
+
+--- per-test roster (bun test --reporter=junit) ---
+     1	#when building the question set #then it has exactly the four W1 question keys
+     2	#when building the question set #then category and subagent each carry an explicit none option
+     3	#when reading the none option criteria #then each says the turn required no delegation of that kind
+     4	#when inspecting every choice option #then labels are non-empty, unique, and described in one line
+     5	#when counting options #then every choice question stays under the SDK option cap
+     6	#when the vocabulary carries members not in the builtin defaults #then they appear as options
+     7	#when building the question set #then it throws a named error rather than a one-option choice
+     8	#when only the intents list is empty #then it throws naming intents
+     9	#when a label repeats #then it throws a named error naming the duplicate
+    10	#when a member collides with the reserved none label #then it throws
+    11	#when a label is blank #then it throws
+    12	#when a list exceeds the option cap #then it throws naming the cap
+    13	#when reading the version #then it is 1
+
+--- acceptance criteria coverage ---
+exactly 4 question keys              -> test 1
+category + subagent carry none       -> tests 2 and 3
+labels non-empty and unique          -> test 4
+option counts under 255              -> test 5
+empty vocab throws a named error     -> tests 7 and 8
+option set is a PARAMETER not literal-> test 6 (custom-category appears)

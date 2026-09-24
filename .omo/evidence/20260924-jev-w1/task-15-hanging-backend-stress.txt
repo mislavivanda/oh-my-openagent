@@ -1,0 +1,20 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_STRESS addedWallMs=2.035 enabledWallMs=4.441 disabledWallMs=2.406 maxInFlight=4 dispatchesDropped=46 fetchStarts=4 heapGrowthBytes=914049 observations=50 childExitCode=0 childElapsedMs=126.087 home=/tmp/task-15-stress-home-bGJ9s3
+TASK15_STRESS_CLEANUP removed=/tmp/task-15-stress-home-bGJ9s3
+TASK15_UNREF childExitCode=0 childElapsedMs=103.144 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-u9aTiz
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-u9aTiz
+
+ 2 pass
+ 0 fail
+ 16 expect() calls
+Ran 2 tests across 1 file. [360.00ms]
+
+exit=0
+
+W4_SCOPE_DIFF_BEGIN
+command=git diff jev/foundation..jev/w1-fffe --stat -- protected W4 paths
+W4_SCOPE_DIFF_END
+w4_diff_exit=0
+w4_diff_output_bytes=0

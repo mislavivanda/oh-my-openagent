@@ -1,0 +1,3 @@
+recursive_manifest_diff=EMPTY
+diff_exit=0
+diff_lines=0

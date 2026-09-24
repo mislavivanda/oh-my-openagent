@@ -1,0 +1,95 @@
+WHAT WAS TESTED
+Command: bun test packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts --test-name-pattern "synthetic message|duplicate real idle"
+Surface: production chat.message and event handler intent-routing seams.
+
+bun test v1.4.0 (34cbb9a40)
+
+ 2 pass
+ 3 filtered out
+ 0 fail
+ 5 expect() calls
+Ran 2 tests across 1 file. [145.00ms]
+
+EXIT: 0
+
+WHAT WAS OBSERVED
+Both handler regressions passed. Synthetic observation increments turnsSynthetic while creating no turn and issuing no dispatch. Duplicate real idle events reach intent-routing twice while the existing event consumer runs once.
+
+WHY IT IS ENOUGH
+The same production-handler assertions failed before the two ordering changes and now pin both repaired lifecycle paths without changing output parts, hook execution, or idle behavior for existing consumers.
+
+WHAT WAS OMITTED
+No OpenCode process, server, database, credentials, auth headers, or environment dump was used.
+
+FINAL GATE: bun run typecheck
+$ tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages
+packages/omo-opencode/src/testing/create-plugin-module.test-support.ts(30,32): error TS2554: Expected 0 arguments, but got 2.
+TYPECHECK_EXIT: 2
+
+FINAL GATE RETRY: bun run typecheck
+$ tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages
+$ tsgo --noEmit -p script/tsconfig.json
+$ tsgo --noEmit -p packages/rules-engine/tsconfig.json && tsgo --noEmit -p packages/delegate-core/tsconfig.json && tsgo --noEmit -p packages/jev-core/tsconfig.json && tsgo --noEmit -p packages/mcp-stdio-core/tsconfig.json && tsgo --noEmit -p packages/mcp-client-core/tsconfig.json && tsgo --noEmit -p packages/git-bash-mcp/tsconfig.json && tsgo --noEmit -p packages/lsp-core/tsconfig.json && tsgo --noEmit -p packages/utils/tsconfig.json && tsgo --noEmit -p packages/model-core/tsconfig.json && tsgo --noEmit -p packages/omo-config-core/tsconfig.json && tsgo --noEmit -p packages/prompts-core/tsconfig.json && tsgo --noEmit -p packages/comment-checker-core/tsconfig.json && tsgo --noEmit -p packages/hashline-core/tsconfig.json && tsgo --noEmit -p packages/tmux-core/tsconfig.json && tsgo --noEmit -p packages/team-core/tsconfig.json && tsgo --noEmit -p packages/openclaw-core/tsconfig.json && tsgo --noEmit -p packages/boulder-state/tsconfig.json && tsgo --noEmit -p packages/telemetry-core/tsconfig.json && tsgo --noEmit -p packages/claude-code-compat-core/tsconfig.json && tsgo --noEmit -p packages/skills-loader-core/tsconfig.json && tsgo --noEmit -p packages/agents-md-core/tsconfig.json && tsgo --noEmit -p packages/omo-codex/plugin/shared/tsconfig.json && tsgo --noEmit -p packages/omo-codex/tsconfig.json && tsgo --noEmit -p packages/omo-senpi/tsconfig.json && tsgo --noEmit -p packages/senpi-task/tsconfig.json && tsgo --noEmit -p packages/pi-goal/tsconfig.json && tsgo --noEmit -p packages/pi-webfetch/tsconfig.json && tsgo --noEmit -p packages/omo-opencode/tsconfig.json
+TYPECHECK_RETRY_EXIT: 0
+
+FINAL GATE: bun test packages/omo-opencode/src/features/jev/ packages/omo-opencode/src/plugin
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:
+chat.message non-awaited proof: 0.125ms
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts:
+TASK15_NO_AWAIT dispatcherHandlerMs=0.202 dispatcherInFlight=1
+TASK15_NO_AWAIT fetchHandlerMs=0.092 fetchInFlight=1
+TASK15_P99 samples=200 p99Ms=0.174831 boundMs=1
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_STRESS addedWallMs=2.098 enabledWallMs=4.525 disabledWallMs=2.427 maxInFlight=4 dispatchesDropped=46 fetchStarts=4 heapGrowthBytes=915125 observations=50 childExitCode=0 childElapsedMs=124.297 home=/tmp/task-15-stress-home-SRjGXV
+TASK15_STRESS_CLEANUP removed=/tmp/task-15-stress-home-SRjGXV
+TASK15_UNREF childExitCode=0 childElapsedMs=104.634 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-aVuTCP
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-aVuTCP
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+intent-routing synchronous p99: 0.086ms
+
+ 677 pass
+ 0 fail
+ 2067 expect() calls
+Ran 677 tests across 85 files. [8.64s]
+SCOPED_TEST_EXIT: 0
+
+FINAL GATE: bun run test:fast
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts packages/omo-opencode/src/plugin/intent-routing-inert.child.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts script/jev-w1-report.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+mock-accuracy-artifact={"status":"complete","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"decisionCallCount":17,"networkCallCount":0,"requestCount":0,"inputTokens":0,"outputTokens":0,"latencyMs":{"min":0.00544999999999618,"max":0.03011199999997416},"unavailableReasonCounts":{},"fixtureResults":[{"id":"none-pure-question-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.03011199999997416},{"id":"none-pure-explanation-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.00802499999997508},{"id":"none-acknowledgement-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.025179999999977554},{"id":"category-writing-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.009331000000031509},{"id":"category-quick-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.01023800000001529},{"id":"subagent-explore-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.006977000000006228},{"id":"subagent-oracle-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.007444000000020878},{"id":"ambiguous-make-it-faster-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.006524000000013075},{"id":"ambiguous-clean-up-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.006328999999993812},{"id":"multilingual-ko-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.005612999999982549},{"id":"multilingual-ja-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.008156999999982872},{"id":"multilingual-de-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.006688999999994394},{"id":"continuation-continue-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.00813999999996895},{"id":"continuation-go-on-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.00544999999999618},{"id":"adversarial-question-as-order-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.007289000000014312},{"id":"adversarial-order-as-question-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.007913000000030479},{"id":"category-visual-engineering-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.011447999999973035}],"errorName":null,"confusionMatrix":{"intent":{"open-ended":{"open-ended":5},"investigation":{"investigation":3},"implementation":{"implementation":6},"research":{"research":1},"evaluation":{"evaluation":1},"fix":{"fix":1}},"category":{"none":{"none":10},"writing":{"writing":1},"quick":{"quick":2},"ultrabrain":{"ultrabrain":1},"unspecified-low":{"unspecified-low":1},"unspecified-high":{"unspecified-high":1},"visual-engineering":{"visual-engineering":1}},"subagent":{"none":{"none":13},"explore":{"explore":3},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":11},"true":{"true":6}}}}
+zero-network-calls=0
+dry-run built=17 decision-calls=0 network-calls=0
+ceiling-abort-proof ceiling=17 calls=17 error=IntentRoutingCallCeilingError
+partial-accuracy-artifact={"status":"partial","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1"],"decisionCallCount":8,"networkCallCount":0,"requestCount":0,"inputTokens":0,"outputTokens":0,"latencyMs":{"min":0.004998000000000502,"max":1},"unavailableReasonCounts":{"api_error":1},"fixtureResults":[{"id":"none-pure-question-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.02303799999998546},{"id":"none-pure-explanation-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.007555000000024847},{"id":"none-acknowledgement-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.006841000000008535},{"id":"category-writing-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.005200000000002092},{"id":"category-quick-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.005792000000042208},{"id":"subagent-explore-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.004998000000000502},{"id":"subagent-oracle-1","status":"filled","resolvedModel":"mock/jev-intent-routing-v1","unavailableReason":null,"usage":{"input_tokens":0,"output_tokens":0},"latencyMs":0.005063000000006923},{"id":"ambiguous-make-it-faster-1","status":"unavailable","resolvedModel":null,"unavailableReason":"api_error","usage":null,"latencyMs":1}],"errorName":"IntentRoutingFixtureError","confusionMatrix":{"intent":{"open-ended":{"open-ended":2},"investigation":{"investigation":1},"implementation":{"implementation":2},"research":{"research":1},"evaluation":{"evaluation":1}},"category":{"none":{"none":5},"writing":{"writing":1},"quick":{"quick":1}},"subagent":{"none":{"none":5},"explore":{"explore":1},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":7}}}}
+request-count-measurement requests=1 questions=4 input-tokens=321 output-tokens=7 latency-ms=0.225
+
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:
+chat.message non-awaited proof: 0.087ms
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts:
+TASK15_NO_AWAIT dispatcherHandlerMs=0.249 dispatcherInFlight=1
+TASK15_NO_AWAIT fetchHandlerMs=0.128 fetchInFlight=1
+TASK15_P99 samples=200 p99Ms=0.123303 boundMs=1
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_STRESS addedWallMs=2.381 enabledWallMs=4.794 disabledWallMs=2.413 maxInFlight=4 dispatchesDropped=46 fetchStarts=4 heapGrowthBytes=920792 observations=50 childExitCode=0 childElapsedMs=125.808 home=/tmp/task-15-stress-home-CtErM9
+TASK15_STRESS_CLEANUP removed=/tmp/task-15-stress-home-CtErM9
+TASK15_UNREF childExitCode=0 childElapsedMs=103.336 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-5sYlyh
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-5sYlyh
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+intent-routing synchronous p99: 0.101ms
+
+ 479 pass
+ 1 skip
+ 0 fail
+ 1733 expect() calls
+Ran 480 tests across 48 files. [6.14s]
+TEST_FAST_EXIT: 0

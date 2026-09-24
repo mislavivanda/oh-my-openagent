@@ -1,3 +1,5 @@
+// allow: SIZE_OK - Real and normalized idle dedup maps, fallback cleanup, hook dispatch, and session deletion share one ordered handler; splitting branches would duplicate dedup ownership and permit seal ordering drift.
+
 import type { PluginInput } from "@opencode-ai/plugin";
 import type { OhMyOpenCodeConfig } from "../config";
 import type { CreatedHooks } from "../create-hooks";
@@ -5,7 +7,12 @@ import type { Managers } from "../create-managers";
 import type { PluginContext } from "./types";
 
 import { getMainSessionID, subagentSessions, syncSubagentSessions } from "../features/claude-code-session-state";
-import { createJevModelErrorTriage, type JevModelErrorTriage } from "../features/jev";
+import {
+  createJevModelErrorTriage,
+  createPluginJevIntentRouting,
+  type JevIntentRouting,
+  type JevModelErrorTriage,
+} from "../features/jev";
 import { invalidateContextWindowUsageCache } from "../shared/dynamic-truncator";
 import { resolveSessionEventID } from "../shared/event-session-id";
 import { log } from "../shared/logger";
@@ -34,6 +41,7 @@ export function createEventHandler(args: {
   managers: Managers;
   hooks: CreatedHooks;
   jevTriage?: JevModelErrorTriage;
+  intentRouting?: JevIntentRouting;
 }): (input: EventInput) => Promise<void> {
   const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks } = args;
   const tmuxIntegrationEnabled = pluginConfig.tmux?.enabled ?? false;
@@ -53,6 +61,7 @@ export function createEventHandler(args: {
   const dedupWindowMs = 500;
   const teamHandlers = createEventTeamHandlers({ pluginConfig, pluginContext, managers });
   const jevTriage = args.jevTriage ?? createJevModelErrorTriage({ jevConfig: pluginConfig.jev });
+  const intentRouting = args.intentRouting ?? createPluginJevIntentRouting(pluginConfig);
 
   const shouldAutoRetrySession = (sessionID: string): boolean => {
     if (syncSubagentSessions.has(sessionID)) return true;
@@ -128,6 +137,7 @@ export function createEventHandler(args: {
       if (sessionID) {
         const now = Date.now();
         recentRealIdles.set(sessionID, now);
+        intentRouting.onSessionIdle(sessionID);
         if (!shouldDispatchIdleEvent(sessionID, now)) return;
       }
     }
@@ -135,7 +145,10 @@ export function createEventHandler(args: {
     let deletedSessionID: string | undefined;
     if (input.event.type === "session.deleted") {
       deletedSessionID = getEventSessionID(input);
-      if (deletedSessionID) modelFallbackHandler.cancelPendingJevTriage(deletedSessionID);
+      if (deletedSessionID) {
+        modelFallbackHandler.cancelPendingJevTriage(deletedSessionID);
+        intentRouting.onSessionDeleted(deletedSessionID);
+      }
     }
 
     try {

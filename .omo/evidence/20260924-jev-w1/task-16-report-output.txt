@@ -1,0 +1,122 @@
+DENOMINATORS
+turns_seen=40
+turns_gated_out=4
+turns_synthetic=3
+records_created=35
+records_with_prediction=29
+records_sealed_by_next_turn=6
+records_sealed_by_session_idle=8
+records_sealed_by_seal_timeout=7
+records_sealed_by_dispose=7
+records_sealed_by_session_deleted=4
+records_evicted=1
+in_flight=2
+orphan_observations=2
+unscorable_resume_calls=2
+resume_only_records=1
+unscorable_unknown_calls=1
+unknown_only_records=1
+unrepresentable_route_mismatches=1
+dispatches_dropped=2
+invalid_answers=1
+incoherent_predictions=1
+malformed_lines=2
+malformed_write_rejections=1
+records_lost_to_cap=5
+sink_truncations=1
+prediction_reused=2
+truncated_input=1
+prediction_status_filled=29
+prediction_status_failed=1
+prediction_status_timeout=1
+prediction_status_not_dispatched=1
+correlation_status_reliable=27
+correlation_status_censored=2
+correlation_status_overlap_ambiguous=3
+counter_process_snapshots=2
+records_created_identity sealed=32 evicted=1 in_flight=2 status=ok
+
+ELIGIBILITY
+headline_eligibility correlation_status=reliable censored_excluded=2 overlap_ambiguous_excluded=3
+prediction_rate_eligibility filled=29 failed_excluded=1 timeout_excluded=1 not_dispatched_excluded=1
+scoring_audit resume_only_excluded=1 unknown_scored=1 mixed_resume_routes_retained=1
+scored_incorrect invalid=1 incoherent=1
+observed_delegations=attempts_not_successes
+minimum_data sealed_records=32 required=30 status=sufficient
+
+RATES
+exact_route_agreement numerator=12 denominator=19 rate=0.631579
+multi_route_turns=4
+category_coverage numerator=17 denominator=23 distinct_target_cardinality=15 rate=0.739130
+category_cardinality_weighted_coverage numerator=20 denominator=26 distinct_target_cardinality=15 rate=0.769231
+subagent_coverage numerator=19 denominator=23 distinct_target_cardinality=7 rate=0.826087
+subagent_cardinality_weighted_coverage numerator=20 denominator=24 distinct_target_cardinality=7 rate=0.833333
+none_recall numerator=4 denominator=5 rate=0.800000
+none_precision numerator=4 denominator=7 rate=0.571429
+coherence_rate numerator=22 denominator=23 rate=0.956522
+
+FAN-OUT BY SEALED-BY CROSS-TAB
+fan_out=zero sealed_by=next_turn records=2 exact_route_agreement=1/2:0.500000 category_coverage=1/2:0.500000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=1/2:0.500000 subagent_coverage=2/2:1.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=2/2:1.000000 none_recall=1/2:0.500000 none_precision=1/1:1.000000 coherence_rate=2/2:1.000000
+fan_out=zero sealed_by=session_idle records=1 exact_route_agreement=1/1:1.000000 category_coverage=1/1:1.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=1/1:1.000000 subagent_coverage=1/1:1.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=1/1:1.000000 none_recall=1/1:1.000000 none_precision=1/1:1.000000 coherence_rate=1/1:1.000000
+fan_out=zero sealed_by=seal_timeout records=2 exact_route_agreement=2/2:1.000000 category_coverage=2/2:1.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=2/2:1.000000 subagent_coverage=2/2:1.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=2/2:1.000000 none_recall=2/2:1.000000 none_precision=2/2:1.000000 coherence_rate=2/2:1.000000
+fan_out=zero sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=next_turn records=2 exact_route_agreement=1/2:0.500000 category_coverage=1/2:0.500000 distinct_target_cardinality=2 category_cardinality_weighted_coverage=1/2:0.500000 subagent_coverage=1/2:0.500000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=1/2:0.500000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/2:0.500000
+fan_out=one sealed_by=session_idle records=4 exact_route_agreement=2/4:0.500000 category_coverage=2/4:0.500000 distinct_target_cardinality=2 category_cardinality_weighted_coverage=2/4:0.500000 subagent_coverage=3/4:0.750000 distinct_target_cardinality=1 subagent_cardinality_weighted_coverage=3/4:0.750000 none_recall=0/0:insufficient data none_precision=0/2:0.000000 coherence_rate=4/4:1.000000
+fan_out=one sealed_by=seal_timeout records=3 exact_route_agreement=2/3:0.666667 category_coverage=2/3:0.666667 distinct_target_cardinality=2 category_cardinality_weighted_coverage=2/3:0.666667 subagent_coverage=3/3:1.000000 distinct_target_cardinality=1 subagent_cardinality_weighted_coverage=3/3:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=3/3:1.000000
+fan_out=one sealed_by=dispose records=1 exact_route_agreement=0/1:0.000000 category_coverage=1/1:1.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=1/1:1.000000 subagent_coverage=0/1:0.000000 distinct_target_cardinality=1 subagent_cardinality_weighted_coverage=0/1:0.000000 none_recall=0/0:insufficient data none_precision=0/1:0.000000 coherence_rate=1/1:1.000000
+fan_out=one sealed_by=session_deleted records=2 exact_route_agreement=1/2:0.500000 category_coverage=1/2:0.500000 distinct_target_cardinality=1 category_cardinality_weighted_coverage=1/2:0.500000 subagent_coverage=2/2:1.000000 distinct_target_cardinality=1 subagent_cardinality_weighted_coverage=2/2:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=2/2:1.000000
+fan_out=many sealed_by=next_turn records=1 exact_route_agreement=0/0:insufficient data category_coverage=1/1:1.000000 distinct_target_cardinality=3 category_cardinality_weighted_coverage=3/3:1.000000 subagent_coverage=1/1:1.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=1/1:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/1:1.000000
+fan_out=many sealed_by=session_idle records=1 exact_route_agreement=1/1:1.000000 category_coverage=1/1:1.000000 distinct_target_cardinality=1 category_cardinality_weighted_coverage=1/1:1.000000 subagent_coverage=1/1:1.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=1/1:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/1:1.000000
+fan_out=many sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=dispose records=3 exact_route_agreement=0/0:insufficient data category_coverage=3/3:1.000000 distinct_target_cardinality=3 category_cardinality_weighted_coverage=4/4:1.000000 subagent_coverage=2/3:0.666667 distinct_target_cardinality=3 subagent_cardinality_weighted_coverage=3/4:0.750000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=3/3:1.000000
+fan_out=many sealed_by=session_deleted records=1 exact_route_agreement=1/1:1.000000 category_coverage=1/1:1.000000 distinct_target_cardinality=1 category_cardinality_weighted_coverage=1/1:1.000000 subagent_coverage=1/1:1.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=1/1:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/1:1.000000
+
+CONTINUATION COHORT
+continuation_candidate records=2 exact_route_agreement=2/2:1.000000 category_coverage=2/2:1.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=2/2:1.000000 subagent_coverage=2/2:1.000000 distinct_target_cardinality=1 subagent_cardinality_weighted_coverage=2/2:1.000000 none_recall=1/1:1.000000 none_precision=1/1:1.000000 coherence_rate=2/2:1.000000
+
+FIXTURE-SCORED ONLY: no live harness ground truth
+intent_coverage live_ground_truth=unavailable
+ambiguous_coverage live_ground_truth=unavailable
+
+LIMITATIONS
+live_disagreements_reproducible=false fixture_growth=manual prompt_head_chars_retained=200
+PROMPT SHA-256 RECURRENCE
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000001 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000002 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000003 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000004 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000005 count=2
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000006 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000007 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000008 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000009 count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000a count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000b count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000c count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000d count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000e count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000f count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000010 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000011 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000012 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000013 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000014 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000015 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000016 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000017 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000018 count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000019 count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001a count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001b count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001c count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001d count=1
+prompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001f count=1
+prompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000020 count=1
+
+EXIT_CODE=0
+
+CLI_ISOLATION_CHECK
+COMMAND=grep -rn "jev-w1-report" packages/omo-opencode/src/cli/
+MATCHES=0
+GREP_EXIT_CODE=1

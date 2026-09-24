@@ -1,0 +1,24 @@
+WHAT WAS TESTED
+- Built the local plugin with `bun run build`.
+- Ran the real installed OpenCode 1.18.32 CLI through `opencode run --format json`.
+- Loaded this worktree's `dist/index.js` via an isolated OpenCode config.
+- Enabled the W1 intent-routing wire with the local mock backend in an isolated `~/.omo/omo.json` `[opencode]` block.
+- Compared the host OpenCode session count before and after the isolated run.
+
+WHAT WAS OBSERVED
+- OpenCode exited 0 and emitted step_start, text, and step_finish events.
+- The plugin entry log was present.
+- The `[jev] intent-routing` decision log was present.
+- The isolated JSONL sink contained one observation sealed by `session_idle` with `predictionStatus: failed`, the expected result for an unscripted mock backend.
+- The real host database stayed at 399 sessions before and after.
+- Exact captured output: `.omo/evidence/20260924-jev-w1/task-14-opencode-qa-live.txt`.
+
+WHY IT IS ENOUGH
+- This drives the real OpenCode chat.message and event lifecycle surfaces through the built local plugin, rather than calling handlers directly.
+- The JEV log proves chat.message reached the shared routing instance.
+- The persisted session_idle seal proves the event consumer reached that same lifecycle state.
+- Unit wiring tests separately prove tool.execute.before capture identity and dispose flush identity.
+
+WHAT WAS OMITTED
+- Raw model text, environment dumps, credentials, auth headers, and temporary sandbox paths were not copied into evidence.
+- The isolated sandbox was removed after the run.

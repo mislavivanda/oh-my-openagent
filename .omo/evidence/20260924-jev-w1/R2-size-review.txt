@@ -1,0 +1,48 @@
+R2 SIZE WAIVER REVIEW
+
+WHAT WAS TESTED
+
+Commands:
+- wc -l over every split result and every retained W1 SIZE_OK file under packages/omo-opencode.
+- GIT_MASTER=1 git diff --unified=0 jev/foundation -- packages/omo-opencode | grep '^+// allow: SIZE_OK'
+- bun test packages/omo-opencode/src/testing/create-plugin-module-startup.test.ts packages/omo-opencode/src/testing/create-plugin-module-runtime-skills.test.ts packages/omo-opencode/src/testing/create-plugin-module-migration.test.ts packages/omo-opencode/src/testing/create-plugin-module-lifecycle.test.ts
+
+WHAT WAS OBSERVED
+
+The split plugin-init tests passed: 15 pass, 0 fail, 39 assertions.
+
+Rejected waiver dispositions:
+1. intent-routing-sink.ts: removed the waiver. The 325-line mixed reader/writer became:
+   - intent-routing-sink.ts: 248 lines, writer state and lazy filesystem creation
+   - intent-routing-sink-contract.ts: 74 lines, bounds and public contract
+   - intent-routing-sink-reader.ts: 64 lines, root discovery and tolerant JSONL reads
+2. intent-routing-turn-store.ts: split public contracts, prompt identity, counter construction, and pure LRU selection from the mutable reservation closure. Results:
+   - intent-routing-turn-store.ts: 398 lines
+   - intent-routing-turn-store-contract.ts: 104 lines
+   - intent-routing-turn-identity.ts: 60 lines
+   - intent-routing-turn-counters.ts: 22 lines
+   - intent-routing-turn-lru.ts: 33 lines
+   The remaining waiver names the invariant: session maps, pending reservation tokens, timeout handles, eviction, and finalization must share one closure so async completion cannot observe a different reservation identity.
+3. create-plugin-module.test.ts: removed the 551-line file and its generic waiver. Results:
+   - create-plugin-module.test-support.ts: 159 lines
+   - create-plugin-module-startup.test.ts: 117 lines
+   - create-plugin-module-runtime-skills.test.ts: 93 lines
+   - create-plugin-module-migration.test.ts: 89 lines
+   - create-plugin-module-lifecycle.test.ts: 85 lines
+
+Retained waiver review:
+1. intent-routing-seal.test.ts, 428 lines: retained. One ordered state-machine matrix shares fake clock, sink, logical-seal, overlap amendment, persistence, and disposal fixtures.
+2. intent-routing-seal.ts, 258 lines: retained. Per-session logical seal and deferred finalization mutate one window/controller identity.
+3. intent-routing-sink.test.ts, 408 lines: retained with a revised specific reason. Permission, lazy-root, call-time HOME, truncation, epoch, and malformed-tail cases share one temp-home filesystem fixture and one JSONL contract.
+4. intent-routing-turn-store.ts, 398 lines: retained only after the split above, with the reservation-identity invariant stated in the file.
+5. intent-routing.ts, 219 lines: retained. One adapter instance owns dispatch, capture, seal, and disposal identity.
+6. plugin/event.ts, 269 lines: retained with a revised specific reason. Real and normalized idle dedup maps, fallback cleanup, hook dispatch, sealing, and deletion share one ordered handler; splitting branches would duplicate dedup ownership and permit seal ordering drift.
+7. testing/create-plugin-module.ts, 368 lines: retained with a revised specific reason. Later stages consume identities created by earlier stages, and disposal order is observable; splitting serverPlugin would introduce cross-module mutable initialization state.
+
+WHY IT IS ENOUGH
+
+Every W1 SIZE_OK line remaining in the package diff now states the coupled state and the failure a split would permit. The three rejected generic waivers were removed or narrowed after extraction along reader, identity, counter, LRU, test-harness, and startup-concern seams. Existing plugin-init coverage retained all 15 test cases and passed after the split.
+
+WHAT WAS OMITTED
+
+No files outside packages/omo-opencode were reviewed or changed. No secret-bearing logs, credentials, auth headers, or environment dump were captured.

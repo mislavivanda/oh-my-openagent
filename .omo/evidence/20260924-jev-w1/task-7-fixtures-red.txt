@@ -1,0 +1,66 @@
+== RED: bun test packages/jev-core/src/intent-routing-fixtures.test.ts (incomplete stub corpus) ==
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-fixtures.test.ts:
+18 | 
+19 | const NON_ASCII = /[^\u0000-\u007F]/
+20 | 
+21 | describe("intent-routing fixtures", () => {
+22 |   test("#given the hand-labeled corpus #when counted #then it holds at least 15 fixtures", () => {
+23 |     expect(INTENT_ROUTING_FIXTURES.length).toBeGreaterThanOrEqual(15)
+                                                ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 15
+Received: 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-fixtures.test.ts:23:44)
+(fail) intent-routing fixtures > #given the hand-labeled corpus #when counted #then it holds at least 15 fixtures [0.60ms]
+48 | 
+49 |   test("#given the corpus #when none-labeled fixtures are counted #then at least 3 carry the none category", () => {
+50 |     const noneFixtures = INTENT_ROUTING_FIXTURES.filter(
+51 |       (fixture) => fixture.label.category === INTENT_ROUTING_NONE_OPTION
+52 |     )
+53 |     expect(noneFixtures.length).toBeGreaterThanOrEqual(3)
+                                     ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 3
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-fixtures.test.ts:53:33)
+(fail) intent-routing fixtures > #given the corpus #when none-labeled fixtures are counted #then at least 3 carry the none category [0.11ms]
+55 | 
+56 |   test("#given the corpus #when prompts are scanned for non-ASCII text #then at least 2 fixtures are non-English", () => {
+57 |     const multilingual = INTENT_ROUTING_FIXTURES.filter((fixture) =>
+58 |       NON_ASCII.test(fixture.input.promptText)
+59 |     )
+60 |     expect(multilingual.length).toBeGreaterThanOrEqual(2)
+                                     ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 2
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-fixtures.test.ts:60:33)
+(fail) intent-routing fixtures > #given the corpus #when prompts are scanned for non-ASCII text #then at least 2 fixtures are non-English [0.10ms]
+61 |   })
+62 | 
+63 |   test("#given the required source classes #when the corpus is grouped by source #then every class is present", () => {
+64 |     const present = new Set(INTENT_ROUTING_FIXTURES.map((fixture) => fixture.source))
+65 |     for (const source of INTENT_ROUTING_FIXTURE_SOURCES) {
+66 |       expect(present.has(source), `no fixture carries source ${source}`).toBe(true)
+                                                                              ^
+error: no fixture carries source NO_DELEGATION
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-fixtures.test.ts:66:74)
+(fail) intent-routing fixtures > #given the required source classes #when the corpus is grouped by source #then every class is present [0.11ms]
+
+ 3 pass
+ 4 fail
+ 7 expect() calls
+Ran 7 tests across 1 file. [126.00ms]
+exit=1

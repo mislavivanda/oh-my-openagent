@@ -1,0 +1,93 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+72 | 
+73 | describe("intent-routing accuracy harness", () => {
+74 |   test("#given the default mock path #when every fixture is scored #then every question emits a complete confusion matrix with zero network calls", async () => {
+75 |     const artifact = await runAccuracyHarness()
+76 | 
+77 |     expect(artifact.status).toBe("complete")
+                                 ^
+error: expect(received).toBe(expected)
+
+Expected: "complete"
+Received: "partial"
+
+      at <anonymous> (<worktree>/packages/jev-core/src/intent-routing-accuracy.test.ts:77:29)
+(fail) intent-routing accuracy harness > #given the default mock path #when every fixture is scored #then every question emits a complete confusion matrix with zero network calls [0.83ms]
+83 |   })
+84 | 
+85 |   test("#given --dry-run #when every fixture request is built #then no backend or network call is made", async () => {
+86 |     const artifact = await runAccuracyHarness({ dryRun: true })
+87 | 
+88 |     expect(artifact.builtFixtureIds).toHaveLength(INTENT_ROUTING_FIXTURES.length)
+                                          ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 17
+Received length: 0
+
+      at <anonymous> (<worktree>/packages/jev-core/src/intent-routing-accuracy.test.ts:88:38)
+(fail) intent-routing accuracy harness > #given --dry-run #when every fixture request is built #then no backend or network call is made [0.16ms]
+100 |     }
+101 | 
+102 |     consumeCall(CALL_CEILING, counter)
+103 |     const secondCall = () => consumeCall(CALL_CEILING, counter)
+104 | 
+105 |     expect(secondCall).toThrow(IntentRoutingCallCeilingError)
+                             ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingCallCeilingError
+
+Received function did not throw
+Received value: undefined
+
+      at <anonymous> (<worktree>/packages/jev-core/src/intent-routing-accuracy.test.ts:105:24)
+(fail) intent-routing accuracy harness > #given a stub counter one below the ceiling #when two calls are requested #then the second aborts with the named ceiling error [0.12ms]
+108 | 
+109 |   test("#given a failure at fixture 8 #when the run stops #then a partial artifact retains the first 7 fixture ids", async () => {
+110 |     const artifact = await runAccuracyHarness({ failAtFixture: 8 })
+111 | 
+112 |     expect(artifact.status).toBe("partial")
+113 |     expect(artifact.completedFixtureIds).toEqual(
+                                               ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "none-pure-question-1",
+-   "none-pure-explanation-1",
+-   "none-acknowledgement-1",
+-   "category-writing-1",
+-   "category-quick-1",
+-   "subagent-explore-1",
+-   "subagent-oracle-1",
+- ]
++ []
+
+- Expected  - 9
++ Received  + 1
+
+      at <anonymous> (<worktree>/packages/jev-core/src/intent-routing-accuracy.test.ts:113:42)
+(fail) intent-routing accuracy harness > #given a failure at fixture 8 #when the run stops #then a partial artifact retains the first 7 fixture ids [0.14ms]
+121 |     expect(Object.hasOwn(artifact, "resolvedModel")).toBe(true)
+122 |     expect(Object.hasOwn(artifact, "questionVersion")).toBe(true)
+123 |   })
+124 | 
+125 |   test("#given real API configuration #when the gate is evaluated #then both the explicit flag and API key are required", () => {
+126 |     [synthetic credential assignment redacted from failing test output]
+                                                                                       ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (<worktree>/packages/jev-core/src/intent-routing-accuracy.test.ts:126:82)
+(fail) intent-routing accuracy harness > #given real API configuration #when the gate is evaluated #then both the explicit flag and API key are required [0.07ms]
+
+ 1 pass
+ 5 fail
+ 8 expect() calls
+Ran 6 tests across 1 file. [129.00ms]
+
+exit=1

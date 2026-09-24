@@ -1,0 +1,26 @@
+R4 TODO-19 LIVE ARTIFACT STALENESS NOTE
+
+STALE FIGURE
+The committed todo-19 report at `.omo/evidence/20260924-jev-w1/task-19-report.txt` was produced before remediation R2 fixed production synthetic-message accounting. Its `turns_synthetic=0` line therefore came from the broken counter path and is not a current measurement, even though the value happens to be zero.
+
+CURRENT LIVE EVIDENCE
+Verifier F3's ROUND 2 re-drive in `.omo/evidence/20260924-jev-w1/F3-redrive.txt` is a fresh post-R2 live run and is the current evidence. The ROUND 2 section begins at line 439. Its enabled run records the unchanged live drive shape at lines 530-553, and its post-R2 report at lines 715-751 records `turns_synthetic=0` with 32 created and sealed records. That post-R2 run, not the older todo-19 line, supports the current synthetic-turn figure.
+
+MOVED TODO-19 FIGURES
+The committed report and F3 ROUND 2 use the same 32-turn drive, but R1 and R2 changed how its QA-only invalid category targets are represented and counted. The full moved set, verified directly against `task-19-report.txt` lines 17-51 and `F3-redrive.txt` lines 731-765, is:
+
+1. `unscorable_unknown_calls`: 0 -> 12.
+2. `unknown_only_records`: 0 -> 7.
+3. `unrepresentable_route_mismatches`: 0 -> 9.
+4. `exact_route_agreement`: numerator stays 0 while denominator moves 26 -> 30.
+5. `multi_route_turns`: 5 -> 1.
+6. `category_coverage`: numerator stays 0 and denominator stays 31 while `distinct_target_cardinality` moves 11 -> 0.
+7. `category_cardinality_weighted_coverage`: numerator stays 0 while denominator moves 33 -> 31 and `distinct_target_cardinality` moves 11 -> 0.
+
+The old zero unknown accounting did not remain valid. R1 correctly normalized never-offered categories as `unknown`, so the post-remediation report exposes the previously hidden 12 unknown calls and 9 unrepresentable route mismatches. The retained todo-19 values remain historical evidence for the pre-remediation code only.
+
+CONFIRMED UNCHANGED DRIVE SHAPE
+F3 ROUND 2 independently confirms observations 32 -> 32, fan_out_zero 15 -> 15, fan_out_one 10 -> 10, and fan_out_many 7 -> 7 at lines 657-665. It also confirms 32 records created and sealed, with 0 evicted and 0 in flight. These functional counts do not supersede the seven moved report figures above.
+
+POLICY
+The 80-minute todo-19 dogfood drive and paid real-API harness were not rerun. The retained todo-19 artifact was not edited. Any report of current live synthetic accounting must cite F3 ROUND 2 rather than presenting todo-19's `turns_synthetic=0` as fresh evidence.

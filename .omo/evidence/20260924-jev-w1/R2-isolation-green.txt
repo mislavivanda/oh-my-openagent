@@ -1,0 +1,31 @@
+WHAT WAS TESTED
+Command: bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts --test-name-pattern "unused sink|HOME changes"
+Surface: intent-routing JSONL sink construction, disposal, and call-time HOME resolution.
+
+bun test v1.4.0 (34cbb9a40)
+
+ 2 pass
+ 10 filtered out
+ 0 fail
+ 5 expect() calls
+Ran 2 tests across 1 file. [139.00ms]
+
+EXIT: 0
+
+WHAT WAS OBSERVED
+Both regressions passed. An untouched sink disposed without creating .omo/jev, and a sink imported before HOME changed resolved its file path during construction to the later HOME, wrote there, and left the real-home candidate absent.
+
+WHY IT IS ENOUGH
+The same assertions that failed before the fix now cover the two isolation causes without spawning OpenCode or touching its database.
+
+WHAT WAS OMITTED
+No environment dump, credentials, auth headers, or private file contents were captured.
+
+REAL HOME ARTIFACT CLEANUP
+BEFORE: ls -la /home/opencode/.omo/jev
+total 8
+drwx------ 2 opencode opencode 4096 Sep 24 19:26 .
+drwxrwxr-x 6 opencode opencode 4096 Sep 24 18:44 ..
+RMDIR_EXIT: 0
+RESULT: directory was empty and was removed with rmdir
+AFTER: /home/opencode/.omo/jev is absent

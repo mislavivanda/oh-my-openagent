@@ -1,0 +1,8 @@
+== GREEN: bun test packages/jev-core/src/intent-routing-fixtures.test.ts ==
+bun test v1.4.0 (34cbb9a40)
+
+ 7 pass
+ 0 fail
+ 45 expect() calls
+Ran 7 tests across 1 file. [129.00ms]
+exit=0

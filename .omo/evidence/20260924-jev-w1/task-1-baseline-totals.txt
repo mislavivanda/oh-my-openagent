@@ -1,0 +1,8 @@
+source: bun test --timeout 20000 (bun 1.4.0), branch jev/w1-fffe at 82460563f
+ 12762 pass
+ 3 skip
+ 22 fail
+ 1 snapshots, 84474 expect() calls
+Ran 12787 tests across 1678 files. [125.67s]
+unique_failing_test_lines=22
+exit=1

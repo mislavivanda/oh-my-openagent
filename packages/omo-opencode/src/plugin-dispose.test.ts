@@ -48,6 +48,27 @@ describe("createPluginDispose", () => {
     expect(disconnectAllSpy).toHaveBeenCalledTimes(1)
   })
 
+  test("#given an injected intent-routing instance #when dispose() is called #then its bounded flush runs", async () => {
+    // given
+    const intentRouting = {
+      dispose: async (): Promise<void> => {},
+    }
+    const disposeSpy = spyOn(intentRouting, "dispose")
+    const args = {
+      backgroundManager: { shutdown: async (): Promise<void> => {} },
+      skillMcpManager: { disconnectAll: async (): Promise<void> => {} },
+      disposeHooks: (): void => {},
+    }
+    Reflect.set(args, "intentRouting", intentRouting)
+    const dispose = createPluginDispose(args)
+
+    // when
+    await dispose()
+
+    // then
+    expect(disposeSpy).toHaveBeenCalledTimes(1)
+  })
+
   test("#given plugin with hooks that have dispose #when dispose() is called #then each hook's dispose is called", async () => {
     // given
     const claudeCodeHooks = {

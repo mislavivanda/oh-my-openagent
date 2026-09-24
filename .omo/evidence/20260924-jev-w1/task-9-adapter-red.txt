@@ -1,0 +1,140 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+ 96 |
+ 97 |   test("#given no known main session #when observing a turn #then the fail-closed gate records main_session_unknown", () => {
+ 98 |     const dispatcher = mock<JevIntentRoutingDispatcher>(async () => FILLED_RESULT)
+ 99 |     const routing = createJevIntentRouting({ jevConfig: config(), vocab: VOCAB, dispatcher })
+100 |     const receipt = routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))
+101 |     expect(receipt).toEqual({ predictionStatus: "not_dispatched", notDispatchedReason: "main_session_unknown" })
+                          ^
+error: expect(received).toEqual(expected)
+
+@@ -1,3 +1,3 @@
+  {
+-   "notDispatchedReason": "main_session_unknown",
++   "notDispatchedReason": "disabled",
+    "predictionStatus": "not_dispatched",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:101:21)
+(fail) createJevIntentRouting > #given no known main session #when observing a turn #then the fail-closed gate records main_session_unknown [0.37ms]
+104 |
+105 |   test("#given a tracked subagent session #when observing a turn #then the gate records subagent_session", () => {
+106 |     setMainSession(MAIN_SESSION)
+107 |     subagentSessions.add(MAIN_SESSION)
+108 |     const routing = createJevIntentRouting({ jevConfig: config(), vocab: VOCAB })
+109 |     expect(routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))).toEqual({
+                                                                                         ^
+error: expect(received).toEqual(expected)
+
+@@ -1,3 +1,3 @@
+  {
+-   "notDispatchedReason": "subagent_session",
++   "notDispatchedReason": "disabled",
+    "predictionStatus": "not_dispatched",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:109:84)
+(fail) createJevIntentRouting > #given a tracked subagent session #when observing a turn #then the gate records subagent_session [0.33ms]
+117 |     const entries: LogEntry[] = []
+118 |     const dispatcher = mock<JevIntentRoutingDispatcher>(async () => FILLED_RESULT)
+119 |     const routing = createJevIntentRouting({ jevConfig: config(), vocab: VOCAB, dispatcher, logger: (message, data) => entries.push({ message, data }) })
+120 |     routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))
+121 |     await runDeferredMacrotask()
+122 |     expect(dispatcher).toHaveBeenCalledTimes(1)
+                             ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:122:24)
+(fail) createJevIntentRouting > #given an enabled main session #when observing a turn #then exactly one dispatch and one answer-shaped log occur [1.70ms]
+136 |     try {
+137 |       const routing = createJevIntentRouting({ jevConfig: config(), vocab: VOCAB, dispatcher: async () => Promise.reject(new TypeError("dispatch failed")), logger: (message, data) => entries.push({ message, data }) })
+138 |       const receipt = routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))
+139 |       expect(receipt).not.toBeInstanceOf(Promise)
+140 |       await runDeferredMacrotask()
+141 |       expect(entries[0]?.message).toBe("[jev] intent-routing failed")
+                                        ^
+error: expect(received).toBe(expected)
+
+Expected: "[jev] intent-routing failed"
+Received: undefined
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:141:35)
+(fail) createJevIntentRouting > #given a rejecting dispatcher #when observing #then the seam returns synchronously, logs failure, and emits no unhandled rejection [1.61ms]
+149 |     setMainSession(MAIN_SESSION)
+150 |     const dispatcher = mock<JevIntentRoutingDispatcher>(async () => new Promise<IntentRoutingDecisionResult>(() => {}))
+151 |     const routing = createJevIntentRouting({ jevConfig: config({ maxInflight: 2 }), vocab: VOCAB, dispatcher, logger: () => {} })
+152 |     for (let index = 0; index < 5; index += 1) routing.observe({ sessionID: MAIN_SESSION }, output(`turn ${index}`))
+153 |     await runDeferredMacrotask()
+154 |     expect(dispatcher).toHaveBeenCalledTimes(2)
+                             ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 2
+Received number of calls: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:154:24)
+(fail) createJevIntentRouting > #given max_inflight plus three turns #when dispatches never resolve #then in-flight is bounded and three are dropped [1.48ms]
+162 |     const routing = createJevIntentRouting({ jevConfig: config(), vocab: VOCAB, dispatcher, logger: () => {} })
+163 |     const mutableOutput = output("original text")
+164 |     routing.observe({ sessionID: MAIN_SESSION }, mutableOutput)
+165 |     mutableOutput.parts[0].text = "mutated text"
+166 |     await runDeferredMacrotask()
+167 |     expect(promptText).toBe("original text")
+                             ^
+error: expect(received).toBe(expected)
+
+Expected: "original text"
+Received: ""
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:167:24)
+(fail) createJevIntentRouting > #given a mutable output #when text changes after the seam returns #then dispatch receives the original bounded snapshot [1.49ms]
+173 |     const dispatcher: JevIntentRoutingDispatcher = async () => { order.push("state"); return FILLED_RESULT }
+174 |     const routing = createJevIntentRouting({ jevConfig: config(), vocab: VOCAB, dispatcher, logger: () => {} })
+175 |     routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))
+176 |     order.push("caller")
+177 |     await runDeferredMacrotask()
+178 |     expect(order).toEqual(["caller", "state"])
+                        ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,2 @@
+    "caller",
+-   "state",
+  ]
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:178:19)
+(fail) createJevIntentRouting > #given deferred observation #when the caller continues #then caller continuation precedes state building [1.49ms]
+185 |     [synthetic credential assignments redacted from failing test output]
+186 |       const routing = createJevIntentRouting({ jevConfig: config({ backend: "real" }), vocab: VOCAB, env, backendFetch, logger: () => {} })
+187 |       routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))
+188 |       await runDeferredMacrotask()
+189 |     }
+190 |     expect(calls).toHaveLength(2)
+                        ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 2
+Received length: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:190:19)
+(fail) createJevIntentRouting > #given real backend env #when base URL is set then unset #then only the set case targets that origin [2.69ms]
+intent-routing synchronous p99: 0.004ms
+
+ 2 pass
+ 8 fail
+ 12 expect() calls
+Ran 10 tests across 1 file. [150.00ms]
+
+EXIT_CODE=1

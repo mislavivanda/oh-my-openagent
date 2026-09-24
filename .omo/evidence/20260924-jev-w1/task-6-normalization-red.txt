@@ -1,0 +1,276 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-normalization.test.ts:
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:36:5)
+(fail) intent-routing observed delegation normalization > #given the normalization contract #when loading its module #then the implementation exists [0.61ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:108:45)
+(fail) intent-routing observed delegation normalization > #given requested subagent precedence #when normalizing observed args #then the route class is preserved [0.14ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:108:45)
+(fail) intent-routing observed delegation normalization > #given category-only routing #when normalizing observed args #then the route class is preserved [0.05ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:108:45)
+(fail) intent-routing observed delegation normalization > #given category rewrite to sisyphus-junior #when normalizing observed args #then the route class is preserved [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:108:45)
+(fail) intent-routing observed delegation normalization > #given subagent-only routing #when normalizing observed args #then the route class is preserved [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:108:45)
+(fail) intent-routing observed delegation normalization > #given task resume without routing fields #when normalizing observed args #then the route class is preserved [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:108:45)
+(fail) intent-routing observed delegation normalization > #given unrecognized subagent #when normalizing observed args #then the route class is preserved [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:108:45)
+(fail) intent-routing observed delegation normalization > #given no delegation #when normalizing observed args #then the route class is preserved [0.05ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:148:31)
+(fail) intent-routing derived route > #given routeClass none #when deriving the joint route #then every class has an explicit result [0.11ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:148:31)
+(fail) intent-routing derived route > #given routeClass category #when deriving the joint route #then every class has an explicit result [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:148:31)
+(fail) intent-routing derived route > #given routeClass subagent #when deriving the joint route #then every class has an explicit result [0.09ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:148:31)
+(fail) intent-routing derived route > #given routeClass unscorable_resume #when deriving the joint route #then every class has an explicit result [0.09ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:148:31)
+(fail) intent-routing derived route > #given routeClass unknown #when deriving the joint route #then every class has an explicit result [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:161:40)
+(fail) intent-routing derived route > #given category none and subagent none #when deriving a prediction #then coherence matches the harness domain [0.07ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:161:40)
+(fail) intent-routing derived route > #given category deep and subagent none #when deriving a prediction #then coherence matches the harness domain [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:161:40)
+(fail) intent-routing derived route > #given category none and subagent explore #when deriving a prediction #then coherence matches the harness domain [0.04ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:161:40)
+(fail) intent-routing derived route > #given category deep and subagent explore #when deriving a prediction #then coherence matches the harness domain [0.06ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:172:52)
+(fail) intent-routing subagent vocabulary > #given the live built-in enum #when comparing the vocabulary #then no member drifts without an exclusion [0.16ms]
+13 | 
+14 | function requireNormalizationModule(): NormalizationModule {
+15 |   expect(
+16 |     normalizationModule,
+17 |     "intent-routing normalization must exist before delegation routes can be scored",
+18 |   ).not.toBeNull()
+             ^
+error: intent-routing normalization must exist before delegation routes can be scored
+
+Received: null
+
+      at requireNormalizationModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:18:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-normalization.test.ts:181:52)
+(fail) intent-routing subagent vocabulary > #given both live agent enums #when comparing the vocabulary #then only admitted names are present [0.07ms]
+
+ 0 pass
+ 19 fail
+ 19 expect() calls
+Ran 19 tests across 1 file. [121.00ms]
+
+exit_code=1

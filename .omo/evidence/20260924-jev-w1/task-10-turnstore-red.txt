@@ -1,0 +1,179 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:
+109 | 
+110 |     const first = store.createTurn(dispatchedInput(() => pending.promise))
+111 |     const second = store.createTurn(dispatchedInput(() => pending.promise))
+112 | 
+113 |     expect(first.dedupKey).toBe(second.dedupKey)
+114 |     expect(first.turnOrdinal).not.toBe(second.turnOrdinal)
+                                        ^
+error: expect(received).not.toBe(expected)
+
+Expected: not 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:114:35)
+(fail) intent-routing turn store > #given the same prompt twice #when creating turns #then locally minted ordinals stay distinct from the dedup key [1.04ms]
+120 |     const store = createIntentRoutingTurnStore()
+121 |     const dispatch = () => { dispatches += 1; return pending.promise }
+122 | 
+123 |     const first = store.createTurn(dispatchedInput(dispatch))
+124 |     const second = store.createTurn(dispatchedInput(dispatch))
+125 |     expect(dispatches).toBe(1)
+                             ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:125:24)
+(fail) intent-routing turn store > #given a pending predecessor #when an identical turn arrives #then one dispatch fills both ordinals without resolvedModel in tier one [0.28ms]
+144 |     store.createTurn(dispatchedInput(dispatch))
+145 |     await flushPredictions()
+146 | 
+147 |     const reused = store.createTurn(dispatchedInput(dispatch))
+148 | 
+149 |     expect(dispatches).toBe(1)
+                             ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:149:24)
+(fail) intent-routing turn store > #given a filled predecessor using a pinned model #when the prompt repeats #then tier-two answers are copied [0.24ms]
+174 |     store.createTurn(dispatchedInput(dispatch, known))
+175 |     await flushPredictions()
+176 | 
+177 |     const reused = store.createTurn(dispatchedInput(dispatch, known))
+178 | 
+179 |     expect(dispatches).toBe(1)
+                             ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:179:24)
+(fail) intent-routing turn store > #given a floating alias with an independently known resolution #when the prompt repeats #then completed reuse is allowed [0.15ms]
+246 |     const first = store.createTurn(dispatchedInput(dispatch))
+247 |     await flushPredictions()
+248 | 
+249 |     const second = store.createTurn(dispatchedInput(dispatch, changes))
+250 | 
+251 |     expect(second.preDispatchKey).not.toBe(first.preDispatchKey)
+                                            ^
+error: expect(received).not.toBe(expected)
+
+Expected: not "e256ee8e7aff6957a781d8328f0f68e26996564c81fa458da59fbca2305138ad"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:251:39)
+(fail) intent-routing turn store > #given a completed turn #when questionVersion changes #then tier one differs and dispatches fresh [0.23ms]
+246 |     const first = store.createTurn(dispatchedInput(dispatch))
+247 |     await flushPredictions()
+248 | 
+249 |     const second = store.createTurn(dispatchedInput(dispatch, changes))
+250 | 
+251 |     expect(second.preDispatchKey).not.toBe(first.preDispatchKey)
+                                            ^
+error: expect(received).not.toBe(expected)
+
+Expected: not "e256ee8e7aff6957a781d8328f0f68e26996564c81fa458da59fbca2305138ad"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:251:39)
+(fail) intent-routing turn store > #given a completed turn #when vocabularyDigest changes #then tier one differs and dispatches fresh [0.10ms]
+246 |     const first = store.createTurn(dispatchedInput(dispatch))
+247 |     await flushPredictions()
+248 | 
+249 |     const second = store.createTurn(dispatchedInput(dispatch, changes))
+250 | 
+251 |     expect(second.preDispatchKey).not.toBe(first.preDispatchKey)
+                                            ^
+error: expect(received).not.toBe(expected)
+
+Expected: not "e256ee8e7aff6957a781d8328f0f68e26996564c81fa458da59fbca2305138ad"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:251:39)
+(fail) intent-routing turn store > #given a completed turn #when confidenceThreshold changes #then tier one differs and dispatches fresh [0.10ms]
+246 |     const first = store.createTurn(dispatchedInput(dispatch))
+247 |     await flushPredictions()
+248 | 
+249 |     const second = store.createTurn(dispatchedInput(dispatch, changes))
+250 | 
+251 |     expect(second.preDispatchKey).not.toBe(first.preDispatchKey)
+                                            ^
+error: expect(received).not.toBe(expected)
+
+Expected: not "e256ee8e7aff6957a781d8328f0f68e26996564c81fa458da59fbca2305138ad"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:251:39)
+(fail) intent-routing turn store > #given a completed turn #when configuredModelSpec changes #then tier one differs and dispatches fresh [0.06ms]
+254 | 
+255 |   test("#given an observation on a pending turn #when prediction resolves #then the observation is retained", async () => {
+256 |     const pending = deferred<IntentRoutingDecisionResult>()
+257 |     const store = createIntentRoutingTurnStore()
+258 |     const turn = store.createTurn(dispatchedInput(() => pending.promise))
+259 |     expect(store.appendObservation({ sessionID: "session-1", observation: OBSERVATION })).toBe(true)
+                                                                                                ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:259:91)
+(fail) intent-routing turn store > #given an observation on a pending turn #when prediction resolves #then the observation is retained [0.20ms]
+272 |     })
+273 |     for (let ordinal = 1; ordinal <= 8; ordinal += 1) {
+274 |       store.createTurn({ ...BASE_INPUT, textParts: [`turn ${ordinal}`], notDispatchedReason: "gated" })
+275 |     }
+276 | 
+277 |     expect(store.getCounters().recordsEvicted).toBe(5)
+                                                     ^
+error: expect(received).toBe(expected)
+
+Expected: 5
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:277:48)
+(fail) intent-routing turn store > #given a bounded session #when max plus five turns are created #then five LRU turns are counted and only newest survive [0.23ms]
+289 |         predictionStatus: record.predictionStatus,
+290 |         sealedBy: record.sealedBy,
+291 |       }),
+292 |     })
+293 |     store.createTurn(dispatchedInput(() => pending.promise))
+294 |     expect(store.getMapSizes()).toEqual({ sessions: 1, reuseSessions: 1 })
+                                      ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "reuseSessions": 1,
+-   "sessions": 1,
++   "reuseSessions": 0,
++   "sessions": 0,
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:294:33)
+(fail) intent-routing turn store > #given pending state and reuse maps #when session.deleted is handled #then pending becomes timeout, records seal, and both maps clear [0.27ms]
+305 |     const store = createIntentRoutingTurnStore({ scheduleTimeout: scheduler.schedule })
+306 |     const turn = store.createTurn(dispatchedInput(() => pending.promise))
+307 | 
+308 |     scheduler.fireNext()
+309 | 
+310 |     expect(store.getTurn("session-1", turn.turnOrdinal)?.state).toBe("prediction_timeout")
+                                                                      ^
+error: expect(received).toBe(expected)
+
+Expected: "prediction_timeout"
+Received: undefined
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:310:65)
+(fail) intent-routing turn store > #given a never-resolving prediction #when its timeout fires #then the turn becomes prediction_timeout [0.16ms]
+
+ 6 pass
+ 12 fail
+ 26 expect() calls
+Ran 18 tests across 1 file. [135.00ms]
+exit_code=1

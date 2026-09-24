@@ -1,0 +1,25 @@
+R1 ACCURACY BASELINE STALENESS NOTE
+
+The todo-18 paid baseline at .omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt predates this remediation and is now stale for the intent question.
+
+QUESTION THAT CHANGED
+The accuracy fixture arm previously built the intent Choice question with seven options:
+implement, investigate, explain, acknowledge, continue, review, author
+
+It now builds the same six-option intent Choice question used by production:
+research, implementation, investigation, evaluation, fix, open-ended
+
+COMPARABILITY IMPACT
+The retained paid artifact scored model answers and emitted its intent confusion matrix against the old seven-option question. The corrected fixture arm asks a different intent Choice question with different option names and semantics. Its recorded intent accuracy figures and intent confusion matrix are therefore not directly comparable to a run using the corrected six-option question. Route-axis figures may still be inspected separately, but the retained aggregate must not be presented as a fresh measurement of the corrected harness.
+
+PAID RUN POLICY
+The paid real-API harness was not re-run. The allowed budget was already spent. The retained task-18 artifact was not edited.
+
+MOCK CONFIRMATION
+Command:
+JEV_W1_REAL_API= bun test packages/jev-core/src/intent-routing-accuracy.test.ts
+
+Exit code: 0
+
+Observed:
+7 pass, 1 skip, 0 fail. The complete mock artifact evaluated 17 fixtures with networkCallCount 0 and requestCount 0 using the corrected six-option intent vocabulary.
