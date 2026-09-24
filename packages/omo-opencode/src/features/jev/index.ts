@@ -10,3 +10,13 @@ export type {
   JevIntentRoutingDispatchRequest,
   JevIntentRoutingNotDispatchedReason,
 } from "./intent-routing"
+export {
+  createIntentRoutingTurnStore,
+  normalizeIntentRoutingPrompt,
+} from "./intent-routing-turn-store"
+export type {
+  IntentRoutingTurnInput,
+  IntentRoutingTurnSnapshot,
+  IntentRoutingTurnState,
+  IntentRoutingTurnStoreOptions,
+} from "./intent-routing-turn-store"

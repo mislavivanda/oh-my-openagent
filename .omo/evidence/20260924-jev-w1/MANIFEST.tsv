@@ -43,3 +43,6 @@ todo	artifact	kind	description
 9	.omo/evidence/20260924-jev-w1/task-9-no-unhandled-rejection.txt	qa	Rejecting dispatcher returns synchronously, logs one failure, and emits zero unhandled-rejection events.
 9	.omo/evidence/20260924-jev-w1/task-9-inflight-bounded.txt	qa	Never-resolving dispatcher stays capped at four in flight and drops exactly three excess turns.
 9	.omo/evidence/20260924-jev-w1/task-9-macrotask-ordering-proof.txt	qa	Temporary queueMicrotask substitution fails ordering; restored unrefed setTimeout macrotask passes and git diff confirms the revert.
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-red.txt	red	TDD RED proves the turn-store module is absent before implementation.
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused turn-store suite passes all keying, reuse, lifecycle, timeout, normalization, and eviction cases.
+10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Failure-path QA proves maxTurnsPerSession plus five emits five evictions and retains ordinals 6, 7, and 8.
