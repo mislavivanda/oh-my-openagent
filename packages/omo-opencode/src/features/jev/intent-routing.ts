@@ -1,5 +1,5 @@
 import {
-  INTENT_ROUTING_SUBAGENT_VOCABULARY,
+  INTENT_ROUTING_QUESTION_VERSION,
   decideIntentRouting,
   selectDecisionBackend,
   type DecisionBackend,
@@ -8,30 +8,23 @@ import {
   type IntentRoutingVocabulary,
 } from "@oh-my-opencode/jev-core"
 import type { JevConfig } from "../../config/schema/jev"
-import { isRealUserTextPart } from "../../shared"
 import { log } from "../../shared/logger"
-import { CATEGORY_DESCRIPTIONS, DEFAULT_CATEGORIES } from "../../tools/delegate-task"
-import { getMainSessionID, subagentSessions } from "../claude-code-session-state"
+import { createJevIntentRoutingCapture } from "./intent-routing-capture"
+import {
+  intentRoutingSessionNotDispatchedReason,
+  isJevIntentRoutingSessionEligible,
+  safeIntentRoutingBackendKind,
+  snapshotIntentRoutingPromptText,
+  type IntentRoutingNotDispatchedReason,
+  type JevIntentRoutingMessageOutput,
+} from "./intent-routing-observation"
+import type { IntentRoutingSealCoordinator } from "./intent-routing-seal"
+import {
+  DEFAULT_INTENT_ROUTING_VOCABULARY,
+  intentRoutingVocabularyDigest,
+} from "./intent-routing-vocabulary"
 
-const INTENT_VOCABULARY = [
-  { name: "research", description: "Research or understanding before action." },
-  { name: "implementation", description: "Explicit implementation work." },
-  { name: "investigation", description: "Investigation followed by a report." },
-  { name: "evaluation", description: "Evaluation before deciding whether to act." },
-  { name: "fix", description: "Diagnosis followed by a minimal repair." },
-  { name: "open-ended", description: "An open-ended change requiring assessment." },
-] as const
-
-const DEFAULT_VOCABULARY: IntentRoutingVocabulary = {
-  categories: Object.keys(DEFAULT_CATEGORIES).map((name) => ({
-    name,
-    description: CATEGORY_DESCRIPTIONS[name] ?? "General tasks",
-  })),
-  subagents: INTENT_ROUTING_SUBAGENT_VOCABULARY
-    .filter((name) => name !== "none")
-    .map((name) => ({ name, description: `Delegate to the ${name} agent.` })),
-  intents: INTENT_VOCABULARY,
-}
+export { isJevIntentRoutingSessionEligible } from "./intent-routing-observation"
 
 export type JevIntentRoutingDispatcher = (args: {
   readonly backend: DecisionBackend
@@ -42,16 +35,6 @@ export type JevIntentRoutingDispatcher = (args: {
   readonly maxPromptChars: number
 }) => Promise<IntentRoutingDecisionResult>
 
-type JevIntentRoutingMessagePart = {
-  readonly type?: string
-  readonly text?: string
-  readonly synthetic?: boolean
-}
-
-type JevIntentRoutingMessageOutput = {
-  readonly parts?: readonly JevIntentRoutingMessagePart[]
-}
-
 export type JevIntentRouting = {
   readonly enabled: boolean
   readonly inFlight: number
@@ -60,53 +43,13 @@ export type JevIntentRouting = {
     input: { readonly sessionID: unknown },
     output: JevIntentRoutingMessageOutput,
   ): void
-}
-
-type NotDispatchedReason =
-  | "invalid_session_id"
-  | "main_session_unknown"
-  | "subagent_session"
-  | "non_main_session"
-  | "no_user_text"
-  | "max_inflight"
-
-function sessionNotDispatchedReason(sessionID: unknown): NotDispatchedReason | null {
-  if (typeof sessionID !== "string" || sessionID.length === 0) return "invalid_session_id"
-  const mainSessionID = getMainSessionID()
-  if (mainSessionID === undefined) return "main_session_unknown"
-  if (subagentSessions.has(sessionID)) return "subagent_session"
-  if (sessionID !== mainSessionID) return "non_main_session"
-  return null
-}
-
-export function isJevIntentRoutingSessionEligible(sessionID: unknown): sessionID is string {
-  return sessionNotDispatchedReason(sessionID) === null
-}
-
-function snapshotPromptText(
-  parts: JevIntentRoutingMessageOutput["parts"],
-  maxChars: number,
-): string {
-  if (!Array.isArray(parts)) return ""
-  let snapshot = ""
-  let hasTextPart = false
-  for (const part of parts) {
-    if (!isRealUserTextPart(part)) continue
-    const separator = hasTextPart ? "\n" : ""
-    const remaining = maxChars - snapshot.length
-    if (remaining <= 0) break
-    snapshot += `${separator}${part.text}`.slice(0, remaining)
-    hasTextPart = true
-  }
-  return snapshot
-}
-
-function safeBackendKind(backend: DecisionBackend): string {
-  try {
-    return backend.kind
-  } catch {
-    return "unknown"
-  }
+  capture(
+    input: { readonly tool?: unknown; readonly sessionID?: unknown; readonly callID?: unknown },
+    output: { readonly args?: unknown } | null | undefined,
+  ): boolean
+  sealSessionIdle(sessionID: string): boolean
+  deleteSession(sessionID: string): void
+  dispose(): Promise<void>
 }
 
 export function createJevIntentRouting(args: {
@@ -120,11 +63,21 @@ export function createJevIntentRouting(args: {
   readonly fetch?: DecisionBackendDeps["fetch"]
   readonly logger?: (message: string, data?: unknown) => void
   readonly vocabulary?: IntentRoutingVocabulary
+  readonly sealCoordinator?: IntentRoutingSealCoordinator
 }): JevIntentRouting {
   const enabled = args.jevConfig?.enabled === true &&
     args.jevConfig.wires.intent_routing.enabled === true
   if (!enabled) {
-    return { enabled: false, inFlight: 0, dispatchesDropped: 0, observe() {} }
+    return {
+      enabled: false,
+      inFlight: 0,
+      dispatchesDropped: 0,
+      observe() {},
+      capture: () => false,
+      sealSessionIdle: () => false,
+      deleteSession() {},
+      dispose: async () => {},
+    }
   }
 
   const jevConfig = args.jevConfig
@@ -151,37 +104,27 @@ export function createJevIntentRouting(args: {
     timeoutMs: wireConfig.timeout_ms,
   }, backendDeps)
   const dispatcher = args.dispatcher ?? decideIntentRouting
-  const vocabulary = args.vocabulary ?? DEFAULT_VOCABULARY
+  const vocabulary = args.vocabulary ?? DEFAULT_INTENT_ROUTING_VOCABULARY
+  const vocabularyDigest = intentRoutingVocabularyDigest(vocabulary)
+  const sealCoordinator = args.sealCoordinator
+  const capture = sealCoordinator === undefined
+    ? undefined
+    : createJevIntentRoutingCapture({ turnStore: sealCoordinator.store })
   let inFlight = 0
   let dispatchesDropped = 0
 
   const recordNotDispatched = (
     sessionID: unknown,
-    reason: NotDispatchedReason,
+    reason: IntentRoutingNotDispatchedReason,
   ): void => safeLog("[jev] intent-routing", {
     wire: "intent_routing",
     sessionID: typeof sessionID === "string" ? sessionID : null,
-    backend: safeBackendKind(backend),
+    backend: safeIntentRoutingBackendKind(backend),
     predictionStatus: "not_dispatched",
     notDispatchedReason: reason,
   })
 
-  const runDeferred = async (sessionID: unknown, promptText: string): Promise<void> => {
-    const sessionReason = sessionNotDispatchedReason(sessionID)
-    if (sessionReason !== null) {
-      recordNotDispatched(sessionID, sessionReason)
-      return
-    }
-    if (promptText.length === 0) {
-      recordNotDispatched(sessionID, "no_user_text")
-      return
-    }
-    if (inFlight >= wireConfig.max_inflight) {
-      dispatchesDropped += 1
-      recordNotDispatched(sessionID, "max_inflight")
-      return
-    }
-
+  const dispatchDecision = async (sessionID: string, promptText: string): Promise<IntentRoutingDecisionResult> => {
     inFlight += 1
     try {
       const result = await dispatcher({
@@ -196,7 +139,7 @@ export function createJevIntentRouting(args: {
         wire: "intent_routing",
         questionVersion: result.questionVersion,
         sessionID,
-        backend: safeBackendKind(backend),
+        backend: safeIntentRoutingBackendKind(backend),
         predictionStatus: result.predictionStatus,
         notDispatchedReason: null,
         unavailableReason: result.unavailableReason,
@@ -206,8 +149,59 @@ export function createJevIntentRouting(args: {
         invalidAnswerCount: result.invalidAnswerCount,
         truncatedInput: result.truncatedInput,
       })
+      return result
+    } catch (error) {
+      safeLog("[jev] intent-routing failed", {
+        wire: "intent_routing",
+        sessionID,
+        backend: safeIntentRoutingBackendKind(backend),
+        error: String(error).slice(0, 200),
+      })
+      throw error
     } finally {
       inFlight -= 1
+    }
+  }
+
+  const runDeferred = (sessionID: unknown, promptText: string): void => {
+    const sessionReason = intentRoutingSessionNotDispatchedReason(sessionID)
+    if (sessionReason !== null) {
+      recordNotDispatched(sessionID, sessionReason)
+      return
+    }
+    if (!isJevIntentRoutingSessionEligible(sessionID)) return
+    if (promptText.length === 0) {
+      recordNotDispatched(sessionID, "no_user_text")
+      return
+    }
+    if (sealCoordinator === undefined) {
+      if (inFlight >= wireConfig.max_inflight) {
+        dispatchesDropped += 1
+        recordNotDispatched(sessionID, "max_inflight")
+        return
+      }
+      void dispatchDecision(sessionID, promptText).catch(() => undefined)
+      return
+    }
+
+    const atCapacity = inFlight >= wireConfig.max_inflight
+    const turn = sealCoordinator.startTurn({
+      sessionID,
+      parts: [{ type: "text", text: promptText }],
+      questionVersion: INTENT_ROUTING_QUESTION_VERSION,
+      vocabularyDigest,
+      confidenceThreshold: wireConfig.confidence_threshold,
+      configuredModelSpec: jevConfig.model,
+      dispatch: atCapacity ? undefined : () => dispatchDecision(sessionID, promptText),
+      ...(atCapacity ? { notDispatchedReason: "max_inflight" } : {}),
+    })
+    if (
+      atCapacity
+      && turn !== null
+      && sealCoordinator.store.getTurn(sessionID, turn.turnOrdinal)?.predictionState === "not_dispatched"
+    ) {
+      dispatchesDropped += 1
+      recordNotDispatched(sessionID, "max_inflight")
     }
   }
 
@@ -218,16 +212,9 @@ export function createJevIntentRouting(args: {
     observe(input, output): void {
       try {
         const sessionID = input.sessionID
-        const promptText = snapshotPromptText(output.parts, wireConfig.max_prompt_chars)
+        const promptText = snapshotIntentRoutingPromptText(output.parts, wireConfig.max_prompt_chars)
         const handle = setTimeout(() => {
-          runDeferred(sessionID, promptText).catch((error: unknown) => {
-            safeLog("[jev] intent-routing failed", {
-              wire: "intent_routing",
-              sessionID: typeof sessionID === "string" ? sessionID : null,
-              backend: safeBackendKind(backend),
-              error: String(error).slice(0, 200),
-            })
-          })
+          runDeferred(sessionID, promptText)
         }, 0)
         handle.unref()
       } catch (error) {
@@ -240,5 +227,9 @@ export function createJevIntentRouting(args: {
         })
       }
     },
+    capture: (input, output) => capture?.capture(input, output) ?? false,
+    sealSessionIdle: (sessionID) => sealCoordinator?.sealSessionIdle(sessionID) ?? false,
+    deleteSession: (sessionID) => sealCoordinator?.deleteSession(sessionID),
+    dispose: async () => sealCoordinator?.dispose(),
   }
 }

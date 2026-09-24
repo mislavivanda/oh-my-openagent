@@ -9,6 +9,11 @@ import { createManagers } from "../create-managers"
 import { createRuntimeTmuxConfig, isTmuxIntegrationEnabled } from "../create-runtime-tmux-config"
 import { createTools } from "../create-tools"
 import { createRuntimeSkillSourceServer, selectRuntimeSecuritySkills } from "../features/opencode-runtime-skills"
+import {
+  createIntentRoutingSealCoordinator,
+  createIntentRoutingSink,
+  createJevIntentRouting,
+} from "../features/jev"
 import { initializeOpenClaw } from "../openclaw"
 import { createPluginDispose } from "../plugin-dispose"
 import { createPluginInterface } from "../plugin-interface"
@@ -85,6 +90,10 @@ export type PluginModuleDeps = {
   createRuntimeSkillSourceServer: typeof createRuntimeSkillSourceServer
   createHooks: typeof createHooks
   createPluginInterface: typeof createPluginInterface
+  createPluginDispose: typeof createPluginDispose
+  createJevIntentRouting: typeof createJevIntentRouting
+  createIntentRoutingSealCoordinator: typeof createIntentRoutingSealCoordinator
+  createIntentRoutingSink: typeof createIntentRoutingSink
 }
 
 const defaultPluginModuleDeps: PluginModuleDeps = {
@@ -119,6 +128,10 @@ const defaultPluginModuleDeps: PluginModuleDeps = {
   createRuntimeSkillSourceServer,
   createHooks,
   createPluginInterface,
+  createPluginDispose,
+  createJevIntentRouting,
+  createIntentRoutingSealCoordinator,
+  createIntentRoutingSink,
 }
 
 function showStartupToast(
@@ -313,6 +326,20 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
       availableSkills: toolsResult.availableSkills,
     })
 
+    const jevConfig = pluginConfig.jev
+    const intentRoutingEnabled = jevConfig?.enabled === true
+      && jevConfig.wires.intent_routing.enabled === true
+    const intentRoutingSealCoordinator = intentRoutingEnabled
+      ? deps.createIntentRoutingSealCoordinator({
+          turnSealTimeoutMs: jevConfig.wires.intent_routing.turn_seal_timeout_ms,
+          createSink: (getCounters) => deps.createIntentRoutingSink({ getCounters }),
+        })
+      : undefined
+    const intentRouting = deps.createJevIntentRouting({
+      jevConfig,
+      sealCoordinator: intentRoutingSealCoordinator,
+    })
+
     const pluginInterface = deps.createPluginInterface({
       ctx: input,
       pluginConfig,
@@ -320,12 +347,15 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
       managers,
       hooks,
       tools: toolsResult.filteredTools,
+      intentRouting,
     })
 
-    const dispose = createPluginDispose({
+    const dispose = deps.createPluginDispose({
       backgroundManager: managers.backgroundManager,
       skillMcpManager: managers.skillMcpManager,
       disposeHooks: hooks.disposeHooks,
+      pluginConfig,
+      intentRouting,
     })
 
     const pluginHooks: HooksWithRuntimeLifecycle = {

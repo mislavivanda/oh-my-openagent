@@ -98,3 +98,10 @@ todo	artifact	kind	description
 12	.omo/evidence/20260924-jev-w1/task-12-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests across 45 files including final seal and adversarial coverage
 12	.omo/evidence/20260924-jev-w1/task-12-adversarial-qa.txt	qa	Pending interruption, deferred stale state, repeated lifecycle events, hung sink writes, malformed input, mechanical classification, and prompt-injection rule-out are covered
 12	.omo/evidence/20260924-jev-w1/task-12-opencode-server-smoke.txt	qa	Isolated opencode-qa server smoke timed out at both 120 and 300 seconds before readiness; limitation is recorded for TODO 14 wiring QA
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-red.txt	red	Focused wiring RED fails because the shared constructor and chat dispatcher are not yet connected
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-green.txt	green	Wiring and plugin suites pass 592 tests, proving one shared receiver reaches dispatch, capture, event sealing, and dispose
+14	.omo/evidence/20260924-jev-w1/task-14-not-awaited.txt	qa	A 3000 ms dispatcher is called once while chat.message resolves under the 50 ms assertion
+14	.omo/evidence/20260924-jev-w1/task-14-no-hook-registry.txt	qa	Exact registry grep returns no intentRouting matches in create-hooks or HookNameSchema
+14	.omo/evidence/20260924-jev-w1/task-14-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0
+14	.omo/evidence/20260924-jev-w1/task-14-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and zero paid network calls
+14	.omo/evidence/20260924-jev-w1/task-14-adversarial-qa.txt	qa	Split-instance, dispose, three disabled configurations, and isolated SSE timeout limitation are recorded

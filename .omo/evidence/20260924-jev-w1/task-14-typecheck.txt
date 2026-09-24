@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+bun run typecheck
+
+WHAT WAS OBSERVED
+Exit 0. Root tsgo, script tsgo, and every workspace package typecheck completed successfully.
+
+WHY IT IS ENOUGH
+The shared Jev runtime type reaches all handler and dispose signatures without unchecked production casts.
+
+WHAT WAS OMITTED
+LSP diagnostics could not initialize because the workspace TypeScript 7.0.2 package has no tsserver.js. The required repository tsgo gate passed instead.

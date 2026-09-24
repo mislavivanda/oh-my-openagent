@@ -1,0 +1,66 @@
+import type { PluginModuleDeps } from "./create-plugin-module"
+
+export function intentRoutingPluginDeps(
+  overrides: Partial<PluginModuleDeps>,
+): Partial<PluginModuleDeps> {
+  return {
+    initConfigContext: () => {},
+    installAgentSortShim: () => {},
+    setAgentSortOrder: () => {},
+    log: () => {},
+    logLegacyPluginStartupWarning: () => {},
+    migrateLegacyWorkspaceDirectory: () => ({ migrated: false, skipped: [] }),
+    runOpenCodeStartupMigration: () => ({
+      journalResumed: false,
+      migratedFrom: [],
+      reloadRequired: false,
+      results: [],
+      skippedConflictCount: 0,
+    }),
+    startOmoProcessSweep: async () => {},
+    detectDuplicateOmoPlugin: () => ({
+      detected: false,
+      pluginName: null,
+      duplicatePlugins: [],
+      allPlugins: [],
+    }),
+    getDuplicateOmoPluginWarning: () => "",
+    detectExternalSkillPlugin: () => ({ detected: false, pluginName: null, allPlugins: [] }),
+    getSkillPluginConflictWarning: () => "",
+    injectServerAuthIntoClient: () => {},
+    initLiveServerRoute: () => {},
+    setLiveParentWakeRoutingDisabled: () => {},
+    warmLiveServerProbe: async () => false,
+    loadConfigChain: (() => ({ config: {}, messages: [], path: null, valid: true })) as never,
+    loadPluginConfig: (() => ({})) as never,
+    recordPluginTelemetry: () => {},
+    initI18n: () => {},
+    initializeOpenClaw: async () => {},
+    isTmuxIntegrationEnabled: () => false,
+    startTmuxCheck: () => {},
+    createFirstMessageVariantGate: () => ({
+      shouldOverride: () => false,
+      markApplied: () => {},
+      markSessionCreated: () => {},
+      clear: () => {},
+    }),
+    createRuntimeTmuxConfig: () => ({
+      enabled: false,
+      layout: "tiled",
+      main_pane_size: 60,
+      main_pane_min_width: 80,
+      agent_pane_min_width: 40,
+      isolation: "inline",
+    }),
+    createModelCacheState: (() => ({})) as never,
+    createManagers: (() => ({
+      backgroundManager: { shutdown: async () => {} },
+      skillMcpManager: { disconnectAll: async () => {} },
+      configHandler: async () => {},
+    })) as never,
+    createTools: (async () => ({ mergedSkills: [], availableSkills: [], filteredTools: {} })) as never,
+    createRuntimeSkillSourceServer: (() => ({ url: "http://127.0.0.1:1", stop: () => {} })) as never,
+    createHooks: (() => ({ disposeHooks: () => {} })) as never,
+    ...overrides,
+  }
+}

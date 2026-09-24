@@ -7,7 +7,11 @@ import { stopContinuation } from "./stop-continuation"
 
 import type { CreatedHooks } from "../create-hooks"
 import type { BackgroundManager } from "../features/background-agent"
-import type { JevIntentRoutingCapture } from "../features/jev"
+import {
+  createJevIntentRouting,
+  type JevIntentRoutingCapture,
+} from "../features/jev"
+import type { OhMyOpenCodeConfig } from "../config"
 
 const BACKGROUND_WAIT_BLOCK_MESSAGE = [
   "Background task wait is already managed by the plugin.",
@@ -28,13 +32,16 @@ function isPureSleepCommand(command: string): boolean {
 export function createToolExecuteBeforeHandler(args: {
   ctx: PluginContext
   hooks: CreatedHooks
+  pluginConfig?: OhMyOpenCodeConfig
   backgroundManager?: Pick<BackgroundManager, "hasActiveChildTasks" | "hasPendingParentWake">
   intentRoutingCapture?: Pick<JevIntentRoutingCapture, "capture">
 }): (
   input: { tool: string; sessionID: string; callID: string },
   output: { args: Record<string, unknown> },
 ) => Promise<void> {
-  const { ctx, hooks, backgroundManager, intentRoutingCapture } = args
+  const { ctx, hooks, backgroundManager } = args
+  const intentRoutingCapture = args.intentRoutingCapture
+    ?? createJevIntentRouting({ jevConfig: args.pluginConfig?.jev })
 
   return async (input, output): Promise<void> => {
     // Strip mcp_ prefix from tool names - the model may emit mcp_background_output

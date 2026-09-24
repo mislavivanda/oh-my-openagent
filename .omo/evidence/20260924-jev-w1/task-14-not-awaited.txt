@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+bun test packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts --test-name-pattern "three seconds"
+
+WHAT WAS OBSERVED
+1 pass, 0 fail, 2 assertions. A dispatcher backed by an unrefed 3000 ms timer was called once, while chat.message resolved under the asserted 50 ms ceiling.
+
+WHY IT IS ENOUGH
+The handler can satisfy the latency assertion only when it starts observation without awaiting the dispatcher promise.
+
+WHAT WAS OMITTED
+The timer was cleared after the assertion. No credentials or private prompt data were captured.
