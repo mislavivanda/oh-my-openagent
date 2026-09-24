@@ -1,0 +1,80 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-fixtures.test.ts:
+107 |   return errors
+108 | }
+109 | 
+110 | describe("intent-routing fixtures", () => {
+111 |   test("#given the hand-labeled fixture set #when validating its contract #then every fixture is valid and uniquely identified", () => {
+112 |     expect(INTENT_ROUTING_FIXTURES.length).toBeGreaterThanOrEqual(15)
+                                                 ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 15
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-fixtures.test.ts:112:44)
+(fail) intent-routing fixtures > #given the hand-labeled fixture set #when validating its contract #then every fixture is valid and uniquely identified [0.61ms]
+114 |   })
+115 | 
+116 |   test("#given required coverage classes #when counting fixture sources #then every minimum is met", () => {
+117 |     for (const [source, minimum] of Object.entries(REQUIRED_MINIMUM_BY_SOURCE)) {
+118 |       const count = INTENT_ROUTING_FIXTURES.filter((fixture) => fixture.source === source).length
+119 |       expect(count, source).toBeGreaterThanOrEqual(minimum)
+                                  ^
+error: no-delegation
+
+Expected: >= 3
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-fixtures.test.ts:119:29)
+(fail) intent-routing fixtures > #given required coverage classes #when counting fixture sources #then every minimum is met [0.16ms]
+122 | 
+123 |   test("#given headline no-delegation fixtures #when inspecting their routes #then at least three select neither delegation kind", () => {
+124 |     const noDelegation = INTENT_ROUTING_FIXTURES.filter(
+125 |       (fixture) => fixture.label.category === "none" && fixture.label.subagent === "none",
+126 |     )
+127 |     expect(noDelegation.length).toBeGreaterThanOrEqual(3)
+                                      ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 3
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-fixtures.test.ts:127:33)
+(fail) intent-routing fixtures > #given headline no-delegation fixtures #when inspecting their routes #then at least three select neither delegation kind [0.07ms]
+129 | 
+130 |   test("#given multilingual fixtures #when inspecting prompt text #then at least two contain non-ASCII language data", () => {
+131 |     const nonEnglish = INTENT_ROUTING_FIXTURES.filter(
+132 |       (fixture) => fixture.source === "multilingual" && /[^\u0000-\u007f]/u.test(fixture.input.promptText),
+133 |     )
+134 |     expect(nonEnglish.length).toBeGreaterThanOrEqual(2)
+                                    ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 2
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-fixtures.test.ts:134:31)
+(fail) intent-routing fixtures > #given multilingual fixtures #when inspecting prompt text #then at least two contain non-ASCII language data [0.10ms]
+136 | 
+137 |   test("#given ambiguous fixtures #when inspecting hand labels #then at least two carry high ambiguity", () => {
+138 |     const highAmbiguity = INTENT_ROUTING_FIXTURES.filter(
+139 |       (fixture) => fixture.source === "ambiguous" && fixture.label.ambiguous >= 0.75,
+140 |     )
+141 |     expect(highAmbiguity.length).toBeGreaterThanOrEqual(2)
+                                       ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 2
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-fixtures.test.ts:141:34)
+(fail) intent-routing fixtures > #given ambiguous fixtures #when inspecting hand labels #then at least two carry high ambiguity [0.06ms]
+
+ 6 pass
+ 5 fail
+ 11 expect() calls
+Ran 11 tests across 1 file. [126.00ms]
+
+exit=1

@@ -55,4 +55,5 @@ export {
   type IntentRoutingPredictionAnswers,
   type IntentRoutingRoute,
 } from "./intent-routing-normalization"
+export { INTENT_ROUTING_FIXTURES, type IntentRoutingFixture, type IntentRoutingFixtureSource } from "./intent-routing-fixtures"
 export { decideIntentRouting, type IntentRoutingChoiceLabel, type IntentRoutingDecisionAnswers, type IntentRoutingDecisionChoice, type IntentRoutingDecisionResult, type IntentRoutingInput } from "./intent-routing"

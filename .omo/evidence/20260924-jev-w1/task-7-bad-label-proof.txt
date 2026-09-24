@@ -1,0 +1,65 @@
+RUN 1: clean baseline
+sha256-before=6d0b737f92b8be684e9a773c8140ed1d64f1fa9ae9a6986271bf8f2d71b94922
+bun test v1.4.0 (34cbb9a40)
+
+ 11 pass
+ 0 fail
+ 18 expect() calls
+Ran 11 tests across 1 file. [124.00ms]
+run-1-exit=0
+
+RUN 2: mutated subagent label
+sha256-mutated=a27f6d5444bc87375c0cebea3e5a938700154c98f7687e10f75710836d13b781
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-fixtures.test.ts:
+108 | }
+109 | 
+110 | describe("intent-routing fixtures", () => {
+111 |   test("#given the hand-labeled fixture set #when validating its contract #then every fixture is valid and uniquely identified", () => {
+112 |     expect(INTENT_ROUTING_FIXTURES.length).toBeGreaterThanOrEqual(15)
+113 |     expect(validateFixtures(INTENT_ROUTING_FIXTURES)).toEqual([])
+                                                            ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "no-delegation-pure-question: unknown subagent",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-fixtures.test.ts:113:55)
+(fail) intent-routing fixtures > #given the hand-labeled fixture set #when validating its contract #then every fixture is valid and uniquely identified [0.81ms]
+122 | 
+123 |   test("#given headline no-delegation fixtures #when inspecting their routes #then at least three select neither delegation kind", () => {
+124 |     const noDelegation = INTENT_ROUTING_FIXTURES.filter(
+125 |       (fixture) => fixture.label.category === "none" && fixture.label.subagent === "none",
+126 |     )
+127 |     expect(noDelegation.length).toBeGreaterThanOrEqual(3)
+                                      ^
+error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: >= 3
+Received: 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-fixtures.test.ts:127:33)
+(fail) intent-routing fixtures > #given headline no-delegation fixtures #when inspecting their routes #then at least three select neither delegation kind [0.09ms]
+
+ 9 pass
+ 2 fail
+ 18 expect() calls
+Ran 11 tests across 1 file. [119.00ms]
+run-2-exit=1
+
+RUN 3: reverted fixture
+sha256-after=6d0b737f92b8be684e9a773c8140ed1d64f1fa9ae9a6986271bf8f2d71b94922
+sha256-match=yes
+bun test v1.4.0 (34cbb9a40)
+
+ 11 pass
+ 0 fail
+ 18 expect() calls
+Ran 11 tests across 1 file. [136.00ms]
+run-3-exit=0
