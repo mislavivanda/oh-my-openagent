@@ -18,3 +18,6 @@ todo	artifact	kind	description
 2	.omo/evidence/20260924-jev-w1/task-2-schema-diff.txt	artifact	Recorded non-gating review artifact: full git diff of assets/oh-my-opencode.schema.json and assets/omo.schema.json, 281 lines, showing the intent_routing block in the legacy schema and in both omo.schema.json locations
 2	.omo/evidence/20260924-jev-w1/task-2-observe-only-reject.txt	qa	Failure-path QA: the plan's exact bun -e invocation proving observe_only false is rejected, plus two addenda printing the untruncated not-yet-implemented message and the strict turn_seal_timeout_ms greater-than timeout_ms rejection at both equal and lower values
 2	.omo/evidence/20260924-jev-w1/task-2-gates.txt	qa	Completion gates: scoped suite 11 pass, jev-consumer sweep 84 pass across 16 files, bun run typecheck exit=0, per-file tsgo diagnostics exit=0 on both changed files, plus a note on the lsp_diagnostics daemon being unavailable in this environment and on a transient typecheck failure owned by the concurrent todo-3 worker
+3	.omo/evidence/20260924-jev-w1/task-3-record-red.txt	red	Focused record-contract tests failing against validator stubs
+3	.omo/evidence/20260924-jev-w1/task-3-record-green.txt	green	Focused record-contract tests passing after implementation
+3	.omo/evidence/20260924-jev-w1/task-3-guard-proof.txt	qa	Harness-neutrality guard before, break, and after proof

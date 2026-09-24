@@ -28,3 +28,18 @@ export {
   type ModelErrorTriageFixture,
   type ModelErrorTriageFixtureSource,
 } from "./model-error-triage-fixtures"
+export {
+  INTENT_ROUTING_CONTINUATION_LEXICON,
+  selectLatestCounterDeltasByProcess,
+  validateIntentRoutingCounterDelta,
+  validateIntentRoutingEntry,
+  validateIntentRoutingObservationRecord,
+  type IntentRoutingAnswers,
+  type IntentRoutingChoiceAnswer,
+  type IntentRoutingCounterDelta,
+  type IntentRoutingCounters,
+  type IntentRoutingEntry,
+  type IntentRoutingNoulAnswer,
+  type IntentRoutingObservationRecord,
+  type IntentRoutingObservedDelegation,
+} from "./intent-routing-record"
