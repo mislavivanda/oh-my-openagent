@@ -1,0 +1,9 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 11 filtered out
+ 0 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [139.00ms]
+
+OBSERVED: with max_inflight=4, seven turns against a never-resolving dispatcher produced exactly four dispatcher calls, inFlight=4, and dispatchesDropped=3.

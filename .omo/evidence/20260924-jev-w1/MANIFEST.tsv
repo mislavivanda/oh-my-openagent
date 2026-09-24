@@ -38,3 +38,8 @@ todo	artifact	kind	description
 7	.omo/evidence/20260924-jev-w1/task-7-fixtures-green.txt	green	All 10 fixture coverage tests pass over the 15 hand-labeled fixtures after implementation.
 7	.omo/evidence/20260924-jev-w1/task-7-bad-label-proof.txt	qa	A subagent label outside the vocabulary fails the suite naming obvious-subagent-find-callsites, and the revert restores GREEN with a clean git diff.
 7	.omo/evidence/20260924-jev-w1/task-7-gates.txt	qa	Shared-core extraction guard, the capital-Stop word guard, and bun run typecheck all pass with the fixtures in place.
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-red.txt	red	TDD RED proves the adapter module is absent before implementation.
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-green.txt	green	Focused adapter suite passes all 12 execution-model, gate, logging, baseURL, and budget tests.
+9	.omo/evidence/20260924-jev-w1/task-9-no-unhandled-rejection.txt	qa	Rejecting dispatcher returns synchronously, logs one failure, and emits zero unhandled-rejection events.
+9	.omo/evidence/20260924-jev-w1/task-9-inflight-bounded.txt	qa	Never-resolving dispatcher stays capped at four in flight and drops exactly three excess turns.
+9	.omo/evidence/20260924-jev-w1/task-9-macrotask-ordering-proof.txt	qa	Temporary queueMicrotask substitution fails ordering; restored unrefed setTimeout macrotask passes and git diff confirms the revert.
