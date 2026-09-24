@@ -1,0 +1,15 @@
+TODO 5 TDD RED, captured before decideIntentRouting implementation
+
+Command: bun test packages/jev-core/src/intent-routing.test.ts
+Exit code: 1
+
+Intended failing assertion:
+  expect(typeof Reflect.get(intentRouting, "decideIntentRouting")).toBe("function")
+
+Observed:
+  Expected: "function"
+  Received: "undefined"
+  (fail) decideIntentRouting > #given the intent-routing module #when loading its public surface #then the decision function exists
+
+Summary: 6 pass, 1 fail, 25 assertions across 1 file.
+Why this is the right RED: the existing TODO 4 question-builder tests remain green, while the new assertion fails only because the TODO 5 decision function has not been implemented yet.

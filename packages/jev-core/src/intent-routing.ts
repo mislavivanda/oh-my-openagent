@@ -1,4 +1,17 @@
-import type { ChoiceQuestion, NoulQuestion, Questions } from "./types"
+import { isRecord } from "./answer-validation"
+import {
+  emptyDecisionAnswers,
+  readChoiceDecision,
+  readNoulDecision,
+  type IntentRoutingDecisionAnswers,
+} from "./intent-routing-answer-observation"
+import type {
+  ChoiceQuestion,
+  DecisionBackend,
+  DecisionUnavailableReason,
+  NoulQuestion,
+  Questions,
+} from "./types"
 
 export const INTENT_ROUTING_QUESTION_VERSION = 1
 
@@ -18,6 +31,28 @@ export type IntentRoutingQuestions = {
   readonly category: ChoiceQuestion
   readonly subagent: ChoiceQuestion
   readonly ambiguous: NoulQuestion
+}
+
+export type IntentRoutingInput = {
+  readonly promptText: string
+}
+
+export type {
+  IntentRoutingChoiceLabel,
+  IntentRoutingDecisionAnswers,
+  IntentRoutingDecisionChoice,
+} from "./intent-routing-answer-observation"
+
+export type IntentRoutingDecisionResult = {
+  readonly predictionStatus: "filled" | "failed"
+  readonly unavailableReason: DecisionUnavailableReason | null
+  readonly resolvedModel: string | null
+  readonly latencyMs: number
+  readonly answers: IntentRoutingDecisionAnswers
+  readonly invalidAnswerCount: number
+  readonly truncatedInput: boolean
+  readonly threshold: number
+  readonly questionVersion: number
 }
 
 type IntentRoutingVocabularyName = keyof IntentRoutingVocabulary
@@ -122,4 +157,99 @@ export function buildIntentRoutingQuestions(
       },
     },
   } as const satisfies Questions
+}
+
+function failedDecisionResult(args: {
+  readonly unavailableReason: DecisionUnavailableReason
+  readonly latencyMs: number
+  readonly truncatedInput: boolean
+  readonly threshold: number
+}): IntentRoutingDecisionResult {
+  return {
+    predictionStatus: "failed",
+    unavailableReason: args.unavailableReason,
+    resolvedModel: null,
+    latencyMs: args.latencyMs,
+    answers: emptyDecisionAnswers(),
+    invalidAnswerCount: 0,
+    truncatedInput: args.truncatedInput,
+    threshold: args.threshold,
+    questionVersion: INTENT_ROUTING_QUESTION_VERSION,
+  }
+}
+
+export async function decideIntentRouting(args: {
+  readonly backend: DecisionBackend
+  readonly input: IntentRoutingInput
+  readonly vocab: IntentRoutingVocabulary
+  readonly confidenceThreshold: number
+  readonly model?: string
+  readonly maxPromptChars: number
+}): Promise<IntentRoutingDecisionResult> {
+  const startedAt = performance.now()
+  let truncatedInput = false
+  try {
+    const maxPromptChars = Number.isSafeInteger(args.maxPromptChars) && args.maxPromptChars >= 0
+      ? args.maxPromptChars
+      : 0
+    const promptText = args.input.promptText.slice(0, maxPromptChars)
+    truncatedInput = promptText.length < args.input.promptText.length
+    const questions = buildIntentRoutingQuestions(args.vocab)
+
+    if (args.backend.kind === "disabled") {
+      return failedDecisionResult({
+        unavailableReason: "disabled",
+        latencyMs: performance.now() - startedAt,
+        truncatedInput,
+        threshold: args.confidenceThreshold,
+      })
+    }
+
+    const outcome = await args.backend.decide({
+      state: { promptText, truncatedInput },
+      questions,
+      model: args.model,
+    })
+    if (outcome.status === "unavailable") {
+      return failedDecisionResult({
+        unavailableReason: outcome.reason,
+        latencyMs: outcome.latencyMs,
+        truncatedInput,
+        threshold: args.confidenceThreshold,
+      })
+    }
+
+    const rawAnswers: unknown = outcome.answers
+    const answerRecord = isRecord(rawAnswers) ? rawAnswers : {}
+    const answers = {
+      intent: readChoiceDecision(questions.intent, answerRecord.intent, args.confidenceThreshold),
+      category: readChoiceDecision(questions.category, answerRecord.category, args.confidenceThreshold),
+      subagent: readChoiceDecision(questions.subagent, answerRecord.subagent, args.confidenceThreshold),
+      ambiguous: readNoulDecision(questions.ambiguous, answerRecord.ambiguous),
+    }
+    const expectedKeys = Object.keys(questions)
+    const unexpectedAnswerCount = Object.keys(answerRecord)
+      .filter((key) => !expectedKeys.includes(key)).length
+    const invalidAnswerCount = Object.values(answers)
+      .filter((answer) => !answer.valid).length + unexpectedAnswerCount
+
+    return {
+      predictionStatus: "filled",
+      unavailableReason: null,
+      resolvedModel: outcome.model,
+      latencyMs: outcome.latencyMs,
+      answers,
+      invalidAnswerCount,
+      truncatedInput,
+      threshold: args.confidenceThreshold,
+      questionVersion: INTENT_ROUTING_QUESTION_VERSION,
+    }
+  } catch {
+    return failedDecisionResult({
+      unavailableReason: "transport_error",
+      latencyMs: performance.now() - startedAt,
+      truncatedInput,
+      threshold: args.confidenceThreshold,
+    })
+  }
 }

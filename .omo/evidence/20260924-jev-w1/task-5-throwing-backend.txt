@@ -1,0 +1,10 @@
+TODO 5 rejecting-backend proof
+
+Command: bun test packages/jev-core/src/intent-routing.test.ts --test-name-pattern "rejecting backend"
+Exit code: 0
+Observed: 1 pass, 12 filtered out, 0 fail, 2 assertions.
+
+The test backend's decide method rejects by throwing TypeError("Connection failed"). The test first runs expect(operation).not.toThrow(), then awaits the returned promise and asserts predictionStatus="failed" with unavailableReason="transport_error". No exception escapes decideIntentRouting.
+
+Why it is enough: this directly exercises the required defensive catch at the public function boundary.
+Omitted: no external transport was contacted and no secrets were present.

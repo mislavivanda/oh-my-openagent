@@ -43,3 +43,15 @@ todo	artifact	kind	description
 6	.omo/evidence/20260924-jev-w1/task-6-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
 6	.omo/evidence/20260924-jev-w1/task-6-test-fast.txt	qa	Hard test-fast gate exits 0 with 363 passing tests across 35 files
 6	.omo/evidence/20260924-jev-w1/task-6-adversarial-qa.txt	qa	Malformed-input observables, stale-state proof, dirty-worktree receipt, barrel preservation, RED chronology, scenario rulings, and harness-neutrality guard
+5	.omo/evidence/20260924-jev-w1/task-5-decide-red.txt	red	Focused assertion RED predates implementation and fails only because decideIntentRouting is absent while TODO 4 tests remain green
+5	.omo/evidence/20260924-jev-w1/task-5-decide-green.txt	green	Focused final GREEN covers one-call four-question dispatch, threshold labels, invalid-choice accounting, unavailable and throwing backends, resolved model, and bounded state
+5	.omo/evidence/20260924-jev-w1/task-5-throwing-backend.txt	qa	Rejecting backend proof passes expect(operation).not.toThrow and returns failed with transport_error
+5	.omo/evidence/20260924-jev-w1/task-5-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and workspace packages exits 0 with no diagnostics
+5	.omo/evidence/20260924-jev-w1/task-5-test-fast.txt	qa	Hard test-fast gate and focused shared-core extraction guard both exit 0
+5	.omo/evidence/20260924-jev-w1/task-5-adversarial-qa.txt	qa	Malformed answer accounting, prompt-as-data isolation, RED chronology, dirty-worktree classification, barrel preservation, and scenario rulings
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-red.txt	red	Focused fixture RED predates populated data and fails the intended minimum-count assertion with 0 fixtures
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-green.txt	green	Focused fixture GREEN passes 11 tests covering all required classes, option vocabularies, no-delegation precision, multilingual prompts, and high ambiguity
+7	.omo/evidence/20260924-jev-w1/task-7-bad-label-proof.txt	qa	Three-run bad-label proof passes cleanly, fails naming no-delegation-pure-question after mutation, and passes after a matching-sha256 revert
+7	.omo/evidence/20260924-jev-w1/task-7-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+7	.omo/evidence/20260924-jev-w1/task-7-test-fast.txt	qa	Hard test-fast gate exits 0 with 381 passing tests across 36 files
+7	.omo/evidence/20260924-jev-w1/task-7-adversarial-qa.txt	qa	Six malformed-input probes, inert prompt-data audit, dirty-worktree and barrel proof, RED chronology, scenario rulings, and harness-neutrality guard

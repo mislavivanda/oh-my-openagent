@@ -55,3 +55,4 @@ export {
   type IntentRoutingPredictionAnswers,
   type IntentRoutingRoute,
 } from "./intent-routing-normalization"
+export { decideIntentRouting, type IntentRoutingChoiceLabel, type IntentRoutingDecisionAnswers, type IntentRoutingDecisionChoice, type IntentRoutingDecisionResult, type IntentRoutingInput } from "./intent-routing"
