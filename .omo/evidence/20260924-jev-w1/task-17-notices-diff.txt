@@ -1,0 +1,31 @@
+# task-17 third-party-notices baseline-relative check
+# WHAT WAS TESTED: node scripts/check-third-party-notices.mjs is RED at the upstream baseline
+#   (four missing headings inherited from v4.19.4), so the gate is baseline-relative: the
+#   requirement is NO NEW missing entry, not a green exit.
+# WHAT WAS OBSERVED: the current output is byte-identical to the todo-1 baseline. The exit status
+#   stays 1, matching .omo/evidence/20260924-jev-w1/task-1-notices-exit.txt, and is deliberately
+#   kept out of the compared stream so it cannot contaminate the diff.
+# WHY IT IS ENOUGH: a byte-for-byte diff detects an added, removed, or reworded entry. Todo 17
+#   adds no dependency, so the correct result is exactly no change.
+# WHAT WAS OMITTED: nothing. The output carries package names only, no credentials.
+
+=== prescribed invocation ===
+$ node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt
+<no output above this line means byte-identical>
+diff_exit=0
+
+=== exit status, recorded separately ===
+$ node scripts/check-third-party-notices.mjs >/dev/null 2>&1; echo $?
+1
+todo-1 recorded exit status for comparison:
+exit=1
+
+=== current output, for the reader ===
+THIRD-PARTY-NOTICES.md is missing 4 required notice entries:
+- @opentui/core
+- @opentui/keymap
+- @opentui/solid
+- zod
+
+=== VERDICT ===
+Zero new missing entries. Output byte-identical to the todo-1 baseline; exit status 1 unchanged.

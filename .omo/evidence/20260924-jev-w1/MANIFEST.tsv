@@ -67,3 +67,6 @@ todo	artifact	kind	description
 15	.omo/evidence/20260924-jev-w1/task-15-hanging-backend-stress.txt	qa	Real dispatcher and sink stress under hanging fetch: 50 turns, bounded wall-clock, max_inflight 4, 46 drops, bounded heap, clean child exit, isolated HOME, and empty W4 scope diff
 15	.omo/evidence/20260924-jev-w1/task-15-mutation-detected.txt	qa	Temporary output mutation produces a readable byte-identity diff for all failure shapes, then the reverted focused suite returns green
 15	.omo/evidence/20260924-jev-w1/task-15-unref-proof.txt	qa	Removing dispatcher timer unref makes the hanging-backend child time out, then restoring unref yields exit 0 within the bound
+17	.omo/evidence/20260924-jev-w1/task-17-testfast-scope.txt	artifact	test:fast before and after verbatim, append-only check, grep -c intent-routing = 9, 469 pass 1 skip 0 fail across 48 files, exit 0
+17	.omo/evidence/20260924-jev-w1/task-17-markdown-audit-proof.txt	qa	Markdown audit negative proof in three runs: green, then RED naming docs/jev/HANDOFF.md:346 after a transient /home path, then green after revert
+17	.omo/evidence/20260924-jev-w1/task-17-notices-diff.txt	baseline	check-third-party-notices output byte-identical to the todo-1 baseline, zero new missing entries, exit status 1 unchanged

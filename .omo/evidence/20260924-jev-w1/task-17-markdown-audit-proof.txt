@@ -1,0 +1,74 @@
+# task-17 markdown-link-audit negative proof
+# WHAT WAS TESTED: packages/omo-opencode/src/shared/markdown-link-audit.test.ts bans machine-local
+#   absolute paths in committed markdown. Three runs prove it is green on the edited docs, that it
+#   FAILS when an absolute /home path is temporarily inserted into docs/jev/HANDOFF.md, and that it
+#   returns green after the revert.
+# WHY IT IS ENOUGH: a passing gate alone cannot distinguish "no violation" from "gate not running".
+#   The deliberate RED between two GREENs shows the gate observes this exact file.
+# WHAT WAS OMITTED: nothing. No secrets or credentials are involved in this check.
+# NOTE: the injected path below is transient and reverted inside this same script. The committed
+#   tree contains no machine-local absolute path; the string appears here only as captured output.
+
+=== RUN 1/3 GREEN before injection ===
+$ bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 16 pass
+ 0 fail
+ 21 expect() calls
+Ran 16 tests across 1 file. [310.00ms]
+exit=0
+
+=== INJECTION: appended one line carrying a machine-local absolute path to docs/jev/HANDOFF.md ===
+$ tail -1 docs/jev/HANDOFF.md
+Transient audit probe: /home/opencode/projects/oh-my-openagent-jev-w1-fffe/docs/jev/HANDOFF.md
+
+=== RUN 2/3 EXPECTED RED with the absolute path present ===
+$ bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/shared/markdown-link-audit.test.ts:
+242 | 
+243 |   test("#given checked-in markdown #when maintainer-local paths are audited #then none are present", async () => {
+244 |     const offenders = (await Promise.all(collectMarkdownFiles().map(async (filePath) => {
+245 |       return collectMaintainerLocalPathLines(await readFile(filePath, "utf-8")).map((line) => `${relativeWorkspacePath(filePath)}:${line}`)
+246 |     }))).flat()
+247 |     expect(offenders.sort()).toEqual([])
+                                   ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "docs/jev/HANDOFF.md:346",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/shared/markdown-link-audit.test.ts:247:30)
+(fail) markdown local link audit > #given checked-in markdown #when maintainer-local paths are audited #then none are present [44.88ms]
+
+ 15 pass
+ 1 fail
+ 21 expect() calls
+Ran 16 tests across 1 file. [292.00ms]
+exit=1
+
+=== REVERT: restored docs/jev/HANDOFF.md from the pre-injection copy ===
+$ grep -c "Transient audit probe" docs/jev/HANDOFF.md  (0 means the probe line is gone)
+0
+$ grep -nE "^/home/|[^a-zA-Z0-9]/home/" docs/jev/HANDOFF.md  (no output means no machine-local path remains)
+
+=== RUN 3/3 GREEN after revert ===
+$ bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 16 pass
+ 0 fail
+ 21 expect() calls
+Ran 16 tests across 1 file. [312.00ms]
+exit=0
+
+=== VERDICT ===
+GREEN(exit 0) -> RED(exit 1, offender named docs/jev/HANDOFF.md:346) -> GREEN(exit 0).
+The gate observes docs/jev/HANDOFF.md and rejects a machine-local absolute path in it.
