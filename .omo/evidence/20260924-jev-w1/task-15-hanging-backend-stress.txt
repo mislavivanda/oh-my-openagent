@@ -1,0 +1,31 @@
+WHAT WAS TESTED
+command=JEV_WIRING_EVIDENCE=1 bun test packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts
+surface=50 consecutive plugin-handler turns through the real dispatcher and real temp-root sink with a never-resolving real-backend fetch, plus spawned-child clean exit
+
+WHAT WAS OBSERVED
+exit=0
+pass=2
+fail=0
+turns=50
+max_handler_ms=0.226
+handler_bound_ms=50
+added_total_ms=0.000
+added_total_bound_ms=50
+max_fetch_inflight=2
+routing_inflight=2
+max_inflight=2
+dispatches_dropped=48
+expected_drops=48
+heap_growth_bytes=0
+heap_bound_bytes=16777216
+sink_under_temp=1
+child_exit_code=0
+child_elapsed_ms=226.496
+child_exit_bound_ms=1500
+child_timed_out=0
+
+WHY IT IS ENOUGH
+The real dispatcher reached the hanging fetch but never exceeded max_inflight; every excess turn was accounted for as dropped. Handler and heap bounds stayed numeric and finite. The child ran the enabled plugin handler and real sink without disposal, then exited 0 because production timers are unrefed.
+
+WHAT WAS OMITTED
+The temporary sink corpus was deleted after each test. No operator-home path, secret, credential, auth header, or full environment was recorded.

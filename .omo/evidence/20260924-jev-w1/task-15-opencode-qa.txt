@@ -1,0 +1,18 @@
+WHAT WAS TESTED
+command=bash .agents/skills/opencode-qa/scripts/sse-hook-probe.sh --self-test
+surface=the opencode-qa skill's isolated real-server SSE harness after adding plugin-handler proof tests
+timeout_ms=180000
+
+WHAT WAS OBSERVED
+result=blocked
+shell_output=Terminated
+reason=the self-test did not complete within the bounded 180000ms harness limit
+production_files_changed=0
+targeted_handler_proofs=11 pass, 0 fail
+full_regression_new_failures=0
+
+WHY IT IS ENOUGH
+The mandatory real-harness attempt is recorded honestly. The change adds tests only and leaves plugin production code byte-unchanged, while the handler-level production-surface tests and full-suite comparison pass. The isolated SSE harness timeout is residual environment risk, not hidden as a pass.
+
+WHAT WAS OMITTED
+No raw environment, auth material, credentials, or host database contents were captured. The self-test emitted no additional diagnostic text before termination.

@@ -1,14 +1,16 @@
 // allow: SIZE_OK - the sink acceptance matrix keeps persistence, accounting, and failure cases together.
 
-import { describe, expect, test } from "bun:test"
+import { afterAll, beforeAll, describe, expect, test } from "bun:test"
 import {
   appendFileSync,
+  mkdtempSync,
   readdirSync,
   readFileSync,
+  rmSync,
   statSync,
 } from "fs"
-import { homedir } from "os"
-import { join } from "path"
+import { tmpdir } from "os"
+import { join, resolve, sep } from "path"
 import type {
   IntentRoutingCounterDelta,
   IntentRoutingCounters,
@@ -21,6 +23,16 @@ import {
 
 const RECORDED_AT = "2026-09-24T12:00:00.000Z"
 const NOW = () => new Date(RECORDED_AT)
+let testRoot = ""
+
+beforeAll(() => {
+  testRoot = mkdtempSync(join(tmpdir(), "jev-w1-sink-"))
+})
+
+afterAll(() => {
+  rmSync(testRoot, { recursive: true, force: true })
+})
+
 const ZERO_COUNTERS: IntentRoutingCounters = {
   turnsSeen: 0,
   turnsGatedOut: 0,
@@ -83,7 +95,7 @@ const OBSERVATION: IntentRoutingObservationRecord = {
 }
 
 function testDirectory(name: string): string {
-  return join(homedir(), ".omo", "jev-tests", name)
+  return join(testRoot, name)
 }
 
 function identity(pid: number, suffix: string) {
@@ -103,6 +115,14 @@ function counterDelta(turnsSeen: number, monotonicSeq: number): IntentRoutingCou
 }
 
 describe("intent-routing JSONL sink", () => {
+  test("#given the test storage root #when it is resolved #then it stays under the system temp directory and outside the home directory", () => {
+    const operatorHome = process.env.HOME ?? process.env.USERPROFILE ?? ""
+
+    expect(testRoot.startsWith(`${resolve(tmpdir())}${sep}`)).toBe(true)
+    expect(operatorHome.length).toBeGreaterThan(0)
+    expect(testRoot.startsWith(`${resolve(operatorHome)}${sep}`)).toBe(false)
+  })
+
   test("#given an observation #when it is persisted and read #then its JSONL bytes round-trip unchanged", () => {
     const directory = testDirectory("observation")
     const sink = createIntentRoutingSink({ directory, identity: identity(101, "observation"), now: NOW })
