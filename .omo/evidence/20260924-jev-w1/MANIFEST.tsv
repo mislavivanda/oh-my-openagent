@@ -36,3 +36,12 @@ todo	artifact	kind	description
 8	.omo/evidence/20260924-jev-w1/task-8-accuracy-red.txt	red	RED accuracy-harness run: 5 assertion failures for scoring, dry-run builds, ceiling abort, partial retention, and real-API gate; exit 1
 8	.omo/evidence/20260924-jev-w1/task-8-accuracy-mock.txt	green	Mock accuracy harness scores all 17 fixtures with four confusion matrices, proves zero network calls, dry-run zero calls, partial retention, scoped tsgo exit 0, and focused tests exit 0
 8	.omo/evidence/20260924-jev-w1/task-8-ceiling-abort.txt	qa	Focused stub-counter proof aborts call 18 at the hard ceiling of 17 with IntentRoutingCallCeilingError; exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-red.txt	red	Focused adapter RED run: 8 behavioral assertion failures from the typed placeholder, 2 pass, exit 1
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-green.txt	green	Focused adapter GREEN run: 10 pass, 0 fail, 25 assertions, synchronous p99 reported, exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-no-unhandled-rejection.txt	qa	Rejecting dispatcher proof: synchronous return, failure log, and no unhandledRejection event, exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-inflight-bounded.txt	qa	Never-resolving dispatcher proof: in-flight bounded at max_inflight and exactly three dispatches dropped, exit 0
+9	.omo/evidence/20260924-jev-w1/task-9-macrotask-ordering-proof.txt	qa	queueMicrotask regression fails ordering, restored unrefed setTimeout macrotask passes, exits 1 then 0
+11	.omo/evidence/20260924-jev-w1/task-11-capture-red.txt	red	Focused RED run: 10 assertion failures name the absent capture module, exit 1
+11	.omo/evidence/20260924-jev-w1/task-11-capture-green.txt	green	Focused GREEN run: 10 pass, 0 fail, covering both delegation tools, resume, ordering, counts, gates, drift, and args immutability
+11	.omo/evidence/20260924-jev-w1/task-11-allowlist-drift-proof.txt	qa	Removing call_omo_agent fails its capture case and registry-drift guard, then restored suite returns green
+11	.omo/evidence/20260924-jev-w1/task-11-resume-regression-proof.txt	qa	Omitting task_id makes resume normalize to spurious none, then restored suite returns green

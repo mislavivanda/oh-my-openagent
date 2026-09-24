@@ -1,0 +1,159 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:104:20)
+(fail) #given tool.execute.before delegation attempts > #when task supplies only category #then one category observation is captured without args mutation [0.73ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:116:20)
+(fail) #given tool.execute.before delegation attempts > #when call_omo_agent supplies its required subagent #then the second delegation tool is captured [0.14ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:125:20)
+(fail) #given tool.execute.before delegation attempts > #when task supplies only task_id #then resume is unscorable and never enters the none bucket [0.08ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:132:20)
+(fail) #given tool.execute.before delegation attempts > #when requested_subagent_type differs from rewritten subagent_type #then the requested target wins [0.06ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:144:20)
+(fail) #given tool.execute.before delegation attempts > #when a non-delegation tool runs #then zero observations are captured [0.06ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:150:19)
+(fail) #given tool.execute.before delegation attempts > #when three calls share a turn #then ordered attempts retain distinct target counts [0.08ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:172:20)
+(fail) #given tool.execute.before delegation attempts > #when capture sees unknown main session #then the fail-closed session gate records nothing [0.08ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:172:20)
+(fail) #given tool.execute.before delegation attempts > #when capture sees different main session #then the fail-closed session gate records nothing [0.08ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at capture (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:84:18)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:172:20)
+(fail) #given tool.execute.before delegation attempts > #when capture sees known subagent session #then the fail-closed session gate records nothing [0.08ms]
+36 | 
+37 | function requireCaptureModule(): CaptureModule {
+38 |   expect(
+39 |     loadedModule,
+40 |     "intent-routing capture must exist before delegation attempts can be recorded",
+41 |   ).not.toBeNull()
+             ^
+error: intent-routing capture must exist before delegation attempts can be recorded
+
+Received: null
+
+      at requireCaptureModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:41:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:210:27)
+(fail) #given the complete native tool registry > #when schemas expose category or subagent_type #then every such tool is allowlisted [15.17ms]
+
+ 0 pass
+ 10 fail
+ 10 expect() calls
+Ran 10 tests across 1 file. [215.00ms]
+
+exit=1

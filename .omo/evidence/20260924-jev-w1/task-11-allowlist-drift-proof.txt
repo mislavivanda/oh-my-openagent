@@ -1,0 +1,76 @@
+ALLOWLIST DRIFT REGRESSION: call_omo_agent temporarily removed
+command: bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:
+112 |     expect(result.record?.observedAreAttempts).toBe(true)
+113 |   })
+114 | 
+115 |   test("#when call_omo_agent supplies its required subagent #then the second delegation tool is captured", () => {
+116 |     const result = capture("call_omo_agent", { subagent_type: "explore" })
+117 |     expect(result.record?.observed[0]).toMatchObject({
+                                             ^
+error: expect(received).toMatchObject(expected)
+
+Matcher error: received value must be a non-null object
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:117:40)
+(fail) #given tool.execute.before delegation attempts > #when call_omo_agent supplies its required subagent #then the second delegation tool is captured [0.24ms]
+156 |     const third = capture("call_omo_agent", { subagent_type: "explore" }, {
+157 |       callID: "call-3",
+158 |       record: second.record,
+159 |       counters: second.counters,
+160 |     })
+161 |     expect(third.record?.observed.map(({ callID }) => callID)).toEqual(["call-1", "call-2", "call-3"])
+                                                                     ^
+error: expect(received).toEqual(expected)
+
+@@ -3,3 +3,2 @@
+    "call-2",
+-   "call-3",
+  ]
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:161:64)
+(fail) #given tool.execute.before delegation attempts > #when three calls share a turn #then ordered attempts retain distinct target counts [0.21ms]
+206 |       .filter(([, definition]) =>
+207 |         Object.hasOwn(definition.args, "category") || Object.hasOwn(definition.args, "subagent_type"))
+208 |       .map(([name]) => name)
+209 |       .sort()
+210 |     const allowlist = [...requireCaptureModule().INTENT_ROUTING_DELEGATION_TOOL_ALLOWLIST].sort()
+211 |     expect(schemaDelegationTools).toEqual(allowlist)
+                                        ^
+error: expect(received).toEqual(expected)
+
+@@ -1,2 +1,3 @@
+  [
++   "call_omo_agent",
+    "task",
+
+- Expected  - 0
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:211:35)
+(fail) #given the complete native tool registry > #when schemas expose category or subagent_type #then every such tool is allowlisted [15.78ms]
+
+ 7 pass
+ 3 fail
+ 65 expect() calls
+Ran 10 tests across 1 file. [222.00ms]
+
+regression_exit=1
+
+RESTORED ALLOWLIST: task + call_omo_agent
+command: bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+ 10 pass
+ 0 fail
+ 68 expect() calls
+Ran 10 tests across 1 file. [202.00ms]
+
+restored_exit=0

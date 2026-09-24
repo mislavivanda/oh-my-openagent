@@ -1,0 +1,39 @@
+RESUME REGRESSION: task_id temporarily omitted from captured normalization input
+command: bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:
+121 |     })
+122 |   })
+123 | 
+124 |   test("#when task supplies only task_id #then resume is unscorable and never enters the none bucket", () => {
+125 |     const result = capture("task", { task_id: "ses_resume" })
+126 |     expect(result.record?.observed[0]?.routeClass).toBe("unscorable_resume")
+                                                         ^
+error: expect(received).toBe(expected)
+
+Expected: "unscorable_resume"
+Received: "none"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:126:52)
+(fail) #given tool.execute.before delegation attempts > #when task supplies only task_id #then resume is unscorable and never enters the none bucket [0.27ms]
+
+ 9 pass
+ 1 fail
+ 66 expect() calls
+Ran 10 tests across 1 file. [208.00ms]
+
+regression_exit=1
+
+RESTORED RESUME CAPTURE: task_id included before rewrite
+command: bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+ 10 pass
+ 0 fail
+ 68 expect() calls
+Ran 10 tests across 1 file. [210.00ms]
+
+restored_exit=0
