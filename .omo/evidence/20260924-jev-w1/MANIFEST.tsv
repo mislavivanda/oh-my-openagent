@@ -21,3 +21,6 @@ todo	artifact	kind	description
 3	.omo/evidence/20260924-jev-w1/task-3-record-red.txt	red	Focused record-contract tests failing against validator stubs
 3	.omo/evidence/20260924-jev-w1/task-3-record-green.txt	green	Focused record-contract tests passing after implementation
 3	.omo/evidence/20260924-jev-w1/task-3-guard-proof.txt	qa	Harness-neutrality guard before, break, and after proof
+4	.omo/evidence/20260924-jev-w1/task-4-questions-red.txt	red	Targeted question-builder tests fail on missing none options, caller vocabulary labels, and empty-vocabulary error.
+4	.omo/evidence/20260924-jev-w1/task-4-questions-green.txt	green	Targeted question-builder tests pass with four answer-aligned questions and bounded unique choices.
+4	.omo/evidence/20260924-jev-w1/task-4-empty-vocab.txt	qa	Empty vocabulary throws the named IntentRoutingVocabularyError failure path.

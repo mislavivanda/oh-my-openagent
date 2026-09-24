@@ -43,3 +43,11 @@ export {
   type IntentRoutingObservationRecord,
   type IntentRoutingObservedDelegation,
 } from "./intent-routing-record"
+
+export {
+  INTENT_ROUTING_QUESTION_VERSION,
+  IntentRoutingVocabularyError,
+  buildIntentRoutingQuestions,
+  type IntentRoutingVocabulary,
+  type IntentRoutingVocabularyOption,
+} from "./intent-routing"

@@ -1,0 +1,83 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing.test.ts:
+36 |       })
+37 |
+38 |       test("#then category and subagent expose explicit none choices", () => {
+39 |         const questions = buildIntentRoutingQuestions(VOCABULARY)
+40 |
+41 |         expect(questions.category.criteria).toHaveProperty("none")
+                                                 ^
+error: expect(received).toHaveProperty(path)
+
+Expected path: "none"
+
+Unable to find property
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing.test.ts:41:45)
+(fail) buildIntentRoutingQuestions > #given plain routing vocabulary > #when building the W1 question set > #then category and subagent expose explicit none choices [0.23ms]
+43 |       })
+44 |
+45 |       test("#then each choice derives its labels from caller vocabulary", () => {
+46 |         const questions = buildIntentRoutingQuestions(VOCABULARY)
+47 |
+48 |         expect(Object.keys(questions.intent.criteria)).toEqual(
+                                                            ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "research",
+-   "implementation",
+-   "investigation",
+-   "evaluation",
+-   "fix",
+-   "open-ended",
+- ]
++ []
+
+- Expected  - 8
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing.test.ts:48:56)
+(fail) buildIntentRoutingQuestions > #given plain routing vocabulary > #when building the W1 question set > #then each choice derives its labels from caller vocabulary [0.25ms]
+81 |   describe("#given an empty routing vocabulary", () => {
+82 |     describe("#when building the W1 question set", () => {
+83 |       test("#then a named vocabulary error is thrown", () => {
+84 |         expect(() =>
+85 |           buildIntentRoutingQuestions({ categories: [], subagents: [], intents: [] }),
+86 |         ).toThrow(IntentRoutingVocabularyError)
+               ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingVocabularyError
+
+Received function did not throw
+Received value: {
+  intent: {
+    type: "choice",
+    instructions: "",
+    criteria: {},
+  },
+  category: {
+    type: "choice",
+    instructions: "",
+    criteria: {},
+  },
+  subagent: {
+    type: "choice",
+    instructions: "",
+    criteria: {},
+  },
+  ambiguous: {
+    type: "noul",
+    instructions: "",
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing.test.ts:86:11)
+(fail) buildIntentRoutingQuestions > #given an empty routing vocabulary > #when building the W1 question set > #then a named vocabulary error is thrown [0.18ms]
+
+ 3 pass
+ 3 fail
+ 14 expect() calls
+Ran 6 tests across 1 file. [127.00ms]
