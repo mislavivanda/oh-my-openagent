@@ -1,0 +1,65 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:21:20)
+(fail) #given a generated intent-routing corpus > #when rendered #then every denominator precedes the first rate with known counts [0.83ms]
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:67:20)
+(fail) #given a generated intent-routing corpus > #when counters span epochs #then the newest sequence in the newest epoch supersedes older snapshots [0.16ms]
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:75:20)
+(fail) #given a generated intent-routing corpus > #when headline eligibility is applied #then resume, unknown, invalid, and incoherent cases stay distinct [0.12ms]
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:86:20)
+(fail) #given a generated intent-routing corpus > #when none is scored #then recall and precision use different conditioning sets [0.11ms]
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:93:20)
+(fail) #given a generated intent-routing corpus > #when mixed fan-out is covered #then turn and cardinality weighting differ [0.10ms]
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:102:20)
+(fail) #given a generated intent-routing corpus > #when cohorts are rendered #then all fan-out and sealed-by rows are explicit [0.17ms]
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:114:20)
+(fail) #given a generated intent-routing corpus > #when fixture-only fields and recurrence context render #then their limits are explicit [0.13ms]
+1 | export function generateIntentRoutingReport(_rootDir: string): string {
+2 |   throw new Error("Intent routing report is not implemented")
+                                                                ^
+error: Intent routing report is not implemented
+      at generateIntentRoutingReport (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.ts:2:61)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/jev-w1-report.test.ts:126:22)
+(fail) #given an empty sink directory > #when rendered #then denominators are zero and rates are insufficient data [0.17ms]
+
+ 0 pass
+ 8 fail
+Ran 8 tests across 1 file. [136.00ms]
+
+exit=1
