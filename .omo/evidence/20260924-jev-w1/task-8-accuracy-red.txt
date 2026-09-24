@@ -1,0 +1,85 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+36 |   noneDescription?: string,
+37 | ): Readonly<Record<string, string>> {
+38 |   if (options.length === 0) {
+39 |     throw new IntentRoutingVocabularyError(
+40 |       `Intent-routing ${vocabularyName} vocabulary must contain at least one option`,
+41 |     )
+         ^
+IntentRoutingVocabularyError: Intent-routing intents vocabulary must contain at least one option
+      at buildChoiceCriteria (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing.ts:41:5)
+      at buildIntentRoutingQuestions (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing.ts:77:17)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:91:23)
+(fail) intent-routing accuracy harness > #given fixture intent labels #when the harness vocabulary is built #then every label is a producible option [0.76ms]
+77 | function createMockBackend(_fixture: IntentRoutingFixture): DecisionBackend {
+78 |   throw new IntentRoutingAccuracyRunError("accuracy harness not implemented")
+79 | }
+80 | 
+81 | function runDryRun(_callCounter: CallCounter, _networkCounter: CallCounter): AccuracyArtifact {
+82 |   throw new IntentRoutingAccuracyRunError("dry-run harness not implemented")
+                                                                                ^
+IntentRoutingAccuracyRunError: dry-run harness not implemented
+      at runDryRun (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:82:76)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:101:22)
+(fail) intent-routing accuracy harness > #given dry-run mode #when every fixture request is built #then no backend or network call occurs [0.14ms]
+109 |       questionVersion: INTENT_ROUTING_QUESTION_VERSION,
+110 |     })
+111 |   })
+112 | 
+113 |   test("#given the real API flags #when mode is selected #then both opt-in and key are required", () => {
+114 |     expect(selectRunMode({ JEV_W1_REAL_API: "1", TYPESAFE_API_KEY: "secret" }, false)).toBe("real")
+                                                                                             ^
+error: expect(received).toBe(expected)
+
+Expected: "real"
+Received: "mock"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:114:88)
+(fail) intent-routing accuracy harness > #given the real API flags #when mode is selected #then both opt-in and key are required [0.16ms]
+133 |       networkCounter: { calls: 0 },
+134 |       maxCalls: 2,
+135 |       emit: (artifact) => { partial = artifact },
+136 |     })
+137 | 
+138 |     await expect(invoke).rejects.toBeInstanceOf(IntentRoutingCallCeilingError)
+                                       ^
+error: expect(received).toBeInstanceOf(expected)
+
+Expected constructor: [class IntentRoutingCallCeilingError extends Error]
+Received value: 81 | function runDryRun(_callCounter: CallCounter, _networkCounter: CallCounter): AccuracyArtifact {
+82 |   throw new IntentRoutingAccuracyRunError("dry-run harness not implemented")
+83 | }
+84 | 
+85 | async function runAccuracyHarness(_options: HarnessOptions): Promise<AccuracyArtifact> {
+86 |   throw new IntentRoutingAccuracyRunError("accuracy harness not implemented")
+             ^
+IntentRoutingAccuracyRunError: accuracy harness not implemented
+      at runAccuracyHarness (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:86:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:125:20)
+
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:138:34)
+(fail) intent-routing accuracy harness > #given a counter one below its ceiling #when two fixtures are dispatched #then a named ceiling error aborts before the second backend call [0.31ms]
+155 |       maxCalls: INTENT_ROUTING_FIXTURES.length,
+156 |       emit: (artifact) => { partial = artifact },
+157 |     })
+158 | 
+159 |     await expect(invoke).rejects.toBeInstanceOf(IntentRoutingAccuracyRunError)
+160 |     expect(partial?.status).toBe("partial")
+                                  ^
+error: expect(received).toBe(expected)
+
+Expected: "partial"
+Received: undefined
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-accuracy.test.ts:160:29)
+(fail) intent-routing accuracy harness > #given a backend failure at fixture eight #when the run aborts #then its partial artifact retains the first seven fixture ids [0.20ms]
+
+ 0 pass
+ 5 fail
+ 4 expect() calls
+Ran 5 tests across 1 file. [119.00ms]
+
+exit=1

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="6" assertions="2" failures="0" skipped="5" time="0.119497225">
+  <testsuite name="packages/jev-core/src/intent-routing-accuracy.test.ts" file="packages/jev-core/src/intent-routing-accuracy.test.ts" tests="6" assertions="2" failures="0" skipped="5" time="0.085865268" hostname="ip-10-6-1-165">
+    <testsuite name="intent-routing accuracy harness" file="packages/jev-core/src/intent-routing-accuracy.test.ts" line="265" tests="6" assertions="2" failures="0" skipped="5" time="0.001" hostname="ip-10-6-1-165">
+      <testcase name="#given fixture intent labels #when the harness vocabulary is built #then every label is a producible option" classname="intent-routing accuracy harness" time="0" file="packages/jev-core/src/intent-routing-accuracy.test.ts" line="266" assertions="0">
+        <skipped />
+      </testcase>
+      <testcase name="#given dry-run mode #when every fixture request is built #then no backend or network call occurs" classname="intent-routing accuracy harness" time="0" file="packages/jev-core/src/intent-routing-accuracy.test.ts" line="271" assertions="0">
+        <skipped />
+      </testcase>
+      <testcase name="#given the real API flags #when mode is selected #then both opt-in and key are required" classname="intent-routing accuracy harness" time="0" file="packages/jev-core/src/intent-routing-accuracy.test.ts" line="284" assertions="0">
+        <skipped />
+      </testcase>
+      <testcase name="#given a counter one below its ceiling #when two fixtures are dispatched #then IntentRoutingCallCeilingError aborts before the second backend call" classname="intent-routing accuracy harness" time="0.001735" file="packages/jev-core/src/intent-routing-accuracy.test.ts" line="291" assertions="2" />
+      <testcase name="#given a backend failure at fixture eight #when the run aborts #then its partial artifact retains the first seven fixture ids" classname="intent-routing accuracy harness" time="0" file="packages/jev-core/src/intent-routing-accuracy.test.ts" line="316" assertions="0">
+        <skipped />
+      </testcase>
+      <testcase name="#given configured mode #when every fixture is scored #then a versioned per-question artifact is emitted without an accuracy gate" classname="intent-routing accuracy harness" time="0" file="packages/jev-core/src/intent-routing-accuracy.test.ts" line="339" assertions="0">
+        <skipped />
+      </testcase>
+    </testsuite>
+  </testsuite>
+</testsuites>

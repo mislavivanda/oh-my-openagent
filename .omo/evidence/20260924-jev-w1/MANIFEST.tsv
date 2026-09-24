@@ -82,3 +82,7 @@ todo	artifact	kind	description
 15	.omo/evidence/20260924-jev-w1/task-15-opencode-qa.txt	qa	Mandatory isolated SSE self-test attempt hit the bounded 180-second environment timeout
 17	.omo/evidence/20260924-jev-w1/task-17-testfast-scope.txt	qa	Run-output proof that all 19 W1 test files execute under test:fast; junit file= attributes cross-checked against git diff jev/foundation..HEAD, 19 of 19 executed, 458 pass 0 fail
 17	.omo/evidence/20260924-jev-w1/task-17-markdown-audit-proof.txt	qa	Failure QA: markdown-link-audit goes red naming docs/jev/HANDOFF.md:345 for an inserted machine-local path, then green after a sha256-verified revert
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-red.txt	red	TDD RED: all five initial harness specifications fail against unimplemented vocabulary, dry-run, mode gate, ceiling, and partial-run seams.
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-green.txt	green	Focused suite passes 6 tests; direct --dry-run with both real flags present builds all 15 requests with callCount 0 and networkCallCount 0.
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-mock.txt	qa	Default mock run scores all 15 fixtures and 60 answers, emits four confusion matrices, records resolved model and question version, and reports networkCallCount 0.
+8	.omo/evidence/20260924-jev-w1/task-8-ceiling-abort.txt	qa	JUnit proof that a counter pre-set one below the ceiling raises IntentRoutingCallCeilingError before a second backend dispatch.
