@@ -46,3 +46,8 @@ todo	artifact	kind	description
 10	.omo/evidence/20260924-jev-w1/task-10-turnstore-red.txt	red	TDD RED proves the turn-store module is absent before implementation.
 10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused turn-store suite passes all keying, reuse, lifecycle, timeout, normalization, and eviction cases.
 10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Failure-path QA proves maxTurnsPerSession plus five emits five evictions and retains ordinals 6, 7, and 8.
+11	.omo/evidence/20260924-jev-w1/task-11-capture-red.txt	red	TDD RED proves the capture module is absent before implementation.
+11	.omo/evidence/20260924-jev-w1/task-11-capture-green.txt	green	Focused capture suite passes 8 tests covering both delegation tools, resume handling, ordering, counts, gating, immutability, and registry drift.
+11	.omo/evidence/20260924-jev-w1/task-11-allowlist-drift-proof.txt	qa	Temporary call_omo_agent removal fails its direct capture case and the registered-schema drift guard, then the allowlist is restored.
+11	.omo/evidence/20260924-jev-w1/task-11-resume-regression-proof.txt	qa	Temporary task_id normalization removal regresses the resume route to unknown with none targets, then task_id capture is restored.
+11	.omo/evidence/20260924-jev-w1/task-11-gates.txt	gate	Final focused suite passes 8 tests, bun run typecheck exits zero across all workspaces, and the TypeScript no-excuse audit reports zero violations.

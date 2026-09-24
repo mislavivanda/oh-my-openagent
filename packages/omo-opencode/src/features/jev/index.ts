@@ -20,3 +20,8 @@ export type {
   IntentRoutingTurnState,
   IntentRoutingTurnStoreOptions,
 } from "./intent-routing-turn-store"
+export {
+  createJevIntentRoutingCapture,
+  JEV_INTENT_ROUTING_CAPTURE_TOOL_ALLOWLIST,
+} from "./intent-routing-capture"
+export type { JevIntentRoutingCapture } from "./intent-routing-capture"
