@@ -30,3 +30,6 @@ todo	artifact	kind	description
 7	.omo/evidence/20260924-jev-w1/task-7-fixtures-red.txt	red	RED run against a deliberately incomplete stub corpus: 4 assertion failures naming the missing none labels, missing non-English prompts, and the absent source classes
 7	.omo/evidence/20260924-jev-w1/task-7-fixtures-green.txt	green	GREEN run of intent-routing-fixtures.test.ts: 7 pass, 0 fail, 45 expect calls over the 17 hand-labeled fixtures
 7	.omo/evidence/20260924-jev-w1/task-7-bad-label-proof.txt	qa	Bad-label guard proof in three runs: green, then a tampered subagent label failing by fixture id subagent-oracle-1, then green again after revert
+5	.omo/evidence/20260924-jev-w1/task-5-decide-red.txt	red	RED focused run: 8 decision tests fail with assertion output showing decideIntentRouting is undefined, while all 13 todo-4 tests pass
+5	.omo/evidence/20260924-jev-w1/task-5-decide-green.txt	green	GREEN focused run: 21 pass, 0 fail, covering labels, invalid accounting, failure mapping, truncation, and todo-4 questions
+5	.omo/evidence/20260924-jev-w1/task-5-throwing-backend.txt	qa	Targeted rejecting-backend proof: 1 pass, 0 fail, asserting synchronous invocation does not throw and the awaited result is failed

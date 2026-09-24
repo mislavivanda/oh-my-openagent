@@ -61,3 +61,4 @@ export {
   type IntentRoutingFixtureLabel,
   type IntentRoutingFixtureSource,
 } from "./intent-routing-fixtures"
+export { decideIntentRouting, type IntentRoutingDecisionAnswers, type IntentRoutingDecisionChoiceAnswer, type IntentRoutingDecisionLabel, type IntentRoutingDecisionResult } from "./intent-routing-decision"

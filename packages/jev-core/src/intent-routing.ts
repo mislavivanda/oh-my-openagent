@@ -1,4 +1,4 @@
-import type { ChoiceQuestion, NoulQuestion, Questions } from "./types"
+import type { ChoiceQuestion, NoulQuestion } from "./types"
 
 export const INTENT_ROUTING_QUESTION_VERSION = 1
 
@@ -29,6 +29,13 @@ export type IntentRoutingVocabulary = {
   readonly categories: readonly IntentRoutingVocabularyEntry[]
   readonly subagents: readonly IntentRoutingVocabularyEntry[]
   readonly intents: readonly IntentRoutingVocabularyEntry[]
+}
+
+export type IntentRoutingQuestions = {
+  readonly intent: ChoiceQuestion
+  readonly category: ChoiceQuestion
+  readonly subagent: ChoiceQuestion
+  readonly ambiguous: NoulQuestion
 }
 
 const NONE_CATEGORY_DESCRIPTION =
@@ -116,7 +123,7 @@ const AMBIGUOUS_QUESTION: NoulQuestion = {
  * The category and subagent questions each carry an explicit `none` option, so a
  * pure question turn is not forced to name a delegation target it never needed.
  */
-export function buildIntentRoutingQuestions(vocab: IntentRoutingVocabulary): Questions {
+export function buildIntentRoutingQuestions(vocab: IntentRoutingVocabulary): IntentRoutingQuestions {
   const categoryCriteria = buildCriteria("categories", vocab.categories, NONE_CATEGORY_DESCRIPTION)
   const subagentCriteria = buildCriteria("subagents", vocab.subagents, NONE_SUBAGENT_DESCRIPTION)
   const intentCriteria = buildCriteria("intents", vocab.intents, null)
@@ -128,3 +135,11 @@ export function buildIntentRoutingQuestions(vocab: IntentRoutingVocabulary): Que
     ambiguous: AMBIGUOUS_QUESTION,
   }
 }
+
+export {
+  decideIntentRouting,
+  type IntentRoutingDecisionAnswers,
+  type IntentRoutingDecisionChoiceAnswer,
+  type IntentRoutingDecisionLabel,
+  type IntentRoutingDecisionResult,
+} from "./intent-routing-decision"
