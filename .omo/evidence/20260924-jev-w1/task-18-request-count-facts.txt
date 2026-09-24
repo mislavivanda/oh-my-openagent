@@ -1,0 +1,26 @@
+Task 18 pre-spend request-count, latency, token, and billing facts
+
+Recorded before the budgeted accuracy harness run.
+
+WHAT WAS TESTED
+One real `systemOne` call carried the same four intent-routing questions used by the accuracy harness. The backend received a counting fetch wrapper with a hard ceiling of one network request. SDK retries remained disabled by `real-backend.ts`.
+
+WHAT WAS OBSERVED
+question count: 4
+HTTP request count: 1
+resolved model: jev-1.13.0
+input tokens: 1008
+output tokens: 295
+latency: 275.436809 ms
+
+BILLING SOURCE
+Official URL: https://docs.typesafe.ai/models
+Quoted sentence: "Price: Charged per input token. Output tokens are free. A Btok is a billion tokens and an Mtok is a million tokens."
+
+The budget is therefore sized from measured input tokens, not inferred from request count. The same official page lists Jev 1.13 at $0.042 per million input tokens. Billing units were resolved from the official pricing documentation, not derived from HTTP request count.
+
+WHY IT IS ENOUGH
+The injected fetch counted the exact HTTP dispatch made by a real four-question call. The outcome supplied the resolved model, token usage, and end-to-end backend latency. The official pricing page independently establishes the billing basis.
+
+WHAT WAS OMITTED
+The credential, authorization header, raw request body, and raw response body were not printed or retained.

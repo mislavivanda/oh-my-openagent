@@ -95,13 +95,6 @@ class IntentRoutingFixtureSetError extends Error {
   }
 }
 
-class IntentRoutingRealApiGateError extends Error {
-  constructor() {
-    super("JEV_W1_REAL_API=1 requires TYPESAFE_API_KEY")
-    this.name = "IntentRoutingRealApiGateError"
-  }
-}
-
 class UnexpectedNetworkCallError extends Error {
   constructor() {
     super("The no-network path attempted a fetch")
@@ -321,6 +314,15 @@ async function runAccuracy(options: AccuracyRunOptions): Promise<AccuracyArtifac
       return artifact
     }
     resolvedModel = result.resolvedModel
+    if (options.mode === "real") {
+      console.log(`fixture-result ${JSON.stringify({
+        fixtureId: fixture.id,
+        resolvedModel: result.resolvedModel,
+        latencyMs: result.latencyMs,
+        expected: fixture.label,
+        predicted: prediction,
+      })}`)
+    }
     recordPrediction(matrices, correct, "intent", fixture.label.intent, prediction.intent)
     recordPrediction(matrices, correct, "category", fixture.label.category, prediction.category)
     recordPrediction(matrices, correct, "subagent", fixture.label.subagent, prediction.subagent)
@@ -376,7 +378,26 @@ if (Bun.argv.includes("--dry-run")) {
     const dryRun = Bun.argv.includes("--dry-run")
     const realRequested = process.env.JEV_W1_REAL_API === "1"
     const apiKey = process.env.TYPESAFE_API_KEY?.trim()
-    if (!dryRun && realRequested && !apiKey) throw new IntentRoutingRealApiGateError()
+    if (!dryRun && realRequested && !apiKey) {
+      const networkCounter = { value: 0 }
+      const missingKeyBackend = selectDecisionBackend(
+        { enabled: true, backend: "real", model: REQUESTED_MODEL, timeoutMs: REAL_API_TIMEOUT_MS },
+        { apiKey, fetch: createCountingFetch(networkCounter, false) },
+      )
+      const results = []
+      for (const fixture of INTENT_ROUTING_FIXTURES) {
+        results.push(await decideIntentRouting({
+          backend: missingKeyBackend, input: fixture.input, vocab: VOCAB,
+          confidenceThreshold: CONFIDENCE_THRESHOLD, model: REQUESTED_MODEL,
+          maxPromptChars: MAX_PROMPT_CHARS,
+        }))
+      }
+      expect(results).toHaveLength(INTENT_ROUTING_FIXTURES.length)
+      expect(results.every((result) => result.unavailableReason === "missing_api_key")).toBeTrue()
+      expect(networkCounter.value).toBe(0)
+      console.log(`missing-key fixtures=${results.length} unavailable=missing_api_key networkCalls=0`)
+      return
+    }
 
     if (dryRun) {
       const artifact = await runDryRun(INTENT_ROUTING_FIXTURES, ARTIFACT_PATH)
