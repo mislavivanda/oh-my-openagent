@@ -66,8 +66,9 @@ todo	artifact	kind	description
 10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused turn-store GREEN passes 22 tests and 80 assertions for per-session ordinal identity, two-tier reuse, lifecycle ordering, normalization, timeout, and bounded eviction
 10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Dedicated maxTurnsPerSession plus five stress case passes, asserting evictedCount equals 5, a counter_delta reaches 5, and only the three newest turns survive
 10	.omo/evidence/20260924-jev-w1/task-10-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
-10	.omo/evidence/20260924-jev-w1/task-10-test-fast.txt	qa	Hard test-fast gate exits 0 with 420 passing tests across 39 files
+10	.omo/evidence/20260924-jev-w1/task-10-test-fast.txt	qa	Hard test-fast gate exits 0 with 420 passing tests across 41 files after the move-only module split
 10	.omo/evidence/20260924-jev-w1/task-10-adversarial-qa.txt	qa	Stale-alias, malformed-input, cancellation, repeated interruption, hung prediction, prompt-data isolation, flake, RED chronology, and dirty-worktree probes
+10	.omo/evidence/20260924-jev-w1/task-10-refactor.txt	qa	Before/after LOC, exact module boundaries, explicit barrel ownership, unchanged 45-feature-test and 22-turn-store-test counts, and all files at or below 250 lines
 9	.omo/evidence/20260924-jev-w1/task-9-adapter-red.txt	red	Focused adapter RED predates implementation and fails because the intent-routing adapter module does not yet exist
 9	.omo/evidence/20260924-jev-w1/task-9-adapter-green.txt	green	Focused adapter GREEN passes 11 tests covering fail-closed gates, nested logs, immutable snapshots, macrotask order, baseURL passthrough, bounded in-flight work, rejection safety, and synchronous p99
 9	.omo/evidence/20260924-jev-w1/task-9-no-unhandled-rejection.txt	qa	Rejecting dispatcher probe registers process unhandledRejection, observes zero events, emits the failure log, and exits with one passing test

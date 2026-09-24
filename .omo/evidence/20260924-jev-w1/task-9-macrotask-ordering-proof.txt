@@ -1,0 +1,43 @@
+NEGATIVE CONTROL: replace macrotask with queueMicrotask; ordering test must fail.
+BEFORE_SHA256:
+9c9db323b51d597a7e104eca57036d79112aa739a49dd065ccad531c538284c3  packages/omo-opencode/src/features/jev/intent-routing.ts
+QUEUE_MICROTASK_RUN:
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+227 | 
+228 |     routing.observe({ sessionID: "main" }, output())
+229 |     Promise.resolve().then(() => order.push("caller-continuation"))
+230 |     await dispatched
+231 | 
+232 |     expect(order).toEqual(["caller-continuation", "state-building"])
+                        ^
+error: expect(received).toEqual(expected)
+
+  [
+-   "caller-continuation",
+    "state-building",
++   "caller-continuation",
+  ]
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing.test.ts:232:19)
+(fail) createJevIntentRouting > #given a caller continuation #when observing #then it runs before state building begins [2.14ms]
+
+ 0 pass
+ 10 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [162.00ms]
+AFTER_SHA256:
+9c9db323b51d597a7e104eca57036d79112aa739a49dd065ccad531c538284c3  packages/omo-opencode/src/features/jev/intent-routing.ts
+RESTORED_MACROTASK_RUN:
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [282.00ms]
