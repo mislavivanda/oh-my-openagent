@@ -55,3 +55,24 @@ todo	artifact	kind	description
 7	.omo/evidence/20260924-jev-w1/task-7-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
 7	.omo/evidence/20260924-jev-w1/task-7-test-fast.txt	qa	Hard test-fast gate exits 0 with 381 passing tests across 36 files
 7	.omo/evidence/20260924-jev-w1/task-7-adversarial-qa.txt	qa	Six malformed-input probes, inert prompt-data audit, dirty-worktree and barrel proof, RED chronology, scenario rulings, and harness-neutrality guard
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-red.txt	red	Focused behavior RED fails on zero completed fixtures before the harness implementation while loading all 15 expected fixture ids
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-mock.txt	green	Exact default-path command passes 6 tests, labels backend=mock and paidApi=false, scores all 15 fixtures, and proves networkCalls=0
+8	.omo/evidence/20260924-jev-w1/task-8-ceiling-abort.txt	qa	Counter pre-set to 14 of the configured 15-call ceiling allows one dispatch then raises IntentRoutingCallCeilingError before a second backend call
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-result.json	artifact	Complete mock accuracy artifact with per-question confusion matrices, all completed fixture ids, call ceiling, resolvedModel, and questionVersion
+8	.omo/evidence/20260924-jev-w1/task-8-adversarial-qa.txt	qa	Direct dry-run zero-call proof, malformed/partial/stale-state probes, mock labelling, runtime bound, dirty-worktree classification, scenario rulings, and diagnostics receipt
+8	.omo/evidence/20260924-jev-w1/task-8-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
+8	.omo/evidence/20260924-jev-w1/task-8-test-fast.txt	qa	Hard test-fast gate exits 0 with 419 passing tests across 39 files, including the default zero-network accuracy harness
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-red.txt	red	Focused behavioral RED predates implementation and all 21 cases fail on the explicit IntentRoutingTurnStoreNotImplementedError seam
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused turn-store GREEN passes 22 tests and 80 assertions for per-session ordinal identity, two-tier reuse, lifecycle ordering, normalization, timeout, and bounded eviction
+10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Dedicated maxTurnsPerSession plus five stress case passes, asserting evictedCount equals 5, a counter_delta reaches 5, and only the three newest turns survive
+10	.omo/evidence/20260924-jev-w1/task-10-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
+10	.omo/evidence/20260924-jev-w1/task-10-test-fast.txt	qa	Hard test-fast gate exits 0 with 420 passing tests across 39 files
+10	.omo/evidence/20260924-jev-w1/task-10-adversarial-qa.txt	qa	Stale-alias, malformed-input, cancellation, repeated interruption, hung prediction, prompt-data isolation, flake, RED chronology, and dirty-worktree probes
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-red.txt	red	Focused adapter RED predates implementation and fails because the intent-routing adapter module does not yet exist
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-green.txt	green	Focused adapter GREEN passes 11 tests covering fail-closed gates, nested logs, immutable snapshots, macrotask order, baseURL passthrough, bounded in-flight work, rejection safety, and synchronous p99
+9	.omo/evidence/20260924-jev-w1/task-9-no-unhandled-rejection.txt	qa	Rejecting dispatcher probe registers process unhandledRejection, observes zero events, emits the failure log, and exits with one passing test
+9	.omo/evidence/20260924-jev-w1/task-9-inflight-bounded.txt	qa	Never-resolving dispatcher with max_inflight one stays at one active dispatch and increments dispatchesDropped exactly three times
+9	.omo/evidence/20260924-jev-w1/task-9-macrotask-ordering-proof.txt	qa	Negative control replaces the macrotask with queueMicrotask, fails the ordering assertion, and passes after a matching-SHA256 revert
+9	.omo/evidence/20260924-jev-w1/task-9-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
+9	.omo/evidence/20260924-jev-w1/task-9-test-fast.txt	qa	Hard test-fast gate exits 0 with 419 passing tests across 39 files, including the final adapter suite
+9	.omo/evidence/20260924-jev-w1/task-9-adversarial-qa.txt	qa	Prompt-as-data isolation, malformed inputs, max_inflight one, hung dispatch, stale snapshot, RED chronology, dirty-worktree classification, and scenario rulings
