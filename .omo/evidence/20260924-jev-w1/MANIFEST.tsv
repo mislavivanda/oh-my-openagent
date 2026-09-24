@@ -90,3 +90,6 @@ todo	artifact	kind	description
 R1	.omo/evidence/20260924-jev-w1/R1-jev-core-red.txt	red	Failing-first proof: unknown category normalized as category and fixture intents differed from production, 25 pass 2 fail, exit 1
 R1	.omo/evidence/20260924-jev-w1/R1-jev-core-green.txt	green	Focused fixes green, mock harness zero-network green, jev-core 152 pass 1 skip, final typecheck exit 0, LSP environment limitation recorded
 R1	.omo/evidence/20260924-jev-w1/R1-accuracy-baseline-note.txt	artifact	Paid todo-18 intent baseline marked stale after seven fixture options were replaced by the six production options; paid run not repeated
+R3	.omo/evidence/20260924-jev-w1/R3-coverage-red.txt	red	Failing-first proofs: category coverage reported 17/23 instead of 18/23, and none recall/precision reused route agreement; focused exits 1
+R3	.omo/evidence/20260924-jev-w1/R3-coverage-green.txt	green	Corrected synthetic report: category coverage 18/23, weighted 21/26, neighbouring metric audit recorded, 11 focused tests pass
+R3	.omo/evidence/20260924-jev-w1/R3-figure-restatement.txt	artifact	Restates retained synthetic coverage figures without rewriting historical evidence and names unchanged related metrics

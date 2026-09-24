@@ -1,0 +1,67 @@
+R3 PER-QUESTION COVERAGE RED PROOF
+
+WHAT WAS TESTED
+Command:
+  NO_COLOR=1 bun test script/jev-w1-report.test.ts -t "coherence does not suppress"
+Surface:
+  The generated corpus from writeSyntheticCorpus(dir), rendered by buildJevW1Report(root).
+Behavior under test:
+  A correct category Choice answer remains a category coverage hit even when the combined category and subagent answers are incoherent.
+
+EXIT CODE
+1
+
+FAILING OUTPUT
+script/jev-w1-report.test.ts:
+94 |   test("#given an incoherent route with a correct category choice #when per-question coverage is computed #then coherence does not suppress the category hit", () => {
+95 |     expect(output).toContain("category_coverage numerator=18 denominator=23 distinct_target_cardinality=15 rate=0.782609")
+                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "category_coverage numerator=18 denominator=23 distinct_target_cardinality=15 rate=0.782609"
+Received report lines:
+category_coverage numerator=17 denominator=23 distinct_target_cardinality=15 rate=0.739130
+category_cardinality_weighted_coverage numerator=20 denominator=26 distinct_target_cardinality=15 rate=0.769231
+coherence_rate numerator=22 denominator=23 rate=0.956522
+
+(fail) Jev W1 intent-routing report > #given an incoherent route with a correct category choice #when per-question coverage is computed #then coherence does not suppress the category hit
+
+0 pass
+8 filtered out
+1 fail
+1 expect() calls
+Ran 1 test across 1 file.
+
+WHAT WAS OBSERVED
+The existing coherence gate suppressed one independently correct category answer. The unweighted category numerator was 17 instead of 18, and the weighted numerator was 20 instead of 21. Coherence was already reported separately as 22/23.
+
+WHY IT IS ENOUGH
+The fixture at script/jev-w1-report.fixtures.ts:149 predicts category quick for an observed category quick while also predicting subagent oracle. This isolates the double penalty: the category Choice answer is correct on its own question, but the derived route is incoherent.
+
+WHAT WAS OMITTED
+The assertion printed the full synthetic report. Unrelated denominator, cross-tab, recurrence, and fixture-only lines were omitted here. No secret-bearing output, network call, or paid harness was involved.
+
+NEIGHBOURING METRIC AUDIT RED PROOF
+Command:
+  NO_COLOR=1 bun test script/jev-w1-report.test.ts -t "without route agreement"
+Exit code:
+  1
+
+Failing none recall assertion:
+  Expected { numerator: 1, denominator: 1 }
+  Received { numerator: 0, denominator: 1 }
+  at script/jev-w1-report.test.ts:112:32
+
+Failing none precision assertion:
+  Expected { numerator: 1, denominator: 1 }
+  Received { numerator: 0, denominator: 1 }
+  at script/jev-w1-report.test.ts:118:35
+
+0 pass
+9 filtered out
+2 fail
+2 expect() calls
+Ran 2 tests across 1 file.
+
+Audit finding:
+  Both none metrics reused routeCorrect, which includes the exact-route coherence gate. Their conditioning sets were different and correct, but their numerators were not independent of route agreement. The two focused tests isolate that transitive gate while preserving actual-none and predicted-none membership.

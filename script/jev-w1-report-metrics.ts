@@ -85,10 +85,10 @@ export function toScoredTurn(record: IntentRoutingObservationRecord): JevW1Score
     coherent: prediction.coherent,
     predictedRoute: prediction.route,
     routeAnswersValid,
-    categoryCorrect: record.answers?.category.valid === true && prediction.coherent && !hasUnknown && (
+    categoryCorrect: record.answers?.category.valid === true && !hasUnknown && (
       categoryTargets.size === 0 ? categoryChoice === "none" : categoryChoice !== null && categoryTargets.has(categoryChoice)
     ),
-    subagentCorrect: record.answers?.subagent.valid === true && prediction.coherent && !hasUnknown && (
+    subagentCorrect: record.answers?.subagent.valid === true && !hasUnknown && (
       subagentTargets.size === 0 ? subagentChoice === "none" : subagentChoice !== null && subagentTargets.has(subagentChoice)
     ),
     actualNone,
@@ -122,8 +122,8 @@ export function calculateJevW1Metrics(turns: readonly JevW1ScoredTurn[]): JevW1M
     exact: { numerator: exactTurns.filter((turn) => turn.routeCorrect).length, denominator: exactTurns.length },
     category: coverage(turns, "category"),
     subagent: coverage(turns, "subagent"),
-    noneRecall: { numerator: actualNoneTurns.filter((turn) => turn.routeCorrect).length, denominator: actualNoneTurns.length },
-    nonePrecision: { numerator: predictedNoneTurns.filter((turn) => turn.routeCorrect).length, denominator: predictedNoneTurns.length },
+    noneRecall: { numerator: actualNoneTurns.filter((turn) => turn.routeAnswersValid && turn.predictedNone).length, denominator: actualNoneTurns.length },
+    nonePrecision: { numerator: predictedNoneTurns.filter((turn) => turn.routeAnswersValid && turn.actualNone).length, denominator: predictedNoneTurns.length },
     coherence: { numerator: turns.filter((turn) => turn.coherent).length, denominator: turns.length },
     multiRouteTurns: turns.filter((turn) => turn.routes.size >= 2).length,
   }

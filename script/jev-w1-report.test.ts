@@ -6,6 +6,8 @@ import { join } from "node:path"
 
 import { writeSyntheticCorpus } from "./jev-w1-report.fixtures"
 import { buildJevW1Report } from "./jev-w1-report"
+import { calculateJevW1Metrics, toScoredTurn, type JevW1ScoredTurn } from "./jev-w1-report-metrics"
+import { readJevW1Corpus } from "./jev-w1-report-reader"
 
 const requiredDenominators = [
   "turns_seen", "turns_gated_out", "turns_synthetic", "records_created", "records_with_prediction",
@@ -23,6 +25,14 @@ function outputValue(output: string, name: string): number {
   const line = output.split("\n").find((candidate) => candidate.startsWith(`${name}=`))
   if (line === undefined) throw new Error(`Missing report value: ${name}`)
   return Number.parseInt(line.slice(name.length + 1), 10)
+}
+
+function noneTurnWithoutRouteAgreement(root: string): JevW1ScoredTurn {
+  const record = readJevW1Corpus(root).observations.find((candidate) => (
+    candidate.predictionStatus === "filled" && candidate.correlationStatus === "reliable" && candidate.observed.length === 0
+  ))
+  if (record === undefined) throw new Error("Missing reliable synthetic none record")
+  return { ...toScoredTurn(record), coherent: false, routeCorrect: false }
 }
 
 describe("Jev W1 intent-routing report", () => {
@@ -91,11 +101,28 @@ describe("Jev W1 intent-routing report", () => {
     expect(output).toContain("coherence_rate numerator=22 denominator=23 rate=0.956522")
   })
 
+  test("#given an incoherent route with a correct category choice #when per-question coverage is computed #then coherence does not suppress the category hit", () => {
+    expect(output).toContain("category_coverage numerator=18 denominator=23 distinct_target_cardinality=15 rate=0.782609")
+    expect(output).toContain("category_cardinality_weighted_coverage numerator=21 denominator=26 distinct_target_cardinality=15 rate=0.807692")
+  })
+
+  test("#given an actual-none turn without route agreement #when none recall is computed #then its hit depends on the none prediction rather than coherence", () => {
+    const metrics = calculateJevW1Metrics([noneTurnWithoutRouteAgreement(root)])
+
+    expect(metrics.noneRecall).toEqual({ numerator: 1, denominator: 1 })
+  })
+
+  test("#given a predicted-none turn without route agreement #when none precision is computed #then its hit depends on the actual-none set rather than coherence", () => {
+    const metrics = calculateJevW1Metrics([noneTurnWithoutRouteAgreement(root)])
+
+    expect(metrics.nonePrecision).toEqual({ numerator: 1, denominator: 1 })
+  })
+
   test("#given distinct none conditioning sets and mixed fan-out #when metrics render #then recall precision and coverage are named correctly", () => {
     expect(output).toContain("none_recall numerator=4 denominator=5 rate=0.800000")
     expect(output).toContain("none_precision numerator=4 denominator=7 rate=0.571429")
-    expect(output).toContain("category_coverage numerator=17 denominator=23 distinct_target_cardinality=15 rate=0.739130")
-    expect(output).toContain("category_cardinality_weighted_coverage numerator=20 denominator=26 distinct_target_cardinality=15 rate=0.769231")
+    expect(output).toContain("category_coverage numerator=18 denominator=23 distinct_target_cardinality=15 rate=0.782609")
+    expect(output).toContain("category_cardinality_weighted_coverage numerator=21 denominator=26 distinct_target_cardinality=15 rate=0.807692")
     expect(output).toContain("subagent_coverage numerator=19 denominator=23 distinct_target_cardinality=7 rate=0.826087")
     expect(output).toContain("FIXTURE-SCORED ONLY")
     expect(output).toContain("intent_coverage live_ground_truth=unavailable")

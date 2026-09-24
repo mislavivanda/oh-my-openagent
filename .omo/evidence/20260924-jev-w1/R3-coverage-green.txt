@@ -1,0 +1,70 @@
+R3 PER-QUESTION COVERAGE GREEN PROOF
+
+WHAT WAS TESTED
+Command 1:
+  NO_COLOR=1 bun test script/jev-w1-report.test.ts
+Exit code:
+  0
+Surface:
+  The report acceptance suite over writeSyntheticCorpus(dir), including the new category coverage regression and the none recall/precision independence tests.
+
+Command 1 output:
+  11 pass
+  0 fail
+  149 expect() calls
+  Ran 11 tests across 1 file.
+
+Command 2:
+  Generate writeSyntheticCorpus(dir), render buildJevW1Report(dir), and print the headline metric lines.
+Exit code:
+  0
+
+CORRECTED SYNTHETIC REPORT OUTPUT
+exact_route_agreement numerator=12 denominator=19 rate=0.631579
+category_coverage numerator=18 denominator=23 distinct_target_cardinality=15 rate=0.782609
+category_cardinality_weighted_coverage numerator=21 denominator=26 distinct_target_cardinality=15 rate=0.807692
+subagent_coverage numerator=19 denominator=23 distinct_target_cardinality=7 rate=0.826087
+subagent_cardinality_weighted_coverage numerator=20 denominator=24 distinct_target_cardinality=7 rate=0.833333
+none_recall numerator=4 denominator=5 rate=0.800000
+none_precision numerator=4 denominator=7 rate=0.571429
+coherence_rate numerator=22 denominator=23 rate=0.956522
+
+WHAT WAS OBSERVED
+Synthetic category coverage changed from 17/23 to 18/23. Its cardinality-weighted variant changed from 20/26 to 21/26. Exact route agreement and coherence rate did not change. The separately conditioned none metrics remained 4/5 recall and 4/7 precision after their coherence dependency was removed.
+
+NEIGHBOURING METRIC AUDIT
+1. none_recall and none_precision: A defect was found and fixed. script/jev-w1-report-metrics.ts:119-120 builds the distinct actual-none and predicted-none conditioning sets. Lines 125-126 now score each set directly from valid actual-none/predicted-none membership and do not reuse routeCorrect or read coherent.
+2. Cardinality-weighted coverage: Correct after the shared coverage fix. Lines 106-111 select the same ungated per-question correctness value for both numerator variants, then apply only the target-cardinality weight to the weighted numerator.
+3. exact_route_agreement: Correct. Line 96 applies prediction.coherent exactly once when constructing routeCorrect. Line 122 is the only agreement calculation consuming routeCorrect. No coverage or none metric reuses it.
+4. coherence_rate: Correct and separate. Line 127 reports coherent turns directly over all scored turns. The rendered synthetic figure remains 22/23.
+
+WHY IT IS ENOUGH
+The synthetic fixture includes the exact mixed answer at script/jev-w1-report.fixtures.ts:149 that previously lost a valid category hit. The focused regression now passes at 18/23 and 21/26. The two added none tests separately prove recall and precision do not depend on route agreement. The report suite also preserves all existing denominator, eligibility, cross-tab, fixture-only, and empty-corpus assertions.
+
+WHAT WAS OMITTED
+The full report includes unchanged denominator, cross-tab, recurrence, and fixture-only sections. They remain covered by the green acceptance suite and are omitted from this artifact for readability. No paid API, OpenCode server, task-19 driver, credentials, or private environment data were used.
+
+REQUIRED GATES
+Command:
+  bun run typecheck
+Exit code:
+  0
+Observed:
+  Root tsgo, typecheck:script, and typecheck:packages all completed successfully.
+
+Command:
+  NO_COLOR=1 bun test script/
+Exit code:
+  0
+Observed:
+  211 pass, 0 fail, 949 expect() calls across 44 files.
+
+Command:
+  TypeScript no-excuse checker over script/jev-w1-report-metrics.ts and script/jev-w1-report.test.ts
+Exit code:
+  0
+Observed:
+  No violations in 2 files. Pure LOC is 121 for the metric module and 132 for the acceptance test.
+
+LSP DIAGNOSTICS
+Both changed TypeScript files were submitted to lsp_diagnostics. The tool could not initialize because this workspace uses TypeScript 7.0.2 native preview, whose installation provides no tsserver.js, and no fallback TypeScript installation was available. This is an environment limitation rather than a source diagnostic. The repository's required tsgo diagnostics completed through bun run typecheck, including script/tsconfig.json, with exit code 0.
