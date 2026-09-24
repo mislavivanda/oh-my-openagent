@@ -65,3 +65,8 @@ todo	artifact	kind	description
 14	.omo/evidence/20260924-jev-w1/task-14-no-hook-registry.txt	qa	The mandated intentRouting grep returned exit 1 with empty output, proving no hook-registry entry
 14	.omo/evidence/20260924-jev-w1/task-14-regression-vs-baseline.txt	gate	Isolated full suite recorded 12896 pass, 7 baseline failures, 3 skip, and zero new failures
 14	.omo/evidence/20260924-jev-w1/task-14-opencode-qa.txt	qa	Isolated OpenCode SSE QA attempt was blocked before event watch because the health endpoint did not return within bounded time
+16	.omo/evidence/20260924-jev-w1/task-16-report-red.txt	red	TDD RED: all 10 report acceptance cases fail against the nonfunctional report seam
+16	.omo/evidence/20260924-jev-w1/task-16-report-green.txt	green	Focused report suite passes 10 tests and 119 assertions over the generated synthetic corpus
+16	.omo/evidence/20260924-jev-w1/task-16-report-output.txt	qa	Generated-corpus CLI run prints the full denominator block before all conditioned rates
+16	.omo/evidence/20260924-jev-w1/task-16-empty-corpus.txt	qa	Empty-corpus CLI run prints zero denominators and explicit insufficient data for zero-rate denominators
+16	.omo/evidence/20260924-jev-w1/task-16-no-cli-surface.txt	qa	Required CLI-tree grep returns no jev-w1-report registration

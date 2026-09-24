@@ -1,0 +1,80 @@
+DENOMINATORS
+turns_seen: 0
+turns_gated_out: 0
+turns_synthetic: 0
+records_created: 0
+records_with_prediction: 0
+records_sealed_by_next_turn: 0
+records_sealed_by_session_idle: 0
+records_sealed_by_seal_timeout: 0
+records_sealed_by_dispose: 0
+records_sealed_by_session_deleted: 0
+records_sealed: 0
+records_evicted: 0
+records_in_flight: 0
+orphan_observations: 0
+unscorable_resume_calls: 0
+resume_only_records: 0
+unscorable_unknown_calls: 0
+unknown_only_records: 0
+unrepresentable_route_mismatches: 0
+dispatches_dropped: 0
+invalid_answers: 0
+incoherent_predictions: 0
+malformed_lines: 0
+malformed_write_rejections: 0
+records_lost_to_cap: 0
+sink_truncations: 0
+prediction_reused: 0
+truncated_input: 0
+prediction_status_filled: 0
+prediction_status_failed: 0
+prediction_status_timeout: 0
+prediction_status_not_dispatched: 0
+correlation_status_reliable: 0
+correlation_status_censored: 0
+correlation_status_overlap_ambiguous: 0
+identity: records_created(0) == sealed(0) + evicted(0) + in_flight(0)
+
+ROUTE AGREEMENT
+Eligibility: reliable and filled only. Resume-only, censored, overlap_ambiguous, failed, timeout, and not_dispatched records are excluded.
+Unknown routes remain eligible and score as unrepresentable mismatches.
+route_agreement: insufficient data (eligible_denominator=0)
+coherence_rate: insufficient data (eligible_denominator=0)
+multi_route_turns_coverage_only: 0
+
+NONE RECALL AND PRECISION
+none_recall: insufficient data (eligible_denominator=0)
+none_precision: insufficient data (eligible_denominator=0)
+
+PER-QUESTION COVERAGE, NOT AGREEMENT
+category_coverage: insufficient data (eligible_denominator=0, distinct_target_cardinality=0)
+category_coverage_cardinality_weighted: insufficient data (eligible_denominator=0, distinct_target_cardinality=0)
+subagent_coverage: insufficient data (eligible_denominator=0, distinct_target_cardinality=0)
+subagent_coverage_cardinality_weighted: insufficient data (eligible_denominator=0, distinct_target_cardinality=0)
+
+FAN-OUT BUCKETS
+fan_out_zero: insufficient data (eligible_denominator=0)
+fan_out_one: insufficient data (eligible_denominator=0)
+fan_out_many: insufficient data (eligible_denominator=0)
+
+SEALED-BY CROSS-TAB
+sealed_by_next_turn: insufficient data (eligible_denominator=0)
+sealed_by_session_idle: insufficient data (eligible_denominator=0)
+sealed_by_seal_timeout: insufficient data (eligible_denominator=0)
+sealed_by_dispose: insufficient data (eligible_denominator=0)
+sealed_by_session_deleted: insufficient data (eligible_denominator=0)
+
+CONTINUATION CANDIDATE COHORT
+continuation_candidate_true: insufficient data (eligible_denominator=0)
+continuation_candidate_false: insufficient data (eligible_denominator=0)
+
+INTENT AND AMBIGUOUS: FIXTURE-SCORED ONLY, NO LIVE GROUND TRUTH
+intent: not scored from the live sink
+ambiguous: not scored from the live sink
+
+LIVE DISAGREEMENT FULL-PROMPT SHA-256 RECURRENCE
+none
+
+Non-goal: live disagreements are not reproducible because only a 200-char head is retained, so fixture growth is manual. Full-prompt SHA-256 values make recurrence countable.
+Ground truth label: observed delegations are attempts captured before execution, not successes.

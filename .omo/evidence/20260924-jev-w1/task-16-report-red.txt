@@ -1,0 +1,148 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+ 9 | let corpusRoot = ""
+10 | let report = ""
+11 | 
+12 | function denominator(name: string): number {
+13 |   const match = new RegExp(`^${name}: (\\d+)$`, "m").exec(report)
+14 |   expect(match).not.toBeNull()
+                         ^
+error: expect(received).not.toBeNull()
+
+Received: null
+
+      at denominator (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:14:21)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:66:66)
+(fail) Jev W1 intent-routing report > #given superseding counter epochs #when denominators are rendered #then every required denominator uses the latest epoch and sequence [0.76ms]
+ 9 | let corpusRoot = ""
+10 | let report = ""
+11 | 
+12 | function denominator(name: string): number {
+13 |   const match = new RegExp(`^${name}: (\\d+)$`, "m").exec(report)
+14 |   expect(match).not.toBeNull()
+                         ^
+error: expect(received).not.toBeNull()
+
+Received: null
+
+      at denominator (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:14:21)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:71:12)
+(fail) Jev W1 intent-routing report > #given sealed evicted and live records #when accounting is checked #then the creation identity holds [0.13ms]
+72 |     expect(denominator("records_in_flight")).toBe(3)
+73 |     expect(report).toContain("identity: records_created(22) == sealed(17) + evicted(2) + in_flight(3)")
+74 |   })
+75 | 
+76 |   test("#given reliable censored and overlap records #when the headline is scored #then only reliable records enter it", () => {
+77 |     expect(report).toContain("route_agreement: 5/9 = 55.56% (eligible_denominator=9)")
+                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "route_agreement: 5/9 = 55.56% (eligible_denominator=9)"
+Received: ""
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:77:20)
+(fail) Jev W1 intent-routing report > #given reliable censored and overlap records #when the headline is scored #then only reliable records enter it [0.09ms]
+ 9 | let corpusRoot = ""
+10 | let report = ""
+11 | 
+12 | function denominator(name: string): number {
+13 |   const match = new RegExp(`^${name}: (\\d+)$`, "m").exec(report)
+14 |   expect(match).not.toBeNull()
+                         ^
+error: expect(received).not.toBeNull()
+
+Received: null
+
+      at denominator (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:14:21)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:83:12)
+(fail) Jev W1 intent-routing report > #given resume-only unknown-only and mixed-resume records #when routes are derived #then resume is excluded while unknown is an incorrect representability failure [0.08ms]
+ 9 | let corpusRoot = ""
+10 | let report = ""
+11 | 
+12 | function denominator(name: string): number {
+13 |   const match = new RegExp(`^${name}: (\\d+)$`, "m").exec(report)
+14 |   expect(match).not.toBeNull()
+                         ^
+error: expect(received).not.toBeNull()
+
+Received: null
+
+      at denominator (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:14:21)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:92:12)
+(fail) Jev W1 intent-routing report > #given every prediction status plus invalid and incoherent filled answers #when eligibility is applied #then missing predictions are excluded and answered failures score incorrect [0.07ms]
+ 97 |     expect(denominator("invalid_answers")).toBe(1)
+ 98 |     expect(denominator("incoherent_predictions")).toBe(1)
+ 99 |   })
+100 | 
+101 |   test("#given scalar predictions and two multi-route turns #when exact agreement is scored #then cardinality-many turns are coverage-only", () => {
+102 |     expect(report).toContain("multi_route_turns_coverage_only: 2")
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "multi_route_turns_coverage_only: 2"
+Received: ""
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:102:20)
+(fail) Jev W1 intent-routing report > #given scalar predictions and two multi-route turns #when exact agreement is scored #then cardinality-many turns are coverage-only [0.05ms]
+102 |     expect(report).toContain("multi_route_turns_coverage_only: 2")
+103 |     expect(report).toContain("route_agreement: 5/9 = 55.56% (eligible_denominator=9)")
+104 |   })
+105 | 
+106 |   test("#given actual-none and predicted-none conditioning sets #when both rates are rendered #then recall and precision differ", () => {
+107 |     expect(report).toContain("none_recall: 1/1 = 100.00% (eligible_denominator=1)")
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "none_recall: 1/1 = 100.00% (eligible_denominator=1)"
+Received: ""
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:107:20)
+(fail) Jev W1 intent-routing report > #given actual-none and predicted-none conditioning sets #when both rates are rendered #then recall and precision differ [0.06ms]
+107 |     expect(report).toContain("none_recall: 1/1 = 100.00% (eligible_denominator=1)")
+108 |     expect(report).toContain("none_precision: 1/3 = 33.33% (eligible_denominator=3)")
+109 |   })
+110 | 
+111 |   test("#given single-target and multi-target turns #when per-question coverage is rendered #then cardinality-weighted coverage differs", () => {
+112 |     expect(report).toContain("category_coverage: 4/7 = 57.14% (eligible_denominator=7, distinct_target_cardinality=9)")
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "category_coverage: 4/7 = 57.14% (eligible_denominator=7, distinct_target_cardinality=9)"
+Received: ""
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:112:20)
+(fail) Jev W1 intent-routing report > #given single-target and multi-target turns #when per-question coverage is rendered #then cardinality-weighted coverage differs [0.07ms]
+114 |     expect(report).toContain("subagent_coverage: 2/2 = 100.00% (eligible_denominator=2, distinct_target_cardinality=4)")
+115 |     expect(report).toContain("subagent_coverage_cardinality_weighted: 2/4 = 50.00% (eligible_denominator=4, distinct_target_cardinality=4)")
+116 |   })
+117 | 
+118 |   test("#given every fan-out seal and continuation cohort #when breakdowns render #then every conditioning row is explicit", () => {
+119 |     for (const bucket of ["zero", "one", "many"]) expect(report).toMatch(new RegExp(`^fan_out_${bucket}:`, "m"))
+                                                                       ^
+error: expect(received).toMatch(expected)
+
+Expected substring or pattern: /^fan_out_zero:/m
+Received: ""
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:119:66)
+(fail) Jev W1 intent-routing report > #given every fan-out seal and continuation cohort #when breakdowns render #then every conditioning row is explicit [0.20ms]
+123 |     expect(report).toContain("continuation_candidate_true: 1/1 = 100.00% (eligible_denominator=1)")
+124 |     expect(report).toContain("continuation_candidate_false: 4/8 = 50.00% (eligible_denominator=8)")
+125 |   })
+126 | 
+127 |   test("#given a live sink without intent ground truth or full prompts #when disclosures render #then fixture-only scoring and SHA recurrence are explicit", () => {
+128 |     expect(report.indexOf("DENOMINATORS")).toBeLessThan(report.indexOf("ROUTE AGREEMENT"))
+                                                 ^
+error: expect(received).toBeLessThan(expected)
+
+Expected: < -1
+Received: -1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:128:44)
+(fail) Jev W1 intent-routing report > #given a live sink without intent ground truth or full prompts #when disclosures render #then fixture-only scoring and SHA recurrence are explicit [0.14ms]
+
+ 0 pass
+ 10 fail
+ 10 expect() calls
+Ran 10 tests across 1 file. [137.00ms]
