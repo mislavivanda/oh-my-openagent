@@ -1,0 +1,11 @@
+command: bash -c 'HOME=$(mktemp -d) bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts'
+real_home_omo_sha256_before: 85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+bun test v1.4.0 (34cbb9a40)
+
+ 8 pass
+ 0 fail
+ 31 expect() calls
+Ran 8 tests across 1 file. [243.00ms]
+test_exit: 0
+real_home_omo_sha256_after: 85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+real_home_omo_unchanged: yes

@@ -1,0 +1,46 @@
+WHAT WAS TESTED: adversarial sink/reader behavior for malformed writes, stale epochs, interrupted lines, bounded disposal, dirty worktree state, and HOME isolation.
+real_home_omo_sha256_before=85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+dirty_worktree_before:
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/features/jev/index.ts
+ M packages/omo-opencode/src/plugin/tool-execute-before.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/omo-opencode/src/features/jev/intent-routing-capture-registry.test-support.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-capture.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-reader.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-sink-counters.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-sink-files.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-sink.test-support.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+invalid_union_rejected=true
+oversized_line_rejected=true
+non_serializable_value_rejected=true
+malformedWriteRejections=3
+malformed_middle_valid_records=2
+malformed_middle_count=1
+partial_line_valid_records=1
+partial_line_count=1
+dispose_ms=0.272
+dispose_bound_ms=250
+highest_counter_epoch=2
+epoch_records_created=1
+epoch_sealed_records=1
+epoch_records_evicted=0
+accounting_identity=1==1
+recordsLostToCap=2
+sinkTruncations=2
+probe_exit=0
+real_home_omo_sha256_after=85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+real_home_omo_unchanged=yes
+bounded_interval: APPLIES, covered deterministically by the focused fake-timer test.
+misleading_success_output: APPLIES, the post-truncation recordsCreated identity and lifetime loss counters were asserted.
+prompt_injection: DOES NOT APPLY, entries are persisted as JSON data and never interpreted as instructions.
+cancel_resume: DOES NOT APPLY, this sink owns no cancellable or resumable workflow.
+flaky_tests: RULED OUT, tests inject clock/process identity, use a temporary HOME, and fake timers instead of sleeping.
+WHY IT IS ENOUGH: every applicable adversarial class produced a numeric or boolean assertion, including two truncations and an interrupted write.
+WHAT WAS OMITTED: temp paths, prompt bodies, credentials, and environment dumps were not retained.

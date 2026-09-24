@@ -1,0 +1,8 @@
+WHAT WAS TESTED: a valid observation followed by the exact partial line {"broken": in the same per-process JSONL file.
+COMMAND: HOME=$(mktemp -d) bun -e <malformed trailing-line reader probe>
+valid_records=1
+malformedLines=1
+reader_threw=false
+probe_exit=0
+WHY IT IS ENOUGH: the reader returned the valid row, counted the malformed trailing row once, and did not throw.
+WHAT WAS OMITTED: the temp HOME path and stored prompt content were not retained.

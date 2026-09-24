@@ -1,0 +1,23 @@
+WHAT WAS TESTED: repository fast regression gate under a temporary HOME, run without concurrent CPU-heavy gates.
+COMMAND: bash -c 'HOME=$(mktemp -d) bun run test:fast'
+real_home_omo_sha256_before=85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+accuracy backend=mock paidApi=false fixtures=15 networkCalls=0 resolvedModel=mock questionVersion=1
+dry-run verified fixtures=15 callCount=0 networkCalls=0
+ceiling-abort name=IntentRoutingCallCeilingError ceiling=15 backendCalls=1
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+SYNC_P99_US=13.44
+
+ 444 pass
+ 0 fail
+ 1233 expect() calls
+Ran 444 tests across 43 files. [5.97s]
+test_fast_exit=0
+real_home_omo_sha256_after=85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+real_home_omo_unchanged=yes
+WHY IT IS ENOUGH: the configured fast suite passed after the focused sink suite and typecheck; the gate ran without concurrent load because it contains a sub-millisecond p99 assertion.
+WHAT WAS OMITTED: no temp HOME path or environment dump was retained.

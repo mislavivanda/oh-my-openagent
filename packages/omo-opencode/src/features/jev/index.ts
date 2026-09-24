@@ -39,3 +39,16 @@ export {
   createJevIntentRoutingCapture,
 } from "./intent-routing-capture"
 export type { JevIntentRoutingCapture } from "./intent-routing-capture"
+export {
+  DEFAULT_INTENT_ROUTING_COUNTER_FLUSH_INTERVAL_MS,
+  DEFAULT_INTENT_ROUTING_MAX_LINE_BYTES,
+  DEFAULT_INTENT_ROUTING_SINK_SIZE_CAP_BYTES,
+  createIntentRoutingSink,
+} from "./intent-routing-sink"
+export type {
+  IntentRoutingProcessIdentity,
+  IntentRoutingSink,
+  IntentRoutingSinkOptions,
+} from "./intent-routing-sink"
+export { readIntentRoutingSink } from "./intent-routing-reader"
+export type { IntentRoutingSinkReadResult } from "./intent-routing-reader"
