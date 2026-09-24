@@ -1,4 +1,5 @@
 export type * from "./types"
+export type * from "./intent-routing-record"
 export {
   choiceAnswer,
   createMockDecisionBackend,
@@ -28,3 +29,11 @@ export {
   type ModelErrorTriageFixture,
   type ModelErrorTriageFixtureSource,
 } from "./model-error-triage-fixtures"
+export {
+  INTENT_ROUTING_CONTINUATION_LEXICON,
+  isIntentRoutingContinuationCandidate,
+  selectLatestIntentRoutingCountersByProcess,
+  validateIntentRoutingCounterDelta,
+  validateIntentRoutingEntry,
+  validateIntentRoutingObservationRecord,
+} from "./intent-routing-record"
