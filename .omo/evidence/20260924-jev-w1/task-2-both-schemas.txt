@@ -1,0 +1,219 @@
+$ bun run build:schema
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+build:schema exit=0
+
+$ GIT_MASTER=1 git diff --exit-code -- assets/omo.schema.json
+diff --git a/assets/omo.schema.json b/assets/omo.schema.json
+index 44df2d3d0..8c53ba66e 100644
+--- a/assets/omo.schema.json
++++ b/assets/omo.schema.json
+@@ -9049,6 +9049,15 @@
+                 "model_error_triage": {
+                   "enabled": false,
+                   "confidence_threshold": 0.8
++                },
++                "intent_routing": {
++                  "enabled": false,
++                  "observe_only": true,
++                  "confidence_threshold": 0.8,
++                  "timeout_ms": 2500,
++                  "turn_seal_timeout_ms": 120000,
++                  "max_prompt_chars": 8000,
++                  "max_inflight": 8
+                 }
+               },
+               "type": "object",
+@@ -9076,10 +9085,73 @@
+                     "confidence_threshold"
+                   ],
+                   "additionalProperties": false
++                },
++                "intent_routing": {
++                  "default": {
++                    "enabled": false,
++                    "observe_only": true,
++                    "confidence_threshold": 0.8,
++                    "timeout_ms": 2500,
++                    "turn_seal_timeout_ms": 120000,
++                    "max_prompt_chars": 8000,
++                    "max_inflight": 8
++                  },
++                  "type": "object",
++                  "properties": {
++                    "enabled": {
++                      "default": false,
++                      "type": "boolean"
++                    },
++                    "observe_only": {
++                      "default": true,
++                      "type": "boolean"
++                    },
++                    "confidence_threshold": {
++                      "default": 0.8,
++                      "type": "number",
++                      "minimum": 0,
++                      "maximum": 1
++                    },
++                    "timeout_ms": {
++                      "default": 2500,
++                      "type": "integer",
++                      "minimum": 100,
++                      "maximum": 30000
++                    },
++                    "turn_seal_timeout_ms": {
++                      "default": 120000,
++                      "type": "integer",
++                      "minimum": 1000,
++                      "maximum": 600000
++                    },
++                    "max_prompt_chars": {
++                      "default": 8000,
++                      "type": "integer",
++                      "minimum": 256,
++                      "maximum": 9007199254740991
++                    },
++                    "max_inflight": {
++                      "default": 8,
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 64
++                    }
++                  },
++                  "required": [
++                    "enabled",
++                    "observe_only",
++                    "confidence_threshold",
++                    "timeout_ms",
++                    "turn_seal_timeout_ms",
++                    "max_prompt_chars",
++                    "max_inflight"
++                  ],
++                  "additionalProperties": false
+                 }
+               },
+               "required": [
+-                "model_error_triage"
++                "model_error_triage",
++                "intent_routing"
+               ],
+               "additionalProperties": false
+             }
+@@ -21118,6 +21190,15 @@
+                       "model_error_triage": {
+                         "enabled": false,
+                         "confidence_threshold": 0.8
++                      },
++                      "intent_routing": {
++                        "enabled": false,
++                        "observe_only": true,
++                        "confidence_threshold": 0.8,
++                        "timeout_ms": 2500,
++                        "turn_seal_timeout_ms": 120000,
++                        "max_prompt_chars": 8000,
++                        "max_inflight": 8
+                       }
+                     },
+                     "type": "object",
+@@ -21145,10 +21226,73 @@
+                           "confidence_threshold"
+                         ],
+                         "additionalProperties": false
++                      },
++                      "intent_routing": {
++                        "default": {
++                          "enabled": false,
++                          "observe_only": true,
++                          "confidence_threshold": 0.8,
++                          "timeout_ms": 2500,
++                          "turn_seal_timeout_ms": 120000,
++                          "max_prompt_chars": 8000,
++                          "max_inflight": 8
++                        },
++                        "type": "object",
++                        "properties": {
++                          "enabled": {
++                            "default": false,
++                            "type": "boolean"
++                          },
++                          "observe_only": {
++                            "default": true,
++                            "type": "boolean"
++                          },
++                          "confidence_threshold": {
++                            "default": 0.8,
++                            "type": "number",
++                            "minimum": 0,
++                            "maximum": 1
++                          },
++                          "timeout_ms": {
++                            "default": 2500,
++                            "type": "integer",
++                            "minimum": 100,
++                            "maximum": 30000
++                          },
++                          "turn_seal_timeout_ms": {
++                            "default": 120000,
++                            "type": "integer",
++                            "minimum": 1000,
++                            "maximum": 600000
++                          },
++                          "max_prompt_chars": {
++                            "default": 8000,
++                            "type": "integer",
++                            "minimum": 256,
++                            "maximum": 9007199254740991
++                          },
++                          "max_inflight": {
++                            "default": 8,
++                            "type": "integer",
++                            "minimum": 1,
++                            "maximum": 64
++                          }
++                        },
++                        "required": [
++                          "enabled",
++                          "observe_only",
++                          "confidence_threshold",
++                          "timeout_ms",
++                          "turn_seal_timeout_ms",
++                          "max_prompt_chars",
++                          "max_inflight"
++                        ],
++                        "additionalProperties": false
+                       }
+                     },
+                     "required": [
+-                      "model_error_triage"
++                      "model_error_triage",
++                      "intent_routing"
+                     ],
+                     "additionalProperties": false
+                   }
+omo diff after build:schema exit=1 (expected nonzero)
+
+$ bun run build:omo-schema
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+build:omo-schema exit=0
+
+Idempotence proof: second consecutive two-build run
+$ bun run build:schema
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+second build:schema exit=0
+
+$ bun run build:omo-schema
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+second build:omo-schema exit=0
+
+$ GIT_MASTER=1 git diff --no-index --exit-code /tmp/opencode/task-2-oh-my-opencode.schema.before-idempotence.json assets/oh-my-opencode.schema.json
+oh-my-opencode idempotence diff exit=0
+
+$ GIT_MASTER=1 git diff --no-index --exit-code /tmp/opencode/task-2-omo.schema.before-idempotence.json assets/omo.schema.json
+omo idempotence diff exit=0

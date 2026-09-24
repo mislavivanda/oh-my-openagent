@@ -1,0 +1,26 @@
+# worktree state proof for todo 1 (re-established in the isolated worktree oh-my-openagent-jev-w1-a20f)
+# supersedes the run in the peer-contaminated worktree oh-my-openagent-jev-w1
+cmd: git rev-parse --abbrev-ref HEAD
+jev/w1-a20f
+branch_exit=0
+cmd: git merge-base --is-ancestor jev/foundation jev/w1-a20f
+ancestor_exit=0
+cmd: git rev-parse HEAD
+82460563fa1573c49b88d7c70620fac09a971d19
+cmd: git rev-parse jev/foundation
+82460563fa1573c49b88d7c70620fac09a971d19
+cmd: git status --porcelain
+status_lines=0
+
+# --- post-install re-check (IMPORTANT CORRECTION TO THE PLAN'S PREMISE) ---
+# The freshly created worktree was CLEAN: git status --porcelain printed 0 lines (see above).
+# The 5 modified generated files appear ONLY AFTER 'bun install' runs its postinstall build step.
+# They are therefore BUILD OUTPUT of bun install, not someone else's in-progress edits.
+# They were NOT stashed, reset, or reverted. Left exactly as bun install produced them.
+cmd: git status --porcelain   (after bun install)
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+status_lines_after_install=5

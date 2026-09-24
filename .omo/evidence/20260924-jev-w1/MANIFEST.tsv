@@ -1,0 +1,32 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260924-jev-w1/task-1-worktree.txt	artifact	Worktree proof: HEAD is jev/w1-a20f, merge-base --is-ancestor jev/foundation exits 0, plus the finding that a fresh worktree is fully clean and the 5 modified generated files are bun install build output
+1	.omo/evidence/20260924-jev-w1/task-1-install.txt	artifact	bun install in the isolated jev/w1-a20f worktree, stdout+stderr with trailing exit= line, exit=0, 544 packages in 80s
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline.txt	baseline	THE CANONICAL BASELINE. env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000, exit=1 with 12777 pass / 3 skip / 7 fail across 1678 files. F2 diffs against this, asserting no new failures rather than exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline-failures.txt	baseline	Machine-diffable list of the 7 accepted pre-existing failures, one normalized test name per line, LC_ALL=C sorted, no counts or commentary, sha256 e58c7b4ab1d56299fd92dd3a115e1029d5bb81ff5aed86435e63e773af508011
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline-duration.txt	artifact	Wall-clock duration of the canonical baseline, 121s (02:01), plus all three study-run durations for later wave budgeting
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline-flake-analysis.txt	artifact	3-run stability study proving the 8th observed failure (pollForCompletion) is a 1-in-3 load flake that passes 6 of 6 isolated runs, and is therefore quarantined out of the failures file
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-policy.txt	artifact	Reviewer-facing statement of the amended gate: canonical command, why the ambient env var is excluded, the 7 accepted failures by root-cause class, the exact reproducible normalization command, and which gates stay hard exit-0
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-bun-test.txt	artifact	Contrast run WITH ambient OPENCODE_SERVER_PASSWORD present, exit=1 with 22 fail, the in-tree isolation proof that the 15-line delta versus canonical is entirely tmux argv fixtures
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-bun-test-duration.txt	artifact	Wall-clock duration of the env-polluted contrast run, 121s
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-bun-test-cleanenv.txt	baseline	Corroborating clean-env full-suite run captured before the move to the isolated worktree, independently showing the same 7 failures and no pollForCompletion entry
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-typecheck.txt	baseline	bun run typecheck across root, script, and all 28 workspace packages, exit=0. Remains a HARD exit-zero gate
+1	.omo/evidence/20260924-jev-w1/task-1-test-fast.txt	qa	Happy-path QA scenario and HARD exit-zero gate: bun run test:fast, exit=0 with 317 pass / 0 fail across 31 files
+1	.omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt	baseline	Byte-comparable missing-heading list from check-third-party-notices.mjs, 4 entries, deliberately carries NO exit= line so F2 can diff it directly
+1	.omo/evidence/20260924-jev-w1/task-1-notices-exit.txt	baseline	Exit status of check-third-party-notices.mjs in a separate file, exit=1, the known and expected baseline debt
+1	.omo/evidence/20260924-jev-w1/task-1-redstop-analysis.txt	artifact	Original RED-STOP analysis that triggered the plan-mandated full stop, classifying all 22 env-polluted failures into env pollution, cross-file mock leak, and Bun 1.4.0 behavior change
+1	.omo/evidence/20260924-jev-w1/task-1-manifest-selfcheck.txt	artifact	Self-verification that MANIFEST row 1 uses real tab characters and that every artifact listed here exists and is non-empty
+2	.omo/evidence/20260924-jev-w1/task-2-schema-red.txt	red	Focused schema test RED: missing intent_routing defaults and absent rejection/refine behavior fail for the intended assertions before implementation
+2	.omo/evidence/20260924-jev-w1/task-2-schema-green.txt	green	Focused schema test GREEN: 10 tests pass, covering dedicated defaults, apply-mode rejection, unchanged W4 shape, and strict timeout ordering
+3	.omo/evidence/20260924-jev-w1/task-3-record-red.txt	red	Focused contract RED before implementation: assertion-level failures for the populated observation, counter snapshot, reader selection, and frozen continuation lexicon; no module-not-found failure
+3	.omo/evidence/20260924-jev-w1/task-3-record-green.txt	green	Focused contract GREEN: 21 tests and 25 assertions pass for both union arms, strict malformed-input rejection, reader selection, and continuation cohort
+3	.omo/evidence/20260924-jev-w1/task-3-guard-proof.txt	qa	Harness-neutrality negative proof: guard passes, detects the temporary forbidden OpenCode import, then passes after a byte-identical SHA256-confirmed revert
+3	.omo/evidence/20260924-jev-w1/task-3-typecheck.txt	qa	Root bun run typecheck gate across root, scripts, and workspace packages exits 0
+3	.omo/evidence/20260924-jev-w1/task-3-test-fast.txt	qa	Hard test-fast gate exits 0 with 342 passing tests across 32 files
+3	.omo/evidence/20260924-jev-w1/task-3-adversarial-qa.txt	qa	Explicit malformed-input rejections, barrel import proof, RED chronology, dirty-worktree classification, scenario applicability, and diagnostics receipt
+2	.omo/evidence/20260924-jev-w1/task-2-observe-only-reject.txt	qa	Exact failure-scenario command rejects observe_only=false with the not-yet-implemented apply-phase message
+2	.omo/evidence/20260924-jev-w1/task-2-both-schemas.txt	artifact	Both schema generators exit 0, the omo asset changes after build:schema alone, and second-run no-index diffs prove idempotence
+2	.omo/evidence/20260924-jev-w1/task-2-schema-diff.txt	artifact	Advisory full diff of both generated schema assets for the human-sensitive config touchpoint
+2	.omo/evidence/20260924-jev-w1/task-2-adversarial-qa.txt	qa	All 21 malformed numeric and boolean cases reject observably, with applicability rulings for every adversarial scenario
+2	.omo/evidence/20260924-jev-w1/task-2-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+2	.omo/evidence/20260924-jev-w1/task-2-test-fast.txt	qa	Hard test-fast gate exits 0 with 342 passing tests across 32 files
+2	.omo/evidence/20260924-jev-w1/task-2-dirty-worktree.txt	artifact	Porcelain status classifies task-2 files, five known build outputs, concurrent peer TODO 3 files, and no unexpected paths

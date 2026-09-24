@@ -1,0 +1,102 @@
+RED-STOP ANALYSIS - todo 1, plan jev-w1-intent-routing
+Worktree: oh-my-openagent-jev-w1, branch jev/w1 @ 82460563fa1573c49b88d7c70620fac09a971d19 (== jev/foundation)
+Zero production code changed by todo 1. Every failure below is PRE-EXISTING on jev/foundation.
+
+VERDICT: BLOCKED
+Reason: `bun test --timeout 20000` exits 1 with failures that are NOT attributable to the
+known THIRD-PARTY-NOTICES.md debt. The notices gate is a SEPARATE script
+(scripts/check-third-party-notices.mjs) and its 4 missing headings do not surface as
+bun test failures at all. Per todo 1's MUST NOT, this is a full stop owned by the orchestrator.
+
+----------------------------------------------------------------------
+RUN A - as-invoked environment (ambient OPENCODE_SERVER_PASSWORD present)
+  command : bun test --timeout 20000
+  artifact: task-1-baseline-bun-test.txt
+  result  : exit=1, 12762 pass / 3 skip / 22 fail, 1678 files, 125.97s
+
+RUN B - supplementary diagnosis, same command, one env var removed
+  command : env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+  artifact: task-1-baseline-bun-test-cleanenv.txt
+  result  : exit=1, 12777 pass / 3 skip / 7 fail, 1678 files, 121.92s
+
+----------------------------------------------------------------------
+CLASSIFICATION OF THE 22 RUN-A FAILURES
+
+CLASS 1 - AMBIENT ENV POLLUTION (15 failures). Not a code defect. Disappears in RUN B.
+  Root cause: OPENCODE_SERVER_PASSWORD is exported into the agent shell (root AGENTS.md
+  documents .env / script/agent/setup.sh / qa-sandbox.sh exporting it, and .env.example
+  lists it). The tmux pane spawner forwards it as `-e OPENCODE_SERVER_PASSWORD=...` to
+  `tmux split-window`, so the argv assertions see two extra argv entries the fixtures do
+  not expect; in the cmux cases the extra argv also makes the spawn assertion return
+  { success: false } and leaves runTmuxCommandMock.mock.calls empty, which is why some of
+  these surface as `TypeError: Reflect.get requires the first argument be an object`
+  rather than as a diff.
+  Proof of causation (isolated reruns, diagnosis only, no edits):
+    bun test packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts
+      -> exit=1, 6 pass / 4 fail   (env var present)
+    env -u OPENCODE_SERVER_PASSWORD -u TMUX -u CMUX_SOCKET_PATH bun test <same file>
+      -> exit=0, 10 pass / 0 fail
+    bun test packages/omo-opencode/src/features/team-mode/team-layout-tmux/layout.test.ts
+      -> exit=1, 20 pass / 1 fail  (env var present)
+    env -u OPENCODE_SERVER_PASSWORD ... bun test <same file>
+      -> exit=0, 21 pass / 0 fail
+    env -u OPENCODE_SERVER_PASSWORD ... bun test packages/tmux-core/src/tmux-utils
+      -> exit=0, 85 pass / 0 fail
+  Affected tests:
+    spawnTmuxPane runner integration > cmux environment > isCmuxCompatEnvironment=true ... split-window uses opencode attach command not placeholder
+    spawnTmuxPane runner integration > cmux environment > CMUX_SOCKET_PATH without TMUX ... reaches eager split-window attach
+    spawnTmuxPane runner integration > cmux environment > cmux + dir with spaces ... directory is shell-escaped same as pre-change (regression guard)
+    spawnTmuxPane runner integration > eligibility gate (headless cmux ...) > CMUX_SOCKET_PATH set and TMUX unset ... split-window runs opencode attach eagerly
+    spawnTmuxWindow runner integration > healthy tmux environment ... delegates new-window and select-pane to shared runner
+    spawnTmuxWindow runner integration > description with spaces ... includes it in the placeholder
+    spawnTmuxWindow runner integration > description with shell metacharacters ... escapes the placeholder
+    replaceTmuxPane runner integration > existing pane ... delegates send-keys, respawn-pane, and select-pane to shared runner
+    replaceTmuxPane runner integration > description with spaces ... includes it in the placeholder
+    replaceTmuxPane runner integration > description with shell metacharacters ... escapes the placeholder
+    spawnTmuxPane runner integration > healthy tmux environment ... delegates split-window and select-pane to shared runner
+    spawnTmuxPane runner integration > description with spaces ... includes it in the placeholder
+    spawnTmuxPane runner integration > description with shell metacharacters ... escapes the placeholder
+    team-layout-tmux > createTeamLayout - focus/grid window topology > first teammate ... splits the caller pane horizontally for teammate area  (x2 occurrences)
+
+CLASS 2 - CROSS-FILE mock.module() LEAK (5 failures). Persists in RUN B. Passes in isolation.
+  Root cause: packages/omo-opencode/src/hooks/auto-update-checker/hook.test.ts:20 installs a
+  mock whose getLatestVersion returns "3.0.1" and never restores it, so the sibling
+  checker.test.ts observes "3.0.1" for every case in a full-suite run. This is exactly the
+  debt class root AGENTS.md names as mock-module-lifecycle-audit (mock.module() without restore).
+  Proof: bun test packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts
+         -> exit=0, 5 pass / 0 fail
+  Affected tests (all auto-update-checker/checker > getLatestVersion):
+    accepts channel parameter                              expected "2.0.0-beta.1", received "3.0.1"
+    accepts latest channel                                 expected "1.0.0",        received "3.0.1"
+    works without channel (defaults to latest)             expected "1.0.0",        received "3.0.1"
+    falls back to latest when the channel is missing
+    returns null when the registry responds with an error status
+
+CLASS 3 - BUN 1.4.0 TOOLCHAIN BEHAVIOR CHANGE (2 failures). Persists in RUN B AND in isolation.
+  This is the only class that is a genuine, reproducible, environment-independent RED.
+  Root cause: both tests assert that Bun's ResolveMessage is NOT an Error instance. On the
+  installed Bun 1.4.0 `resolveMessage instanceof Error` is now true, so the guard fixtures
+  encode an assumption the current runtime no longer satisfies. Repo pins Bun 1.3.12 in CI
+  (root AGENTS.md), so CI may not reproduce this; the local toolchain is Bun 1.4.0.
+  Proof: bun test packages/omo-opencode/src/shared/module-resolution-failure.test.ts
+         -> exit=1, 4 pass / 1 fail
+  Affected tests:
+    isModuleResolutionFailure > a real Bun dynamic-import failure ... it is a resolution failure even though it is not an Error instance
+      (packages/omo-opencode/src/shared/module-resolution-failure.test.ts:31)
+    dependencies check > findCommentCheckerPackageBinary > a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage ... returns null instead of crashing
+
+----------------------------------------------------------------------
+OTHER GATES AT BASELINE
+  bun run typecheck                        exit=0   (artifact task-1-baseline-typecheck.txt)
+  bun run test:fast                        exit=0   317 pass / 0 fail (artifact task-1-test-fast.txt)
+  node scripts/check-third-party-notices.mjs exit=1 4 missing headings, the KNOWN and EXPECTED debt
+                                                    (artifacts task-1-notices-baseline.txt + task-1-notices-exit.txt)
+  bun install                              exit=0   (artifact task-1-install.txt)
+
+ENVIRONMENT
+  bun 1.4.0 (CI pins 1.3.12)
+  node available, OPENCODE_SERVER_PASSWORD exported in the agent shell
+
+NO FIX ATTEMPTED. NO PRODUCTION FILE TOUCHED. NO GIT WRITE COMMAND RUN.
+The 5 pre-existing modified generated files reported by `git status --porcelain` were left
+exactly as found (see task-1-worktree.txt); they were not stashed, reset, or reverted.

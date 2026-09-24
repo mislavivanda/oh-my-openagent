@@ -1,0 +1,2 @@
+polluted_contrast_run_duration_seconds=121
+polluted_contrast_run_duration_mmss=02:01

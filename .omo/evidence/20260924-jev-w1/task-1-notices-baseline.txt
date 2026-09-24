@@ -1,0 +1,5 @@
+THIRD-PARTY-NOTICES.md is missing 4 required notice entries:
+- @opentui/core
+- @opentui/keymap
+- @opentui/solid
+- zod

@@ -1,0 +1,3 @@
+canonical_baseline_duration_seconds=121
+canonical_baseline_duration_mmss=02:01
+# 3-run study durations: run1=141s run2=123s run3=121s (run3 is the recorded capture)
