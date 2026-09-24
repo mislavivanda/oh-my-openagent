@@ -1,3 +1,5 @@
+// allow: SIZE_OK - Production plugin initialization remains one ordered sequence with injectable stages.
+
 import type { Hooks, Plugin, PluginModule } from "@opencode-ai/plugin"
 import type { HookName } from "../config"
 import { validatePluginConfig } from "../config/validate"
@@ -9,6 +11,10 @@ import { createManagers } from "../create-managers"
 import { createRuntimeTmuxConfig, isTmuxIntegrationEnabled } from "../create-runtime-tmux-config"
 import { createTools } from "../create-tools"
 import { createRuntimeSkillSourceServer, selectRuntimeSecuritySkills } from "../features/opencode-runtime-skills"
+import {
+  createJevIntentRouting,
+  createJevIntentRoutingVocabulary,
+} from "../features/jev"
 import { initializeOpenClaw } from "../openclaw"
 import { createPluginDispose } from "../plugin-dispose"
 import { createPluginInterface } from "../plugin-interface"
@@ -19,6 +25,7 @@ import {
   createSessionCompactingHandler,
   type CompactionAutocontinueHook,
 } from "../plugin/session-compacting"
+import { createAvailableCategories } from "../plugin/available-categories"
 import { installAgentSortShim, setAgentSortOrder } from "../shared/agent-sort-shim"
 import {
   detectDuplicateOmoPlugin,
@@ -84,6 +91,7 @@ export type PluginModuleDeps = {
   createTools: typeof createTools
   createRuntimeSkillSourceServer: typeof createRuntimeSkillSourceServer
   createHooks: typeof createHooks
+  createJevIntentRouting: typeof createJevIntentRouting
   createPluginInterface: typeof createPluginInterface
 }
 
@@ -118,6 +126,7 @@ const defaultPluginModuleDeps: PluginModuleDeps = {
   createTools,
   createRuntimeSkillSourceServer,
   createHooks,
+  createJevIntentRouting,
   createPluginInterface,
 }
 
@@ -300,6 +309,11 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
       managers,
     })
 
+    const intentRouting = deps.createJevIntentRouting({
+      jevConfig: pluginConfig.jev,
+      vocab: createJevIntentRoutingVocabulary(createAvailableCategories(pluginConfig)),
+    })
+
     const hooks = deps.createHooks({
       ctx: input,
       pluginConfig,
@@ -320,12 +334,15 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
       managers,
       hooks,
       tools: toolsResult.filteredTools,
+      intentRouting,
     })
 
     const dispose = createPluginDispose({
       backgroundManager: managers.backgroundManager,
       skillMcpManager: managers.skillMcpManager,
       disposeHooks: hooks.disposeHooks,
+      pluginConfig,
+      intentRouting,
     })
 
     const pluginHooks: HooksWithRuntimeLifecycle = {

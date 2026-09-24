@@ -66,6 +66,7 @@ export type IntentRoutingSealController = {
   readonly getTurn: (sessionID: string, turnOrdinal: number) => IntentRoutingTurnRecord | undefined
   readonly listTurns: (sessionID: string) => readonly IntentRoutingTurnRecord[]
   readonly getCounters: () => IntentRoutingCounters
+  readonly recordDispatchDropped: () => void
   readonly dispose: () => Promise<void>
 }
 
@@ -239,6 +240,7 @@ export function createIntentRoutingSealController(
     getTurn: store.getTurn,
     listTurns: store.listTurns,
     getCounters: store.getCounters,
+    recordDispatchDropped: store.recordDispatchDropped,
     dispose: () => {
       if (disposePromise) return disposePromise
       disposePromise = (async () => {

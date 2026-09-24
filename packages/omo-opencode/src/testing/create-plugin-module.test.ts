@@ -1,3 +1,5 @@
+// allow: SIZE_OK - The existing initialization matrix shares one complete dependency harness.
+
 import { beforeEach, describe, expect, it, mock } from "bun:test"
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
@@ -70,6 +72,17 @@ const mockCreateHooks = mock(() => ({
   claudeCodeHooks: undefined,
 }))
 const mockCreatePluginInterface = mock(() => ({}))
+const mockIntentRoutingDispose = mock(async () => {})
+const mockIntentRouting = {
+  enabled: false,
+  observe: () => ({ predictionStatus: "not_dispatched" as const, notDispatchedReason: "disabled" as const }),
+  capture: () => {},
+  onSessionIdle: () => false,
+  onSessionDeleted: () => {},
+  dispose: mockIntentRoutingDispose,
+  getStats: () => ({ inFlight: 0, dispatchesDropped: 0 }),
+}
+const mockCreateJevIntentRouting = mock(() => mockIntentRouting)
 const mockInitializeOpenClaw = mock(async () => {})
 const mockStartTmuxCheck = mock(() => {})
 const mockInstallAgentSortShim = mock(() => {})
@@ -84,7 +97,7 @@ const mockCreateFirstMessageVariantGate = mock(() => ({
 }))
 
 function createTestPluginModule(overrides: Parameters<typeof createPluginModule>[0] = {}): ReturnType<typeof createPluginModule> {
-  return createPluginModule({
+  const dependencies = {
     initConfigContext: mockInitConfigContext,
     detectExternalSkillPlugin: mockDetectExternalSkillPlugin,
     getSkillPluginConflictWarning: mockGetSkillPluginConflictWarning,
@@ -111,7 +124,9 @@ function createTestPluginModule(overrides: Parameters<typeof createPluginModule>
     createModelCacheState: mockCreateModelCacheState as never,
     createFirstMessageVariantGate: mockCreateFirstMessageVariantGate as never,
     ...overrides,
-  })
+  }
+  Reflect.set(dependencies, "createJevIntentRouting", mockCreateJevIntentRouting)
+  return createPluginModule(dependencies)
 }
 
 describe("createPluginModule()", () => {
@@ -128,6 +143,8 @@ describe("createPluginModule()", () => {
     mockCreateTools.mockClear()
     mockCreateHooks.mockClear()
     mockCreatePluginInterface.mockClear()
+    mockCreateJevIntentRouting.mockClear()
+    mockIntentRoutingDispose.mockClear()
     mockRunOpenCodeStartupMigration.mockReturnValue({
       journalResumed: false,
       migratedFrom: [],
@@ -293,6 +310,29 @@ describe("createPluginModule()", () => {
 
       // then
       expect(mockRuntimeSkillSourceStop).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("#given one serverPlugin initialization", () => {
+    it("#then one intent-routing instance reaches the interface and its bounded dispose flush", async () => {
+      // given
+      const pluginModule = createTestPluginModule()
+      mockLoadPluginConfig.mockReturnValue({})
+
+      // when
+      const hooks: Awaited<ReturnType<typeof pluginModule.server>> & {
+        dispose?: () => Promise<void>
+      } = await pluginModule.server({
+        directory: "/tmp/project",
+        client: {},
+      } as Parameters<typeof pluginModule.server>[0])
+      await hooks.dispose?.()
+
+      // then
+      expect(mockCreateJevIntentRouting).toHaveBeenCalledTimes(1)
+      const interfaceArgs = mockCreatePluginInterface.mock.calls.at(0)?.[0]
+      expect(interfaceArgs && Reflect.get(interfaceArgs, "intentRouting")).toBe(mockIntentRouting)
+      expect(mockIntentRoutingDispose).toHaveBeenCalledTimes(1)
     })
   })
 

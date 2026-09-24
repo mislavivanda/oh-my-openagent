@@ -1,45 +1,70 @@
-import { decideIntentRouting, selectDecisionBackend, type DecisionBackend, type DecisionBackendDeps } from "@oh-my-opencode/jev-core"
-import type { IntentRoutingDecisionResult, IntentRoutingVocabulary } from "@oh-my-opencode/jev-core"
+// allow: SIZE_OK - One shared instance owns dispatch, capture, seal, and disposal identity.
+
+import {
+  INTENT_ROUTING_QUESTION_VERSION,
+  type DecisionBackend,
+  type DecisionBackendDeps,
+  type IntentRoutingVocabulary,
+} from "@oh-my-opencode/jev-core"
+
 import type { JevConfig } from "../../config/schema/jev"
-import { isRealUserTextPart, type InternalInitiatorTextPartLike } from "../../shared"
+import type { InternalInitiatorTextPartLike } from "../../shared"
 import { log } from "../../shared/logger"
 import { getMainSessionID, subagentSessions } from "../claude-code-session-state"
+import {
+  captureIntentRoutingDelegationAttempt,
+} from "./intent-routing-capture"
+import {
+  createJevIntentRoutingDispatchEngine,
+  snapshotJevIntentRoutingPrompt,
+  type JevIntentRoutingDispatcher,
+} from "./intent-routing-dispatch"
+import {
+  getJevIntentRoutingSessionGateReason,
+} from "./intent-routing-session-gate"
+import {
+  createIntentRoutingSealController,
+  type IntentRoutingSealController,
+} from "./intent-routing-seal"
+import {
+  createIntentRoutingSink,
+  type IntentRoutingSink,
+} from "./intent-routing-sink"
+import { createJevIntentRoutingVocabularyDigest } from "./intent-routing-vocabulary"
 
-export type JevIntentRoutingNotDispatchedReason = "disabled" | "main_session_unknown" | "subagent_session" | "non_main_session" | "max_inflight" | "dispatch_error"
-
-export type JevIntentRoutingDispatchInput = {
-  readonly backend: DecisionBackend
-  readonly input: { readonly promptText: string }
-  readonly vocab: IntentRoutingVocabulary
-  readonly confidenceThreshold: number
-  readonly model: string
-  readonly maxPromptChars: number
-}
-
-export type JevIntentRoutingDispatcher = (input: JevIntentRoutingDispatchInput) => Promise<IntentRoutingDecisionResult>
+export type JevIntentRoutingNotDispatchedReason =
+  | "disabled"
+  | "main_session_unknown"
+  | "subagent_session"
+  | "non_main_session"
+  | "max_inflight"
+  | "dispatch_error"
 
 export type JevIntentRoutingReceipt = {
   readonly predictionStatus: "pending" | "not_dispatched"
   readonly notDispatchedReason: JevIntentRoutingNotDispatchedReason | null
 }
 
-export type JevIntentRouting = {
-  readonly enabled: boolean
-  observe(
-    input: { readonly sessionID: string },
-    output: {
-      readonly parts: readonly InternalInitiatorTextPartLike[]
-    },
-  ): JevIntentRoutingReceipt
-  getStats(): { readonly inFlight: number; readonly dispatchesDropped: number }
+type JevIntentRoutingToolInput = {
+  readonly tool: string
+  readonly sessionID: string
+  readonly callID: string
 }
 
-function safeKind(backend: DecisionBackend): string {
-  try {
-    return backend.kind
-  } catch {
-    return "unknown"
-  }
+export type JevIntentRouting = {
+  readonly enabled: boolean
+  readonly observe: (
+    input: { readonly sessionID: string },
+    output: { readonly parts: readonly InternalInitiatorTextPartLike[] },
+  ) => JevIntentRoutingReceipt
+  readonly capture: (
+    input: JevIntentRoutingToolInput,
+    output: { readonly args: Readonly<Record<string, unknown>> },
+  ) => void
+  readonly onSessionIdle: (sessionID: string) => boolean
+  readonly onSessionDeleted: (sessionID: string) => void
+  readonly dispose: () => Promise<void>
+  readonly getStats: () => { readonly inFlight: number; readonly dispatchesDropped: number }
 }
 
 function notDispatched(
@@ -48,34 +73,16 @@ function notDispatched(
   return { predictionStatus: "not_dispatched", notDispatchedReason: reason }
 }
 
-function snapshotPromptText(
-  parts: readonly InternalInitiatorTextPartLike[],
-  maxPromptChars: number,
-): string {
-  const chunks: string[] = []
-  let copiedChars = 0
-  for (const part of parts) {
-    if (copiedChars >= maxPromptChars) break
-    if (!isRealUserTextPart(part)) continue
-    const separator = chunks.length === 0 ? "" : "\n"
-    const chunk = `${separator}${part.text}`.slice(0, maxPromptChars - copiedChars)
-    chunks.push(chunk)
-    copiedChars += chunk.length
+function disabledIntentRouting(): JevIntentRouting {
+  return {
+    enabled: false,
+    observe: () => notDispatched("disabled"),
+    capture: () => undefined,
+    onSessionIdle: () => false,
+    onSessionDeleted: () => undefined,
+    dispose: async () => undefined,
+    getStats: () => ({ inFlight: 0, dispatchesDropped: 0 }),
   }
-  return chunks.join("")
-}
-
-export function getJevIntentRoutingSessionGateReason(
-  sessionID: string,
-): JevIntentRoutingNotDispatchedReason | null {
-  if (subagentSessions.has(sessionID)) return "subagent_session"
-  const mainSessionID = getMainSessionID()
-  if (mainSessionID === undefined) return "main_session_unknown"
-  return sessionID === mainSessionID ? null : "non_main_session"
-}
-
-export function isJevIntentRoutingSessionEligible(sessionID: string): boolean {
-  return getJevIntentRoutingSessionGateReason(sessionID) === null
 }
 
 export function createJevIntentRouting(args: {
@@ -89,117 +96,124 @@ export function createJevIntentRouting(args: {
   readonly backendFetch?: DecisionBackendDeps["fetch"]
   readonly logger?: (message: string, data?: unknown) => void
   readonly dispatcher?: JevIntentRoutingDispatcher
+  readonly sink?: IntentRoutingSink
+  readonly sealController?: IntentRoutingSealController
 }): JevIntentRouting {
-  const enabled =
-    args.jevConfig?.enabled === true &&
-    args.jevConfig.wires.intent_routing.enabled === true
-
-  if (!enabled) {
-    return {
-      enabled: false,
-      observe: () => notDispatched("disabled"),
-      getStats: () => ({ inFlight: 0, dispatchesDropped: 0 }),
-    }
-  }
+  const enabled = args.jevConfig?.enabled === true
+    && args.jevConfig.wires.intent_routing.enabled === true
+  if (!enabled) return disabledIntentRouting()
 
   const jevConfig = args.jevConfig
   const wireConfig = jevConfig.wires.intent_routing
-  const env = args.env ?? process.env
+  const controller = args.sealController ?? createIntentRoutingSealController({
+    sink: args.sink ?? createIntentRoutingSink(),
+    turnSealTimeoutMs: wireConfig.turn_seal_timeout_ms,
+    maxPromptChars: wireConfig.max_prompt_chars,
+    storeOptions: { predictionTimeoutMs: wireConfig.timeout_ms },
+  })
+  const dispatchEngine = createJevIntentRoutingDispatchEngine({
+    jevConfig,
+    vocab: args.vocab,
+    env: args.env,
+    backend: args.backend,
+    backendFetch: args.backendFetch,
+    logger: args.logger,
+    dispatcher: args.dispatcher,
+    onDispatchDropped: controller.recordDispatchDropped,
+  })
+  const vocabularyDigest = createJevIntentRoutingVocabularyDigest(args.vocab)
   const logger = args.logger ?? log
-  const safeLog = (message: string, data?: unknown): void => {
+  const logLifecycleFailure = (
+    sessionID: string,
+    stage: "observe" | "capture" | "session_idle" | "session_deleted",
+    error: unknown,
+  ): void => {
+    const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
     try {
-      logger(message, data)
-    } catch (error) {
-      if (error instanceof Error) void error.message
+      logger("[jev] intent-routing failed", {
+        wire: "intent_routing",
+        sessionID,
+        stage,
+        error: detail.slice(0, 200),
+      })
+    } catch (loggingError) {
+      if (loggingError instanceof Error) void loggingError.message
+      else void String(loggingError)
     }
-  }
-  const backend =
-    args.backend ??
-    selectDecisionBackend(
-      {
-        enabled: true,
-        backend: jevConfig.backend,
-        model: jevConfig.model,
-        timeoutMs: wireConfig.timeout_ms,
-      },
-      {
-        apiKey: env.TYPESAFE_API_KEY,
-        fetch: args.backendFetch,
-        baseURL: env.OMO_JEV_BASE_URL,
-      },
-    )
-  const dispatcher = args.dispatcher ?? decideIntentRouting
-  let inFlight = 0
-  let dispatchesDropped = 0
-  const logFailure = (sessionID: string, error: unknown): void => {
-    const errorText = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
-    safeLog("[jev] intent-routing failed", {
-      wire: "intent_routing",
-      sessionID,
-      backend: safeKind(backend),
-      error: errorText.slice(0, 200),
-    })
   }
 
   return {
     enabled: true,
-    observe(input, output) {
+    observe: (input, output) => {
       try {
         const gateReason = getJevIntentRoutingSessionGateReason(input.sessionID)
-        if (gateReason !== null) return notDispatched(gateReason)
-        const sessionID = input.sessionID
-        const promptText = snapshotPromptText(output.parts, wireConfig.max_prompt_chars)
-        const timer = setTimeout(() => {
-          let reserved = false
-          try {
-            if (inFlight >= wireConfig.max_inflight) {
-              dispatchesDropped += 1
-              return
-            }
-            inFlight += 1
-            reserved = true
-            const pending = dispatcher({
-              backend,
-              input: { promptText },
-              vocab: args.vocab,
-              confidenceThreshold: wireConfig.confidence_threshold,
-              model: jevConfig.model,
-              maxPromptChars: wireConfig.max_prompt_chars,
-            })
-            void pending
-              .then((result) => {
-                safeLog("[jev] intent-routing", {
-                  wire: "intent_routing",
-                  questionVersion: result.questionVersion,
-                  sessionID,
-                  backend: safeKind(backend),
-                  predictionStatus: result.predictionStatus,
-                  unavailableReason: result.unavailableReason,
-                  answers: result.answers,
-                  invalidAnswerCount: result.invalidAnswerCount,
-                  resolvedModel: result.resolvedModel,
-                  latencyMs: result.latencyMs,
-                  truncatedInput: result.truncatedInput,
-                })
-              })
-              .catch((error: unknown) => {
-                logFailure(sessionID, error)
-              })
-              .finally(() => {
-                inFlight -= 1
-              })
-          } catch (error) {
-            if (reserved) inFlight -= 1
-            logFailure(sessionID, error instanceof Error ? error : String(error))
-          }
-        }, 0)
-        timer.unref()
+        const shared = {
+          sessionID: input.sessionID,
+          parts: output.parts,
+          questionVersion: INTENT_ROUTING_QUESTION_VERSION,
+          vocabularyDigest,
+          confidenceThreshold: wireConfig.confidence_threshold,
+          configuredModelSpec: jevConfig.model,
+        }
+        if (gateReason !== null) {
+          controller.onMessage({ ...shared, notDispatchedReason: gateReason })
+          return notDispatched(gateReason)
+        }
+        const promptText = snapshotJevIntentRoutingPrompt(
+          output.parts,
+          wireConfig.max_prompt_chars,
+        )
+        controller.onMessage({
+          ...shared,
+          dispatch: () => dispatchEngine.dispatch(input.sessionID, promptText),
+        })
         return { predictionStatus: "pending", notDispatchedReason: null }
       } catch (error) {
-        logFailure(input.sessionID, error instanceof Error ? error : String(error))
+        const failure = error instanceof Error ? error : String(error)
+        logLifecycleFailure(input.sessionID, "observe", failure)
         return notDispatched("dispatch_error")
       }
     },
-    getStats: () => ({ inFlight, dispatchesDropped }),
+    capture: (input, output) => {
+      try {
+        const observation = captureIntentRoutingDelegationAttempt({
+          input,
+          output,
+          mainSessionID: getMainSessionID(),
+          isSubagentSession: subagentSessions.has(input.sessionID),
+        })
+        if (observation !== null) {
+          controller.appendObservation({ sessionID: input.sessionID, observation })
+        }
+      } catch (error) {
+        const failure = error instanceof Error ? error : String(error)
+        logLifecycleFailure(input.sessionID, "capture", failure)
+      }
+    },
+    onSessionIdle: (sessionID) => {
+      try {
+        return controller.onSessionIdle(sessionID)
+      } catch (error) {
+        const failure = error instanceof Error ? error : String(error)
+        logLifecycleFailure(sessionID, "session_idle", failure)
+        return false
+      }
+    },
+    onSessionDeleted: (sessionID) => {
+      try {
+        controller.onSessionDeleted(sessionID)
+      } catch (error) {
+        const failure = error instanceof Error ? error : String(error)
+        logLifecycleFailure(sessionID, "session_deleted", failure)
+      }
+    },
+    dispose: controller.dispose,
+    getStats: dispatchEngine.getStats,
   }
 }
+
+export {
+  getJevIntentRoutingSessionGateReason,
+  isJevIntentRoutingSessionEligible,
+} from "./intent-routing-session-gate"
+export type { JevIntentRoutingDispatcher } from "./intent-routing-dispatch"

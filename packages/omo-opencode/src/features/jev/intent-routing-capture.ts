@@ -5,6 +5,7 @@ import {
   type IntentRoutingObservedDelegation,
   type IntentRoutingRouteClass,
 } from "@oh-my-opencode/jev-core"
+import { isJevIntentRoutingSessionEligible } from "./intent-routing-session-gate"
 
 export const INTENT_ROUTING_DELEGATION_TOOL_ALLOWLIST = Object.freeze([
   "task",
@@ -44,15 +45,12 @@ export type IntentRoutingCaptureArgs = {
   readonly counters: IntentRoutingCaptureCounters
 }
 
-export function isIntentRoutingCaptureSessionEligible(args: {
-  readonly sessionID: string
-  readonly mainSessionID: string | undefined
-  readonly isSubagentSession: boolean
-}): boolean {
-  return args.mainSessionID !== undefined
-    && args.sessionID === args.mainSessionID
-    && !args.isSubagentSession
-}
+export type IntentRoutingDelegationAttemptArgs = Pick<
+  IntentRoutingCaptureArgs,
+  "input" | "output" | "mainSessionID" | "isSubagentSession"
+>
+
+export const isIntentRoutingCaptureSessionEligible = isJevIntentRoutingSessionEligible
 
 function isDelegationTool(tool: string): tool is IntentRoutingDelegationTool {
   return delegationTools.has(tool)
@@ -107,9 +105,9 @@ function appendObservation(
   }
 }
 
-export function captureIntentRoutingDelegation(
-  args: IntentRoutingCaptureArgs,
-): IntentRoutingCaptureResult {
+export function captureIntentRoutingDelegationAttempt(
+  args: IntentRoutingDelegationAttemptArgs,
+): IntentRoutingObservedDelegation | null {
   if (
     !isDelegationTool(args.input.tool)
     || !isIntentRoutingCaptureSessionEligible({
@@ -117,9 +115,7 @@ export function captureIntentRoutingDelegation(
       mainSessionID: args.mainSessionID,
       isSubagentSession: args.isSubagentSession,
     })
-  ) {
-    return { captured: false, record: args.record, counters: args.counters }
-  }
+  ) return null
 
   const observedArgs = {
     category: args.output.args.category,
@@ -127,15 +123,23 @@ export function captureIntentRoutingDelegation(
     requested_subagent_type: args.output.args.requested_subagent_type,
     task_id: args.output.args.task_id,
   }
-  const normalized = normalizeObservedDelegation(observedArgs)
-  const observation: IntentRoutingObservedDelegation = {
+  return {
     tool: args.input.tool,
     category: optionalString(observedArgs.category),
     subagentType: optionalString(observedArgs.subagent_type),
     requestedSubagentType: optionalString(observedArgs.requested_subagent_type),
     taskId: optionalString(observedArgs.task_id),
-    ...normalized,
+    ...normalizeObservedDelegation(observedArgs),
     callID: args.input.callID,
+  }
+}
+
+export function captureIntentRoutingDelegation(
+  args: IntentRoutingCaptureArgs,
+): IntentRoutingCaptureResult {
+  const observation = captureIntentRoutingDelegationAttempt(args)
+  if (observation === null) {
+    return { captured: false, record: args.record, counters: args.counters }
   }
   const counters = updateUnscorableCounters(args.counters, observation.routeClass)
 

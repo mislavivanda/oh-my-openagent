@@ -1,0 +1,18 @@
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+mock-accuracy-artifact={"status":"complete","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1","ambiguous-clean-up-1","multilingual-ko-1","multilingual-ja-1","multilingual-de-1","continuation-continue-1","continuation-go-on-1","adversarial-question-as-order-1","adversarial-order-as-question-1","category-visual-engineering-1"],"decisionCallCount":17,"networkCallCount":0,"errorName":null,"confusionMatrix":{"intent":{"explain":{"explain":3},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":6},"investigate":{"investigate":3},"review":{"review":1},"continue":{"continue":2}},"category":{"none":{"none":10},"writing":{"writing":1},"quick":{"quick":2},"ultrabrain":{"ultrabrain":1},"unspecified-low":{"unspecified-low":1},"unspecified-high":{"unspecified-high":1},"visual-engineering":{"visual-engineering":1}},"subagent":{"none":{"none":13},"explore":{"explore":3},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":11},"true":{"true":6}}}}
+zero-network-calls=0
+dry-run built=17 decision-calls=0 network-calls=0
+ceiling-abort-proof ceiling=17 calls=17 error=IntentRoutingCallCeilingError
+partial-accuracy-artifact={"status":"partial","mode":"mock","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCeiling":17,"builtFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1","ambiguous-make-it-faster-1"],"completedFixtureIds":["none-pure-question-1","none-pure-explanation-1","none-acknowledgement-1","category-writing-1","category-quick-1","subagent-explore-1","subagent-oracle-1"],"decisionCallCount":8,"networkCallCount":0,"errorName":"IntentRoutingFixtureError","confusionMatrix":{"intent":{"explain":{"explain":2},"acknowledge":{"acknowledge":1},"author":{"author":1},"implement":{"implement":1},"investigate":{"investigate":1},"review":{"review":1}},"category":{"none":{"none":5},"writing":{"writing":1},"quick":{"quick":1}},"subagent":{"none":{"none":5},"explore":{"explore":1},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":7}}}}
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+intent-routing synchronous p99: 0.221ms
+
+ 446 pass
+ 1 skip
+ 0 fail
+ 1489 expect() calls
+Ran 447 tests across 41 files. [5.84s]

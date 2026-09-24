@@ -3,7 +3,12 @@ import type { DecisionBackend, DecisionBackendDeps, DecisionOutcome, DecisionReq
 import type { IntentRoutingDecisionResult, IntentRoutingVocabulary, Questions } from "@oh-my-opencode/jev-core"
 import { JevConfigSchema, type JevConfig } from "../../config/schema/jev"
 import { _resetForTesting, setMainSession, subagentSessions } from "../claude-code-session-state"
-import { createJevIntentRouting, isJevIntentRoutingSessionEligible, type JevIntentRoutingDispatcher } from "./intent-routing"
+import {
+  createJevIntentRouting as createRuntimeJevIntentRouting,
+  isJevIntentRoutingSessionEligible,
+  type JevIntentRoutingDispatcher,
+} from "./intent-routing"
+import { createIntentRoutingTestSink } from "./intent-routing-test-sink"
 
 const MAIN_SESSION = "session-main"
 const VOCAB: IntentRoutingVocabulary = {
@@ -30,6 +35,12 @@ const FILLED_RESULT: IntentRoutingDecisionResult = {
 
 type LogEntry = { readonly message: string; readonly data: unknown }
 type ConfigOptions = Readonly<{ enabled?: boolean; wireEnabled?: boolean; backend?: "mock" | "real"; maxInflight?: number; maxPromptChars?: number }>
+
+function createJevIntentRouting(
+  args: Parameters<typeof createRuntimeJevIntentRouting>[0],
+): ReturnType<typeof createRuntimeJevIntentRouting> {
+  return createRuntimeJevIntentRouting({ ...args, sink: createIntentRoutingTestSink() })
+}
 
 function config(options: ConfigOptions = {}): JevConfig {
   return JevConfigSchema.parse({

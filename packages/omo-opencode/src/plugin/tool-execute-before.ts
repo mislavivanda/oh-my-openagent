@@ -1,6 +1,11 @@
 import type { PluginContext } from "./types"
 
+import type { OhMyOpenCodeConfig } from "../config"
 import { getMainSessionID } from "../features/claude-code-session-state"
+import {
+  createPluginJevIntentRouting,
+  type JevIntentRouting,
+} from "../features/jev"
 import { log, replaceToolArgs } from "../shared"
 import { resolveSessionAgent } from "./session-agent-resolver"
 import { stopContinuation } from "./stop-continuation"
@@ -27,12 +32,15 @@ function isPureSleepCommand(command: string): boolean {
 export function createToolExecuteBeforeHandler(args: {
   ctx: PluginContext
   hooks: CreatedHooks
+  pluginConfig?: OhMyOpenCodeConfig
   backgroundManager?: Pick<BackgroundManager, "hasActiveChildTasks" | "hasPendingParentWake">
+  intentRouting?: JevIntentRouting
 }): (
   input: { tool: string; sessionID: string; callID: string },
   output: { args: Record<string, unknown> },
 ) => Promise<void> {
   const { ctx, hooks, backgroundManager } = args
+  const intentRouting = args.intentRouting ?? createPluginJevIntentRouting(args.pluginConfig)
 
   return async (input, output): Promise<void> => {
     // Strip mcp_ prefix from tool names — the model may emit mcp_background_output
@@ -47,6 +55,7 @@ export function createToolExecuteBeforeHandler(args: {
       })
       input.tool = stripped
     }
+    intentRouting.capture(input, output)
 
     if (input.tool.toLowerCase() === "bash" && typeof output.args.command === "string") {
       if (output.args.command.includes("\x00")) {

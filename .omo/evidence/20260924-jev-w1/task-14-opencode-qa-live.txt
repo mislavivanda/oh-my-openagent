@@ -1,0 +1,9 @@
+surface=opencode run --format json
+plugin=file://dist/index.js
+run_exit=0
+event_types=      1 step_finish;      1 step_start;      1 text;
+plugin_entry_log=yes
+jev_log=yes
+sink={"observations":1,"sealedBy":"session_idle","predictionStatus":"failed"}
+host_session_count_before=399
+host_session_count_after=399

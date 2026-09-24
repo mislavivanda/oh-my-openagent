@@ -98,6 +98,7 @@ export type IntentRoutingTurnStore = {
   }) => boolean
   readonly finalizeTurn: (input: { readonly sessionID: string; readonly turnOrdinal: number }) => boolean
   readonly recordSyntheticTurn: () => void
+  readonly recordDispatchDropped: () => void
   readonly deleteSession: (sessionID: string) => void
   readonly getCounters: () => IntentRoutingCounters
   readonly getMapSizes: () => { readonly sessions: number; readonly reuseSessions: number }
@@ -430,6 +431,13 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
   return {
     createTurn,
     appendObservation: ({ sessionID, observation }) => {
+      const unscorable = observation.routeClass === "unscorable_resume"
+        ? "resume"
+        : observation.routeClass === "unknown"
+          ? "unknown"
+          : null
+      if (unscorable === "resume") counters.unscorableResumeCalls += 1
+      if (unscorable === "unknown") counters.unscorableUnknownCalls += 1
       const session = sessions.get(sessionID)
       const turn = session ? [...session.turns.values()].toReversed().find((candidate) => candidate.state !== "sealed") : undefined
       if (!session || !turn) {
@@ -439,6 +447,7 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
       }
       turn.observed.push(structuredClone(observation))
       touch(turn, session)
+      if (unscorable !== null) emitCounterDelta()
       return true
     },
     getTurn: (sessionID, ordinal) => {
@@ -485,6 +494,10 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     recordSyntheticTurn: () => {
       counters.turnsSeen += 1
       counters.turnsSynthetic += 1
+      emitCounterDelta()
+    },
+    recordDispatchDropped: () => {
+      counters.dispatchesDropped += 1
       emitCounterDelta()
     },
     deleteSession: (sessionID) => clearSession(sessionID, "session_deleted"),
