@@ -64,6 +64,10 @@ export function snapshotTurn(turn: LiveIntentRoutingTurn): IntentRoutingTurnSnap
     resolvedModel: turn.resolvedModel,
     answers: turn.answers,
     observed: Object.freeze([...turn.observed]),
+    sealedBy: turn.sealedBy,
+    correlationStatus: turn.correlationStatus,
+    correlationWindowClosed: turn.correlationWindowClosed,
+    finalized: turn.finalized,
   })
 }
 
@@ -113,7 +117,7 @@ function isScorableTarget(value: string): boolean {
   return value !== "none" && value !== "unknown"
 }
 
-export function buildEvictionDelta(input: Readonly<{
+export function buildStoreCounterDelta(input: Readonly<{
   schemaVersion: number
   recordedAt: string
   processId: string
@@ -121,6 +125,7 @@ export function buildEvictionDelta(input: Readonly<{
   monotonicSeq: number
   recordsCreated: number
   recordsEvicted: number
+  orphanObservations: number
 }>): IntentRoutingCounterDelta {
   const counters: IntentRoutingCounters = {
     turnsSeen: 0,
@@ -128,7 +133,7 @@ export function buildEvictionDelta(input: Readonly<{
     turnsSynthetic: 0,
     recordsCreated: input.recordsCreated,
     recordsEvicted: input.recordsEvicted,
-    orphanObservations: 0,
+    orphanObservations: input.orphanObservations,
     unscorableResumeCalls: 0,
     unscorableUnknownCalls: 0,
     dispatchesDropped: 0,

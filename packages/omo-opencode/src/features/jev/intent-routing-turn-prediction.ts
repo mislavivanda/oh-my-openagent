@@ -38,7 +38,7 @@ export function createIntentRoutingPredictionCache(onTerminalSealed: (turn: Live
       turn.reuseKey = completedReuseKey(turn.dedupKey, result.resolvedModel)
       entries.set(`filled:${turn.reuseKey}`, { kind: "filled", turn })
     }
-    if (isSealed && turn.sealedBy !== "next_turn") onTerminalSealed(turn)
+    if (isSealed && turn.correlationWindowClosed) onTerminalSealed(turn)
   }
 
   const settleGroup = (key: string, group: PendingGroup, result: IntentRoutingDecisionResult): void => {
@@ -65,7 +65,7 @@ export function createIntentRoutingPredictionCache(onTerminalSealed: (turn: Live
         const isSealed = waiting.state === "sealed"
         waiting.predictionStatus = "timeout"
         if (!isSealed) waiting.state = "prediction_timeout"
-        if (isSealed && waiting.sealedBy !== "next_turn") onTerminalSealed(waiting)
+        if (isSealed && waiting.correlationWindowClosed) onTerminalSealed(waiting)
       }
     }, input.predictionTimeoutMs)
     timer.unref()

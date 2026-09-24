@@ -307,7 +307,7 @@ describe("createIntentRoutingTurnStore", () => {
     expect(store.listTurns(SESSION_ID).map((turn) => turn.turnOrdinal)).toEqual([1, 3])
   })
 
-  test("#given only a logically sealed deferred victim #when capacity forces removal #then it finalizes censored instead of being evicted", async () => {
+  test("#given only a logically sealed deferred victim #when capacity is reached #then the exemption prevents premature finalization", async () => {
     const { entries, store } = createHarness({ maxTurnsPerSession: 1 })
     const first = store.createTurn(turnInput({ parts: [{ type: "text", text: "first" }] }))
     await settle()
@@ -316,9 +316,13 @@ describe("createIntentRoutingTurnStore", () => {
     store.createTurn(turnInput({ parts: [{ type: "text", text: "second" }] }))
     await settle()
 
-    const observation = entries.find((entry) => entry.kind === "observation")
-    expect(observation?.turnOrdinal).toBe(first.turnOrdinal)
-    expect(observation?.correlationStatus).toBe("censored")
+    expect(entries.filter((entry) => entry.kind === "observation")).toHaveLength(0)
+    expect(store.listTurns(SESSION_ID).map((turn) => turn.turnOrdinal)).toEqual([1, 2])
+    store.sealTurn(SESSION_ID, 2, "session_idle")
+
+    const observation = entries.find((entry) => entry.kind === "observation" && entry.turnOrdinal === first.turnOrdinal)
+    expect(observation?.sealedBy).toBe("next_turn")
+    expect(observation?.correlationStatus).toBe("reliable")
     expect(store.evictedCount).toBe(0)
   })
 

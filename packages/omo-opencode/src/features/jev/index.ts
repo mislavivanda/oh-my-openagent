@@ -14,6 +14,11 @@ export {
   createIntentRoutingTurnStore,
   normalizeIntentRoutingPrompt,
 } from "./intent-routing-turn-store"
+export { createIntentRoutingSeal } from "./intent-routing-seal"
+export type {
+  IntentRoutingSeal,
+  IntentRoutingSealOptions,
+} from "./intent-routing-seal"
 export type {
   IntentRoutingTurnInput,
   IntentRoutingTurnSnapshot,

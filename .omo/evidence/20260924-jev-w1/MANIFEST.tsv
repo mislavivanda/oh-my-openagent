@@ -56,3 +56,6 @@ todo	artifact	kind	description
 13	.omo/evidence/20260924-jev-w1/task-13-malformed-tolerance.txt	qa	Failure QA appends a malformed trailing line and returns 2 valid records plus malformedLines 1 without throwing under a temp HOME.
 13	.omo/evidence/20260924-jev-w1/task-13-gates.txt	gate	Typecheck exits zero, the TypeScript no-excuse audit reports no violations, and source modules remain below the 200 LOC soft limit.
 13	.omo/evidence/20260924-jev-w1/task-13-measurement-home-safety.txt	artifact	Measured 3992960 expected bytes per day, justified the 32 MiB cap, and proved the real ~/.omo/jev remained absent before and after QA.
+12	.omo/evidence/20260924-jev-w1/task-12-seal-red.txt	red	TDD RED proves the intent-routing seal module is absent before implementation.
+12	.omo/evidence/20260924-jev-w1/task-12-seal-green.txt	green	Focused seal suite passes 12 tests, the extended todo-10 store suite passes 20 tests, and bun run typecheck exits zero under a temporary HOME.
+12	.omo/evidence/20260924-jev-w1/task-12-overlap-both-sides.txt	qa	Unit-level sink-corpus drive proves a synthetic message does not seal, a late observation marks both turns overlap_ambiguous, and report exclusion is explicitly deferred to todo 16 because its script does not exist yet.

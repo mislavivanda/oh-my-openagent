@@ -1,14 +1,13 @@
 import type { IntentRoutingObservedDelegation } from "@oh-my-opencode/jev-core"
 import {
-  buildEvictionDelta,
   buildObservationRecord,
+  buildStoreCounterDelta,
   createTurnIdentity,
   normalizeIntentRoutingPrompt,
   snapshotTurn,
 } from "./intent-routing-turn-record"
 import { createIntentRoutingPredictionCache } from "./intent-routing-turn-prediction"
 import type {
-  CorrelationStatus,
   IntentRoutingSessionState,
   IntentRoutingTurnInput,
   IntentRoutingTurnSnapshot,
@@ -36,29 +35,33 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
   let ordinalHighWater = 0
   let recordsCreated = 0
   let recordsEvicted = 0
+  let orphanObservations = 0
   let monotonicSeq = 0
 
   function removeTurn(turn: LiveIntentRoutingTurn): void {
-    sessions.get(turn.sessionID)?.turns.delete(turn.turnOrdinal)
+    const session = sessions.get(turn.sessionID)
+    session?.turns.delete(turn.turnOrdinal)
     predictions.remove(turn)
+    if (session?.turns.size === 0) sessions.delete(turn.sessionID)
   }
 
   function finalizeTurn(turn: LiveIntentRoutingTurn): void {
-    if (turn.finalized) return
-    options.sink(buildObservationRecord(turn, {
+    if (turn.finalized || !turn.correlationWindowClosed || turn.predictionStatus === "pending") return
+    const record = buildObservationRecord(turn, {
       schemaVersion,
       counterEpoch,
       recordedAt: now().toISOString(),
-    }))
+    })
     turn.finalized = true
     removeTurn(turn)
+    options.sink(record)
   }
 
   const predictions = createIntentRoutingPredictionCache(finalizeTurn)
 
-  function emitEviction(): void {
+  function emitCounters(): void {
     monotonicSeq += 1
-    options.sink(buildEvictionDelta({
+    options.sink(buildStoreCounterDelta({
       schemaVersion,
       recordedAt: now().toISOString(),
       processId: options.processId,
@@ -66,6 +69,7 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
       monotonicSeq,
       recordsCreated,
       recordsEvicted,
+      orphanObservations,
     }))
   }
 
@@ -73,42 +77,25 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     turn.state = "evicted"
     removeTurn(turn)
     recordsEvicted += 1
-    emitEviction()
+    emitCounters()
   }
 
-  function forceFinalizeCensored(turn: LiveIntentRoutingTurn): void {
-    if (turn.predictionStatus === "pending") {
-      turn.predictionStatus = "timeout"
-      predictions.remove(turn)
-    }
-    turn.correlationStatus = "censored"
-    finalizeTurn(turn)
+  function isDeferred(turn: LiveIntentRoutingTurn): boolean {
+    return turn.state === "sealed" && !turn.correlationWindowClosed && !turn.finalized
   }
 
   function enforceTurnCap(session: IntentRoutingSessionState, newest: LiveIntentRoutingTurn): void {
     while (session.turns.size > options.maxTurnsPerSession) {
-      const turns = [...session.turns.values()]
-      const victim = turns.find((turn) => turn !== newest && !(turn.state === "sealed" && !turn.finalized))
-      if (victim !== undefined) {
-        evictTurn(victim)
-        continue
-      }
-      const deferred = turns.find((turn) => turn !== newest && turn.state === "sealed" && !turn.finalized)
-      if (deferred !== undefined) {
-        forceFinalizeCensored(deferred)
-        continue
-      }
-      evictTurn(newest)
+      const victim = [...session.turns.values()].find((turn) => turn !== newest && !isDeferred(turn))
+      if (victim === undefined) break
+      evictTurn(victim)
     }
   }
 
   function evictSession(sessionID: string): void {
     const session = sessions.get(sessionID)
     if (session === undefined) return
-    for (const turn of [...session.turns.values()]) {
-      if (turn.state === "sealed" && !turn.finalized) forceFinalizeCensored(turn)
-      else evictTurn(turn)
-    }
+    for (const turn of [...session.turns.values()]) evictTurn(turn)
     sessions.delete(sessionID)
   }
 
@@ -120,13 +107,49 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
       return existing
     }
     while (sessions.size >= options.maxTrackedSessions) {
-      const victimID = sessions.keys().next().value
-      if (typeof victimID !== "string") break
-      evictSession(victimID)
+      const victim = [...sessions.entries()].find(([, session]) => ![...session.turns.values()].some(isDeferred))
+      if (victim === undefined) break
+      evictSession(victim[0])
     }
     const created = { turns: new Map<number, LiveIntentRoutingTurn>(), nextOrdinal: ordinalHighWater + 1 }
     sessions.set(sessionID, created)
     return created
+  }
+
+  function latestTurn(session: IntentRoutingSessionState): LiveIntentRoutingTurn | undefined {
+    return [...session.turns.values()].sort((left, right) => left.turnOrdinal - right.turnOrdinal).at(-1)
+  }
+
+  function closeDeferredPredecessor(session: IntentRoutingSessionState, successorOrdinal: number): void {
+    const predecessor = [...session.turns.values()]
+      .filter((turn) => turn.turnOrdinal < successorOrdinal && isDeferred(turn))
+      .sort((left, right) => right.turnOrdinal - left.turnOrdinal)[0]
+    if (predecessor === undefined) return
+    predecessor.correlationWindowClosed = true
+    finalizeTurn(predecessor)
+  }
+
+  function sealTurn(turn: LiveIntentRoutingTurn, sealedBy: SealedBy): void {
+    if (turn.finalized || turn.state === "evicted" || turn.state === "sealed") return
+    const session = sessions.get(turn.sessionID)
+    if (session === undefined) return
+    closeDeferredPredecessor(session, turn.turnOrdinal)
+    turn.state = "sealed"
+    turn.sealedBy = sealedBy
+    turn.correlationStatus = sealedBy === "seal_timeout" || sealedBy === "dispose"
+      ? "censored"
+      : (turn.correlationStatus ?? "reliable")
+    turn.correlationWindowClosed = sealedBy !== "next_turn"
+    finalizeTurn(turn)
+  }
+
+  function closeSessionCorrelation(sessionID: string): void {
+    const session = sessions.get(sessionID)
+    if (session === undefined) return
+    for (const turn of [...session.turns.values()]) {
+      turn.correlationWindowClosed = true
+      finalizeTurn(turn)
+    }
   }
 
   function finalizeSession(sessionID: string, sealedBy: "dispose" | "session_deleted"): void {
@@ -135,14 +158,10 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     const turns = [...session.turns.values()]
     for (const turn of turns) {
       if (turn.predictionStatus === "pending") turn.predictionStatus = "timeout"
+      predictions.remove(turn)
+      if (turn.state !== "sealed") sealTurn(turn, sealedBy)
     }
-    for (const turn of turns) predictions.remove(turn)
-    for (const turn of turns) {
-      turn.state = "sealed"
-      turn.sealedBy = sealedBy
-      turn.correlationStatus = sealedBy === "dispose" ? "censored" : (turn.correlationStatus ?? "reliable")
-      finalizeTurn(turn)
-    }
+    closeSessionCorrelation(sessionID)
     sessions.delete(sessionID)
   }
 
@@ -175,6 +194,7 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
         observed: [],
         sealedBy: null,
         correlationStatus: null,
+        correlationWindowClosed: false,
         finalized: false,
       }
       session.turns.set(turnOrdinal, turn)
@@ -185,22 +205,34 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     },
     appendObservation(sessionID: string, observation: IntentRoutingObservedDelegation): boolean {
       const session = sessions.get(sessionID)
-      const turn = session === undefined ? undefined : [...session.turns.values()].at(-1)
-      if (session === undefined || turn === undefined || turn.finalized || turn.state === "evicted") return false
+      const turn = session === undefined ? undefined : latestTurn(session)
+      if (session === undefined || turn === undefined || turn.finalized || turn.state === "sealed" || turn.state === "evicted") {
+        orphanObservations += 1
+        emitCounters()
+        return false
+      }
+      const predecessor = [...session.turns.values()].find((candidate) =>
+        candidate.turnOrdinal < turn.turnOrdinal && isDeferred(candidate),
+      )
+      if (predecessor !== undefined) {
+        predecessor.correlationStatus = "overlap_ambiguous"
+        turn.correlationStatus = "overlap_ambiguous"
+      }
       turn.observed.push(observation)
-      session.turns.delete(turn.turnOrdinal)
-      session.turns.set(turn.turnOrdinal, turn)
       sessions.delete(sessionID)
       sessions.set(sessionID, session)
       return true
     },
-    sealTurn(sessionID: string, turnOrdinal: number, sealedBy: SealedBy, correlationStatus?: CorrelationStatus): void {
+    sealTurn(sessionID: string, turnOrdinal: number, sealedBy: SealedBy): void {
       const turn = sessions.get(sessionID)?.turns.get(turnOrdinal)
-      if (turn === undefined || turn.finalized || turn.state === "evicted") return
-      turn.state = "sealed"
-      turn.sealedBy = sealedBy
-      turn.correlationStatus = correlationStatus ?? (sealedBy === "seal_timeout" || sealedBy === "dispose" ? "censored" : "reliable")
-      if (turn.predictionStatus !== "pending" && sealedBy !== "next_turn") finalizeTurn(turn)
+      if (turn !== undefined) sealTurn(turn, sealedBy)
+    },
+    sealSessionIdle(sessionID: string): void {
+      const session = sessions.get(sessionID)
+      if (session === undefined) return
+      const turn = latestTurn(session)
+      if (turn !== undefined && turn.state !== "sealed") sealTurn(turn, "session_idle")
+      closeSessionCorrelation(sessionID)
     },
     getTurn(sessionID: string, turnOrdinal: number): IntentRoutingTurnSnapshot | undefined {
       const turn = sessions.get(sessionID)?.turns.get(turnOrdinal)
@@ -218,3 +250,5 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     },
   }
 }
+
+export type IntentRoutingTurnStore = ReturnType<typeof createIntentRoutingTurnStore>

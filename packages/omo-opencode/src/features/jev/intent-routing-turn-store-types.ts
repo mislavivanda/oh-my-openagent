@@ -51,6 +51,10 @@ export type IntentRoutingTurnSnapshot = Readonly<{
   resolvedModel: string | null
   answers: IntentRoutingAnswers | null
   observed: readonly IntentRoutingObservedDelegation[]
+  sealedBy: SealedBy | null
+  correlationStatus: CorrelationStatus | null
+  correlationWindowClosed: boolean
+  finalized: boolean
 }>
 
 export type IntentRoutingTurnStoreOptions = Readonly<{
@@ -84,6 +88,7 @@ export type LiveIntentRoutingTurn = {
   readonly observed: IntentRoutingObservedDelegation[]
   sealedBy: SealedBy | null
   correlationStatus: CorrelationStatus | null
+  correlationWindowClosed: boolean
   finalized: boolean
 }
 
