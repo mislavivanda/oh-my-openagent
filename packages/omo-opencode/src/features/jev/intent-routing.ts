@@ -181,6 +181,7 @@ export function createJevIntentRouting(args: {
           output,
           mainSessionID: getMainSessionID(),
           isSubagentSession: subagentSessions.has(input.sessionID),
+          offeredCategories: args.vocab.categories,
         })
         if (observation !== null) {
           controller.appendObservation({ sessionID: input.sessionID, observation })

@@ -4,6 +4,7 @@ import {
   type IntentRoutingObservationRecord,
   type IntentRoutingObservedDelegation,
   type IntentRoutingRouteClass,
+  type IntentRoutingVocabularyEntry,
 } from "@oh-my-opencode/jev-core"
 import { isJevIntentRoutingSessionEligible } from "./intent-routing-session-gate"
 
@@ -41,13 +42,14 @@ export type IntentRoutingCaptureArgs = {
   readonly output: { readonly args: Record<string, unknown> }
   readonly mainSessionID: string | undefined
   readonly isSubagentSession: boolean
+  readonly offeredCategories: readonly IntentRoutingVocabularyEntry[]
   readonly record: IntentRoutingCaptureRecord | null
   readonly counters: IntentRoutingCaptureCounters
 }
 
 export type IntentRoutingDelegationAttemptArgs = Pick<
   IntentRoutingCaptureArgs,
-  "input" | "output" | "mainSessionID" | "isSubagentSession"
+  "input" | "output" | "mainSessionID" | "isSubagentSession" | "offeredCategories"
 >
 
 export const isIntentRoutingCaptureSessionEligible = isJevIntentRoutingSessionEligible
@@ -129,7 +131,7 @@ export function captureIntentRoutingDelegationAttempt(
     subagentType: optionalString(observedArgs.subagent_type),
     requestedSubagentType: optionalString(observedArgs.requested_subagent_type),
     taskId: optionalString(observedArgs.task_id),
-    ...normalizeObservedDelegation(observedArgs),
+    ...normalizeObservedDelegation(observedArgs, args.offeredCategories),
     callID: args.input.callID,
   }
 }

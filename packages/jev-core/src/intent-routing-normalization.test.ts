@@ -3,6 +3,7 @@ import {
   BuiltinAgentNameSchema,
   OverridableAgentNameSchema,
 } from "../../omo-opencode/src/config/schema/agent-names"
+import { DEFAULT_CATEGORIES } from "../../omo-opencode/src/tools/delegate-task/constants"
 import type { IntentRoutingChoiceAnswer } from "./intent-routing-record"
 
 type NormalizationModule = typeof import("./intent-routing-normalization")
@@ -32,6 +33,39 @@ function choiceAnswer(choice: string): IntentRoutingChoiceAnswer {
 }
 
 describe("intent-routing observed delegation normalization", () => {
+  test("#given built-in custom and absent category names #when normalizing against offered categories #then only offered values are category routes", () => {
+    const { normalizeObservedDelegation } = requireNormalizationModule()
+    const offeredCategories = [
+      { name: "deep", description: "Built-in category." },
+      { name: "project-special", description: "Configured custom category." },
+    ]
+
+    expect(normalizeObservedDelegation(
+      { tool: "task", category: "deep" },
+      offeredCategories,
+    )).toEqual({
+      normalizedCategory: "deep",
+      normalizedSubagent: "none",
+      routeClass: "category",
+    })
+    expect(normalizeObservedDelegation(
+      { tool: "task", category: "project-special" },
+      offeredCategories,
+    )).toEqual({
+      normalizedCategory: "project-special",
+      normalizedSubagent: "none",
+      routeClass: "category",
+    })
+    expect(normalizeObservedDelegation(
+      { tool: "task", category: "never-offered" },
+      offeredCategories,
+    )).toEqual({
+      normalizedCategory: "none",
+      normalizedSubagent: "none",
+      routeClass: "unknown",
+    })
+  })
+
   test.each([
     {
       rule: "requested subagent precedence",
@@ -111,7 +145,8 @@ describe("intent-routing observed delegation normalization", () => {
     },
   ])("#given $rule #when normalizing observed args #then the route class is preserved", ({ args, expected }) => {
     const { normalizeObservedDelegation } = requireNormalizationModule()
-    expect(normalizeObservedDelegation(args)).toEqual(expected)
+    const offeredCategories = [{ name: "deep", description: "Offered category." }]
+    expect(normalizeObservedDelegation(args, offeredCategories)).toEqual(expected)
   })
 })
 
@@ -191,5 +226,18 @@ describe("intent-routing subagent vocabulary", () => {
     ])]
     expect(vocabulary).toEqual(liveNames)
     expect(vocabulary).not.toContain("general")
+  })
+})
+
+describe("intent-routing category vocabulary", () => {
+  test("#given production built-in categories #when comparing the category vocabulary #then no member drifts", () => {
+    const { INTENT_ROUTING_CATEGORY_VOCABULARY } = requireNormalizationModule()
+    const vocabulary: readonly string[] = INTENT_ROUTING_CATEGORY_VOCABULARY
+    const liveNames = Object.keys(DEFAULT_CATEGORIES)
+    const missing = liveNames.filter((category) => !vocabulary.includes(category))
+    const stale = vocabulary.filter((category) => !liveNames.includes(category))
+
+    expect(missing, `missing built-in categories: ${missing.join(", ")}`).toEqual([])
+    expect(stale, `stale built-in categories: ${stale.join(", ")}`).toEqual([])
   })
 })

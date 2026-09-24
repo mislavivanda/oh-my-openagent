@@ -1,4 +1,3 @@
-// allow: SIZE_OK - report acceptance tests keep the generated corpus contract and every named metric in one review surface.
 import { afterAll, beforeAll, describe, expect, test } from "bun:test"
 import { mkdtempSync, mkdirSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"

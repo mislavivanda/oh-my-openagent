@@ -1,0 +1,26 @@
+R4 CATEGORY NORMALIZATION RED PROOF
+
+WHAT WAS TESTED
+Command:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts
+
+The new behavioral case passed the same offered category vocabulary to normalization for three values: built-in `deep`, configured custom `project-special`, and never-offered `never-offered`.
+
+WHAT WAS OBSERVED
+Exit code: 1
+
+The custom category failed for the intended reason:
+expected { normalizedCategory: "project-special", normalizedSubagent: "none", routeClass: "category" }
+received { normalizedCategory: "none", normalizedSubagent: "none", routeClass: "unknown" }
+
+Suite summary:
+19 pass
+1 fail
+42 expect() calls
+20 tests across 1 file
+
+WHY IT IS ENOUGH
+The built-in case reached the second assertion, so it remained accepted. The focused failure isolates the regression to an offered custom category. The never-offered assertion remains in the same test and will prove that `unknown` is still reachable after the fix.
+
+WHAT WAS OMITTED
+No secret-bearing logs, environment dump, network traffic, OpenCode server, or paid API call was used.

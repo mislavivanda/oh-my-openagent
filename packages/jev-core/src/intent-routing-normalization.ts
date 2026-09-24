@@ -2,6 +2,7 @@ import type {
   IntentRoutingAnswers,
   IntentRoutingRouteClass,
 } from "./intent-routing-record"
+import type { IntentRoutingVocabularyEntry } from "./intent-routing"
 
 export const INTENT_ROUTING_CATEGORY_VOCABULARY = Object.freeze([
   "visual-engineering",
@@ -53,7 +54,6 @@ type DerivedRoute =
   | { readonly kind: "scorable"; readonly route: ScorableRoute }
   | { readonly kind: "unscorable"; readonly reason: "resume" | "unknown" }
 
-const categoryNames = new Set<string>(INTENT_ROUTING_CATEGORY_VOCABULARY)
 const subagentNames = new Set<string>(INTENT_ROUTING_SUBAGENT_VOCABULARY)
 
 function readOptionalString(args: ObservedDelegationArgs, key: string): OptionalString {
@@ -71,7 +71,10 @@ function unknownDelegation(): NormalizedDelegation {
   }
 }
 
-export function normalizeObservedDelegation(args: ObservedDelegationArgs): NormalizedDelegation {
+export function normalizeObservedDelegation(
+  args: ObservedDelegationArgs,
+  offeredCategories: readonly IntentRoutingVocabularyEntry[],
+): NormalizedDelegation {
   const category = readOptionalString(args, "category")
   const subagent = readOptionalString(args, "subagent_type")
   const requestedSubagent = readOptionalString(args, "requested_subagent_type")
@@ -83,7 +86,7 @@ export function normalizeObservedDelegation(args: ObservedDelegationArgs): Norma
   ) return unknownDelegation()
 
   if (category.kind === "value") {
-    if (!categoryNames.has(category.value)) return unknownDelegation()
+    if (!offeredCategories.some(({ name }) => name === category.value)) return unknownDelegation()
     if (requestedSubagent.kind === "value") return unknownDelegation()
     if (subagent.kind === "value" && subagent.value !== "sisyphus-junior") {
       return unknownDelegation()

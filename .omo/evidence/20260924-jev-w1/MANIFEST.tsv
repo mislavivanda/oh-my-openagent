@@ -98,3 +98,8 @@ R2	.omo/evidence/20260924-jev-w1/R2-isolation-green.txt	green	Lazy zero-state si
 R2	.omo/evidence/20260924-jev-w1/R2-plugin-red.txt	red	Failing-first handler proof: synthetic turn count stayed zero and deduped idle sealed once, 0 pass 2 fail, exit 1
 R2	.omo/evidence/20260924-jev-w1/R2-plugin-green.txt	green	Handler regressions pass; final typecheck retry, 677-test scoped suite, and 479-pass 1-skip fast suite exit 0
 R2	.omo/evidence/20260924-jev-w1/R2-size-review.txt	artifact	Rejected sink, turn-store, and plugin-init test waivers split at named seams; seven retained waivers carry invariant-specific reasons and 15 split tests pass
+R4	.omo/evidence/20260924-jev-w1/R4-category-red.txt	red	Failing-first three-case category proof: the built-in passed but an offered custom category normalized as unknown, 19 pass 1 fail
+R4	.omo/evidence/20260924-jev-w1/R4-category-green.txt	green	Runtime offered vocabulary proof: built-in and configured custom categories normalize as category while never-offered remains unknown; focused suites green
+R4	.omo/evidence/20260924-jev-w1/R4-drift-proof.txt	qa	Category drift guard passes, fails naming writing after temporary removal, then passes after restoration
+R4	.omo/evidence/20260924-jev-w1/R4-size-conservation.txt	qa	Both oversized tests split below 200 lines with test and expect counts conserved; report waiver removed; no skip only or todo introduced
+R4	.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt	artifact	Todo-19 turns_synthetic marked pre-R2 and non-current; F3 ROUND 2 named as current post-R2 live evidence; unaffected figures enumerated

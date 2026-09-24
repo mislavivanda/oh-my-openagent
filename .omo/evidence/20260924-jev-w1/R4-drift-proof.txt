@@ -1,0 +1,31 @@
+R4 CATEGORY VOCABULARY DRIFT PROOF
+
+WHAT WAS TESTED
+The new category-side drift test compares `INTENT_ROUTING_CATEGORY_VOCABULARY` with the production `DEFAULT_CATEGORIES` keys in both directions.
+
+Initial command after adding the guard:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts
+Exit code: 0
+Observed: 21 pass, 0 fail, 46 expect() calls.
+
+Mutation proof:
+Temporarily removed `writing` from `INTENT_ROUTING_CATEGORY_VOCABULARY`, then ran:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts
+
+Exit code: 1
+Named failure:
+intent-routing category vocabulary > #given production built-in categories #when comparing the category vocabulary #then no member drifts
+error: missing built-in categories: writing
+received missing list: ["writing"]
+Suite summary: 20 pass, 1 fail, 45 expect() calls.
+
+Restoration proof:
+Restored `writing`, then reran the same command.
+Exit code: 0
+Observed: 21 pass, 0 fail, 46 expect() calls.
+
+WHY IT IS ENOUGH
+The test derives production members from the authoritative built-in category record rather than repeating another literal. Removing one vocabulary member produces a failure that names the exact missing category, and restoration returns the full normalization suite to green.
+
+WHAT WAS OMITTED
+The temporary mutation was restored before any other change. No retained evidence was rewritten and no server or network call was used.

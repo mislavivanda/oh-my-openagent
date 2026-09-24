@@ -1,0 +1,24 @@
+R4 CATEGORY NORMALIZATION GREEN PROOF
+
+WHAT WAS TESTED
+Focused command:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts packages/omo-opencode/src/features/jev/intent-routing.test.ts
+
+Exit code: 0
+Observed: 40 pass, 0 fail, 136 expect() calls across 3 files.
+
+Production-vocabulary probe:
+bun -e with OhMyOpenCodeConfigSchema, createAvailableCategories, createJevIntentRoutingVocabulary, and normalizeObservedDelegation
+
+Exit code: 0
+Observed JSON:
+{"builtIn":{"normalizedCategory":"deep","normalizedSubagent":"none","routeClass":"category"},"offeredCustom":{"normalizedCategory":"project-special","normalizedSubagent":"none","routeClass":"category"},"neverOffered":{"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"},"offeredNames":["visual-engineering","artistry","ultrabrain","deep","quick","unspecified-low","unspecified-high","writing","project-special"]}
+
+WHAT WAS OBSERVED
+The offered category list came from the same production builders that construct the Jev question. The built-in and configured custom values normalized as category routes. The value absent from that list remained unknown.
+
+WHY IT IS ENOUGH
+The focused core test locks the three input classes. The adapter capture and runtime tests prove the parameter is threaded through the production capture seam. The direct probe proves the configured category is present in production question vocabulary and receives the matching normalization result.
+
+WHAT WAS OMITTED
+No OpenCode server or paid API harness was run. This observe-only normalization change does not alter harness routing.

@@ -21,6 +21,7 @@ type CaptureInput = {
   readonly output: { readonly args: Record<string, unknown> }
   readonly mainSessionID: string | undefined
   readonly isSubagentSession: boolean
+  readonly offeredCategories: readonly { readonly name: string; readonly description: string }[]
   readonly record: CaptureRecord | null
   readonly counters: CaptureCounters
 }
@@ -86,6 +87,10 @@ function capture(
       ? options.mainSessionID
       : "main-session",
     isSubagentSession: options.isSubagentSession ?? false,
+    offeredCategories: [
+      { name: "deep", description: "Built-in category." },
+      { name: "project-special", description: "Configured custom category." },
+    ],
     record: options.record === undefined ? emptyRecord() : options.record,
     counters: options.counters ?? emptyCounters(),
   })
