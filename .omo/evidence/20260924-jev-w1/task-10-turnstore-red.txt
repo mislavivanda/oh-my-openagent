@@ -1,0 +1,238 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:134:19)
+(fail) intent-routing turn identity and two-tier reuse > #given the same prompt twice #when both turns are created #then distinct local ordinals retain the shared dedup key [0.81ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:151:19)
+(fail) intent-routing turn identity and two-tier reuse > #given a matching pending predecessor #when a second turn starts #then one tier-one dispatch fills both ordinals independently [0.31ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:176:19)
+(fail) intent-routing turn identity and two-tier reuse > #given a filled predecessor with a pinned model #when the prompt repeats #then tier-two reuse copies answers without dispatch [0.22ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:194:19)
+(fail) intent-routing turn identity and two-tier reuse > #given a filled predecessor with an unresolved floating alias #when the prompt repeats #then completed reuse is blocked [0.15ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:216:21)
+(fail) intent-routing reuse exclusions > #given a failed predecessor #when the prompt repeats #then a fresh dispatch runs without reuse [0.32ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:216:21)
+(fail) intent-routing reuse exclusions > #given a timeout predecessor #when the prompt repeats #then a fresh dispatch runs without reuse [0.06ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:216:21)
+(fail) intent-routing reuse exclusions > #given a not_dispatched predecessor #when the prompt repeats #then a fresh dispatch runs without reuse [0.06ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:216:21)
+(fail) intent-routing reuse exclusions > #given a evicted predecessor #when the prompt repeats #then a fresh dispatch runs without reuse [0.06ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:261:21)
+(fail) intent-routing reuse exclusions > #given a pending predecessor #when questionVersion changes #then the tier-one key changes and dispatch is fresh [0.19ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:261:21)
+(fail) intent-routing reuse exclusions > #given a pending predecessor #when vocabularyDigest changes #then the tier-one key changes and dispatch is fresh [0.12ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:261:21)
+(fail) intent-routing reuse exclusions > #given a pending predecessor #when confidenceThreshold changes #then the tier-one key changes and dispatch is fresh [0.07ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:261:21)
+(fail) intent-routing reuse exclusions > #given a pending predecessor #when configuredModelSpec changes #then the tier-one key changes and dispatch is fresh [0.12ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:279:19)
+(fail) intent-routing observations, eviction, and lifecycle > #given an unresolved prediction #when an observation arrives #then it remains after prediction completion [0.16ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:294:19)
+(fail) intent-routing observations, eviction, and lifecycle > #given max-turn capacity #when five extra turns arrive #then exactly five LRU records are evicted and the newest survive [0.16ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:316:19)
+(fail) intent-routing observations, eviction, and lifecycle > #given a deferred-finalization predecessor #when LRU pressure arrives #then another record is evicted first [0.18ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:337:19)
+(fail) intent-routing observations, eviction, and lifecycle > #given only a deferred record can satisfy capacity #when another turn starts #then it is force-finalized as censored instead of dropped [0.17ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:363:19)
+(fail) intent-routing observations, eviction, and lifecycle > #given pending and completed maps #when session.deleted fires #then pending becomes timeout, records finalize, and all session keys clear [0.18ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:383:19)
+(fail) intent-routing observations, eviction, and lifecycle > #given a never-resolving prediction #when its deadline passes #then it settles as prediction_timeout [0.18ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+                ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:13)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:397:19)
+(fail) intent-routing normalization and malformed input > #given whitespace, case, punctuation, and system reminders #when prompts normalize #then only the exact normalized text collides [0.11ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:419:19)
+(fail) intent-routing normalization and malformed input > #given empty, reminder-only, null-session, minimum capacity, and orphan inputs #when processed #then the store remains bounded and fail-closed [0.15ms]
+4 |     this.name = "IntentRoutingTurnStoreNotImplementedError"
+5 |   }
+6 | }
+7 | 
+8 | export function createIntentRoutingTurnStore(): never {
+9 |   throw new IntentRoutingTurnStoreNotImplementedError()
+            ^
+IntentRoutingTurnStoreNotImplementedError: Intent-routing turn store is not implemented
+      at createIntentRoutingTurnStore (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:9:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:437:19)
+(fail) intent-routing normalization and malformed input > #given deletion and dispose interleaved with pending work #when repeated #then terminalization ordering is idempotent [0.11ms]
+
+ 0 pass
+ 21 fail
+Ran 21 tests across 1 file. [121.00ms]

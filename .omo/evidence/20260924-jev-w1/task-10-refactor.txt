@@ -1,0 +1,58 @@
+WHAT WAS TESTED
+- Pure move-and-reexport decomposition of the TODO 10 state machine and acceptance tests.
+- Feature-directory test count before and after the split.
+- Focused TODO 10 test count across the three split test files.
+
+BEFORE AND AFTER LOC
+packages/omo-opencode/src/features/jev/index.ts	4 -> 36
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts	928 -> 250
+packages/omo-opencode/src/features/jev/intent-routing-turn-types.ts	0 -> 185
+packages/omo-opencode/src/features/jev/intent-routing-turn-keys.ts	0 -> 46
+packages/omo-opencode/src/features/jev/intent-routing-turn-record.ts	0 -> 152
+packages/omo-opencode/src/features/jev/intent-routing-turn-runtime.ts	0 -> 148
+packages/omo-opencode/src/features/jev/intent-routing-turn-prediction.ts	0 -> 98
+packages/omo-opencode/src/features/jev/intent-routing-turn-eviction.ts	0 -> 157
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.test-support.ts	0 -> 124
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts	465 -> 167
+packages/omo-opencode/src/features/jev/intent-routing-turn-eviction.test.ts	0 -> 95
+packages/omo-opencode/src/features/jev/intent-routing-turn-lifecycle.test.ts	0 -> 103
+
+MODULE BOUNDARIES
+- intent-routing-turn-types.ts: public API types, defaults, and sibling-only mutable state shapes.
+- intent-routing-turn-keys.ts: prompt normalization, SHA-256, tier-one/tier-two key construction, and exact-version detection.
+- intent-routing-turn-record.ts: empty-answer value, counter snapshots, persisted-record projection, and immutable inspection snapshots.
+- intent-routing-turn-runtime.ts: shared record mutation, settlement, finalization, cache cleanup, and counter emission.
+- intent-routing-turn-prediction.ts: pending coalescing, dispatch completion, transport fallback, and completed-cache selection.
+- intent-routing-turn-eviction.ts: session/turn LRU, deferred-finalization exemption, forced censored finalization, and turn allocation.
+- intent-routing-turn-store.ts: unchanged public facade and lifecycle orchestration.
+- Tests split into reuse identity, eviction, and lifecycle files with shared fixtures in a named test-support module.
+
+WHAT WAS OBSERVED
+- Before split: 45 feature tests, 250 assertions, 5 test files.
+- After split: 45 feature tests, 250 assertions, 7 test files.
+- TODO 10 remains 22 tests, including the maxTurnsPerSession + 5 eviction stress case.
+- Every created or modified TypeScript file is at or below 250 physical lines.
+
+WHY IT IS ENOUGH
+- Identical test and assertion counts prove the split changed module ownership rather than behavior.
+- Existing assertions were moved unchanged; the store module reexports every prior public symbol name.
+
+WHAT WAS OMITTED
+- No adapter behavior, assertion, public symbol name, generated output, secret, token, or environment dump was changed or captured.
+
+TEST OUTPUT
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+SYNC_P99_US=16.80
+
+ 45 pass
+ 0 fail
+ 250 expect() calls
+Ran 45 tests across 7 files. [214.00ms]
+bun test v1.4.0 (34cbb9a40)
+
+ 22 pass
+ 0 fail
+ 80 expect() calls
+Ran 22 tests across 3 files. [164.00ms]
