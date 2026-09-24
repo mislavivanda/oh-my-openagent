@@ -1,0 +1,18 @@
+curl: (7) Failed to connect to 127.0.0.1 port 35929 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 41237 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 41237 after 3 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 41237 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 41237 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 41237 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 41237 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to 127.0.0.1 port 41237 after 3 ms: Couldn't connect to server
+curl: (28) Operation timed out after 2002 milliseconds with 0 bytes received
+wire=disabled
+turns=32
+session_id=ses_f2b3034fbffe7hKs96h6rV0PGw
+intent_routing_logs=0
+jev_requests=0
+sink_files=0
+real_session_count_before=417
+real_session_count_after=417
+driver_exit=0

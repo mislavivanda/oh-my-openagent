@@ -74,3 +74,16 @@ todo	artifact	kind	description
 18	.omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt	baseline	Single paid run: resolved model, question version, 17 request ceiling, token totals, latency range, per-fixture metrics, and four confusion matrices
 18	.omo/evidence/20260924-jev-w1/task-18-missing-key.txt	qa	Missing-credential path evaluates all 17 fixtures as unavailable with zero HTTP requests and exits cleanly
 18	.omo/evidence/20260924-jev-w1/task-18-secret-scan.txt	qa	Recursive retained-evidence credential scan returns no matches after redacting two synthetic assignments from earlier RED transcripts
+19	.omo/evidence/20260924-jev-w1/task-19-drive.sh	artifact	Reusable isolated single-server driver with required sandbox, receipts, wire, and keep contract
+19	.omo/evidence/20260924-jev-w1/task-19-turn-script.jsonl	artifact	32 deterministic turns covering pure, single, many, mixed, duplicate, direct-agent, resume-only, continuation, and reuse scenarios
+19	.omo/evidence/20260924-jev-w1/task-19-fake-jev-server.ts	artifact	Local systemOne-compatible fake that returns valid answers and echoes exact model jev-2026-09-24
+19	.omo/evidence/20260924-jev-w1/task-19-fake-model-provider.ts	artifact	Local OpenAI Responses-compatible scripted provider that deterministically emits the committed tool attempts
+19	.omo/evidence/20260924-jev-w1/task-19-dogfood-session.txt	qa	Enabled real OpenCode dogfood: 32 shared-session observations, all required cohorts, 31 matched dispatch logs, reuse, resume, continuation, and host count 420 to 420
+19	.omo/evidence/20260924-jev-w1/task-19-report.txt	qa	Full denominator and rate report with 32 sealed records and records-created identity status ok
+19	.omo/evidence/20260924-jev-w1/task-19-control-disabled.txt	qa	Separate disabled sandbox: 32 turns, zero intent-routing logs, zero Jev requests, zero sink files, and unchanged host count
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-before.tsv	baseline	Recursive real home .omo baseline with path, type, size, nanosecond mtime, and content SHA-256 for every entry
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-after.tsv	qa	Recursive real home .omo after-manifest in the same complete entry format
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt	qa	Empty recursive manifest diff proof with diff exit 0 and zero diff lines
+19	.omo/evidence/20260924-jev-w1/task-19-receipts.txt	qa	Every enabled and disabled harness PID and port listed with individual exited or terminated status; no global matcher
+19	.omo/evidence/20260924-jev-w1/task-19-evidence-record.txt	qa	Reviewer-readable tested, observed, sufficiency, and omissions record including unreachable correlation statuses
+19	.omo/evidence/20260924-jev-w1/task-19-gates.txt	green	Shell, JSONL, strict evidence tsgo, no-excuse, full typecheck, 45 focused tests, and 471-test fast suite all exit 0

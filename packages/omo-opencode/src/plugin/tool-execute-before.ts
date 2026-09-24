@@ -43,7 +43,7 @@ export function createToolExecuteBeforeHandler(args: {
   const intentRouting = args.intentRouting ?? createPluginJevIntentRouting(args.pluginConfig)
 
   return async (input, output): Promise<void> => {
-    // Strip mcp_ prefix from tool names — the model may emit mcp_background_output
+    // Strip mcp_ prefix from tool names - the model may emit mcp_background_output
     // but the runtime registry has it as background_output (fixes #2697)
     if (/^mcp_/i.test(input.tool)) {
       const stripped = input.tool.replace(/^mcp_/i, "")

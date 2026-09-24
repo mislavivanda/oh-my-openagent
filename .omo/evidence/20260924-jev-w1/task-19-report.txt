@@ -1,0 +1,116 @@
+DENOMINATORS
+turns_seen=32
+turns_gated_out=0
+turns_synthetic=0
+records_created=32
+records_with_prediction=32
+records_sealed_by_next_turn=0
+records_sealed_by_session_idle=32
+records_sealed_by_seal_timeout=0
+records_sealed_by_dispose=0
+records_sealed_by_session_deleted=0
+records_evicted=0
+in_flight=0
+orphan_observations=0
+unscorable_resume_calls=1
+resume_only_records=1
+unscorable_unknown_calls=0
+unknown_only_records=0
+unrepresentable_route_mismatches=0
+dispatches_dropped=0
+invalid_answers=0
+incoherent_predictions=31
+malformed_lines=0
+malformed_write_rejections=0
+records_lost_to_cap=0
+sink_truncations=0
+prediction_reused=1
+truncated_input=0
+prediction_status_filled=32
+prediction_status_failed=0
+prediction_status_timeout=0
+prediction_status_not_dispatched=0
+correlation_status_reliable=32
+correlation_status_censored=0
+correlation_status_overlap_ambiguous=0
+counter_process_snapshots=1
+records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+
+ELIGIBILITY
+headline_eligibility correlation_status=reliable censored_excluded=0 overlap_ambiguous_excluded=0
+prediction_rate_eligibility filled=32 failed_excluded=0 timeout_excluded=0 not_dispatched_excluded=0
+scoring_audit resume_only_excluded=1 unknown_scored=0 mixed_resume_routes_retained=0
+scored_incorrect invalid=0 incoherent=31
+observed_delegations=attempts_not_successes
+minimum_data sealed_records=32 required=30 status=sufficient
+
+RATES
+exact_route_agreement numerator=0 denominator=26 rate=0.000000
+multi_route_turns=5
+category_coverage numerator=0 denominator=31 distinct_target_cardinality=11 rate=0.000000
+category_cardinality_weighted_coverage numerator=0 denominator=33 distinct_target_cardinality=11 rate=0.000000
+subagent_coverage numerator=0 denominator=31 distinct_target_cardinality=10 rate=0.000000
+subagent_cardinality_weighted_coverage numerator=0 denominator=32 distinct_target_cardinality=10 rate=0.000000
+none_recall numerator=0 denominator=15 rate=0.000000
+none_precision numerator=0 denominator=0 rate=insufficient data
+coherence_rate numerator=0 denominator=31 rate=0.000000
+
+FAN-OUT BY SEALED-BY CROSS-TAB
+fan_out=zero sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_idle records=15 exact_route_agreement=0/15:0.000000 category_coverage=0/15:0.000000 distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/15:0.000000 subagent_coverage=0/15:0.000000 distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/15:0.000000 none_recall=0/15:0.000000 none_precision=0/0:insufficient data coherence_rate=0/15:0.000000
+fan_out=zero sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_idle records=9 exact_route_agreement=0/9:0.000000 category_coverage=0/9:0.000000 distinct_target_cardinality=4 category_cardinality_weighted_coverage=0/9:0.000000 subagent_coverage=0/9:0.000000 distinct_target_cardinality=5 subagent_cardinality_weighted_coverage=0/9:0.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/9:0.000000
+fan_out=one sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_idle records=7 exact_route_agreement=0/2:0.000000 category_coverage=0/7:0.000000 distinct_target_cardinality=7 category_cardinality_weighted_coverage=0/9:0.000000 subagent_coverage=0/7:0.000000 distinct_target_cardinality=5 subagent_cardinality_weighted_coverage=0/8:0.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/7:0.000000
+fan_out=many sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+CONTINUATION COHORT
+continuation_candidate records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+FIXTURE-SCORED ONLY: no live harness ground truth
+intent_coverage live_ground_truth=unavailable
+ambiguous_coverage live_ground_truth=unavailable
+
+LIMITATIONS
+live_disagreements_reproducible=false fixture_growth=manual prompt_head_chars_retained=200
+PROMPT SHA-256 RECURRENCE
+prompt_full_sha256=0890c8aa25c1ff284257e74f04e530b489b9006ca80d41f1bf399678799c358e count=1
+prompt_full_sha256=1139ecc78a07536e22eccb46bca864b01c1fe816148cee46f8ff14da04e666d2 count=1
+prompt_full_sha256=1a6242bce400b9b1726e06a80cd57818e64a53d8468778e13f7c76a538d53e64 count=1
+prompt_full_sha256=1aa71ab0acff4cb4b90763651098098be27a02531c62cea7523afafab0b8c61b count=1
+prompt_full_sha256=2123a232b311b9712e8dabf6f2f96ef146414419871cbe8379105900100403e2 count=1
+prompt_full_sha256=21ed4b410133fe409459b22eae77c57f0c627a607ec6ac937f448cdbc1c14a37 count=2
+prompt_full_sha256=26ca5639c9e7ee3cbbbed77340503aaf591c4a27e10000699c39914997d6ceeb count=1
+prompt_full_sha256=2f164c18d35e82354013b1e87169fe251d8b9be84b9714cb0a085f5fab9cf7a9 count=1
+prompt_full_sha256=384ecf5f545bfd0bf5e0b4205f3c58664452b78ab70fb784adf35316425eae55 count=1
+prompt_full_sha256=3f3bdf4135ab4bc4ab9ea4bac5748f164e8777e74a029e0635f877a74212bc06 count=1
+prompt_full_sha256=496ae8096a9716778934f7a775c8f7ca4074534b6f8ede1dda796881b08b417c count=1
+prompt_full_sha256=53fba3b76222256b87b4efcf9030fa14b4f13606bbaacf3c148182b92be99603 count=1
+prompt_full_sha256=584059162f01cdff7417da6354f6c38ff4103d16e94d6e6662bfb305d41f4986 count=1
+prompt_full_sha256=642c06e660a478ebfa165abe255acf736867925be5d630f4bd4e6e1e4e2b6295 count=1
+prompt_full_sha256=6f3d5268db1a6ca8bbf6f0b606517f594e5c5437498136534214b6f6ec29301a count=1
+prompt_full_sha256=83681796dc5a92186172932c110e54e30be88af16ed491d870b3317f9073c821 count=1
+prompt_full_sha256=90cd7e0f37bef343796acb157700af117d3db6d53e9a72207a348a268af1deeb count=1
+prompt_full_sha256=92017ab7702b8165e42a9d9cc40b1a21f1ef670a638511bcfeda23083d520e7c count=1
+prompt_full_sha256=95347e8a451266abc953664999fb198655d64bcda2251bd78983614faf83d581 count=1
+prompt_full_sha256=9d1e4261ae52748735731c32b8003f0730a05db0cdf74b9bf608142f4e14f774 count=1
+prompt_full_sha256=b359baa4cf3252397e4820f09c0a1016c81ebe7ed2e6e081416772ce00bbcf2e count=1
+prompt_full_sha256=b39eb6b90cae7a0b4689ee198964b506e6ad55755b5d5698dc11a2f5a60cb050 count=1
+prompt_full_sha256=b932ab17e25f6d392b26e7344e0243ef8a53740f1116a0d1cc5c1e7d28ad39df count=1
+prompt_full_sha256=ccc34b4b122dfecc99aa3bbfbb68eeb98aad51bb60987c0358db9279dbbfc776 count=1
+prompt_full_sha256=d42ca800b940cec8350650257043b81cba80d27f9cde314e8c247720878376de count=1
+prompt_full_sha256=ddd8627780d27f46d93fb88753fd772cc66aad1ad94c1692dde09b2c61437af1 count=1
+prompt_full_sha256=e1497853911e3410e8d7de8cd54f31e7db2ab5c3f18c9e36c69fe29d6600cebb count=1
+prompt_full_sha256=e256ee8e7aff6957a781d8328f0f68e26996564c81fa458da59fbca2305138ad count=1
+prompt_full_sha256=eb9f39dd7379acf4a6fdcadacda988dfdf69f3f02c1846f0b99c8cb290b8f1d7 count=1
+prompt_full_sha256=fb6c8941f6c605f25fdcc0af5b7b95a642039a510ee7fccbfe86250ad81635db count=1
+prompt_full_sha256=fc2cbcf60861eeed254be1d379dc291350ea568258e41537783985456d6f735f count=1
+report_exit=0
