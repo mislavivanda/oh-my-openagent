@@ -1,13 +1,8 @@
-// allow: SIZE_OK - The turn, pending-reuse, LRU, and cleanup transitions share one reservation identity and must remain atomic.
-
-import { createHash } from "node:crypto"
+// allow: SIZE_OK - Session maps, pending reservation tokens, timeout handles, and finalization state stay in one closure so eviction and async completion cannot observe different reservation identities.
 
 import {
   INTENT_ROUTING_SCHEMA_VERSION,
-  isIntentRoutingContinuationCandidate,
   type IntentRoutingCorrelationStatus,
-  type IntentRoutingCounterDelta,
-  type IntentRoutingCounters,
   type IntentRoutingDecisionAnswers,
   type IntentRoutingDecisionResult,
   type IntentRoutingObservedDelegation,
@@ -15,95 +10,33 @@ import {
   type IntentRoutingSealedBy,
 } from "@oh-my-opencode/jev-core"
 
-import { removeSystemReminders } from "../../shared"
+import {
+  type IntentRoutingScheduleTimeout,
+  type IntentRoutingTimeoutHandle,
+  type IntentRoutingTurnInput,
+  type IntentRoutingTurnRecord,
+  type IntentRoutingTurnState,
+  type IntentRoutingTurnStore,
+  type IntentRoutingTurnStoreOptions,
+} from "./intent-routing-turn-store-contract"
+import {
+  createIntentRoutingCompletedCacheKey,
+  createIntentRoutingPreDispatchKey,
+  createIntentRoutingPromptHash,
+  isPinnedIntentRoutingModelSpec,
+  classifyIntentRoutingCorrelationStatus,
+} from "./intent-routing-turn-identity"
+import {
+  createEmptyIntentRoutingCounters,
+  type MutableIntentRoutingCounters,
+} from "./intent-routing-turn-counters"
+import {
+  selectOldestIntentRoutingSessionID,
+  selectOldestIntentRoutingTurn,
+} from "./intent-routing-turn-lru"
 
 export const DEFAULT_MAX_TRACKED_INTENT_ROUTING_SESSIONS = 256
 export const DEFAULT_MAX_INTENT_ROUTING_TURNS_PER_SESSION = 128
-
-export type IntentRoutingTurnState = "created" | "prediction_filled" | "prediction_failed" |
-  "prediction_timeout" | "not_dispatched" | "sealed" | "evicted"
-
-export type IntentRoutingTurnRecord = {
-  readonly sessionID: string
-  readonly turnOrdinal: number
-  readonly dedupKey: string
-  readonly preDispatchKey: string
-  readonly reuseKey: string
-  readonly predictionReused: boolean
-  readonly state: IntentRoutingTurnState
-  readonly predictionStatus: IntentRoutingPredictionStatus | "pending"
-  readonly notDispatchedReason: string | null
-  readonly answers: IntentRoutingDecisionAnswers | null
-  readonly invalidAnswerCount: number
-  readonly unavailableReason: IntentRoutingDecisionResult["unavailableReason"]
-  readonly resolvedModel: string | null
-  readonly latencyMs: number | null
-  readonly truncatedInput: boolean
-  readonly observed: readonly IntentRoutingObservedDelegation[]
-  readonly sealedBy: IntentRoutingSealedBy | null
-  readonly correlationStatus: IntentRoutingCorrelationStatus | null
-  readonly awaitingFinalization: boolean
-}
-
-type IntentRoutingTurnIdentity = {
-  readonly sessionID: string
-  readonly textParts: readonly string[]
-  readonly questionVersion: number
-  readonly vocabularyDigest: string
-  readonly confidenceThreshold: number
-  readonly configuredModelSpec: string
-  readonly knownResolvedModel?: string
-}
-
-export type IntentRoutingDispatchedTurnInput = IntentRoutingTurnIdentity & {
-  readonly dispatch: () => Promise<IntentRoutingDecisionResult>
-  readonly notDispatchedReason?: never
-}
-export type IntentRoutingNotDispatchedTurnInput = IntentRoutingTurnIdentity & {
-  readonly dispatch?: never
-  readonly notDispatchedReason: string
-}
-export type IntentRoutingTurnInput = IntentRoutingDispatchedTurnInput | IntentRoutingNotDispatchedTurnInput
-export type IntentRoutingTimeoutHandle = { readonly cancel: () => void }
-export type IntentRoutingScheduleTimeout = (callback: () => void, delayMs: number) => IntentRoutingTimeoutHandle
-export type IntentRoutingSealInput = {
-  readonly sessionID: string
-  readonly turnOrdinal: number
-  readonly sealedBy: IntentRoutingSealedBy
-  readonly deferFinalization?: boolean
-}
-
-export type IntentRoutingTurnStoreOptions = {
-  readonly maxTrackedSessions?: number
-  readonly maxTurnsPerSession?: number
-  readonly predictionTimeoutMs?: number
-  readonly processId?: string
-  readonly counterEpoch?: number
-  readonly now?: () => number
-  readonly scheduleTimeout?: IntentRoutingScheduleTimeout
-  readonly onCounterDelta?: (entry: IntentRoutingCounterDelta) => void
-  readonly onFinalize?: (record: IntentRoutingTurnRecord) => void
-}
-
-export type IntentRoutingTurnStore = {
-  readonly createTurn: (input: IntentRoutingTurnInput) => IntentRoutingTurnRecord
-  readonly appendObservation: (input: { readonly sessionID: string; readonly observation: IntentRoutingObservedDelegation }) => boolean
-  readonly getTurn: (sessionID: string, turnOrdinal: number) => IntentRoutingTurnRecord | undefined
-  readonly listTurns: (sessionID: string) => readonly IntentRoutingTurnRecord[]
-  readonly sealTurn: (input: IntentRoutingSealInput) => boolean
-  readonly markOverlap: (input: {
-    readonly sessionID: string
-    readonly predecessorOrdinal: number
-    readonly successorOrdinal: number
-  }) => boolean
-  readonly finalizeTurn: (input: { readonly sessionID: string; readonly turnOrdinal: number }) => boolean
-  readonly recordSyntheticTurn: () => void
-  readonly recordDispatchDropped: () => void
-  readonly deleteSession: (sessionID: string) => void
-  readonly getCounters: () => IntentRoutingCounters
-  readonly getMapSizes: () => { readonly sessions: number; readonly reuseSessions: number }
-  readonly dispose: () => void
-}
 
 type MutableTurn = {
   sessionID: string; turnOrdinal: number; dedupKey: string; preDispatchKey: string; reuseKey: string
@@ -125,54 +58,6 @@ type CompletedPrediction = { readonly turnOrdinal: number; readonly result: Inte
 type ReuseState = {
   readonly pending: Map<string, PendingPrediction>
   readonly completed: Map<string, CompletedPrediction>
-}
-type MutableCounters = { -readonly [Key in keyof IntentRoutingCounters]: number }
-
-const EMPTY_COUNTERS: IntentRoutingCounters = {
-  turnsSeen: 0, turnsGatedOut: 0, turnsSynthetic: 0, recordsCreated: 0, recordsEvicted: 0,
-  orphanObservations: 0, unscorableResumeCalls: 0, unscorableUnknownCalls: 0,
-  dispatchesDropped: 0, malformedWriteRejections: 0, recordsLostToCap: 0, sinkTruncations: 0,
-}
-
-export function normalizeIntentRoutingPrompt(textParts: readonly string[]): string {
-  return removeSystemReminders(textParts.join("")).trim().replace(/\s+/gu, " ").toLowerCase()
-}
-
-export function createIntentRoutingPromptHash(textParts: readonly string[]): string {
-  return createHash("sha256").update(normalizeIntentRoutingPrompt(textParts), "utf8").digest("hex")
-}
-
-export function createIntentRoutingPreDispatchKey(input: {
-  readonly sessionID: string; readonly promptHash: string; readonly questionVersion: number
-  readonly vocabularyDigest: string; readonly confidenceThreshold: number; readonly configuredModelSpec: string
-}): string {
-  return JSON.stringify([
-    input.sessionID, input.promptHash, input.questionVersion, input.vocabularyDigest,
-    input.confidenceThreshold, input.configuredModelSpec,
-  ])
-}
-
-export function createIntentRoutingCompletedCacheKey(preDispatchKey: string, resolvedModel: string): string {
-  return JSON.stringify([preDispatchKey, resolvedModel])
-}
-
-export function isPinnedIntentRoutingModelSpec(model: string): boolean {
-  return /(?:^|\/)jev-\d{4}-\d{2}-\d{2}$/u.test(model)
-}
-
-export function classifyIntentRoutingCorrelationStatus(
-  sealedBy: IntentRoutingSealedBy,
-  overlapMarked: boolean,
-): IntentRoutingCorrelationStatus {
-  switch (sealedBy) {
-    case "seal_timeout":
-    case "dispose":
-      return "censored"
-    case "next_turn":
-    case "session_idle":
-    case "session_deleted":
-      return overlapMarked ? "overlap_ambiguous" : "reliable"
-  }
 }
 
 function defaultScheduleTimeout(callback: () => void, delayMs: number): IntentRoutingTimeoutHandle {
@@ -205,7 +90,7 @@ function failedPrediction(turn: MutableTurn, reason: "timeout" | "transport_erro
 export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOptions = {}): IntentRoutingTurnStore {
   const sessions = new Map<string, SessionTurns>()
   const reuseBySession = new Map<string, ReuseState>()
-  const counters: MutableCounters = { ...EMPTY_COUNTERS }
+  const counters: MutableIntentRoutingCounters = createEmptyIntentRoutingCounters()
   const maxSessions = options.maxTrackedSessions ?? DEFAULT_MAX_TRACKED_INTENT_ROUTING_SESSIONS
   const maxTurns = options.maxTurnsPerSession ?? DEFAULT_MAX_INTENT_ROUTING_TURNS_PER_SESSION
   const predictionTimeoutMs = options.predictionTimeoutMs ?? 2500
@@ -272,31 +157,15 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     counters.recordsLostToCap += 1
     emitCounterDelta()
   }
-  const oldestTurn = (session: SessionTurns): MutableTurn | undefined => {
-    let oldest: MutableTurn | undefined
-    for (const turn of session.turns.values()) {
-      if (turn.awaitingFinalization) continue
-      if (!oldest || turn.access < oldest.access) oldest = turn
-    }
-    if (oldest) return oldest
-    for (const turn of session.turns.values()) {
-      if (!oldest || turn.access < oldest.access) oldest = turn
-    }
-    return oldest
-  }
   const trimTurns = (session: SessionTurns): void => {
     while (session.turns.size > maxTurns) {
-      const victim = oldestTurn(session)
+      const victim = selectOldestIntentRoutingTurn(session.turns.values())
       if (!victim) return
       evictTurn(session, victim)
     }
   }
   const evictOldestSession = (): void => {
-    let victimID: string | undefined
-    let oldestAccess = Number.POSITIVE_INFINITY
-    for (const [sessionID, session] of sessions) {
-      if (session.access < oldestAccess) { victimID = sessionID; oldestAccess = session.access }
-    }
+    const victimID = selectOldestIntentRoutingSessionID(sessions)
     if (!victimID) return
     const victim = sessions.get(victimID)
     if (victim) for (const turn of [...victim.turns.values()]) evictTurn(victim, turn)
@@ -506,3 +375,24 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     dispose: () => { for (const sessionID of [...sessions.keys()]) clearSession(sessionID, "dispose") },
   }
 }
+
+export type {
+  IntentRoutingDispatchedTurnInput,
+  IntentRoutingNotDispatchedTurnInput,
+  IntentRoutingScheduleTimeout,
+  IntentRoutingSealInput,
+  IntentRoutingTimeoutHandle,
+  IntentRoutingTurnInput,
+  IntentRoutingTurnRecord,
+  IntentRoutingTurnState,
+  IntentRoutingTurnStore,
+  IntentRoutingTurnStoreOptions,
+} from "./intent-routing-turn-store-contract"
+export {
+  classifyIntentRoutingCorrelationStatus,
+  createIntentRoutingCompletedCacheKey,
+  createIntentRoutingPreDispatchKey,
+  createIntentRoutingPromptHash,
+  isPinnedIntentRoutingModelSpec,
+  normalizeIntentRoutingPrompt,
+} from "./intent-routing-turn-identity"

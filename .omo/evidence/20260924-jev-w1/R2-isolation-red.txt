@@ -1,0 +1,52 @@
+WHAT WAS TESTED
+Command: bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts --test-name-pattern "unused sink|HOME changes"
+Surface: intent-routing JSONL sink construction, disposal, and call-time HOME resolution.
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:
+184 |     const rootDir = join(homeDir, ".omo", "jev")
+185 |     const sink = createTestSink(homeDir)
+186 |
+187 |     sink.dispose()
+188 |
+189 |     expect(existsSync(rootDir)).toBe(false)
+                                      ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:189:33)
+(fail) intent-routing JSONL sink > #given an unused sink #when disposed #then it leaves no output directory [1.84ms]
+202 |       const sink = createIntentRoutingSink({
+203 |         processId: PROCESS_ID,
+204 |         now: () => FIXED_DATE,
+205 |         scheduleInterval: noInterval,
+206 |       })
+207 |       expect(sink.filePath).toBe(expectedFile)
+                                  ^
+error: expect(received).toBe(expected)
+
+Expected: "/tmp/omo-test-home-lAVJIe/jev-intent-routing-sink-E5fuq7/.omo/jev/w1-20260924-4100-1790251200000000000-abcdef123456.jsonl"
+Received: "/home/opencode/.omo/jev/w1-20260924-4100-1790251200000000000-abcdef123456.jsonl"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:207:29)
+(fail) intent-routing JSONL sink > #given HOME changes after module load #when the sink writes #then only the call-time home receives output [0.53ms]
+
+ 0 pass
+ 10 filtered out
+ 2 fail
+ 2 expect() calls
+Ran 2 tests across 1 file. [181.00ms]
+
+EXIT: 1
+
+WHAT WAS OBSERVED
+The pre-fix implementation must fail both regressions: zero-state disposal creates output, and the default root ignores HOME changed after module load.
+
+WHY IT IS ENOUGH
+Each assertion isolates one reported F3 cause before production code changes. The HOME assertion stops before append when the path is unsafe, so the red proof cannot write a test record into the real home.
+
+WHAT WAS OMITTED
+No environment dump, credentials, auth headers, or private file contents were captured.

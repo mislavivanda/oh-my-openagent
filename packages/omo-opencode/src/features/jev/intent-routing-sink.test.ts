@@ -1,4 +1,4 @@
-// allow: SIZE_OK - The sink contract is one filesystem integration matrix whose fixtures and ten required scenarios must stay visible together.
+// allow: SIZE_OK - Permission, lazy-root, call-time HOME, truncation, epoch, and malformed-tail cases share one temp-home filesystem fixture and assert one JSONL contract.
 
 import { afterEach, describe, expect, test } from "bun:test"
 import {
@@ -10,6 +10,7 @@ import {
   rmSync,
   statSync,
 } from "node:fs"
+import { homedir } from "node:os"
 import { basename, dirname, join } from "node:path"
 
 import {
@@ -178,6 +179,44 @@ afterEach(() => {
 })
 
 describe("intent-routing JSONL sink", () => {
+  test("#given an unused sink #when disposed #then it leaves no output directory", () => {
+    const homeDir = testHome()
+    const rootDir = join(homeDir, ".omo", "jev")
+    const sink = createTestSink(homeDir)
+
+    sink.dispose()
+
+    expect(existsSync(rootDir)).toBe(false)
+  })
+
+  test("#given HOME changes after module load #when the sink writes #then only the call-time home receives output", () => {
+    const originalHome = process.env.HOME
+    const realHome = homedir()
+    const sandboxHome = testHome()
+    const rootDir = join(sandboxHome, ".omo", "jev")
+    const expectedFile = join(rootDir, `w1-20260924-${PROCESS_ID}.jsonl`)
+    const realHomeFile = join(realHome, ".omo", "jev", `w1-20260924-${PROCESS_ID}.jsonl`)
+    process.env.HOME = sandboxHome
+
+    try {
+      const sink = createIntentRoutingSink({
+        processId: PROCESS_ID,
+        now: () => FIXED_DATE,
+        scheduleInterval: noInterval,
+      })
+      expect(sink.filePath).toBe(expectedFile)
+
+      expect(sink.append(fullyPopulatedObservation())).toBe(true)
+      sink.dispose()
+
+      expect(existsSync(expectedFile)).toBe(true)
+      expect(existsSync(realHomeFile)).toBe(false)
+    } finally {
+      if (originalHome === undefined) delete process.env.HOME
+      else process.env.HOME = originalHome
+    }
+  })
+
   test("#given an observation #when appended and read #then it round-trips byte-identically", () => {
     const sink = createTestSink(testHome())
     const entry = fullyPopulatedObservation()

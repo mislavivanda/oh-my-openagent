@@ -1,4 +1,4 @@
-// allow: SIZE_OK - Existing lifecycle sequencing stays centralized so event ordering remains reviewable.
+// allow: SIZE_OK - Real and normalized idle dedup maps, fallback cleanup, hook dispatch, and session deletion share one ordered handler; splitting branches would duplicate dedup ownership and permit seal ordering drift.
 
 import type { PluginInput } from "@opencode-ai/plugin";
 import type { OhMyOpenCodeConfig } from "../config";
@@ -137,8 +137,8 @@ export function createEventHandler(args: {
       if (sessionID) {
         const now = Date.now();
         recentRealIdles.set(sessionID, now);
-        if (!shouldDispatchIdleEvent(sessionID, now)) return;
         intentRouting.onSessionIdle(sessionID);
+        if (!shouldDispatchIdleEvent(sessionID, now)) return;
       }
     }
 

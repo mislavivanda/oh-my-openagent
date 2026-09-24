@@ -1,4 +1,4 @@
-// allow: SIZE_OK - Production plugin initialization remains one ordered sequence with injectable stages.
+// allow: SIZE_OK - Later init stages consume manager, hook, tool, intent-routing, and skill-source identities created earlier; splitting serverPlugin would hide the observable construction and disposal order behind cross-module mutable state.
 
 import type { Hooks, Plugin, PluginModule } from "@opencode-ai/plugin"
 import type { HookName } from "../config"

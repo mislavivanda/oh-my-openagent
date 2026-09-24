@@ -1,100 +1,42 @@
-// allow: SIZE_OK - Secure append, epoch reset, cumulative counter translation, and tolerant reads share one on-disk contract.
-
 import { randomUUID } from "node:crypto"
 import {
   appendFileSync,
   chmodSync,
   existsSync,
   mkdirSync,
-  readFileSync,
-  readdirSync,
   statSync,
   writeFileSync,
 } from "node:fs"
-import { homedir } from "node:os"
 import { join } from "node:path"
 
 import {
   INTENT_ROUTING_SCHEMA_VERSION,
-  resolveIntentRoutingCounterDeltas,
   validateIntentRoutingEntry,
   type IntentRoutingCounterDelta,
   type IntentRoutingCounters,
   type IntentRoutingEntry,
-  type IntentRoutingObservationRecord,
 } from "@oh-my-opencode/jev-core"
 
 import { log } from "../../shared/logger"
+import {
+  EMPTY_INTENT_ROUTING_COUNTERS,
+  INTENT_ROUTING_SINK_COUNTER_INTERVAL_MS,
+  INTENT_ROUTING_SINK_MAX_LINE_BYTES,
+  INTENT_ROUTING_SINK_SIZE_CAP_BYTES,
+  IntentRoutingSinkConfigurationError,
+  type IntentRoutingIntervalHandle,
+  type IntentRoutingSink,
+  type IntentRoutingSinkOptions,
+} from "./intent-routing-sink-contract"
+import {
+  readIntentRoutingEntries,
+  resolveIntentRoutingSinkRoot,
+} from "./intent-routing-sink-reader"
 
-export const INTENT_ROUTING_SINK_MAX_LINE_BYTES = 16 * 1024
-export const INTENT_ROUTING_SINK_COUNTER_INTERVAL_MS = 30_000
-export const INTENT_ROUTING_SINK_BENCHMARK_OBSERVATION_BYTES = 1724
-export const INTENT_ROUTING_SINK_ASSUMED_TURNS_PER_DAY = 10_000
-export const INTENT_ROUTING_SINK_RETENTION_DAYS = 4
-// Rows intentionally persist 200-character prompt heads. This sink does not scrub secrets.
-const MEBIBYTE = 1024 * 1024
-const BENCHMARK_WINDOW_BYTES = INTENT_ROUTING_SINK_BENCHMARK_OBSERVATION_BYTES *
-  INTENT_ROUTING_SINK_ASSUMED_TURNS_PER_DAY * INTENT_ROUTING_SINK_RETENTION_DAYS
-export const INTENT_ROUTING_SINK_SIZE_CAP_BYTES =
-  Math.ceil(BENCHMARK_WINDOW_BYTES / MEBIBYTE) * MEBIBYTE
-
-const EMPTY_COUNTERS: IntentRoutingCounters = {
-  turnsSeen: 0,
-  turnsGatedOut: 0,
-  turnsSynthetic: 0,
-  recordsCreated: 0,
-  recordsEvicted: 0,
-  orphanObservations: 0,
-  unscorableResumeCalls: 0,
-  unscorableUnknownCalls: 0,
-  dispatchesDropped: 0,
-  malformedWriteRejections: 0,
-  recordsLostToCap: 0,
-  sinkTruncations: 0,
-}
 const PROCESS_START_EPOCH_NANOS = Math.max(
   0,
   Math.trunc((Date.now() - process.uptime() * 1000) * 1_000_000),
 ).toString()
-const SINK_FILE_PATTERN = /^w1-\d{8}-.+\.jsonl$/u
-
-export type IntentRoutingIntervalHandle = { readonly cancel: () => void }
-export type IntentRoutingSinkOptions = {
-  readonly homeDir?: string
-  readonly processId?: string
-  readonly now?: () => Date
-  readonly maxLineBytes?: number
-  readonly sizeCapBytes?: number
-  readonly counterIntervalMs?: number
-  readonly scheduleInterval?: (
-    callback: () => void,
-    intervalMs: number,
-  ) => IntentRoutingIntervalHandle
-  readonly warn?: (message: string, data: Readonly<Record<string, unknown>>) => void
-}
-export type IntentRoutingSink = {
-  readonly processId: string
-  readonly filePath: string
-  readonly append: (entry: IntentRoutingEntry) => boolean
-  readonly updateCounters: (counters: IntentRoutingCounters) => void
-  readonly flushCounters: () => void
-  readonly getCounters: () => IntentRoutingCounters
-  readonly getCounterEpoch: () => number
-  readonly dispose: () => void
-}
-export type IntentRoutingSinkReadResult = {
-  readonly entries: readonly IntentRoutingEntry[]
-  readonly countersByProcess: ReadonlyMap<string, IntentRoutingCounterDelta>
-  readonly malformedLines: number
-  readonly files: readonly string[]
-}
-
-export class IntentRoutingSinkConfigurationError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = "IntentRoutingSinkConfigurationError"
-  }
-}
 
 function defaultScheduleInterval(
   callback: () => void,
@@ -103,10 +45,6 @@ function defaultScheduleInterval(
   const timer = setInterval(callback, intervalMs)
   timer.unref()
   return { cancel: () => clearInterval(timer) }
-}
-
-function sinkRoot(homeDir = homedir()): string {
-  return join(homeDir, ".omo", "jev")
 }
 
 function utcDate(date: Date): string {
@@ -127,45 +65,6 @@ export function createIntentRoutingProcessId(input: {
   return `${pid}-${start}-${suffix}`
 }
 
-function readEntries(files: readonly string[]): {
-  readonly entries: IntentRoutingEntry[]
-  readonly malformedLines: number
-} {
-  const entries: IntentRoutingEntry[] = []
-  let malformedLines = 0
-  for (const file of files) {
-    for (const line of readFileSync(file, "utf8").split("\n")) {
-      if (line.length === 0) continue
-      try {
-        const parsed: unknown = JSON.parse(line)
-        if (validateIntentRoutingEntry(parsed)) entries.push(parsed)
-        else malformedLines += 1
-      } catch (error) {
-        if (!(error instanceof SyntaxError)) throw error
-        malformedLines += 1
-      }
-    }
-  }
-  return { entries, malformedLines }
-}
-
-export function readIntentRoutingSink(rootDir = sinkRoot()): IntentRoutingSinkReadResult {
-  if (!existsSync(rootDir)) {
-    return { entries: [], countersByProcess: new Map(), malformedLines: 0, files: [] }
-  }
-  const files = readdirSync(rootDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && SINK_FILE_PATTERN.test(entry.name))
-    .map((entry) => join(rootDir, entry.name))
-    .sort()
-  const { entries, malformedLines } = readEntries(files)
-  return {
-    entries,
-    countersByProcess: resolveIntentRoutingCounterDeltas(entries),
-    malformedLines,
-    files,
-  }
-}
-
 export function createIntentRoutingSink(options: IntentRoutingSinkOptions = {}): IntentRoutingSink {
   const now = options.now ?? (() => new Date())
   const processId = options.processId ?? createIntentRoutingProcessId()
@@ -178,17 +77,18 @@ export function createIntentRoutingSink(options: IntentRoutingSinkOptions = {}):
   if (maxLineBytes <= 0 || sizeCapBytes < maxLineBytes * 2 || counterIntervalMs <= 0) {
     throw new IntentRoutingSinkConfigurationError("Intent-routing sink bounds must be positive and the cap must hold a row plus its counter")
   }
-  const rootDir = sinkRoot(options.homeDir)
+  const rootDir = resolveIntentRoutingSinkRoot(options.homeDir)
   const filePath = join(rootDir, `w1-${utcDate(now())}-${processId}.jsonl`)
   const warn = options.warn ?? ((message: string, data: Readonly<Record<string, unknown>>) => log(message, data))
-  let sourceCounters = { ...EMPTY_COUNTERS }
-  let epochBase = { ...EMPTY_COUNTERS }
+  let sourceCounters = { ...EMPTY_INTENT_ROUTING_COUNTERS }
+  let epochBase = { ...EMPTY_INTENT_ROUTING_COUNTERS }
   let malformedWriteRejections = 0
   let recordsLostToCap = 0
   let sinkTruncations = 0
   let counterEpoch = 0
   let monotonicSeq = 0
   let disposed = false
+  let hasWritableState = false
 
   const getCounters = (): IntentRoutingCounters => ({
     turnsSeen: Math.max(0, sourceCounters.turnsSeen - epochBase.turnsSeen),
@@ -239,7 +139,7 @@ export function createIntentRoutingSink(options: IntentRoutingSinkOptions = {}):
     appendRaw(`${JSON.stringify(counterEntry())}\n`)
   }
   const truncate = (nextEntry: IntentRoutingEntry): void => {
-    const lost = existsSync(filePath) ? readEntries([filePath]).entries.filter(
+    const lost = existsSync(filePath) ? readIntentRoutingEntries([filePath]).entries.filter(
       (entry) => entry.kind === "observation",
     ).length : 0
     recordsLostToCap += lost
@@ -280,6 +180,7 @@ export function createIntentRoutingSink(options: IntentRoutingSinkOptions = {}):
     return true
   }
   const flushCounters = (): void => {
+    if (!hasWritableState) return
     monotonicSeq += 1
     writeEntry(counterEntry())
   }
@@ -299,8 +200,10 @@ export function createIntentRoutingSink(options: IntentRoutingSinkOptions = {}):
     append: (entry) => {
       if (!validateIntentRoutingEntry(entry)) {
         malformedWriteRejections += 1
+        hasWritableState = true
         return false
       }
+      hasWritableState = true
       if (entry.kind === "counter_delta") {
         if (entry.processId !== processId) {
           malformedWriteRejections += 1
@@ -311,7 +214,10 @@ export function createIntentRoutingSink(options: IntentRoutingSinkOptions = {}):
       }
       return writeEntry(entry)
     },
-    updateCounters: (counters) => { sourceCounters = { ...counters } },
+    updateCounters: (counters) => {
+      sourceCounters = { ...counters }
+      hasWritableState = hasWritableState || Object.values(counters).some((value) => value > 0)
+    },
     flushCounters,
     getCounters,
     getCounterEpoch: () => counterEpoch,
@@ -323,3 +229,20 @@ export function createIntentRoutingSink(options: IntentRoutingSinkOptions = {}):
     },
   }
 }
+
+export {
+  INTENT_ROUTING_SINK_ASSUMED_TURNS_PER_DAY,
+  INTENT_ROUTING_SINK_BENCHMARK_OBSERVATION_BYTES,
+  INTENT_ROUTING_SINK_COUNTER_INTERVAL_MS,
+  INTENT_ROUTING_SINK_MAX_LINE_BYTES,
+  INTENT_ROUTING_SINK_RETENTION_DAYS,
+  INTENT_ROUTING_SINK_SIZE_CAP_BYTES,
+  IntentRoutingSinkConfigurationError,
+} from "./intent-routing-sink-contract"
+export type {
+  IntentRoutingIntervalHandle,
+  IntentRoutingSink,
+  IntentRoutingSinkOptions,
+  IntentRoutingSinkReadResult,
+} from "./intent-routing-sink-contract"
+export { readIntentRoutingSink } from "./intent-routing-sink-reader"

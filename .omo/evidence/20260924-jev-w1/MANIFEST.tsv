@@ -93,3 +93,8 @@ R1	.omo/evidence/20260924-jev-w1/R1-accuracy-baseline-note.txt	artifact	Paid tod
 R3	.omo/evidence/20260924-jev-w1/R3-coverage-red.txt	red	Failing-first proofs: category coverage reported 17/23 instead of 18/23, and none recall/precision reused route agreement; focused exits 1
 R3	.omo/evidence/20260924-jev-w1/R3-coverage-green.txt	green	Corrected synthetic report: category coverage 18/23, weighted 21/26, neighbouring metric audit recorded, 11 focused tests pass
 R3	.omo/evidence/20260924-jev-w1/R3-figure-restatement.txt	artifact	Restates retained synthetic coverage figures without rewriting historical evidence and names unchanged related metrics
+R2	.omo/evidence/20260924-jev-w1/R2-isolation-red.txt	red	Failing-first sink proof: zero-state dispose created .omo/jev and post-load HOME resolved to /home/opencode, 0 pass 2 fail, exit 1
+R2	.omo/evidence/20260924-jev-w1/R2-isolation-green.txt	green	Lazy zero-state sink and call-time HOME regressions pass; proven-empty real /home/opencode/.omo/jev removed with rmdir
+R2	.omo/evidence/20260924-jev-w1/R2-plugin-red.txt	red	Failing-first handler proof: synthetic turn count stayed zero and deduped idle sealed once, 0 pass 2 fail, exit 1
+R2	.omo/evidence/20260924-jev-w1/R2-plugin-green.txt	green	Handler regressions pass; final typecheck retry, 677-test scoped suite, and 479-pass 1-skip fast suite exit 0
+R2	.omo/evidence/20260924-jev-w1/R2-size-review.txt	artifact	Rejected sink, turn-store, and plugin-init test waivers split at named seams; seven retained waivers carry invariant-specific reasons and 15 split tests pass

@@ -1,0 +1,52 @@
+WHAT WAS TESTED
+Command: bun test packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts --test-name-pattern "synthetic message|duplicate real idle"
+Surface: production chat.message and event handler intent-routing seams.
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:
+82 |     await handler(
+83 |       unsafeTestValue({ sessionID: "session-synthetic", agent: "sisyphus" }),
+84 |       { message: {}, parts: [{ type: "text", text: "internal", synthetic: true }] },
+85 |     )
+86 |
+87 |     expect(controller.getCounters().turnsSynthetic).toBe(1)
+                                                         ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:87:53)
+(fail) Jev intent-routing plugin handler wiring > #given a synthetic message #when chat.message runs #then it counts without sealing or dispatching [1.44ms]
+129 |     })
+130 |
+131 |     await plugin.event?.(idleEvent)
+132 |     await plugin.event?.(idleEvent)
+133 |
+134 |     expect(onSessionIdle).toHaveBeenCalledTimes(2)
+                                ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 2
+Received number of calls: 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts:134:27)
+(fail) Jev intent-routing plugin handler wiring > #given duplicate real idle events #when shared consumers dedup #then intent-routing still receives both seal triggers [1.53ms]
+
+ 0 pass
+ 3 filtered out
+ 2 fail
+ 2 expect() calls
+Ran 2 tests across 1 file. [163.00ms]
+
+EXIT: 1
+
+WHAT WAS OBSERVED
+The pre-fix implementation must fail both regressions: synthetic chat returns before observation, and the shared idle dedup return suppresses the second intent-routing seal trigger.
+
+WHY IT IS ENOUGH
+The tests drive the production handlers. The synthetic case also pins zero records and zero dispatches, while the idle case pins that non-Jev consumers remain deduplicated.
+
+WHAT WAS OMITTED
+No OpenCode process, server, database, credentials, auth headers, or environment dump was used.

@@ -3,9 +3,12 @@ import { describe, expect, mock, test } from "bun:test"
 import { unsafeTestValue } from "../../../../test-support/unsafe-test-value"
 import type { OhMyOpenCodeConfig } from "../config"
 import {
+  createIntentRoutingSealController,
   isIntentRoutingCaptureSessionEligible,
   isJevIntentRoutingSessionEligible,
+  type JevIntentRouting,
 } from "../features/jev"
+import { createIntentRoutingTestSink } from "../features/jev/intent-routing-test-sink"
 import { createPluginInterface } from "../plugin-interface"
 import { createChatMessageHandler } from "./chat-message"
 import type { PluginContext } from "./types"
@@ -37,6 +40,101 @@ function pluginConfig(): OhMyOpenCodeConfig {
 }
 
 describe("Jev intent-routing plugin handler wiring", () => {
+  test("#given a synthetic message #when chat.message runs #then it counts without sealing or dispatching", async () => {
+    const dispatch = mock(async () => {
+      throw new Error("synthetic messages must not dispatch")
+    })
+    const controller = createIntentRoutingSealController({
+      sink: createIntentRoutingTestSink(),
+      turnSealTimeoutMs: 5_000,
+    })
+    const intentRouting: JevIntentRouting = {
+      enabled: true,
+      observe: (input, output) => {
+        controller.onMessage({
+          sessionID: input.sessionID,
+          parts: output.parts,
+          questionVersion: 1,
+          vocabularyDigest: "vocab-1",
+          confidenceThreshold: 0.8,
+          configuredModelSpec: "jev-2026-09-24",
+          dispatch,
+        })
+        return { predictionStatus: "not_dispatched", notDispatchedReason: "disabled" }
+      },
+      capture: () => undefined,
+      onSessionIdle: controller.onSessionIdle,
+      onSessionDeleted: controller.onSessionDeleted,
+      dispose: controller.dispose,
+      getStats: () => ({ inFlight: 0, dispatchesDropped: 0 }),
+    }
+    const handler = createChatMessageHandler({
+      ctx: pluginContext(),
+      pluginConfig: pluginConfig(),
+      firstMessageVariantGate: {
+        shouldOverride: () => false,
+        markApplied: () => undefined,
+      },
+      hooks: unsafeTestValue<Parameters<typeof createChatMessageHandler>[0]["hooks"]>({}),
+      intentRouting,
+    })
+
+    await handler(
+      unsafeTestValue({ sessionID: "session-synthetic", agent: "sisyphus" }),
+      { message: {}, parts: [{ type: "text", text: "internal", synthetic: true }] },
+    )
+
+    expect(controller.getCounters().turnsSynthetic).toBe(1)
+    expect(controller.listTurns("session-synthetic")).toEqual([])
+    expect(dispatch).not.toHaveBeenCalled()
+    await controller.dispose()
+  })
+
+  test("#given duplicate real idle events #when shared consumers dedup #then intent-routing still receives both seal triggers", async () => {
+    const idleConsumer = mock(async () => undefined)
+    const onSessionIdle = mock((_sessionID: string) => undefined)
+    const intentRouting: IntentRoutingOverride = {
+      observe: () => ({ predictionStatus: "pending", notDispatchedReason: null }),
+      capture: () => undefined,
+      onSessionIdle,
+      onSessionDeleted: () => undefined,
+    }
+    const args = injectIntentRouting(
+      unsafeTestValue<Parameters<typeof createPluginInterface>[0]>({
+        ctx: pluginContext(),
+        pluginConfig: pluginConfig(),
+        firstMessageVariantGate: {
+          shouldOverride: () => false,
+          markApplied: () => undefined,
+          markSessionCreated: () => undefined,
+          clear: () => undefined,
+        },
+        managers: {
+          configHandler: async () => undefined,
+          backgroundManager: {},
+          tmuxSessionManager: {},
+          skillMcpManager: { disconnectSession: async () => undefined },
+        },
+        hooks: {
+          disposeHooks: () => undefined,
+          autoUpdateChecker: { event: idleConsumer },
+        },
+        tools: {},
+      }),
+      intentRouting,
+    )
+    const plugin = createPluginInterface(args)
+    const idleEvent = unsafeTestValue({
+      event: { type: "session.idle", properties: { sessionID: "session-idle-dedup" } },
+    })
+
+    await plugin.event?.(idleEvent)
+    await plugin.event?.(idleEvent)
+
+    expect(onSessionIdle).toHaveBeenCalledTimes(2)
+    expect(idleConsumer).toHaveBeenCalledTimes(1)
+  })
+
   test("#given one override #when chat, tool, and lifecycle handlers run #then the same object receives all calls without input mutation", async () => {
     const receivers: object[] = []
     const calls: string[] = []
