@@ -48,4 +48,43 @@ describe("createPluginDispose intent routing", () => {
     expect(sinkDisposeCalls).toBe(1)
     expect(elapsedMs).toBeLessThan(100)
   })
+
+  test("#given SIGTERM during a live plugin #when signal cleanup runs #then intent-routing flushes before the signal is re-delivered", async () => {
+    const listeners = new Map<string, () => void>()
+    const reDelivered: string[] = []
+    const flushed = Promise.withResolvers<void>()
+    let flushCalls = 0
+    createPluginDispose(unsafeTestValue({
+      backgroundManager: { shutdown: async () => {} },
+      skillMcpManager: { disconnectAll: async () => {} },
+      disposeHooks: () => {},
+      intentRouting: {
+        async dispose() {
+          flushCalls += 1
+          flushed.resolve()
+        },
+      },
+      processSignals: {
+        add(signal: string, listener: () => void) {
+          listeners.set(signal, listener)
+        },
+        remove(signal: string) {
+          listeners.delete(signal)
+        },
+        reDeliver(signal: string) {
+          reDelivered.push(signal)
+        },
+      },
+    }))
+    const signalHandler = listeners.get("SIGTERM")
+    if (signalHandler === undefined) throw new Error("SIGTERM flush handler was not installed")
+
+    signalHandler()
+    await flushed.promise
+    await Promise.resolve()
+
+    expect(flushCalls).toBe(1)
+    expect(reDelivered).toEqual(["SIGTERM"])
+    expect(listeners.has("SIGTERM")).toBe(false)
+  })
 })

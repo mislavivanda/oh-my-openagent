@@ -39,6 +39,7 @@ const ZERO_COUNTERS: IntentRoutingCounters = {
   turnsGatedOut: 0,
   turnsSynthetic: 0,
   recordsCreated: 0,
+  recordsInFlight: 0,
   recordsEvicted: 0,
   orphanObservations: 0,
   unscorableResumeCalls: 0,
@@ -150,11 +151,13 @@ function counterDelta(input: Readonly<{
 
 const PROCESS_A_COUNTERS: IntentRoutingCounters = {
   ...ZERO_COUNTERS, turnsSeen: 20, turnsGatedOut: 2, turnsSynthetic: 1, recordsCreated: 18,
+  recordsInFlight: 2,
   recordsEvicted: 1, orphanObservations: 2, unscorableResumeCalls: 2, unscorableUnknownCalls: 2,
   dispatchesDropped: 3, malformedWriteRejections: 1, recordsLostToCap: 2, sinkTruncations: 1,
 }
 const PROCESS_B_COUNTERS: IntentRoutingCounters = {
   ...ZERO_COUNTERS, turnsSeen: 5, turnsGatedOut: 1, turnsSynthetic: 2, recordsCreated: 4,
+  recordsInFlight: 1,
   recordsEvicted: 1, orphanObservations: 1, unscorableResumeCalls: 1, unscorableUnknownCalls: 1,
   dispatchesDropped: 1, malformedWriteRejections: 2, recordsLostToCap: 1, sinkTruncations: 2,
 }

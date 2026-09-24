@@ -124,19 +124,27 @@ export function buildStoreCounterDelta(input: Readonly<{
   counterEpoch: number
   monotonicSeq: number
   recordsCreated: number
+  recordsInFlight: number
   recordsEvicted: number
   orphanObservations: number
+  turnsSeen: number
+  turnsGatedOut: number
+  turnsSynthetic: number
+  unscorableResumeCalls: number
+  unscorableUnknownCalls: number
+  dispatchesDropped: number
 }>): IntentRoutingCounterDelta {
   const counters: IntentRoutingCounters = {
-    turnsSeen: 0,
-    turnsGatedOut: 0,
-    turnsSynthetic: 0,
+    turnsSeen: input.turnsSeen,
+    turnsGatedOut: input.turnsGatedOut,
+    turnsSynthetic: input.turnsSynthetic,
     recordsCreated: input.recordsCreated,
+    recordsInFlight: input.recordsInFlight,
     recordsEvicted: input.recordsEvicted,
     orphanObservations: input.orphanObservations,
-    unscorableResumeCalls: 0,
-    unscorableUnknownCalls: 0,
-    dispatchesDropped: 0,
+    unscorableResumeCalls: input.unscorableResumeCalls,
+    unscorableUnknownCalls: input.unscorableUnknownCalls,
+    dispatchesDropped: input.dispatchesDropped,
     malformedWriteRejections: 0,
     recordsLostToCap: 0,
     sinkTruncations: 0,

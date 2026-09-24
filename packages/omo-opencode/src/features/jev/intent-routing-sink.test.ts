@@ -38,6 +38,7 @@ const ZERO_COUNTERS: IntentRoutingCounters = {
   turnsGatedOut: 0,
   turnsSynthetic: 0,
   recordsCreated: 0,
+  recordsInFlight: 0,
   recordsEvicted: 0,
   orphanObservations: 0,
   unscorableResumeCalls: 0,

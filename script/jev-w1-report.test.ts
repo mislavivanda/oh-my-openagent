@@ -1,8 +1,12 @@
 // allow: SIZE_OK - one synthetic-corpus acceptance suite pins the report's conditioning rules together.
 import { afterAll, beforeAll, describe, expect, test } from "bun:test"
-import { mkdtempSync, rmSync } from "node:fs"
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
+import {
+  validateIntentRoutingObservationRecord,
+  type IntentRoutingObservationRecord,
+} from "@oh-my-opencode/jev-core"
 import { writeSyntheticCorpus } from "./jev-w1-report.fixtures"
 import { generateJevW1Report } from "./jev-w1-report"
 
@@ -13,6 +17,56 @@ function denominator(name: string): number {
   const match = new RegExp(`^${name}: (\\d+)$`, "m").exec(report)
   expect(match).not.toBeNull()
   return Number(match?.[1] ?? Number.NaN)
+}
+
+function seedObservation(): IntentRoutingObservationRecord {
+  for (const filename of readdirSync(corpusRoot).filter((name) => name.endsWith(".jsonl"))) {
+    for (const line of readFileSync(join(corpusRoot, filename), "utf8").split("\n")) {
+      if (line.length === 0) continue
+      const parsed: unknown = JSON.parse(line)
+      if (validateIntentRoutingObservationRecord(parsed)) return parsed
+    }
+  }
+  throw new Error("Synthetic report corpus has no observation")
+}
+
+function writeCounterCorpus(
+  directory: string,
+  beforeCounter: readonly IntentRoutingObservationRecord[],
+  afterCounter: readonly IntentRoutingObservationRecord[],
+  recordsCreated: number,
+  recordsInFlight: number,
+): void {
+  mkdirSync(directory, { recursive: true, mode: 0o700 })
+  const counterDelta = {
+    kind: "counter_delta",
+    schemaVersion: 1,
+    recordedAt: "2026-09-24T12:00:01.000Z",
+    processId: "identity-process",
+    counterEpoch: 0,
+    monotonicSeq: 1,
+    counters: {
+      turnsSeen: recordsCreated,
+      turnsGatedOut: 0,
+      turnsSynthetic: 0,
+      recordsCreated,
+      recordsInFlight,
+      recordsEvicted: 0,
+      orphanObservations: 0,
+      unscorableResumeCalls: 0,
+      unscorableUnknownCalls: 0,
+      dispatchesDropped: 0,
+      malformedWriteRejections: 0,
+      recordsLostToCap: 0,
+      sinkTruncations: 0,
+    },
+  }
+  const entries = [...beforeCounter, counterDelta, ...afterCounter]
+  writeFileSync(
+    join(directory, "w1-20260924-identity-process.jsonl"),
+    `${entries.map((entry) => JSON.stringify(entry)).join("\n")}\n`,
+    { mode: 0o600 },
+  )
 }
 
 beforeAll(() => {
@@ -73,6 +127,43 @@ describe("Jev W1 intent-routing report", () => {
     expect(report).toContain("identity: records_created(22) == sealed(17) + evicted(2) + in_flight(3)")
   })
 
+  test("#given observations newer than the latest counter snapshot #when the report renders #then row totals reconcile the stale snapshot without throwing", () => {
+    const staleRoot = mkdtempSync(join(tmpdir(), "jev-w1-report-stale-"))
+    const first = seedObservation()
+    const second = {
+      ...first,
+      turnOrdinal: first.turnOrdinal + 1,
+      dedupKey: `${first.dedupKey}-later`,
+      reuseKey: `${first.reuseKey}-later`,
+    }
+    writeCounterCorpus(staleRoot, [first], [second], 1, 0)
+
+    try {
+      const staleReport = generateJevW1Report(staleRoot)
+
+      expect(staleReport).toContain("records_created: 2")
+      expect(staleReport).toContain("counter_reconciliation: records_created snapshot(1) raised to row_floor(2)")
+      expect(staleReport).toContain("identity: records_created(2) == sealed(2) + evicted(0) + in_flight(0)")
+    } finally {
+      rmSync(staleRoot, { recursive: true, force: true })
+    }
+  })
+
+  test("#given a counter snapshot that overstates creation #when identity is checked #then independent in-flight stays zero and the discrepancy is reported", () => {
+    const mismatchRoot = mkdtempSync(join(tmpdir(), "jev-w1-report-mismatch-"))
+    writeCounterCorpus(mismatchRoot, [seedObservation()], [], 2, 0)
+
+    try {
+      const mismatchReport = generateJevW1Report(mismatchRoot)
+
+      expect(mismatchReport).toContain("records_created: 2")
+      expect(mismatchReport).toContain("records_in_flight: 0")
+      expect(mismatchReport).toContain("identity: MISMATCH records_created(2) != sealed(1) + evicted(0) + in_flight(0) = 1")
+    } finally {
+      rmSync(mismatchRoot, { recursive: true, force: true })
+    }
+  })
+
   test("#given reliable censored and overlap records #when the headline is scored #then only reliable records enter it", () => {
     expect(report).toContain("route_agreement: 5/9 = 55.56% (eligible_denominator=9)")
     expect(report).toContain("correlation_status_censored: 1")
@@ -113,6 +204,12 @@ describe("Jev W1 intent-routing report", () => {
     expect(report).toContain("category_coverage_cardinality_weighted: 4/9 = 44.44% (eligible_denominator=9, distinct_target_cardinality=9)")
     expect(report).toContain("subagent_coverage: 2/2 = 100.00% (eligible_denominator=2, distinct_target_cardinality=4)")
     expect(report).toContain("subagent_coverage_cardinality_weighted: 2/4 = 50.00% (eligible_denominator=4, distinct_target_cardinality=4)")
+  })
+
+  test("#given none-heavy fixture labels #when per-question figures render #then majority-class base rates disclose the constant-none baseline", () => {
+    expect(report).toContain("category_fixture_majority_class_base_rate: none 8/15 = 53.33%")
+    expect(report).toContain("subagent_fixture_majority_class_base_rate: none 13/15 = 86.67%")
+    expect(report).toContain("combined_category_subagent_fixture_majority_class_base_rate: none 21/30 = 70.00%")
   })
 
   test("#given every fan-out seal and continuation cohort #when breakdowns render #then every conditioning row is explicit", () => {

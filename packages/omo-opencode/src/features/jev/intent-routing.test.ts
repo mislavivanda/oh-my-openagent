@@ -9,6 +9,7 @@ import {
   type DecisionOutcome,
   type DecisionRequest,
   type IntentRoutingDecisionResult,
+  type IntentRoutingEntry,
   type Questions,
 } from "@oh-my-opencode/jev-core"
 import { JevConfigSchema, type JevConfig } from "../../config/schema/jev"
@@ -316,6 +317,60 @@ describe("createJevIntentRouting", () => {
     expect(dispatcher).toHaveBeenCalledTimes(maxInflight)
     expect(routing.inFlight).toBe(maxInflight)
     expect(routing.dispatchesDropped).toBe(3)
+  })
+
+  test("#given live eligible gated synthetic resume unknown and dropped turns #when final counters flush #then all six measured counters are non-zero", async () => {
+    setMainSession(SESSION_ID)
+    const entries: IntentRoutingEntry[] = []
+    const routing = createJevIntentRouting({
+      jevConfig: enabledConfig({ maxInflight: 1 }),
+      vocab: VOCABULARY,
+      dispatcher: () => new Promise<IntentRoutingDecisionResult>(() => {}),
+      logger: () => {},
+      sink: {
+        processId: "counter-threading-test",
+        filePath: "/tmp/counter-threading-test.jsonl",
+        counterEpoch: 0,
+        write(entry) {
+          entries.push(entry)
+          return true
+        },
+        dispose() {},
+      },
+    })
+
+    const first = turn("First live turn")
+    routing.dispatch(first.input, first.output)
+    await settleDeferredDispatch()
+    expect(routing.capture(
+      { tool: "task", sessionID: SESSION_ID, callID: "resume-call" },
+      { args: { task_id: "ses-child" } },
+    )).toBe(true)
+    expect(routing.capture(
+      { tool: "task", sessionID: SESSION_ID, callID: "unknown-call" },
+      { args: { category: "legacy-category" } },
+    )).toBe(true)
+
+    const dropped = turn("Dropped live turn")
+    routing.dispatch(dropped.input, dropped.output)
+    routing.dispatch(
+      { sessionID: SESSION_ID },
+      { parts: [{ type: "text", text: "internal", synthetic: true }] },
+    )
+    const gated = turn("Gated turn", "other-session")
+    routing.dispatch(gated.input, gated.output)
+    await settleDeferredDispatch()
+    await routing.dispose()
+
+    const latest = entries.filter((entry) => entry.kind === "counter_delta").at(-1)
+    expect(latest?.counters).toMatchObject({
+      turnsSeen: 4,
+      turnsGatedOut: 1,
+      turnsSynthetic: 1,
+      unscorableResumeCalls: 1,
+      unscorableUnknownCalls: 1,
+      dispatchesDropped: 2,
+    })
   })
 
   test("#given mutable output parts #when they change immediately after dispatch #then the backend state keeps the original bounded snapshot", async () => {

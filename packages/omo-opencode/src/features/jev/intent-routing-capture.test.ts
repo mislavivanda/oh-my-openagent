@@ -120,6 +120,17 @@ describe("createJevIntentRoutingCapture", () => {
     expect(capture.unscorableResumeCalls).toBe(1)
   })
 
+  test("#given an unrecognized category #when captured #then it is unknown and increments its counter", () => {
+    const { capture, store, turn } = createHarness()
+
+    expect(captureWithoutMutation(capture, "task", { category: "legacy-category" })).toBe(true)
+
+    expect(store.getTurn(SESSION_ID, turn.turnOrdinal)?.observed).toEqual([
+      expect.objectContaining({ routeClass: "unknown" }),
+    ])
+    expect(capture.unscorableUnknownCalls).toBe(1)
+  })
+
   test("#given requested and rewritten subagents differ #when captured #then the requested value wins", () => {
     const { capture, store, turn } = createHarness()
 

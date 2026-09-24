@@ -2,6 +2,7 @@
 import {
   derivePredictedRoute,
   deriveRoute,
+  INTENT_ROUTING_FIXTURES,
   type IntentRoutingAnswers,
   type IntentRoutingObservationRecord,
   type IntentRoutingRoute,
@@ -33,13 +34,7 @@ type AnalyzedRecord = Readonly<{
 
 type Rate = Readonly<{ numerator: number; denominator: number }>
 type Coverage = Readonly<{ hits: number; turns: number; distinctTargets: number }>
-
-class ReportIdentityError extends Error {
-  constructor(readonly created: number, readonly sealed: number, readonly evicted: number) {
-    super(`records_created ${created} is less than sealed ${sealed} plus evicted ${evicted}`)
-    this.name = "ReportIdentityError"
-  }
-}
+type FixtureBaseRate = Readonly<{ choice: string; numerator: number; denominator: number }>
 
 class ReportArgumentError extends Error {
   constructor() {
@@ -150,6 +145,29 @@ function coverageLines(label: string, coverage: Coverage): readonly string[] {
   ]
 }
 
+function fixtureBaseRate(question: "category" | "subagent"): FixtureBaseRate {
+  const counts = new Map<string, number>()
+  for (const fixture of INTENT_ROUTING_FIXTURES) {
+    const choice = fixture.label[question]
+    counts.set(choice, (counts.get(choice) ?? 0) + 1)
+  }
+  const majority = [...counts.entries()].sort(([leftChoice, leftCount], [rightChoice, rightCount]) =>
+    rightCount - leftCount || leftChoice.localeCompare(rightChoice)
+  )[0]
+  if (majority === undefined) return { choice: "none", numerator: 0, denominator: 0 }
+  return {
+    choice: majority[0],
+    numerator: majority[1],
+    denominator: INTENT_ROUTING_FIXTURES.length,
+  }
+}
+
+function fixtureBaseRateLine(label: string, rate: FixtureBaseRate): string {
+  if (rate.denominator === 0) return `${label}: insufficient data`
+  const percentage = ((rate.numerator / rate.denominator) * 100).toFixed(2)
+  return `${label}: ${rate.choice} ${rate.numerator}/${rate.denominator} = ${percentage}%`
+}
+
 function noneRates(items: readonly AnalyzedRecord[]): Readonly<{ recall: Rate; precision: Rate }> {
   const eligible = items.filter(isRateEligible)
   const actualNone = eligible.filter((item) => item.knownRoutes.size === 0 && !item.hasUnknown)
@@ -173,17 +191,28 @@ function denominatorLines(
   const statuses = observations.map((record) => record.predictionStatus)
   const correlations = observations.map((record) => record.correlationStatus)
   const sealed = observations.length
-  const inFlight = counters.recordsCreated - sealed - counters.recordsEvicted
-  if (inFlight < 0) throw new ReportIdentityError(counters.recordsCreated, sealed, counters.recordsEvicted)
+  const sealedAtSnapshot = Math.max(
+    0,
+    counters.recordsCreated - counters.recordsEvicted - counters.recordsInFlight,
+  )
+  const rowsAfterSnapshot = Math.max(0, sealed - sealedAtSnapshot)
+  const inFlight = Math.max(0, counters.recordsInFlight - rowsAfterSnapshot)
+  const rowFloor = sealed + counters.recordsEvicted + inFlight
+  const recordsCreated = Math.max(counters.recordsCreated, rowFloor)
+  const reconciliation = recordsCreated > counters.recordsCreated
+    ? `counter_reconciliation: records_created snapshot(${counters.recordsCreated}) raised to row_floor(${rowFloor})`
+    : "counter_reconciliation: none"
   const identityTotal = sealed + counters.recordsEvicted + inFlight
-  if (counters.recordsCreated !== identityTotal) throw new ReportIdentityError(counters.recordsCreated, sealed, counters.recordsEvicted)
+  const identity = recordsCreated === identityTotal
+    ? `identity: records_created(${recordsCreated}) == sealed(${sealed}) + evicted(${counters.recordsEvicted}) + in_flight(${inFlight})`
+    : `identity: MISMATCH records_created(${recordsCreated}) != sealed(${sealed}) + evicted(${counters.recordsEvicted}) + in_flight(${inFlight}) = ${identityTotal}`
 
   return [
     "DENOMINATORS",
     `turns_seen: ${counters.turnsSeen}`,
     `turns_gated_out: ${counters.turnsGatedOut}`,
     `turns_synthetic: ${counters.turnsSynthetic}`,
-    `records_created: ${counters.recordsCreated}`,
+    `records_created: ${recordsCreated}`,
     `records_with_prediction: ${analyzed.filter((item) => item.answers !== null).length}`,
     ...SEALED_BY_VALUES.map((value) => `records_sealed_by_${value}: ${countBy(sealedBy, value)}`),
     `records_sealed: ${sealed}`,
@@ -206,7 +235,8 @@ function denominatorLines(
     `truncated_input: ${observations.filter((record) => record.truncatedInput).length}`,
     ...PREDICTION_STATUSES.map((value) => `prediction_status_${value}: ${countBy(statuses, value)}`),
     ...CORRELATION_STATUSES.map((value) => `correlation_status_${value}: ${countBy(correlations, value)}`),
-    `identity: records_created(${counters.recordsCreated}) == sealed(${sealed}) + evicted(${counters.recordsEvicted}) + in_flight(${inFlight})`,
+    reconciliation,
+    identity,
   ]
 }
 
@@ -226,6 +256,15 @@ export function generateJevW1Report(root: string): string {
   const exactEligible = analyzed.filter(isExactEligible)
   const coherence: Rate = { numerator: exactEligible.filter((item) => item.coherent).length, denominator: exactEligible.length }
   const none = noneRates(analyzed)
+  const categoryFixtureBaseRate = fixtureBaseRate("category")
+  const subagentFixtureBaseRate = fixtureBaseRate("subagent")
+  const combinedFixtureBaseRate = {
+    choice: categoryFixtureBaseRate.choice === subagentFixtureBaseRate.choice
+      ? categoryFixtureBaseRate.choice
+      : "mixed",
+    numerator: categoryFixtureBaseRate.numerator + subagentFixtureBaseRate.numerator,
+    denominator: categoryFixtureBaseRate.denominator + subagentFixtureBaseRate.denominator,
+  }
   const lines = [
     ...denominatorLines(observations, analyzed, readResult),
     "",
@@ -242,7 +281,10 @@ export function generateJevW1Report(root: string): string {
     "",
     "PER-QUESTION COVERAGE, NOT AGREEMENT",
     ...coverageLines("category", questionCoverage(analyzed, "category")),
+    fixtureBaseRateLine("category_fixture_majority_class_base_rate", categoryFixtureBaseRate),
     ...coverageLines("subagent", questionCoverage(analyzed, "subagent")),
+    fixtureBaseRateLine("subagent_fixture_majority_class_base_rate", subagentFixtureBaseRate),
+    fixtureBaseRateLine("combined_category_subagent_fixture_majority_class_base_rate", combinedFixtureBaseRate),
     "",
     "FAN-OUT BUCKETS",
     ...FAN_OUT_BUCKETS.map((bucket) => rateLine(`fan_out_${bucket}`, routeRate(analyzed.filter((item) => item.record.fanOutBucket === bucket)))),

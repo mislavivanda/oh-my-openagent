@@ -1,0 +1,14 @@
+WHAT WAS TESTED
+The committed task-19 driver started one isolated OpenCode server per run with sandboxed HOME and XDG roots, a local fake model, and a local fake Jev endpoint. Two independent enabled runs each drove 33 turns through one attached session, requested graceful global disposal, terminated only receipted processes, then ran the report against the retained sandbox sink.
+
+WHAT WAS OBSERVED
+Both runs completed with 33 sealed rows, 57 counter deltas, final sequence 57, records_created 33, records_evicted 0, and records_in_flight 0. Each report printed turns_seen 33 and unscorable_resume_calls 2, matching the two resume rows physically present. Jev dispatch and intent log counts both reached 32 before disposal. Every receipted port was closed. The recursive real-home manifest was byte-identical before and after.
+
+WHY IT IS ENOUGH
+The run exercises the real OpenCode chat.message, tool.execute.before, session.idle, and plugin disposal path through the local plugin source. The final counter identity was checked by both the driver and the report. Repeating the complete run twice proves the result does not depend on the 60-second interval tick.
+
+WHAT WAS OMITTED
+No credential, authorization header, prompt text, private environment dump, sandbox path, PID, or assigned port is reproduced here. The exact command output and redacted receipts are retained in F5-fix-e2e.txt. No paid API was called.
+
+ISOLATION NOTE
+The operator home already contained an extra jev entry before this remediation began. It remained unchanged. Therefore the requested five-name precondition was already false, while the before and after manifests still prove this work made no real-home mutation.

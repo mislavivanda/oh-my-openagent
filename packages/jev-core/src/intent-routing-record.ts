@@ -83,6 +83,7 @@ export type IntentRoutingCounters = {
   readonly turnsGatedOut: number
   readonly turnsSynthetic: number
   readonly recordsCreated: number
+  readonly recordsInFlight: number
   readonly recordsEvicted: number
   readonly orphanObservations: number
   readonly unscorableResumeCalls: number

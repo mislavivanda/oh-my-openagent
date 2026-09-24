@@ -10,6 +10,7 @@ export function createEmptyIntentRoutingCounters(): MutableIntentRoutingCounters
     turnsGatedOut: 0,
     turnsSynthetic: 0,
     recordsCreated: 0,
+    recordsInFlight: 0,
     recordsEvicted: 0,
     orphanObservations: 0,
     unscorableResumeCalls: 0,
@@ -35,6 +36,7 @@ export function mergeLatestSourceCounters(
   target.turnsGatedOut = Math.max(target.turnsGatedOut, source.turnsGatedOut)
   target.turnsSynthetic = Math.max(target.turnsSynthetic, source.turnsSynthetic)
   target.recordsCreated = Math.max(target.recordsCreated, source.recordsCreated)
+  target.recordsInFlight = source.recordsInFlight
   target.recordsEvicted = Math.max(target.recordsEvicted, source.recordsEvicted)
   target.orphanObservations = Math.max(target.orphanObservations, source.orphanObservations)
   target.unscorableResumeCalls = Math.max(target.unscorableResumeCalls, source.unscorableResumeCalls)
@@ -51,11 +53,12 @@ export function rebaseCorpusCounters(
   target.turnsSeen = Math.max(target.turnsSeen, latest.turnsSeen - baseline.turnsSeen)
   target.turnsGatedOut = Math.max(target.turnsGatedOut, latest.turnsGatedOut - baseline.turnsGatedOut)
   target.turnsSynthetic = Math.max(target.turnsSynthetic, latest.turnsSynthetic - baseline.turnsSynthetic)
+  target.recordsInFlight = latest.recordsInFlight
   target.recordsEvicted = Math.max(target.recordsEvicted, latest.recordsEvicted - baseline.recordsEvicted)
   target.recordsCreated = Math.max(
     target.recordsCreated,
     latest.recordsCreated - baseline.recordsCreated,
-    retainedObservations + target.recordsEvicted,
+    retainedObservations + target.recordsEvicted + target.recordsInFlight,
   )
   target.orphanObservations = Math.max(
     target.orphanObservations,
@@ -83,6 +86,7 @@ export function addIntentRoutingCounters(
   target.turnsGatedOut += source.turnsGatedOut
   target.turnsSynthetic += source.turnsSynthetic
   target.recordsCreated += source.recordsCreated
+  target.recordsInFlight += source.recordsInFlight
   target.recordsEvicted += source.recordsEvicted
   target.orphanObservations += source.orphanObservations
   target.unscorableResumeCalls += source.unscorableResumeCalls

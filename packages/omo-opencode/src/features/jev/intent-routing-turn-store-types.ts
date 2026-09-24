@@ -3,6 +3,7 @@ import type {
   IntentRoutingAnswers,
   IntentRoutingDecisionResult,
   IntentRoutingEntry,
+  IntentRoutingCounters,
   IntentRoutingObservationRecord,
   IntentRoutingObservedDelegation,
 } from "@oh-my-opencode/jev-core"
@@ -65,6 +66,15 @@ export type IntentRoutingTurnStoreOptions = Readonly<{
   schemaVersion?: number
   counterEpoch?: number
   now?: () => Date
+  sourceCounters?: () => Pick<
+    IntentRoutingCounters,
+    | "turnsSeen"
+    | "turnsGatedOut"
+    | "turnsSynthetic"
+    | "unscorableResumeCalls"
+    | "unscorableUnknownCalls"
+    | "dispatchesDropped"
+  >
 }>
 
 export type LiveIntentRoutingTurn = {

@@ -30,6 +30,7 @@ export type IntentRoutingSeal = Readonly<{
   handleSessionDeleted(sessionID: string): void
   getTurn(sessionID: string, turnOrdinal: number): IntentRoutingTurnSnapshot | undefined
   listTurns(sessionID: string): readonly IntentRoutingTurnSnapshot[]
+  emitCounters(): void
   dispose(): Promise<void>
 }>
 
@@ -114,6 +115,7 @@ export function createIntentRoutingSeal(options: IntentRoutingSealOptions): Inte
     },
     getTurn: store.getTurn,
     listTurns: store.listTurns,
+    emitCounters: store.emitCounters,
     async dispose() {
       if (disposed) return
       disposed = true

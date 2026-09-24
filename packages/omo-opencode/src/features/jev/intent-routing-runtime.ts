@@ -25,6 +25,10 @@ type IntentRoutingTextPart = Readonly<{
 }>
 
 export type JevIntentRoutingRuntime = Readonly<{
+  readonly turnsSeen: number
+  readonly turnsGatedOut: number
+  readonly turnsSynthetic: number
+  readonly dispatchesDropped: number
   handleMessage(input: Readonly<{
     sessionID: string
     parts: readonly IntentRoutingTextPart[]
@@ -48,6 +52,11 @@ export function createJevIntentRoutingRuntime(args: Readonly<{
   const vocabularyDigest = createHash("sha256")
     .update(JSON.stringify(args.vocab))
     .digest("hex")
+  let turnsSeen = 0
+  let turnsGatedOut = 0
+  let turnsSynthetic = 0
+  let dispatchesDropped = 0
+  let captureCounters: JevIntentRoutingCapture | undefined
   const seal = createIntentRoutingSeal({
     maxTrackedSessions: MAX_TRACKED_SESSIONS,
     maxTurnsPerSession: MAX_TURNS_PER_SESSION,
@@ -56,12 +65,28 @@ export function createJevIntentRoutingRuntime(args: Readonly<{
     turnSealTimeoutMs: wireConfig.turn_seal_timeout_ms,
     sink: (entry) => sink.write(entry),
     disposeSink: () => sink.dispose(),
+    sourceCounters: () => ({
+      turnsSeen,
+      turnsGatedOut,
+      turnsSynthetic,
+      unscorableResumeCalls: captureCounters?.unscorableResumeCalls ?? 0,
+      unscorableUnknownCalls: captureCounters?.unscorableUnknownCalls ?? 0,
+      dispatchesDropped,
+    }),
   })
   const capture = createJevIntentRoutingCapture(seal)
+  captureCounters = capture
 
   return {
+    get turnsSeen() { return turnsSeen },
+    get turnsGatedOut() { return turnsGatedOut },
+    get turnsSynthetic() { return turnsSynthetic },
+    get dispatchesDropped() { return dispatchesDropped },
     handleMessage(input) {
-      seal.handleMessage({
+      turnsSeen += 1
+      if (input.notDispatchedReason === "max_inflight") dispatchesDropped += 1
+      else if (input.notDispatchedReason !== undefined) turnsGatedOut += 1
+      const turn = seal.handleMessage({
         sessionID: input.sessionID,
         parts: input.parts,
         questionVersion: INTENT_ROUTING_QUESTION_VERSION,
@@ -73,8 +98,14 @@ export function createJevIntentRoutingRuntime(args: Readonly<{
         dispatch: input.dispatch,
         notDispatchedReason: input.notDispatchedReason,
       })
+      if (turn === undefined) turnsSynthetic += 1
+      seal.emitCounters()
     },
-    capture: capture.capture,
+    capture(input, output) {
+      const captured = capture.capture(input, output)
+      if (captured) seal.emitCounters()
+      return captured
+    },
     handleSessionIdle: seal.handleSessionIdle,
     handleSessionDeleted: seal.handleSessionDeleted,
     dispose: seal.dispose,

@@ -32,6 +32,7 @@ type ToolExecuteBeforeOutput = Readonly<{
 
 export type JevIntentRoutingCapture = Readonly<{
   readonly unscorableResumeCalls: number
+  readonly unscorableUnknownCalls: number
   capture(
     input: ToolExecuteBeforeInput,
     output: ToolExecuteBeforeOutput,
@@ -46,10 +47,14 @@ export function createJevIntentRoutingCapture(
   store: IntentRoutingObservationAppender,
 ): JevIntentRoutingCapture {
   let unscorableResumeCalls = 0
+  let unscorableUnknownCalls = 0
 
   return {
     get unscorableResumeCalls() {
       return unscorableResumeCalls
+    },
+    get unscorableUnknownCalls() {
+      return unscorableUnknownCalls
     },
     capture(input, output) {
       if (!CAPTURE_TOOLS.has(input.tool)) return false
@@ -78,6 +83,9 @@ export function createJevIntentRoutingCapture(
       const captured = store.appendObservation(input.sessionID, observation)
       if (captured && normalized.routeClass === "unscorable_resume") {
         unscorableResumeCalls += 1
+      }
+      if (captured && normalized.routeClass === "unknown") {
+        unscorableUnknownCalls += 1
       }
       return captured
     },

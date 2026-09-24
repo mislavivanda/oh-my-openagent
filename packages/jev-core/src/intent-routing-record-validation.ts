@@ -170,6 +170,7 @@ const counterFields = {
   turnsGatedOut: isNonNegativeInteger,
   turnsSynthetic: isNonNegativeInteger,
   recordsCreated: isNonNegativeInteger,
+  recordsInFlight: isNonNegativeInteger,
   recordsEvicted: isNonNegativeInteger,
   orphanObservations: isNonNegativeInteger,
   unscorableResumeCalls: isNonNegativeInteger,

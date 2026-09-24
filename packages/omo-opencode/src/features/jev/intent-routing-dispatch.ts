@@ -1,7 +1,7 @@
 import { INTENT_ROUTING_QUESTION_VERSION } from "@oh-my-opencode/jev-core"
 import type { DecisionBackend, IntentRoutingDecisionResult } from "@oh-my-opencode/jev-core"
 import type { JevIntentRoutingWireConfig } from "../../config/schema/jev"
-import { isRealUserTextPart } from "../../shared"
+import { isRealUserTextPart, isSyntheticOrInternalOnlyTextParts } from "../../shared"
 import type { JevIntentRoutingRuntime } from "./intent-routing-runtime"
 import {
   getJevIntentRoutingSessionGateReason,
@@ -25,7 +25,11 @@ export type IntentRoutingTextPart = Readonly<{
   synthetic?: boolean
 }>
 
-type PromptSnapshot = Readonly<{ promptText: string; truncatedInput: boolean }>
+type PromptSnapshot = Readonly<{
+  promptText: string
+  truncatedInput: boolean
+  synthetic: boolean
+}>
 
 function snapshotPromptText(
   parts: readonly IntentRoutingTextPart[],
@@ -51,7 +55,11 @@ function snapshotPromptText(
     }
   }
 
-  return Object.freeze({ promptText, truncatedInput })
+  return Object.freeze({
+    promptText,
+    truncatedInput,
+    synthetic: isSyntheticOrInternalOnlyTextParts(parts),
+  })
 }
 
 function safeBackendKind(backend: DecisionBackend): string {
@@ -78,7 +86,6 @@ export function createJevIntentRoutingDispatch(args: Readonly<{
   ): void
 }> {
   let inFlight = 0
-  let dispatchesDropped = 0
 
   const safeLog = (message: string, data?: unknown): void => {
     try {
@@ -136,7 +143,7 @@ export function createJevIntentRoutingDispatch(args: Readonly<{
 
   return {
     get inFlight() { return inFlight },
-    get dispatchesDropped() { return dispatchesDropped },
+    get dispatchesDropped() { return args.runtime.dispatchesDropped },
     dispatch(input, output) {
       const sessionID = input.sessionID
       const snapshot = snapshotPromptText(output.parts, args.wireConfig.max_prompt_chars)
@@ -145,31 +152,34 @@ export function createJevIntentRoutingDispatch(args: Readonly<{
           const gateReason = getJevIntentRoutingSessionGateReason(sessionID)
           if (!isJevIntentRoutingSessionEligible(sessionID)) {
             const reason = gateReason ?? "non_main_session"
-            logNotDispatched({ sessionID, ...snapshot }, reason)
+            logNotDispatched({ sessionID, promptText: snapshot.promptText, truncatedInput: snapshot.truncatedInput }, reason)
             args.runtime.handleMessage({
               sessionID,
-              parts: [{ type: "text", text: snapshot.promptText }],
+              parts: [{ type: "text", text: snapshot.promptText, synthetic: snapshot.synthetic }],
               truncatedInput: snapshot.truncatedInput,
               notDispatchedReason: reason,
             })
             return
           }
           if (inFlight >= args.wireConfig.max_inflight) {
-            dispatchesDropped += 1
-            logNotDispatched({ sessionID, ...snapshot }, "max_inflight")
+            logNotDispatched({ sessionID, promptText: snapshot.promptText, truncatedInput: snapshot.truncatedInput }, "max_inflight")
             args.runtime.handleMessage({
               sessionID,
-              parts: [{ type: "text", text: snapshot.promptText }],
+              parts: [{ type: "text", text: snapshot.promptText, synthetic: snapshot.synthetic }],
               truncatedInput: snapshot.truncatedInput,
               notDispatchedReason: "max_inflight",
             })
             return
           }
 
-          const request = Object.freeze({ sessionID, ...snapshot })
+          const request = Object.freeze({
+            sessionID,
+            promptText: snapshot.promptText,
+            truncatedInput: snapshot.truncatedInput,
+          })
           args.runtime.handleMessage({
             sessionID,
-            parts: [{ type: "text", text: snapshot.promptText }],
+            parts: [{ type: "text", text: snapshot.promptText, synthetic: snapshot.synthetic }],
             truncatedInput: snapshot.truncatedInput,
             dispatch: () => {
               inFlight += 1

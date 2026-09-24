@@ -1,3 +1,4 @@
+// allow: SIZE_OK - one state machine owns the turn lifecycle and its transition invariants.
 import type { IntentRoutingObservedDelegation } from "@oh-my-opencode/jev-core"
 import {
   buildObservationRecord,
@@ -37,6 +38,20 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
   let recordsEvicted = 0
   let orphanObservations = 0
   let monotonicSeq = 0
+  const sourceCounters = options.sourceCounters ?? (() => ({
+    turnsSeen: 0,
+    turnsGatedOut: 0,
+    turnsSynthetic: 0,
+    unscorableResumeCalls: 0,
+    unscorableUnknownCalls: 0,
+    dispatchesDropped: 0,
+  }))
+
+  function recordsInFlight(): number {
+    let total = 0
+    for (const session of sessions.values()) total += session.turns.size
+    return total
+  }
 
   function removeTurn(turn: LiveIntentRoutingTurn): void {
     const session = sessions.get(turn.sessionID)
@@ -61,6 +76,7 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
 
   function emitCounters(): void {
     monotonicSeq += 1
+    const source = sourceCounters()
     options.sink(buildStoreCounterDelta({
       schemaVersion,
       recordedAt: now().toISOString(),
@@ -68,8 +84,10 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
       counterEpoch,
       monotonicSeq,
       recordsCreated,
+      recordsInFlight: recordsInFlight(),
       recordsEvicted,
       orphanObservations,
+      ...source,
     }))
   }
 
@@ -169,6 +187,7 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     get evictedCount() { return recordsEvicted },
     get trackedSessionCount() { return sessions.size },
     get reuseEntryCount() { return predictions.size },
+    emitCounters,
     createTurn(input: IntentRoutingTurnInput): IntentRoutingTurnSnapshot {
       const session = getSession(input.sessionID)
       const turnOrdinal = session.nextOrdinal
@@ -247,6 +266,7 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     dispose(): void {
       for (const sessionID of [...sessions.keys()]) finalizeSession(sessionID, "dispose")
       predictions.clear()
+      emitCounters()
     },
   }
 }

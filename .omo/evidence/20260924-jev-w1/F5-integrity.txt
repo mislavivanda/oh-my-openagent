@@ -1,0 +1,437 @@
+F5 MEASUREMENT INTEGRITY - ARE THE NUMBERS HONEST AND CORRECTLY NAMED
+
+VERDICT: REJECT
+
+Scope: independent verification that the todo-19 / jev-w1-report measurement pipeline produces
+numbers that are (a) producible at all, (b) correctly named, (c) honestly presented.
+Naming and conditioning are excellent and pass every assertion. The REJECT is driven by three
+defects in whether the numbers are PRODUCIBLE and MEAN WHAT THEY SAY (F-1, F-2, F-3).
+
+No source, report script, evidence content, or plan file was modified by this lane.
+
+
+== WHAT WAS TESTED ==
+
+Own corpus, built and retained by F5 (F3's sandbox was never read; F3 tears its own down).
+
+  F5_SANDBOX=/tmp/tmp.UgsbNR2bi1        (mktemp -d)
+  F5_RECEIPTS=/tmp/tmp.Vt0Cw5Sdh6       (mktemp -d, verified OUTSIDE the sandbox)
+
+  bash .omo/evidence/20260924-jev-w1/task-19-drive.sh \
+       --sandbox "$F5_SANDBOX" --receipts "$F5_RECEIPTS" --wire enabled --keep
+  bun run script/jev-w1-report.ts --root "$F5_SANDBOX/home/.omo/jev"
+
+Three corpora were reported on:
+  LIVE     33 observations, the corpus the driver actually produced      -> report THROWS
+  DERIVED  lines 1..31 of the same file (30 obs + the counter snapshot that describes them)
+  FIXTURE  script/jev-w1-report.fixtures.ts writeSyntheticCorpus(), the repo's own committed corpus
+  MINPAIR  two hand-minted single-record corpora differing ONLY in routeClass
+
+DERIVED, FIXTURE and MINPAIR are diagnostic aids used to exercise branches the LIVE corpus could
+not reach. They are labelled as such everywhere below and are never presented as headline results.
+
+
+== WHAT WAS OBSERVED ==
+
+Driver: 33 turns, 33 observations sealed, 1 counter_delta, single sessionID.
+The driver itself exited NON-ZERO on its own internal assertion:
+
+  FAIL: Jev dispatches (32) do not match intent logs (31)
+
+Sandbox retained because of --keep, so the corpus survived for reporting.
+
+
+-- ASSERTION 5: IDENTITY records_created == sealed + evicted + in_flight --
+
+ON THE LIVE CORPUS THE REPORT DOES NOT PRINT AN IDENTITY LINE. IT THROWS:
+
+  ReportIdentityError: records_created 30 is less than sealed 33 plus evicted 0
+   created: 30,
+    sealed: 33,
+   evicted: 0,
+        at denominatorLines (script/jev-w1-report.ts:177:27)
+
+On the DERIVED corpus the literal line is:
+
+  identity: records_created(30) == sealed(30) + evicted(0) + in_flight(0)
+
+On the FIXTURE corpus, with a non-zero eviction and non-zero in-flight:
+
+  identity: records_created(22) == sealed(17) + evicted(2) + in_flight(3)
+
+So the identity HOLDS wherever it is printed, but on the corpus the sanctioned driver actually
+produces it is VIOLATED and the report aborts. See F-1. And see F-2: the printed line is a
+tautology, not a reconciliation.
+
+
+-- ASSERTION 6: NO DOUBLE-COUNT BETWEEN records_evicted AND ANY sealedBy VALUE -- PASS
+
+Type-level: SEALED_BY_VALUES in script/jev-w1-report.ts:16 is exactly
+  ["next_turn", "session_idle", "seal_timeout", "dispose", "session_deleted"]
+and script/jev-w1-report.fixtures.ts:18 pins it as
+  type SealedBy = IntentRoutingObservationRecord["sealedBy"]
+so the enum is the record's own union. "evicted" is not a member. The plan states this is
+deliberate (.omo/plans/jev-w1-intent-routing.md:119): an evicted record is never written, so
+eviction is counted ONLY in recordsEvicted.
+
+Structural: records_sealed_by_* is computed from observations (rows physically on disk);
+records_evicted comes from the counter snapshot. The two populations are disjoint by
+construction because an evicted record produces no row.
+
+Empirical, FIXTURE corpus (evicted is non-zero there, so the check is not vacuous):
+  next_turn 7 + session_idle 3 + seal_timeout 2 + dispose 2 + session_deleted 3 = 17
+  records_sealed: 17          <- sum matches exactly
+  records_evicted: 2          <- reported on its own line, outside that sum
+  records_in_flight: 3
+No eviction is reachable through any sealedBy bucket. PASS.
+
+Honest caveat: on the LIVE corpus records_evicted is 0, so the live run alone would have
+demonstrated this only vacuously. The non-vacuous proof is the FIXTURE corpus.
+
+
+-- ASSERTION 7: HEADLINE RATES USE correlationStatus == reliable ONLY -- PASS
+
+isRateEligible (script/jev-w1-report.ts:98) requires correlationStatus === "reliable".
+All three statuses are printed separately (line 208 emits every CORRELATION_STATUSES member).
+
+LIVE/DERIVED corpus:
+  correlation_status_reliable: 30
+  correlation_status_censored: 0
+  correlation_status_overlap_ambiguous: 0
+  headline route_agreement: 15/23 = 65.22% (eligible_denominator=23)
+
+Denominator reconciles exactly: 30 reliable+filled, minus 2 resume_only = 28 rate-eligible,
+minus 5 multi-route turns (multi_route_turns_coverage_only: 5) = 23 exact-eligible.
+
+FIXTURE corpus, where censored and overlap are non-zero:
+  correlation_status_reliable: 15
+  correlation_status_censored: 1
+  correlation_status_overlap_ambiguous: 1
+  route_agreement: 5/9 = 55.56% (eligible_denominator=9)
+The censored record and the overlap_ambiguous record are both excluded from the 9 and are
+reported separately with their counts. PASS.
+
+Honest caveat: the LIVE corpus had 0 censored and 0 overlap, so the exclusion is non-vacuously
+proven only on the FIXTURE corpus.
+
+
+-- ASSERTION 8: resume_only_records IN NO NUMERATOR AND NO DENOMINATOR -- PASS
+
+isRateEligible line 100 carries "&& !item.resumeOnly", so a resume-only record cannot enter any
+rate. Arithmetic on the DERIVED corpus: 30 filled+reliable - 2 resume_only = 28 rate-eligible,
+which is exactly the none_precision denominator. Exact.
+
+Decisive MINPAIR proof, a single resume-only record as the entire corpus:
+  records_sealed: 1
+  resume_only_records: 1
+  route_agreement:  insufficient data (eligible_denominator=0)
+  none_recall:      insufficient data (eligible_denominator=0)
+  none_precision:   insufficient data (eligible_denominator=0)
+Every denominator is 0 and every numerator is absent. PASS.
+
+
+-- ASSERTION 9: none RECALL AND none PRECISION, BOTH PRESENT, CORRECTLY LABELLED,
+   ON DIFFERENT CONDITIONING SETS -- PASS, AND THEY DIFFER ON THIS CORPUS
+
+DERIVED corpus (F5's own live data):
+  none_recall:    15/15 = 100.00% (eligible_denominator=15)
+  none_precision: 15/28 = 53.57%  (eligible_denominator=28)
+
+Conditioning sets, from script/jev-w1-report.ts:153-164:
+  recall    denominator = actualNone    = rate-eligible AND knownRoutes.size === 0 AND !hasUnknown
+                                        = turns that ACTUALLY had zero scorable routes.   n=15
+  precision denominator = predictedNone = rate-eligible AND predictedRoute === "none"
+                                        = turns where none was PREDICTED.                 n=28
+  shared numerator = isValidNone = the intersection (predicted none AND actually none, valid,
+                                   coherent) = true positives. Correct for both metrics.
+
+They are NOT numerically equal on my corpus: 100.00% vs 53.57%, denominators 15 vs 28.
+The FIXTURE corpus also separates them: none_recall 1/1 = 100.00%, none_precision 1/3 = 33.33%.
+The earlier draft's mislabelling of recall as precision is definitively fixed, and I did not have
+to rely on equality-as-proof.
+
+Additional correctness the labels get right, shown by MINPAIR: for a single unknown-only record,
+none_recall is "insufficient data (eligible_denominator=0)" while none_precision is 0/1. That is
+correct - an unknown-only turn is not a turn that "actually had zero scorable routes" in the
+representable sense (the !hasUnknown guard), so it is properly kept out of the recall denominator
+while still being charged against precision and route agreement.
+
+
+-- ASSERTION 10: PER-QUESTION FIGURES LABELLED COVERAGE, WITH DISTINCT-TARGET CARDINALITY
+   AND A CARDINALITY-WEIGHTED VARIANT -- PASS
+
+Section header is literally "PER-QUESTION COVERAGE, NOT AGREEMENT". Four lines, every one
+carrying distinct_target_cardinality. DERIVED corpus:
+
+  category_coverage: 0/8 = 0.00% (eligible_denominator=8, distinct_target_cardinality=10)
+  category_coverage_cardinality_weighted: 0/10 = 0.00% (eligible_denominator=10, distinct_target_cardinality=10)
+  subagent_coverage: 0/8 = 0.00% (eligible_denominator=8, distinct_target_cardinality=9)
+  subagent_coverage_cardinality_weighted: 0/9 = 0.00% (eligible_denominator=9, distinct_target_cardinality=9)
+
+The word "agreement" is never applied to a per-question figure. The weighted variant is a
+genuinely distinct computation, not a relabelled duplicate - proven on the FIXTURE corpus where
+the two diverge in value, not just in denominator:
+
+  category_coverage: 4/7 = 57.14%   vs  category_coverage_cardinality_weighted: 4/9 = 44.44%
+  subagent_coverage: 2/2 = 100.00%  vs  subagent_coverage_cardinality_weighted: 2/4 = 50.00%
+
+PASS.
+
+
+-- ASSERTION 11: intent AND ambiguous LABELLED FIXTURE-SCORED ONLY -- PASS
+
+  INTENT AND AMBIGUOUS: FIXTURE-SCORED ONLY, NO LIVE GROUND TRUTH
+  intent: not scored from the live sink
+  ambiguous: not scored from the live sink
+
+No intent or ambiguous rate is computed anywhere in the report. The header states the absence of
+live ground truth explicitly rather than silently omitting the questions. PASS.
+
+
+-- ASSERTION 12: unknown AND resume ARE GENUINELY SEPARATE BUCKETS, NOT JUST SEPARATELY NAMED
+   -- PASS, PROVEN BY MINIMAL PAIR
+
+The LIVE corpus contained ZERO unknown records, so it could not on its own prove the differential.
+I therefore minted a minimal pair: one real reliable+filled record from my own live corpus,
+duplicated, with the single observation's routeClass set to "unknown" in one copy and
+"unscorable_resume" in the other. Everything else is byte-identical.
+
+                                    routeClass=unknown   routeClass=unscorable_resume
+  records_sealed                            1                        1
+  unknown_only_records                      1                        0
+  resume_only_records                       0                        1
+  unrepresentable_route_mismatches          1                        0
+  route_agreement                   0/1 (denominator=1)   insufficient data (denominator=0)
+  none_precision                    0/1 (denominator=1)   insufficient data (denominator=0)
+
+The unknown-only record STAYS IN SCORING and is charged as an unrepresentable mismatch
+(denominator 1, numerator 0). The resume-only record is EXCLUDED ENTIRELY (denominator 0,
+present in no numerator). Different observable behaviour, not merely different counter names.
+
+Code agreement: isRateEligible (line 100) excludes resumeOnly but deliberately does NOT exclude
+unknownOnly; isRouteCorrect (line 108) returns false whenever hasUnknown. PASS.
+
+Corroborated on the FIXTURE corpus, which carries one of each:
+  resume_only_records: 1, unknown_only_records: 1, unrepresentable_route_mismatches: 3,
+  route_agreement eligible_denominator=9. Counting the specs by hand, 11 records are rate-eligible
+  (the unknown-only record among them, the resume-only record NOT), and removing the 2 multi-route
+  turns gives exactly 9. The denominator would be 10 if resume-only were wrongly included.
+
+
+-- ASSERTION 13: TODO-18 BASELINE RECORDS A RESOLVED MODEL ID -- PASS
+
+.omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt records:
+
+  resolvedModel: jev-1.13.0        <- concrete resolved id
+  questionVersion: 1
+  requestCount: 15   callCeiling: 15   (run contract states no retry)
+  input_tokens total: 13661
+  output_tokens total: 4492
+  latencyMs range: 104.03445599999986 to 322.695416
+  PER-QUESTION CONFUSION MATRICES for all four questions (intent, category, subagent, ambiguous)
+
+grep for "jev-latest" in that file: ABSENT. The floating alias is the schema default elsewhere in
+the repo (packages/omo-opencode/src/config/schema/jev.ts:80) and appears in tests and docs, but it
+is correctly kept out of the baseline artifact. Every required field is present. PASS.
+
+
+-- ASSERTION 14: IS THE 40% / 80% ACCURACY HONESTLY PRESENTED --
+
+I re-derived every figure independently from the confusion matrices in the file:
+
+  intent:    1+1+1+6+1+3+2 = 15 rows, correct = 14      -> 14/15
+  category:  8+2+1+2+1+1   = 15 rows, correct = 8+2+1+1 = 12  -> 12/15
+  subagent:  13+1+1        = 15 rows, correct = 13      -> 13/15
+  ambiguous: 5+6+4         = 15 rows, correct = 5+4 = 9 -> 9/15
+  sum correct = 14+12+13+9 = 48 / 60 = 80.0%            MATCHES
+  "exact" rows counted in PER-FIXTURE RESULTS = 6 / 15 = 40.0%   MATCHES
+
+The evidence supports the stated numbers exactly. Nothing is rounded favourably and nothing is
+hidden: the file leads with "Accuracy was observed, not gated", records exactly one paid run with
+no retry, and names all nine mismatching fixtures individually with expected vs predicted. A 40%
+exact-match rate is reported as plainly as the 80% would have been. I judge the presentation
+HONEST. It is, however, INCOMPLETE in one respect - see F-4.
+
+
+-- ASSERTION 15: IS THE none-HEAVY FIXTURE DENOMINATOR MADE VISIBLE TO A READER -- PARTIAL
+
+First, a correction to the premise I was given. My instructions state 6 of the 15 fixtures carry
+label.category: "none". The actual count in packages/jev-core/src/intent-routing-fixtures.ts is 8.
+
+  grep tally of label category values:  none 8, quick 2, visual-engineering 2,
+                                        deep 1, ultrabrain 1, writing 1   (= 15)
+
+Corroborated by the task-18 category confusion matrix, whose expected-none row totals 8
+("none -> none 8"). The subagent question is worse: label.subagent is "none" in 13 of 15.
+
+So the fixture arm's none denominator is MORE degenerate than the row assumed, not less.
+Consequence: a trivial always-answer-"none" predictor scores 8/15 on category and 13/15 on
+subagent, i.e. 21/30 = 70% of those two questions' answers, with no intelligence at all. That
+inflates the headline 48/60 = 80%.
+
+Is it visible? PARTIALLY, and only to a determined reader. task-18-real-api-matrix.txt does print
+the full per-fixture expected/predicted list and complete confusion matrices, from which a reader
+CAN derive the 8 and the 13. But no line states the base rate, no majority-class baseline is
+computed, and the 80% headline carries no caveat. See F-4.
+
+
+== FINDINGS ==
+
+F-1  SEVERITY HIGH (blocking).  The documented report command cannot produce a report on the
+     corpus its own documented driver produces. Timing-dependent, so a green result elsewhere is
+     luck rather than proof.
+
+     Observed: bun run script/jev-w1-report.ts --root "$F5_SANDBOX/home/.omo/jev"
+               -> ReportIdentityError: records_created 30 is less than sealed 33 plus evicted 0
+
+     Root cause, proven from the corpus and the source:
+       INTENT_ROUTING_SINK_COUNTER_INTERVAL_MS = 60_000
+         (packages/omo-opencode/src/features/jev/intent-routing-sink-config.ts:8)
+       The counter snapshot is flushed by setInterval(emitCounterDelta, 60s) plus once in
+       dispose() (intent-routing-sink.ts:179-191). The driver SIGTERMs the opencode server
+       (task-19-drive.sh:248), so dispose() never runs and no final snapshot is written.
+
+     Timing proof from my own sink file:
+       obs ordinal 1   recordedAt 2026-09-24T19:14:52.630Z
+       counter_delta   recordedAt 2026-09-24T19:15:48.071Z  monotonicSeq=1  recordsCreated=30
+       obs ordinal 31  recordedAt 2026-09-24T19:15:48.818Z   <- 0.75s AFTER the snapshot
+       obs ordinal 33  recordedAt 2026-09-24T19:15:51.065Z
+       file layout: lines 1-30 observations, line 31 counter_delta, lines 32-34 observations
+       monotonicSeq=1 means this was the FIRST and ONLY tick; a dispose() flush would be seq=2.
+
+     Why it is timing-dependent: the driver's post-turn wait loop (task-19-drive.sh:243-247) breaks
+     as soon as ANY counter_delta exists. If the turns finish in under 60s the single tick lands
+     AFTER all turns and the snapshot is complete, so the report succeeds. My run took 58.4s of
+     turn wall-clock and the tick landed 3 records before the end, so it failed. The pipeline is
+     therefore flaky by wall-clock, and the report's response to the flake is to abort rather than
+     to degrade.
+
+     Note the writer already defends against exactly this under-count internally -
+     accountObservation() floors recordsCreated at retainedObservations + recordsEvicted
+     (intent-routing-sink.ts:109-112) - but the reader applies no equivalent floor, so it trusts a
+     snapshot the format does not guarantee is current.
+
+     This is a defect, reported not fixed.
+
+F-2  SEVERITY HIGH.  The identity is a tautology, not a reconciliation, and the second check is
+     dead code.
+
+     script/jev-w1-report.ts:176-179
+       const inFlight    = counters.recordsCreated - sealed - counters.recordsEvicted
+       if (inFlight < 0) throw ...
+       const identityTotal = sealed + counters.recordsEvicted + inFlight
+       if (counters.recordsCreated !== identityTotal) throw ...
+
+     Substituting the definition of inFlight, identityTotal is
+       sealed + evicted + (created - sealed - evicted) === created
+     for all integer inputs. The line-179 comparison can therefore NEVER be false, and the printed
+     line "identity: records_created(30) == sealed(30) + evicted(0) + in_flight(0)" restates a
+     definition rather than reconciling two independently-sourced quantities.
+
+     The only live check is inFlight < 0, which catches UNDER-counting only. An OVER-count
+     (records_created larger than reality) is silently absorbed into records_in_flight, where it is
+     indistinguishable from genuinely in-flight records. A reader is invited by the word "identity"
+     to read the line as evidence of reconciliation; it is not.
+
+F-3  SEVERITY HIGH.  Six reported denominators are hard-coded to zero in the live path. The report
+     prints un-instrumented zeros in the same list, same format, as genuinely measured counts.
+
+     Source proof, packages/omo-opencode/src/features/jev/intent-routing-turn-record.ts
+     buildStoreCounterDelta(), which is what the live turn store emits:
+
+       turnsSeen: 0,                 <- literal
+       turnsGatedOut: 0,             <- literal
+       turnsSynthetic: 0,            <- literal
+       recordsCreated: input.recordsCreated,        <- real
+       recordsEvicted: input.recordsEvicted,        <- real
+       orphanObservations: input.orphanObservations,<- real
+       unscorableResumeCalls: 0,     <- literal
+       unscorableUnknownCalls: 0,    <- literal
+       dispatchesDropped: 0,         <- literal
+
+     Only three of the counters are threaded through. rebaseCorpusCounters propagates the rest as
+     Math.max(0, 0 - 0) = 0, so turns_seen, turns_gated_out, turns_synthetic,
+     unscorable_resume_calls, unscorable_unknown_calls and dispatches_dropped can never be non-zero
+     in a live run, regardless of what actually happened.
+
+     Empirical smoking gun - the report contradicts itself on my own live corpus:
+       unscorable_resume_calls: 0        <- from the counter snapshot
+       resume_only_records: 2            <- derived from the rows
+       and 2 observations with routeClass "unscorable_resume" are physically on disk
+       (routeClass histogram: category 11, subagent 9, unscorable_resume 2)
+     Likewise turns_seen: 0 is printed next to records_sealed: 30.
+
+     The FIXTURE corpus masks this completely, because writeSyntheticCorpus hand-writes counter
+     deltas with turnsSeen 25, turnsGatedOut 3, unscorableResumeCalls 3 and so on. So
+     fixture-backed tests are green on denominators that are structurally dead in production.
+
+     This is squarely a "numbers are honest" failure: a reader cannot distinguish "measured zero"
+     from "never instrumented", and in the resume case the two printed numbers cannot both be true.
+
+F-4  SEVERITY MEDIUM.  The none-heavy fixture denominator is derivable but never disclosed, and the
+     premise I was given understates it.
+
+     Actual label distribution in packages/jev-core/src/intent-routing-fixtures.ts:
+       label.category "none" = 8 of 15   (my instructions said 6)
+       label.subagent "none" = 13 of 15
+     A constant "none" predictor therefore scores 8/15 category and 13/15 subagent with zero
+     capability, which materially flatters the headline 48/60 = 80.0%. task-18-real-api-matrix.txt
+     supplies the raw material to compute this but states no base rate, offers no majority-class
+     baseline, and attaches no caveat to the 80% figure. Not dishonest; under-disclosed.
+
+F-5  SEVERITY LOW-MEDIUM.  The driver's own cross-check is race-prone at shutdown and failed on
+     this run.
+
+       FAIL: Jev dispatches (32) do not match intent logs (31)
+
+     task-19-drive.sh compares fake-Jev request count against plugin-log line count (lines 256-257,
+     asserted at 270) AFTER SIGTERMing the server (line 248). A dispatch that reached the fake Jev
+     while the plugin's log write lost the race with termination produces exactly this off-by-one.
+     Same shutdown-ordering family as F-1. It makes the driver exit non-zero on a run whose corpus
+     was otherwise complete (33/33 observations sealed, single session, all fan-out buckets
+     populated), which will intermittently fail any lane that treats driver exit status as a gate.
+
+
+== WHY THIS IS ENOUGH ==
+
+Assertions 6, 7, 8, 9, 10, 11, 12 and 13 are each verified with a concrete printed number, and the
+three that the live corpus could not exercise non-vacuously (eviction double-count, censored /
+overlap exclusion, unknown-vs-resume) are proven on the repo's own committed fixture corpus and on
+a hand-minted minimal pair rather than asserted from code reading alone. Assertion 5 is verified as
+failing, with a timestamp-level root cause. The accuracy figures in assertion 14 were re-derived
+from the raw confusion matrices and tie out to the last digit.
+
+Residual risk not covered: I exercised one live run on one machine. F-1 is timing-dependent, so the
+exact 30-vs-33 split is not reproducible, but the mechanism (60s tick, no dispose flush on SIGTERM)
+is structural and will recur. I did not measure how often a sub-60s run masks it.
+
+
+== WHAT WAS OMITTED ==
+
+No API key, authorization header, server password, or raw environment dump is reproduced here. The
+run used the sandbox dummy TYPESAFE_API_KEY set by the driver and a local fake model plus a local
+fake Jev endpoint, so NO REAL PAID API CALL WAS MADE. Sandbox-assigned ports and PIDs are quoted
+only as bare numbers from the receipts. Prompt text from the corpus is not reproduced; disagreement
+prompts are referenced only by the SHA-256 values the report itself prints.
+
+
+== CLEANUP AND ISOLATION ==
+
+Teardown by explicit path, then per-receipt verification. NO GLOBAL PROCESS MATCHER WAS USED -
+pkill -f opencode and pgrep -f opencode are forbidden here because they would match the operator's
+own OpenCode. Every PID was checked individually with kill -0 against the receipts file, and every
+port with a per-port TCP connect probe.
+
+  rm -rf -- /tmp/tmp.UgsbNR2bi1            -> SANDBOX_REMOVED_OK
+  unique receipted PIDs                    -> 36, alive_count=0
+  driver PID 1018334                       -> DEAD
+  port 36167 (opencode-serve)              -> closed
+  port 40711 (fake-model)                  -> closed
+  port 43973 (fake-jev)                    -> closed
+
+Operator environment untouched:
+  real ~/.omo/jev file count   BEFORE 0    AFTER 0
+  real opencode.db sessions    BEFORE 420  AFTER 420
+The report was never run against the real ~/.omo/jev default; --root was passed on every invocation.
+
+Receipts retained at /tmp/tmp.Vt0Cw5Sdh6 (pids.tsv, ports.tsv), outside the deleted sandbox.

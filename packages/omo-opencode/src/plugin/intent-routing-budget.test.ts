@@ -46,6 +46,10 @@ function createConfig(backend: "mock" | "real" = "mock") {
 
 function createRuntime(handleMessage: JevIntentRoutingRuntime["handleMessage"]): JevIntentRoutingRuntime {
   return {
+    turnsSeen: 0,
+    turnsGatedOut: 0,
+    turnsSynthetic: 0,
+    dispatchesDropped: 0,
     handleMessage,
     capture: () => false,
     handleSessionIdle() {},

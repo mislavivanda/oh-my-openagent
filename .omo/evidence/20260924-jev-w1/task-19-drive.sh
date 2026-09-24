@@ -240,11 +240,19 @@ done < "$TURN_SCRIPT"
 [ "$TURN_COUNT" -ge 30 ] || fail "turn script has fewer than 30 turns"
 
 if [ "$WIRE" = enabled ]; then
-  for _ in $(seq 1 70); do
-    if find "$HOME/.omo/jev" -maxdepth 1 -type f -name 'w1-*.jsonl' -exec grep -q '"kind":"counter_delta"' {} + 2>/dev/null; then break; fi
-    sleep 1
+  for _ in $(seq 1 200); do
+    LOG=$(find "$TMPDIR" -maxdepth 1 -type f -name 'oh-my-open*.log' -print -quit)
+    JEV_DISPATCHES=$(jq -r 'select(.event == "systemOne") | 1' "$JEV_LOG" | wc -l)
+    JEV_LINES=0
+    [ -z "$LOG" ] || JEV_LINES=$(grep -c '] \[jev\] intent-routing {' "$LOG" || true)
+    if [ "$JEV_DISPATCHES" -eq "$JEV_LINES" ] && [ "$JEV_DISPATCHES" -gt 0 ]; then break; fi
+    sleep 0.1
   done
+  [ "$JEV_DISPATCHES" -eq "$JEV_LINES" ] || fail "pre-dispose Jev dispatches ($JEV_DISPATCHES) do not match intent logs ($JEV_LINES)"
 fi
+
+DISPOSE_STATUS=$(curl -sS --max-time 15 -o "$RECEIPTS/global-dispose.json" -w '%{http_code}' -u "opencode:$SERVER_PASS" -X POST "$SERVER_URL/global/dispose" || true)
+case "$DISPOSE_STATUS" in 200|204) ;; *) fail "graceful global dispose returned HTTP $DISPOSE_STATUS" ;; esac
 kill -TERM "$SERVER_PID" 2>/dev/null || true
 for _ in $(seq 1 100); do kill -0 "$SERVER_PID" 2>/dev/null || break; sleep 0.1; done
 if kill -0 "$SERVER_PID" 2>/dev/null; then kill -KILL "$SERVER_PID" 2>/dev/null || true; fi
@@ -283,5 +291,11 @@ for bucket in zero one many; do [ "$(jq --arg value "$bucket" '[.[] | select(.fa
 [ "$(jq '[.[] | select(.isContinuationCandidate == true)] | length' <<<"$OBSERVATIONS")" -gt 0 ] || fail "continuation candidate was not observed"
 COUNTER_DELTAS=$(jq -s '[.[] | select(.kind == "counter_delta")] | length' "$SINK_FILE")
 [ "$COUNTER_DELTAS" -gt 0 ] || fail "no counter_delta was written"
+LATEST_COUNTER=$(jq -s '[.[] | select(.kind == "counter_delta")] | sort_by(.counterEpoch, .monotonicSeq) | last' "$SINK_FILE")
+COUNTER_SEQ=$(jq '.monotonicSeq' <<<"$LATEST_COUNTER")
+COUNTER_CREATED=$(jq '.counters.recordsCreated' <<<"$LATEST_COUNTER")
+COUNTER_EVICTED=$(jq '.counters.recordsEvicted' <<<"$LATEST_COUNTER")
+COUNTER_IN_FLIGHT=$(jq '.counters.recordsInFlight' <<<"$LATEST_COUNTER")
+[ "$COUNTER_CREATED" -eq "$((SEALED + COUNTER_EVICTED + COUNTER_IN_FLIGHT))" ] || fail "final counter identity mismatch: created=$COUNTER_CREATED sealed=$SEALED evicted=$COUNTER_EVICTED in_flight=$COUNTER_IN_FLIGHT"
 CORRELATIONS=$(jq -r '[.[].correlationStatus] | unique | join(",")' <<<"$OBSERVATIONS")
-printf 'wire=enabled server_url=http://127.0.0.1:<sandbox-port> sessionID=%s turns=%s sealed=%s counter_delta=%s jev_dispatches=%s intent_logs=%s fanout=zero,one,many predictionReused=true call_omo_agent=true unscorable_resume=true continuation=true correlationStatus=%s\n' "$SID" "$TURN_COUNT" "$SEALED" "$COUNTER_DELTAS" "$JEV_DISPATCHES" "$JEV_LINES" "$CORRELATIONS"
+printf 'wire=enabled server_url=http://127.0.0.1:<sandbox-port> sessionID=%s turns=%s sealed=%s counter_delta=%s final_counter_seq=%s records_created=%s records_evicted=%s records_in_flight=%s jev_dispatches=%s intent_logs=%s fanout=zero,one,many predictionReused=true call_omo_agent=true unscorable_resume=true continuation=true correlationStatus=%s\n' "$SID" "$TURN_COUNT" "$SEALED" "$COUNTER_DELTAS" "$COUNTER_SEQ" "$COUNTER_CREATED" "$COUNTER_EVICTED" "$COUNTER_IN_FLIGHT" "$JEV_DISPATCHES" "$JEV_LINES" "$CORRELATIONS"

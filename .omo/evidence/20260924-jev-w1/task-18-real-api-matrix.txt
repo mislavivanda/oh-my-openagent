@@ -19,6 +19,12 @@ HEADLINE ACCURACY
 fixture exact matches: 6 / 15 (40.0%)
 correct question answers: 48 / 60 (80.0%)
 
+MAJORITY-CLASS BASE RATE DISCLOSURE
+category majority class: none, 8 / 15 (53.33%); measured category accuracy remains 12 / 15 (80.0%).
+subagent majority class: none, 13 / 15 (86.67%); measured subagent accuracy remains 13 / 15 (86.67%).
+combined category and subagent constant-none baseline: 21 / 30 (70.00%); measured combined accuracy remains 25 / 30 (83.33%).
+The raw per-question accuracy must be read beside these base rates. The subagent score shows no improvement over a constant-none predictor on this fixture set.
+
 PER-QUESTION CONFUSION MATRICES
 intent: explain -> investigate 1, explain -> explain 1; acknowledge -> acknowledge 1; implement -> implement 6; author -> author 1; investigate -> investigate 3; continue -> continue 2
 category: none -> none 8; visual-engineering -> visual-engineering 2; writing -> writing 1; quick -> none 2; deep -> deep 1; ultrabrain -> quick 1

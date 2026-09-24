@@ -85,6 +85,7 @@ const validCounterDelta = {
     turnsGatedOut: 1,
     turnsSynthetic: 1,
     recordsCreated: 2,
+    recordsInFlight: 0,
     recordsEvicted: 0,
     orphanObservations: 0,
     unscorableResumeCalls: 0,
