@@ -34,3 +34,7 @@ todo	artifact	kind	description
 5	.omo/evidence/20260924-jev-w1/task-5-decide-red.txt	red	TDD RED proves decideIntentRouting is absent before implementation.
 5	.omo/evidence/20260924-jev-w1/task-5-decide-green.txt	green	Focused decision suite passes 13 tests and 42 assertions after implementation.
 5	.omo/evidence/20260924-jev-w1/task-5-throwing-backend.txt	qa	Rejecting backend returns failed with transport_error and no exception escapes.
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-red.txt	red	TDD RED proves the fixture coverage suite cannot resolve intent-routing-fixtures before the module exists.
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-green.txt	green	All 10 fixture coverage tests pass over the 15 hand-labeled fixtures after implementation.
+7	.omo/evidence/20260924-jev-w1/task-7-bad-label-proof.txt	qa	A subagent label outside the vocabulary fails the suite naming obvious-subagent-find-callsites, and the revert restores GREEN with a clean git diff.
+7	.omo/evidence/20260924-jev-w1/task-7-gates.txt	qa	Shared-core extraction guard, the capital-Stop word guard, and bun run typecheck all pass with the fixtures in place.

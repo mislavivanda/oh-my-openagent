@@ -1,0 +1,22 @@
+### RED capture - task 7 intent-routing fixtures
+### date: 2026-09-24 (UTC 16:01:14Z)
+### cmd: bun test packages/jev-core/src/intent-routing-fixtures.test.ts
+### expectation: the coverage test exists but packages/jev-core/src/intent-routing-fixtures.ts does not yet, so the import cannot resolve
+### note: the worktree root is redacted to <WORKTREE> in this artifact
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-fixtures.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './intent-routing-fixtures' from '<WORKTREE>/packages/jev-core/src/intent-routing-fixtures.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [137.00ms]
+
+real exit code: 1

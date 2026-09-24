@@ -68,3 +68,11 @@ export {
   type ObservedDelegationArgs,
   type RouteObservation,
 } from "./intent-routing-normalization"
+export {
+  INTENT_ROUTING_FIXTURES,
+  INTENT_ROUTING_FIXTURE_SOURCES,
+  type IntentRoutingFixture,
+  type IntentRoutingFixtureIntent,
+  type IntentRoutingFixtureLabel,
+  type IntentRoutingFixtureSource,
+} from "./intent-routing-fixtures"
