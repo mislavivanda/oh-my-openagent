@@ -1,0 +1,76 @@
+temporary mutation target: packages/omo-opencode/src/plugin/chat-message.ts
+BEFORE_SHA256	689fae467ad1c0c9ecbca7bcb1f95b9f2e255554f0870c8fda04e21fd9ed1034
+MUTATED_SHA256	e08c5868ee1bd20c419e30a78c043f6859a68f057cae6fcbacc0c9387405b708  packages/omo-opencode/src/plugin/chat-message.ts
+
+COMMAND	bun test packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:
+123 |       const disabled = await runHandler(false, mode)
+124 |       const enabled = await runHandler(true, mode)
+125 | 
+126 |       expect(enabled.output.parts).toEqual(disabled.output.parts)
+127 |       expect(enabled.bytes).toBe(disabled.bytes)
+128 |       expect(enabled.output.parts).toEqual(enabled.originalParts)
+                                         ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,3 @@
+    {
+-     "text": "route without mutating this",
++     "text": "route without mutating this-MUTATED",
+      "type": "text",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:128:36)
+(fail) chat.message Jev intent-routing inertness > #given a sync-throw backend #when the wire is toggled #then output bytes and hook order stay identical [4.68ms]
+123 |       const disabled = await runHandler(false, mode)
+124 |       const enabled = await runHandler(true, mode)
+125 | 
+126 |       expect(enabled.output.parts).toEqual(disabled.output.parts)
+127 |       expect(enabled.bytes).toBe(disabled.bytes)
+128 |       expect(enabled.output.parts).toEqual(enabled.originalParts)
+                                         ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,3 @@
+    {
+-     "text": "route without mutating this",
++     "text": "route without mutating this-MUTATED",
+      "type": "text",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:128:36)
+(fail) chat.message Jev intent-routing inertness > #given a async-reject backend #when the wire is toggled #then output bytes and hook order stay identical [1.42ms]
+123 |       const disabled = await runHandler(false, mode)
+124 |       const enabled = await runHandler(true, mode)
+125 | 
+126 |       expect(enabled.output.parts).toEqual(disabled.output.parts)
+127 |       expect(enabled.bytes).toBe(disabled.bytes)
+128 |       expect(enabled.output.parts).toEqual(enabled.originalParts)
+                                         ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,3 @@
+    {
+-     "text": "route without mutating this",
++     "text": "route without mutating this-MUTATED",
+      "type": "text",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:128:36)
+(fail) chat.message Jev intent-routing inertness > #given a timeout backend #when the wire is toggled #then output bytes and hook order stay identical [1.30ms]
+TASK15_SYNC_P99_US=11.62
+
+ 3 pass
+ 3 fail
+ 13 expect() calls
+Ran 6 tests across 1 file. [182.00ms]
+EXPECTED_NONZERO_EXIT	1
+AFTER_REVERT_SHA256	689fae467ad1c0c9ecbca7bcb1f95b9f2e255554f0870c8fda04e21fd9ed1034  packages/omo-opencode/src/plugin/chat-message.ts

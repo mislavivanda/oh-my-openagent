@@ -105,3 +105,18 @@ todo	artifact	kind	description
 14	.omo/evidence/20260924-jev-w1/task-14-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0
 14	.omo/evidence/20260924-jev-w1/task-14-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and zero paid network calls
 14	.omo/evidence/20260924-jev-w1/task-14-adversarial-qa.txt	qa	Split-instance, dispose, three disabled configurations, and isolated SSE timeout limitation are recorded
+16	.omo/evidence/20260924-jev-w1/task-16-report-red.txt	red	Focused report RED fails on the explicit unimplemented report seam before corpus scoring and rendering exist
+16	.omo/evidence/20260924-jev-w1/task-16-report-green.txt	green	Focused report GREEN covers known denominators, epoch supersession, resume versus unknown eligibility, none recall and precision, weighted coverage, cohorts, and empty data
+16	.omo/evidence/20260924-jev-w1/task-16-report-output.txt	qa	Full rendered generated-corpus report proves denominators precede all rates and exposes every required metric family
+16	.omo/evidence/20260924-jev-w1/task-16-empty-corpus.txt	qa	Empty sink report prints zero denominators and explicit insufficient-data results without division errors
+16	.omo/evidence/20260924-jev-w1/task-16-typecheck.txt	qa	Repository typecheck across root, scripts, and all workspace packages exits 0 after the concurrent TODO 15 worker completed
+16	.omo/evidence/20260924-jev-w1/task-16-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and no failures
+16	.omo/evidence/20260924-jev-w1/task-16-adversarial-qa.txt	qa	CLI exclusion, forbidden escape and Unicode checks, per-file LOC, script typecheck, and LSP limitation receipt
+15	.omo/evidence/20260924-jev-w1/task-15-inert-red.txt	red	Focused pre-implementation invocation fails because the required inertness test file did not yet exist
+15	.omo/evidence/20260924-jev-w1/task-15-inert-green.txt	green	Enabled-versus-disabled byte identity and hook-order suite passes all sync throw, async rejection, timeout, never-awaited I/O, p99, and macrotask-order cases with p99 13.93 microseconds
+15	.omo/evidence/20260924-jev-w1/task-15-hanging-backend-stress.txt	qa	Real dispatcher and real sink stress passes 50 turns with 2 in flight, 48 dropped, 790308 bytes heap growth, and child exit 0 in 441.88 ms under a temporary HOME
+15	.omo/evidence/20260924-jev-w1/task-15-mutation-detected.txt	qa	Negative control mutates output.parts text, produces a readable byte-identity diff, and records matching SHA256 before and after revert
+15	.omo/evidence/20260924-jev-w1/task-15-unref-proof.txt	qa	Negative control removes the real sink timer unref, makes the child clean-exit assertion time out, and records matching SHA256 before and after revert
+15	.omo/evidence/20260924-jev-w1/task-15-w4-untouched.txt	qa	Exact foundation-to-HEAD W4 stat command emits no paths, proving all five protected W4 files are untouched
+15	.omo/evidence/20260924-jev-w1/task-15-typecheck.txt	qa	Repository tsgo typecheck across root, script, and workspace packages exits 0; TypeScript LSP was unavailable because the workspace TypeScript 7 package has no tsserver.js
+15	.omo/evidence/20260924-jev-w1/task-15-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and no failures

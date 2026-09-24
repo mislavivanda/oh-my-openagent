@@ -1,0 +1,11 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:
+TASK15_SYNC_P99_US=13.93
+
+ 9 pass
+ 0 fail
+ 34 expect() calls
+Ran 9 tests across 2 files. [220.00ms]
+EXIT	0
+TEMP_HOME	/tmp/tmp.3t5gJPSUqI
