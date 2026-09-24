@@ -19,3 +19,7 @@ todo	artifact	kind	description
 3	.omo/evidence/20260924-jev-w1/task-3-record-red.txt	red	RED focused contract run: 11 failures name the missing shared intent-routing record contract
 3	.omo/evidence/20260924-jev-w1/task-3-record-green.txt	green	GREEN focused contract run: 11 pass, 0 fail, covering both entry arms and counter resolution
 3	.omo/evidence/20260924-jev-w1/task-3-guard-proof.txt	qa	Harness-neutrality guard runs green, catches a transient OpenCode import, then returns green after revert
+4	.omo/evidence/20260924-jev-w1/task-4-questions-red.txt	red	RED in two phases: test alone fails on the missing module, then a deliberately incomplete stub fails 12 contract assertions naming the missing 4th key and the missing none options
+4	.omo/evidence/20260924-jev-w1/task-4-questions-green.txt	green	GREEN run of intent-routing.test.ts: 13 pass, 0 fail, 122 expect calls, plus the per-test roster and the acceptance-criteria coverage map
+4	.omo/evidence/20260924-jev-w1/task-4-empty-vocab.txt	qa	Empty vocabulary throws IntentRoutingVocabularyError by name, per-list proof for categories, subagents, and intents, plus the same proof through the package barrel
+4	.omo/evidence/20260924-jev-w1/task-4-typecheck.txt	qa	Scoped tsgo clean on both new files with the LSP daemon unreachable recorded, harness-neutrality guard green, concurrent todo-6 typecheck error attributed

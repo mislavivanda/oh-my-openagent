@@ -1,0 +1,38 @@
+command: git rev-parse --abbrev-ref HEAD
+jev/w1-fffe
+exit=0
+
+command: git rev-parse HEAD
+82460563fa1573c49b88d7c70620fac09a971d19
+exit=0
+
+command: git merge-base --is-ancestor jev/foundation jev/w1-fffe
+exit=0
+
+command: git status --porcelain
+exit=0
+
+=== post-install working tree state (captured after bun install + gates) ===
+note: .omo/ is gitignored (.gitignore:2 ".omo/*"), so evidence files never appear in git status
+note: package.json:127 "prepare": "bun run build" runs on bun install and regenerates committed build artifacts
+note: these are the 5 generated files the plan forbids reverting; no source file was edited by this todo
+
+command: git status --porcelain
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+exit=0
+
+command: git --no-pager diff --numstat
+102	70	packages/omo-codex/plugin/components/codegraph/dist/cli.js
+64	64	packages/omo-codex/plugin/components/codegraph/dist/serve.js
+1	1	packages/omo-codex/scripts/install-dist/install-local.mjs
+27	27	packages/omo-senpi/plugin/extensions/omo-member.js
+112	112	packages/omo-senpi/plugin/extensions/omo.js
+exit=0
+
+command: git log -1 --oneline (no commit created by todo 1)
+82460563f docs(jev): warn that runtime_fallback silently disables W4
+exit=0

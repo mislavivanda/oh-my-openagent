@@ -1,0 +1,8 @@
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 317 pass
+ 0 fail
+ 896 expect() calls
+Ran 317 tests across 31 files. [5.71s]
+exit=0

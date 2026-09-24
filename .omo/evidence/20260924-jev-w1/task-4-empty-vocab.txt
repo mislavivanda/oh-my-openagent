@@ -1,0 +1,28 @@
+=== todo 4 failure QA: empty vocabulary throws a named error ===
+cwd: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+date: 2026-09-24T15:54:59Z
+
+--- command ---
+bun -e 'import {buildIntentRoutingQuestions} from "./packages/jev-core/src/intent-routing"; try { const q = buildIntentRoutingQuestions({categories:[],subagents:[],intents:[]}); console.log("NO THROW - FAIL, keys:", Object.keys(q)) } catch (e) { console.log("name:", (e as Error).name); console.log("constructor:", (e as Error).constructor.name); console.log("message:", (e as Error).message) }'
+
+--- output ---
+name: IntentRoutingVocabularyError
+constructor: IntentRoutingVocabularyError
+message: intent-routing vocabulary is empty: categories must declare at least one option, otherwise the choice collapses to a single label and measures nothing
+exit=0
+
+--- per-list proof: each list is validated and named independently ---
+categories -> IntentRoutingVocabularyError: intent-routing vocabulary is empty: categories must declare at least one option, otherwise the choice collapses to a single label and measures nothing
+subagents -> IntentRoutingVocabularyError: intent-routing vocabulary is empty: subagents must declare at least one option, otherwise the choice collapses to a single label and measures nothing
+intents -> IntentRoutingVocabularyError: intent-routing vocabulary is empty: intents must declare at least one option, otherwise the choice collapses to a single label and measures nothing
+exit=0
+
+--- barrel proof (appended inside the flock critical section, after the append-only barrel export lands) ---
+instanceof IntentRoutingVocabularyError: true
+name: IntentRoutingVocabularyError
+message: intent-routing vocabulary is empty: categories must declare at least one option, otherwise the choice collapses to a single label and measures nothing
+question keys: intent,category,subagent,ambiguous
+category options: quick,none
+subagent options: oracle,none
+none label: none
+exit=0

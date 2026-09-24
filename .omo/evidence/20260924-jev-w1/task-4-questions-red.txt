@@ -1,0 +1,850 @@
+=== RED, todo 4: intent-routing question set ===
+cwd: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+date: 2026-09-24T15:52:57Z
+The RED is captured in two phases so the failure is proven to be a CONTRACT failure,
+not merely a missing file: phase 1 is the test alone, phase 2 adds a deliberately
+incomplete stub so the assertions themselves report what the contract requires.
+
+--- RED phase 1: test written, no implementation module on disk ---
+
+=== RED run: todo 4, intent-routing question set ===
+command: bun test packages/jev-core/src/intent-routing.test.ts
+cwd: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+date: 2026-09-24T15:52:32Z
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './intent-routing' from '/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [127.00ms]
+
+exit=0
+
+--- RED phase 2: deliberately incomplete stub (2 questions, no none option, no validation) ---
+command: bun test packages/jev-core/src/intent-routing.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing.test.ts:
+57 | describe("buildIntentRoutingQuestions", () => {
+58 |   describe("#given a populated vocabulary", () => {
+59 |     test("#when building the question set #then it has exactly the four W1 question keys", () => {
+60 |       const questions = buildIntentRoutingQuestions(vocabulary())
+61 | 
+62 |       expect(Object.keys(questions).sort()).toEqual(["ambiguous", "category", "intent", "subagent"])
+                                                 ^
+error: expect(received).toEqual(expected)
+
+  [
+-   "ambiguous",
+    "category",
+    "intent",
+-   "subagent",
+  ]
+
+- Expected  - 2
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:62:45)
+(fail) buildIntentRoutingQuestions > #given a populated vocabulary > #when building the question set #then it has exactly the four W1 question keys [0.81ms]
+67 |     })
+68 | 
+69 |     test("#when building the question set #then category and subagent each carry an explicit none option", () => {
+70 |       const questions = buildIntentRoutingQuestions(vocabulary())
+71 | 
+72 |       expect(choiceLabels(questions, "category")).toContain(INTENT_ROUTING_NONE_OPTION)
+                                                       ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "none"
+Received: [ "visual-engineering", "ultrabrain", "deep", "artistry", "quick", "unspecified-low", "unspecified-high",
+  "writing"
+]
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:72:51)
+(fail) buildIntentRoutingQuestions > #given a populated vocabulary > #when building the question set #then category and subagent each carry an explicit none option [0.14ms]
+77 |     test("#when reading the none option criteria #then each says the turn required no delegation of that kind", () => {
+78 |       const questions = buildIntentRoutingQuestions(vocabulary())
+79 |       const category = questions.category
+80 |       const subagent = questions.subagent
+81 |       if (category?.type !== "choice" || subagent?.type !== "choice") {
+82 |         throw new Error("expected choice questions for category and subagent")
+                                                                                  ^
+error: expected choice questions for category and subagent
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:82:78)
+(fail) buildIntentRoutingQuestions > #given a populated vocabulary > #when reading the none option criteria #then each says the turn required no delegation of that kind [0.09ms]
+47 | }
+48 | 
+49 | function choiceLabels(questions: ReturnType<typeof buildIntentRoutingQuestions>, key: string): string[] {
+50 |   const question = questions[key]
+51 |   if (question === undefined || question.type !== "choice") {
+52 |     throw new Error(`expected a choice question at key ${key}`)
+                                                                   ^
+error: expected a choice question at key subagent
+      at choiceLabels (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:52:63)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:93:24)
+(fail) buildIntentRoutingQuestions > #given a populated vocabulary > #when inspecting every choice option #then labels are non-empty, unique, and described in one line [0.21ms]
+47 | }
+48 | 
+49 | function choiceLabels(questions: ReturnType<typeof buildIntentRoutingQuestions>, key: string): string[] {
+50 |   const question = questions[key]
+51 |   if (question === undefined || question.type !== "choice") {
+52 |     throw new Error(`expected a choice question at key ${key}`)
+                                                                   ^
+error: expected a choice question at key subagent
+      at choiceLabels (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:52:63)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:116:16)
+(fail) buildIntentRoutingQuestions > #given a populated vocabulary > #when counting options #then every choice question stays under the SDK option cap [0.11ms]
+120 |     test("#when the vocabulary carries members not in the builtin defaults #then they appear as options", () => {
+121 |       const questions = buildIntentRoutingQuestions(
+122 |         vocabulary({ categories: [{ name: "custom-category", description: "A user-defined category." }] })
+123 |       )
+124 | 
+125 |       expect(choiceLabels(questions, "category")).toEqual(["custom-category", INTENT_ROUTING_NONE_OPTION])
+                                                        ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,2 @@
+    "custom-category",
+-   "none",
+  ]
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:125:51)
+(fail) buildIntentRoutingQuestions > #given a populated vocabulary > #when the vocabulary carries members not in the builtin defaults #then they appear as options [0.11ms]
+128 | 
+129 |   describe("#given an empty vocabulary", () => {
+130 |     test("#when building the question set #then it throws a named error rather than a one-option choice", () => {
+131 |       const build = () => buildIntentRoutingQuestions({ categories: [], subagents: [], intents: [] })
+132 | 
+133 |       expect(build).toThrow(IntentRoutingVocabularyError)
+                          ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingVocabularyError
+
+Received function did not throw
+Received value: {
+  intent: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {},
+  },
+  category: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {},
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:133:21)
+(fail) buildIntentRoutingQuestions > #given an empty vocabulary > #when building the question set #then it throws a named error rather than a one-option choice [0.14ms]
+141 |     })
+142 | 
+143 |     test("#when only the intents list is empty #then it throws naming intents", () => {
+144 |       const build = () => buildIntentRoutingQuestions(vocabulary({ intents: [] }))
+145 | 
+146 |       expect(build).toThrow(IntentRoutingVocabularyError)
+                          ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingVocabularyError
+
+Received function did not throw
+Received value: {
+  intent: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "visual-engineering": "Frontend, UI, UX, and design work.",
+      ultrabrain: "Hard logic and architecture decisions.",
+      deep: "Autonomous research plus end-to-end execution.",
+      artistry: "Creative and stylistic work.",
+      quick: "Single-file changes and typos.",
+      "unspecified-low": "Unclassifiable but moderate-effort work.",
+      "unspecified-high": "Unclassifiable but high-effort work.",
+      writing: "Prose, docs, and changelogs.",
+    },
+  },
+  category: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "visual-engineering": "Frontend, UI, UX, and design work.",
+      ultrabrain: "Hard logic and architecture decisions.",
+      deep: "Autonomous research plus end-to-end execution.",
+      artistry: "Creative and stylistic work.",
+      quick: "Single-file changes and typos.",
+      "unspecified-low": "Unclassifiable but moderate-effort work.",
+      "unspecified-high": "Unclassifiable but high-effort work.",
+      writing: "Prose, docs, and changelogs.",
+    },
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:146:21)
+(fail) buildIntentRoutingQuestions > #given an empty vocabulary > #when only the intents list is empty #then it throws naming intents [0.12ms]
+158 |               { name: "quick", description: "Second." },
+159 |             ],
+160 |           })
+161 |         )
+162 | 
+163 |       expect(build).toThrow(IntentRoutingVocabularyError)
+                          ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingVocabularyError
+
+Received function did not throw
+Received value: {
+  intent: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      quick: "Second.",
+    },
+  },
+  category: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      quick: "Second.",
+    },
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:163:21)
+(fail) buildIntentRoutingQuestions > #given a malformed vocabulary > #when a label repeats #then it throws a named error naming the duplicate [0.14ms]
+168 |       const build = () =>
+169 |         buildIntentRoutingQuestions(
+170 |           vocabulary({ subagents: [{ name: INTENT_ROUTING_NONE_OPTION, description: "Reserved." }] })
+171 |         )
+172 | 
+173 |       expect(build).toThrow(IntentRoutingVocabularyError)
+                          ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingVocabularyError
+
+Received function did not throw
+Received value: {
+  intent: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "visual-engineering": "Frontend, UI, UX, and design work.",
+      ultrabrain: "Hard logic and architecture decisions.",
+      deep: "Autonomous research plus end-to-end execution.",
+      artistry: "Creative and stylistic work.",
+      quick: "Single-file changes and typos.",
+      "unspecified-low": "Unclassifiable but moderate-effort work.",
+      "unspecified-high": "Unclassifiable but high-effort work.",
+      writing: "Prose, docs, and changelogs.",
+    },
+  },
+  category: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "visual-engineering": "Frontend, UI, UX, and design work.",
+      ultrabrain: "Hard logic and architecture decisions.",
+      deep: "Autonomous research plus end-to-end execution.",
+      artistry: "Creative and stylistic work.",
+      quick: "Single-file changes and typos.",
+      "unspecified-low": "Unclassifiable but moderate-effort work.",
+      "unspecified-high": "Unclassifiable but high-effort work.",
+      writing: "Prose, docs, and changelogs.",
+    },
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:173:21)
+(fail) buildIntentRoutingQuestions > #given a malformed vocabulary > #when a member collides with the reserved none label #then it throws [0.15ms]
+176 | 
+177 |     test("#when a label is blank #then it throws", () => {
+178 |       const build = () =>
+179 |         buildIntentRoutingQuestions(vocabulary({ categories: [{ name: "  ", description: "Blank." }] }))
+180 | 
+181 |       expect(build).toThrow(IntentRoutingVocabularyError)
+                          ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingVocabularyError
+
+Received function did not throw
+Received value: {
+  intent: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "  ": "Blank.",
+    },
+  },
+  category: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "  ": "Blank.",
+    },
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:181:21)
+(fail) buildIntentRoutingQuestions > #given a malformed vocabulary > #when a label is blank #then it throws [0.09ms]
+187 |         description: "Generated.",
+188 |       }))
+189 | 
+190 |       const build = () => buildIntentRoutingQuestions(vocabulary({ categories: oversized }))
+191 | 
+192 |       expect(build).toThrow(IntentRoutingVocabularyError)
+                          ^
+error: expect(received).toThrow(expected)
+
+Expected constructor: IntentRoutingVocabularyError
+
+Received function did not throw
+Received value: {
+  intent: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "category-0": "Generated.",
+      "category-1": "Generated.",
+      "category-2": "Generated.",
+      "category-3": "Generated.",
+      "category-4": "Generated.",
+      "category-5": "Generated.",
+      "category-6": "Generated.",
+      "category-7": "Generated.",
+      "category-8": "Generated.",
+      "category-9": "Generated.",
+      "category-10": "Generated.",
+      "category-11": "Generated.",
+      "category-12": "Generated.",
+      "category-13": "Generated.",
+      "category-14": "Generated.",
+      "category-15": "Generated.",
+      "category-16": "Generated.",
+      "category-17": "Generated.",
+      "category-18": "Generated.",
+      "category-19": "Generated.",
+      "category-20": "Generated.",
+      "category-21": "Generated.",
+      "category-22": "Generated.",
+      "category-23": "Generated.",
+      "category-24": "Generated.",
+      "category-25": "Generated.",
+      "category-26": "Generated.",
+      "category-27": "Generated.",
+      "category-28": "Generated.",
+      "category-29": "Generated.",
+      "category-30": "Generated.",
+      "category-31": "Generated.",
+      "category-32": "Generated.",
+      "category-33": "Generated.",
+      "category-34": "Generated.",
+      "category-35": "Generated.",
+      "category-36": "Generated.",
+      "category-37": "Generated.",
+      "category-38": "Generated.",
+      "category-39": "Generated.",
+      "category-40": "Generated.",
+      "category-41": "Generated.",
+      "category-42": "Generated.",
+      "category-43": "Generated.",
+      "category-44": "Generated.",
+      "category-45": "Generated.",
+      "category-46": "Generated.",
+      "category-47": "Generated.",
+      "category-48": "Generated.",
+      "category-49": "Generated.",
+      "category-50": "Generated.",
+      "category-51": "Generated.",
+      "category-52": "Generated.",
+      "category-53": "Generated.",
+      "category-54": "Generated.",
+      "category-55": "Generated.",
+      "category-56": "Generated.",
+      "category-57": "Generated.",
+      "category-58": "Generated.",
+      "category-59": "Generated.",
+      "category-60": "Generated.",
+      "category-61": "Generated.",
+      "category-62": "Generated.",
+      "category-63": "Generated.",
+      "category-64": "Generated.",
+      "category-65": "Generated.",
+      "category-66": "Generated.",
+      "category-67": "Generated.",
+      "category-68": "Generated.",
+      "category-69": "Generated.",
+      "category-70": "Generated.",
+      "category-71": "Generated.",
+      "category-72": "Generated.",
+      "category-73": "Generated.",
+      "category-74": "Generated.",
+      "category-75": "Generated.",
+      "category-76": "Generated.",
+      "category-77": "Generated.",
+      "category-78": "Generated.",
+      "category-79": "Generated.",
+      "category-80": "Generated.",
+      "category-81": "Generated.",
+      "category-82": "Generated.",
+      "category-83": "Generated.",
+      "category-84": "Generated.",
+      "category-85": "Generated.",
+      "category-86": "Generated.",
+      "category-87": "Generated.",
+      "category-88": "Generated.",
+      "category-89": "Generated.",
+      "category-90": "Generated.",
+      "category-91": "Generated.",
+      "category-92": "Generated.",
+      "category-93": "Generated.",
+      "category-94": "Generated.",
+      "category-95": "Generated.",
+      "category-96": "Generated.",
+      "category-97": "Generated.",
+      "category-98": "Generated.",
+      "category-99": "Generated.",
+      "category-100": "Generated.",
+      "category-101": "Generated.",
+      "category-102": "Generated.",
+      "category-103": "Generated.",
+      "category-104": "Generated.",
+      "category-105": "Generated.",
+      "category-106": "Generated.",
+      "category-107": "Generated.",
+      "category-108": "Generated.",
+      "category-109": "Generated.",
+      "category-110": "Generated.",
+      "category-111": "Generated.",
+      "category-112": "Generated.",
+      "category-113": "Generated.",
+      "category-114": "Generated.",
+      "category-115": "Generated.",
+      "category-116": "Generated.",
+      "category-117": "Generated.",
+      "category-118": "Generated.",
+      "category-119": "Generated.",
+      "category-120": "Generated.",
+      "category-121": "Generated.",
+      "category-122": "Generated.",
+      "category-123": "Generated.",
+      "category-124": "Generated.",
+      "category-125": "Generated.",
+      "category-126": "Generated.",
+      "category-127": "Generated.",
+      "category-128": "Generated.",
+      "category-129": "Generated.",
+      "category-130": "Generated.",
+      "category-131": "Generated.",
+      "category-132": "Generated.",
+      "category-133": "Generated.",
+      "category-134": "Generated.",
+      "category-135": "Generated.",
+      "category-136": "Generated.",
+      "category-137": "Generated.",
+      "category-138": "Generated.",
+      "category-139": "Generated.",
+      "category-140": "Generated.",
+      "category-141": "Generated.",
+      "category-142": "Generated.",
+      "category-143": "Generated.",
+      "category-144": "Generated.",
+      "category-145": "Generated.",
+      "category-146": "Generated.",
+      "category-147": "Generated.",
+      "category-148": "Generated.",
+      "category-149": "Generated.",
+      "category-150": "Generated.",
+      "category-151": "Generated.",
+      "category-152": "Generated.",
+      "category-153": "Generated.",
+      "category-154": "Generated.",
+      "category-155": "Generated.",
+      "category-156": "Generated.",
+      "category-157": "Generated.",
+      "category-158": "Generated.",
+      "category-159": "Generated.",
+      "category-160": "Generated.",
+      "category-161": "Generated.",
+      "category-162": "Generated.",
+      "category-163": "Generated.",
+      "category-164": "Generated.",
+      "category-165": "Generated.",
+      "category-166": "Generated.",
+      "category-167": "Generated.",
+      "category-168": "Generated.",
+      "category-169": "Generated.",
+      "category-170": "Generated.",
+      "category-171": "Generated.",
+      "category-172": "Generated.",
+      "category-173": "Generated.",
+      "category-174": "Generated.",
+      "category-175": "Generated.",
+      "category-176": "Generated.",
+      "category-177": "Generated.",
+      "category-178": "Generated.",
+      "category-179": "Generated.",
+      "category-180": "Generated.",
+      "category-181": "Generated.",
+      "category-182": "Generated.",
+      "category-183": "Generated.",
+      "category-184": "Generated.",
+      "category-185": "Generated.",
+      "category-186": "Generated.",
+      "category-187": "Generated.",
+      "category-188": "Generated.",
+      "category-189": "Generated.",
+      "category-190": "Generated.",
+      "category-191": "Generated.",
+      "category-192": "Generated.",
+      "category-193": "Generated.",
+      "category-194": "Generated.",
+      "category-195": "Generated.",
+      "category-196": "Generated.",
+      "category-197": "Generated.",
+      "category-198": "Generated.",
+      "category-199": "Generated.",
+      "category-200": "Generated.",
+      "category-201": "Generated.",
+      "category-202": "Generated.",
+      "category-203": "Generated.",
+      "category-204": "Generated.",
+      "category-205": "Generated.",
+      "category-206": "Generated.",
+      "category-207": "Generated.",
+      "category-208": "Generated.",
+      "category-209": "Generated.",
+      "category-210": "Generated.",
+      "category-211": "Generated.",
+      "category-212": "Generated.",
+      "category-213": "Generated.",
+      "category-214": "Generated.",
+      "category-215": "Generated.",
+      "category-216": "Generated.",
+      "category-217": "Generated.",
+      "category-218": "Generated.",
+      "category-219": "Generated.",
+      "category-220": "Generated.",
+      "category-221": "Generated.",
+      "category-222": "Generated.",
+      "category-223": "Generated.",
+      "category-224": "Generated.",
+      "category-225": "Generated.",
+      "category-226": "Generated.",
+      "category-227": "Generated.",
+      "category-228": "Generated.",
+      "category-229": "Generated.",
+      "category-230": "Generated.",
+      "category-231": "Generated.",
+      "category-232": "Generated.",
+      "category-233": "Generated.",
+      "category-234": "Generated.",
+      "category-235": "Generated.",
+      "category-236": "Generated.",
+      "category-237": "Generated.",
+      "category-238": "Generated.",
+      "category-239": "Generated.",
+      "category-240": "Generated.",
+      "category-241": "Generated.",
+      "category-242": "Generated.",
+      "category-243": "Generated.",
+      "category-244": "Generated.",
+      "category-245": "Generated.",
+      "category-246": "Generated.",
+      "category-247": "Generated.",
+      "category-248": "Generated.",
+      "category-249": "Generated.",
+      "category-250": "Generated.",
+      "category-251": "Generated.",
+      "category-252": "Generated.",
+      "category-253": "Generated.",
+      "category-254": "Generated.",
+    },
+  },
+  category: {
+    type: "choice",
+    instructions: "stub",
+    criteria: {
+      "category-0": "Generated.",
+      "category-1": "Generated.",
+      "category-2": "Generated.",
+      "category-3": "Generated.",
+      "category-4": "Generated.",
+      "category-5": "Generated.",
+      "category-6": "Generated.",
+      "category-7": "Generated.",
+      "category-8": "Generated.",
+      "category-9": "Generated.",
+      "category-10": "Generated.",
+      "category-11": "Generated.",
+      "category-12": "Generated.",
+      "category-13": "Generated.",
+      "category-14": "Generated.",
+      "category-15": "Generated.",
+      "category-16": "Generated.",
+      "category-17": "Generated.",
+      "category-18": "Generated.",
+      "category-19": "Generated.",
+      "category-20": "Generated.",
+      "category-21": "Generated.",
+      "category-22": "Generated.",
+      "category-23": "Generated.",
+      "category-24": "Generated.",
+      "category-25": "Generated.",
+      "category-26": "Generated.",
+      "category-27": "Generated.",
+      "category-28": "Generated.",
+      "category-29": "Generated.",
+      "category-30": "Generated.",
+      "category-31": "Generated.",
+      "category-32": "Generated.",
+      "category-33": "Generated.",
+      "category-34": "Generated.",
+      "category-35": "Generated.",
+      "category-36": "Generated.",
+      "category-37": "Generated.",
+      "category-38": "Generated.",
+      "category-39": "Generated.",
+      "category-40": "Generated.",
+      "category-41": "Generated.",
+      "category-42": "Generated.",
+      "category-43": "Generated.",
+      "category-44": "Generated.",
+      "category-45": "Generated.",
+      "category-46": "Generated.",
+      "category-47": "Generated.",
+      "category-48": "Generated.",
+      "category-49": "Generated.",
+      "category-50": "Generated.",
+      "category-51": "Generated.",
+      "category-52": "Generated.",
+      "category-53": "Generated.",
+      "category-54": "Generated.",
+      "category-55": "Generated.",
+      "category-56": "Generated.",
+      "category-57": "Generated.",
+      "category-58": "Generated.",
+      "category-59": "Generated.",
+      "category-60": "Generated.",
+      "category-61": "Generated.",
+      "category-62": "Generated.",
+      "category-63": "Generated.",
+      "category-64": "Generated.",
+      "category-65": "Generated.",
+      "category-66": "Generated.",
+      "category-67": "Generated.",
+      "category-68": "Generated.",
+      "category-69": "Generated.",
+      "category-70": "Generated.",
+      "category-71": "Generated.",
+      "category-72": "Generated.",
+      "category-73": "Generated.",
+      "category-74": "Generated.",
+      "category-75": "Generated.",
+      "category-76": "Generated.",
+      "category-77": "Generated.",
+      "category-78": "Generated.",
+      "category-79": "Generated.",
+      "category-80": "Generated.",
+      "category-81": "Generated.",
+      "category-82": "Generated.",
+      "category-83": "Generated.",
+      "category-84": "Generated.",
+      "category-85": "Generated.",
+      "category-86": "Generated.",
+      "category-87": "Generated.",
+      "category-88": "Generated.",
+      "category-89": "Generated.",
+      "category-90": "Generated.",
+      "category-91": "Generated.",
+      "category-92": "Generated.",
+      "category-93": "Generated.",
+      "category-94": "Generated.",
+      "category-95": "Generated.",
+      "category-96": "Generated.",
+      "category-97": "Generated.",
+      "category-98": "Generated.",
+      "category-99": "Generated.",
+      "category-100": "Generated.",
+      "category-101": "Generated.",
+      "category-102": "Generated.",
+      "category-103": "Generated.",
+      "category-104": "Generated.",
+      "category-105": "Generated.",
+      "category-106": "Generated.",
+      "category-107": "Generated.",
+      "category-108": "Generated.",
+      "category-109": "Generated.",
+      "category-110": "Generated.",
+      "category-111": "Generated.",
+      "category-112": "Generated.",
+      "category-113": "Generated.",
+      "category-114": "Generated.",
+      "category-115": "Generated.",
+      "category-116": "Generated.",
+      "category-117": "Generated.",
+      "category-118": "Generated.",
+      "category-119": "Generated.",
+      "category-120": "Generated.",
+      "category-121": "Generated.",
+      "category-122": "Generated.",
+      "category-123": "Generated.",
+      "category-124": "Generated.",
+      "category-125": "Generated.",
+      "category-126": "Generated.",
+      "category-127": "Generated.",
+      "category-128": "Generated.",
+      "category-129": "Generated.",
+      "category-130": "Generated.",
+      "category-131": "Generated.",
+      "category-132": "Generated.",
+      "category-133": "Generated.",
+      "category-134": "Generated.",
+      "category-135": "Generated.",
+      "category-136": "Generated.",
+      "category-137": "Generated.",
+      "category-138": "Generated.",
+      "category-139": "Generated.",
+      "category-140": "Generated.",
+      "category-141": "Generated.",
+      "category-142": "Generated.",
+      "category-143": "Generated.",
+      "category-144": "Generated.",
+      "category-145": "Generated.",
+      "category-146": "Generated.",
+      "category-147": "Generated.",
+      "category-148": "Generated.",
+      "category-149": "Generated.",
+      "category-150": "Generated.",
+      "category-151": "Generated.",
+      "category-152": "Generated.",
+      "category-153": "Generated.",
+      "category-154": "Generated.",
+      "category-155": "Generated.",
+      "category-156": "Generated.",
+      "category-157": "Generated.",
+      "category-158": "Generated.",
+      "category-159": "Generated.",
+      "category-160": "Generated.",
+      "category-161": "Generated.",
+      "category-162": "Generated.",
+      "category-163": "Generated.",
+      "category-164": "Generated.",
+      "category-165": "Generated.",
+      "category-166": "Generated.",
+      "category-167": "Generated.",
+      "category-168": "Generated.",
+      "category-169": "Generated.",
+      "category-170": "Generated.",
+      "category-171": "Generated.",
+      "category-172": "Generated.",
+      "category-173": "Generated.",
+      "category-174": "Generated.",
+      "category-175": "Generated.",
+      "category-176": "Generated.",
+      "category-177": "Generated.",
+      "category-178": "Generated.",
+      "category-179": "Generated.",
+      "category-180": "Generated.",
+      "category-181": "Generated.",
+      "category-182": "Generated.",
+      "category-183": "Generated.",
+      "category-184": "Generated.",
+      "category-185": "Generated.",
+      "category-186": "Generated.",
+      "category-187": "Generated.",
+      "category-188": "Generated.",
+      "category-189": "Generated.",
+      "category-190": "Generated.",
+      "category-191": "Generated.",
+      "category-192": "Generated.",
+      "category-193": "Generated.",
+      "category-194": "Generated.",
+      "category-195": "Generated.",
+      "category-196": "Generated.",
+      "category-197": "Generated.",
+      "category-198": "Generated.",
+      "category-199": "Generated.",
+      "category-200": "Generated.",
+      "category-201": "Generated.",
+      "category-202": "Generated.",
+      "category-203": "Generated.",
+      "category-204": "Generated.",
+      "category-205": "Generated.",
+      "category-206": "Generated.",
+      "category-207": "Generated.",
+      "category-208": "Generated.",
+      "category-209": "Generated.",
+      "category-210": "Generated.",
+      "category-211": "Generated.",
+      "category-212": "Generated.",
+      "category-213": "Generated.",
+      "category-214": "Generated.",
+      "category-215": "Generated.",
+      "category-216": "Generated.",
+      "category-217": "Generated.",
+      "category-218": "Generated.",
+      "category-219": "Generated.",
+      "category-220": "Generated.",
+      "category-221": "Generated.",
+      "category-222": "Generated.",
+      "category-223": "Generated.",
+      "category-224": "Generated.",
+      "category-225": "Generated.",
+      "category-226": "Generated.",
+      "category-227": "Generated.",
+      "category-228": "Generated.",
+      "category-229": "Generated.",
+      "category-230": "Generated.",
+      "category-231": "Generated.",
+      "category-232": "Generated.",
+      "category-233": "Generated.",
+      "category-234": "Generated.",
+      "category-235": "Generated.",
+      "category-236": "Generated.",
+      "category-237": "Generated.",
+      "category-238": "Generated.",
+      "category-239": "Generated.",
+      "category-240": "Generated.",
+      "category-241": "Generated.",
+      "category-242": "Generated.",
+      "category-243": "Generated.",
+      "category-244": "Generated.",
+      "category-245": "Generated.",
+      "category-246": "Generated.",
+      "category-247": "Generated.",
+      "category-248": "Generated.",
+      "category-249": "Generated.",
+      "category-250": "Generated.",
+      "category-251": "Generated.",
+      "category-252": "Generated.",
+      "category-253": "Generated.",
+      "category-254": "Generated.",
+    },
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing.test.ts:192:21)
+(fail) buildIntentRoutingQuestions > #given a malformed vocabulary > #when a list exceeds the option cap #then it throws naming the cap [0.65ms]
+
+ 1 pass
+ 12 fail
+ 81 expect() calls
+Ran 13 tests across 1 file. [120.00ms]
+
+exit=0

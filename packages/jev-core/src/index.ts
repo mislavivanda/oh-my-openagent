@@ -41,3 +41,12 @@ export {
   type ModelErrorTriageFixture,
   type ModelErrorTriageFixtureSource,
 } from "./model-error-triage-fixtures"
+export {
+  INTENT_ROUTING_MAX_CHOICE_OPTIONS,
+  INTENT_ROUTING_NONE_OPTION,
+  INTENT_ROUTING_QUESTION_VERSION,
+  IntentRoutingVocabularyError,
+  buildIntentRoutingQuestions,
+  type IntentRoutingVocabulary,
+  type IntentRoutingVocabularyEntry,
+} from "./intent-routing"

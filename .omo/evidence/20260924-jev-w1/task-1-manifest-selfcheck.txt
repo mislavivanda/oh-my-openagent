@@ -1,0 +1,21 @@
+manifest self-check, run from worktree root of branch jev/w1-fffe
+header expected: todo<TAB>artifact<TAB>kind<TAB>description
+header: OK exact match
+header field count: 4 (expect 4)
+rows excluding header: 10
+rows with field count != 4: 0 (expect 0)
+--- per-artifact existence and non-empty check ---
+OK    non-empty (1457 bytes)  .omo/evidence/20260924-jev-w1/task-1-worktree-fffe.txt
+OK    non-empty (11482 bytes)  .omo/evidence/20260924-jev-w1/task-1-install-fffe.txt
+OK    non-empty (719 bytes)  .omo/evidence/20260924-jev-w1/task-1-test-fast.txt
+OK    non-empty (20002 bytes)  .omo/evidence/20260924-jev-w1/task-1-baseline-full-test.txt
+OK    non-empty (4686 bytes)  .omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt
+OK    non-empty (223 bytes)  .omo/evidence/20260924-jev-w1/task-1-baseline-totals.txt
+OK    non-empty (1703 bytes)  .omo/evidence/20260924-jev-w1/task-1-typecheck-baseline.txt
+OK    non-empty (118 bytes)  .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt
+OK    non-empty (7 bytes)  .omo/evidence/20260924-jev-w1/task-1-notices-exit.txt
+OK    non-empty (1074 bytes)  .omo/evidence/20260924-jev-w1/task-1-manifest-selfcheck.txt
+--- summary ---
+fail_rows=0
+notices-baseline contains no exit line: 0 (expect 0 matches)
+baseline-failures line count: 22
