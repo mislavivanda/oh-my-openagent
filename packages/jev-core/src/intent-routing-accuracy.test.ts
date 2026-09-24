@@ -31,6 +31,17 @@ type QuestionId = (typeof QUESTION_IDS)[number]
 type RunMode = "dry-run" | "mock" | "real"
 type CallCounter = { calls: number }
 type MutableMatrices = Record<QuestionId, Record<string, Record<string, number>>>
+type FixtureResult = {
+  readonly fixtureId: string
+  readonly expected: Readonly<Record<QuestionId, string>>
+  readonly predicted: Readonly<Record<QuestionId, string>>
+  readonly exact: boolean
+}
+type RunMetrics = {
+  inputTokens: number
+  outputTokens: number
+  readonly latencies: number[]
+}
 type AccuracyArtifact = {
   readonly status: "complete" | "partial"
   readonly mode: RunMode
@@ -44,6 +55,11 @@ type AccuracyArtifact = {
   readonly fixtureExactMatches: number
   readonly correctAnswers: number
   readonly scoredAnswers: number
+  readonly inputTokens: number
+  readonly outputTokens: number
+  readonly latencyMs: { readonly min: number; readonly max: number } | null
+  readonly fixtureResults: readonly FixtureResult[]
+  readonly unavailableFixtures: readonly { readonly fixtureId: string; readonly reason: string }[]
   readonly confusionMatrices: MutableMatrices
   readonly failure: { readonly name: string; readonly fixtureId: string } | null
 }
@@ -54,6 +70,8 @@ type HarnessState = {
   correctAnswers: number
   scoredAnswers: number
   readonly completedFixtureIds: string[]
+  readonly fixtureResults: FixtureResult[]
+  readonly unavailableFixtures: { fixtureId: string; reason: string }[]
   readonly confusionMatrices: MutableMatrices
 }
 type HarnessOptions = {
@@ -64,11 +82,13 @@ type HarnessOptions = {
   readonly networkCounter: CallCounter
   readonly maxCalls: number
   readonly emit: (artifact: AccuracyArtifact) => void
+  readonly metrics?: RunMetrics
 }
 type ArtifactRuntime = {
   readonly mode: RunMode
   readonly callCounter: CallCounter
   readonly networkCounter: CallCounter
+  readonly metrics?: RunMetrics
 }
 type ArtifactCompletion = {
   readonly status: "complete" | "partial"
@@ -113,7 +133,10 @@ class IntentRoutingFixtureValidationError extends Error {
 
 function selectRunMode(env: Readonly<Record<string, string | undefined>>, dryRun: boolean): RunMode {
   if (dryRun) return "dry-run"
-  return env.JEV_W1_REAL_API === "1" && Boolean(env.TYPESAFE_API_KEY?.trim()) ? "real" : "mock"
+  return env.JEV_W1_REAL_API === "1" ? "real" : "mock"
+}
+function emptyMetrics(): RunMetrics {
+  return { inputTokens: 0, outputTokens: 0, latencies: [] }
 }
 function emptyMatrices(): MutableMatrices {
   return { intent: {}, category: {}, subagent: {}, ambiguous: {} }
@@ -139,6 +162,7 @@ function createArtifact(
   state: HarnessState,
   completion: ArtifactCompletion,
 ): AccuracyArtifact {
+  const metrics = runtime.metrics ?? emptyMetrics()
   return {
     status: completion.status,
     mode: runtime.mode,
@@ -152,8 +176,29 @@ function createArtifact(
     fixtureExactMatches: state.fixtureExactMatches,
     correctAnswers: state.correctAnswers,
     scoredAnswers: state.scoredAnswers,
+    inputTokens: metrics.inputTokens,
+    outputTokens: metrics.outputTokens,
+    latencyMs: metrics.latencies.length === 0
+      ? null
+      : { min: Math.min(...metrics.latencies), max: Math.max(...metrics.latencies) },
+    fixtureResults: structuredClone(state.fixtureResults),
+    unavailableFixtures: structuredClone(state.unavailableFixtures),
     confusionMatrices: structuredClone(state.confusionMatrices),
     failure: completion.failure,
+  }
+}
+function createMeasuredBackend(backend: DecisionBackend, metrics: RunMetrics): DecisionBackend {
+  return {
+    kind: backend.kind,
+    async decide(request) {
+      const outcome = await backend.decide(request)
+      metrics.latencies.push(outcome.latencyMs)
+      if (outcome.status === "decided") {
+        metrics.inputTokens += outcome.usage.input_tokens
+        metrics.outputTokens += outcome.usage.output_tokens
+      }
+      return outcome
+    },
   }
 }
 function recordScore(state: HarnessState, fixture: IntentRoutingFixture, answers: IntentRoutingAnswers): void {
@@ -179,6 +224,7 @@ function recordScore(state: HarnessState, fixture: IntentRoutingFixture, answers
     if (actual === prediction) state.correctAnswers += 1
     else exact = false
   }
+  state.fixtureResults.push({ fixtureId: fixture.id, expected, predicted, exact })
   if (exact) state.fixtureExactMatches += 1
   state.scoredAnswers += QUESTION_IDS.length
   state.completedFixtureIds.push(fixture.id)
@@ -191,6 +237,8 @@ function runDryRun(calls: CallCounter, networkCalls: CallCounter): AccuracyArtif
     correctAnswers: 0,
     scoredAnswers: 0,
     completedFixtureIds: [],
+    fixtureResults: [],
+    unavailableFixtures: [],
     confusionMatrices: emptyMatrices(),
   }
   for (const fixture of INTENT_ROUTING_FIXTURES) {
@@ -217,6 +265,8 @@ async function runAccuracyHarness(options: HarnessOptions): Promise<AccuracyArti
     correctAnswers: 0,
     scoredAnswers: 0,
     completedFixtureIds: [],
+    fixtureResults: [],
+    unavailableFixtures: [],
     confusionMatrices: emptyMatrices(),
   }
   for (const fixture of options.fixtures) {
@@ -254,6 +304,40 @@ async function runAccuracyHarness(options: HarnessOptions): Promise<AccuracyArti
   options.emit(artifact)
   return artifact
 }
+async function runMissingKeyHarness(options: HarnessOptions): Promise<AccuracyArtifact> {
+  const state: HarnessState = {
+    resolvedModel: null,
+    builtRequestCount: 0,
+    fixtureExactMatches: 0,
+    correctAnswers: 0,
+    scoredAnswers: 0,
+    completedFixtureIds: [],
+    fixtureResults: [],
+    unavailableFixtures: [],
+    confusionMatrices: emptyMatrices(),
+  }
+  for (const fixture of options.fixtures) {
+    if (options.callCounter.calls >= options.maxCalls) throw new IntentRoutingCallCeilingError(options.maxCalls)
+    options.callCounter.calls += 1
+    state.builtRequestCount += 1
+    const result = await decideIntentRouting({
+      backend: options.backendForFixture(fixture),
+      input: fixture.input,
+      vocab: HARNESS_VOCABULARY,
+      confidenceThreshold: CONFIDENCE_THRESHOLD,
+      model: REQUESTED_MODEL,
+      maxPromptChars: MAX_PROMPT_CHARS,
+    })
+    if (result.unavailableReason !== "missing_api_key") {
+      throw new IntentRoutingAccuracyRunError(fixture.id, result.unavailableReason ?? "expected missing_api_key")
+    }
+    state.completedFixtureIds.push(fixture.id)
+    state.unavailableFixtures.push({ fixtureId: fixture.id, reason: result.unavailableReason })
+  }
+  const artifact = createArtifact(options, state, { status: "complete", failure: null })
+  options.emit(artifact)
+  return artifact
+}
 
 if (DIRECT_DRY_RUN) {
   const artifact = runDryRun({ calls: 0 }, { calls: 0 })
@@ -281,9 +365,9 @@ describe("intent-routing accuracy harness", () => {
     })
   })
 
-  test("#given the real API flags #when mode is selected #then both opt-in and key are required", () => {
+  test("#given the real API flag #when mode is selected #then missing credentials stay on the real short-circuit path", () => {
     expect(selectRunMode({ JEV_W1_REAL_API: "1", TYPESAFE_API_KEY: "secret" }, false)).toBe("real")
-    expect(selectRunMode({ JEV_W1_REAL_API: "1" }, false)).toBe("mock")
+    expect(selectRunMode({ JEV_W1_REAL_API: "1" }, false)).toBe("real")
     expect(selectRunMode({ TYPESAFE_API_KEY: "secret" }, false)).toBe("mock")
     expect(selectRunMode({ JEV_W1_REAL_API: "1", TYPESAFE_API_KEY: "secret" }, true)).toBe("dry-run")
   })
@@ -349,13 +433,16 @@ describe("intent-routing accuracy harness", () => {
       emit(artifact)
     } else if (mode === "real") {
       const apiKey = process.env.TYPESAFE_API_KEY
-      if (!apiKey) throw new TypeError("TYPESAFE_API_KEY is required for the real accuracy run")
       const countedFetch: Fetch = async (url, init) => {
         networkCalls.calls += 1
         return globalThis.fetch(url, init)
       }
-      const backend = createRealDecisionBackend({ apiKey, model: REQUESTED_MODEL, timeoutMs: 10_000, fetch: countedFetch })
-      artifact = await runAccuracyHarness({
+      const metrics = emptyMetrics()
+      const backend = createMeasuredBackend(
+        createRealDecisionBackend({ apiKey, model: REQUESTED_MODEL, timeoutMs: 10_000, fetch: countedFetch }),
+        metrics,
+      )
+      const options: HarnessOptions = {
         mode,
         fixtures: INTENT_ROUTING_FIXTURES,
         backendForFixture: () => backend,
@@ -363,7 +450,9 @@ describe("intent-routing accuracy harness", () => {
         networkCounter: networkCalls,
         maxCalls: INTENT_ROUTING_FIXTURES.length,
         emit,
-      })
+        metrics,
+      }
+      artifact = apiKey ? await runAccuracyHarness(options) : await runMissingKeyHarness(options)
     } else {
       artifact = await runAccuracyHarness({
         mode,
@@ -378,6 +467,11 @@ describe("intent-routing accuracy harness", () => {
     expect(artifact.status).toBe("complete")
     expect(Object.keys(artifact.confusionMatrices)).toEqual([...QUESTION_IDS])
     expect(artifact.completedFixtureIds).toHaveLength(INTENT_ROUTING_FIXTURES.length)
+    if (mode === "real" && !process.env.TYPESAFE_API_KEY) {
+      expect(artifact.unavailableFixtures).toHaveLength(INTENT_ROUTING_FIXTURES.length)
+      expect(artifact.unavailableFixtures.every((entry) => entry.reason === "missing_api_key")).toBe(true)
+      expect(artifact.networkCallCount).toBe(0)
+    }
     if (mode !== "real") expect(artifact.networkCallCount).toBe(0)
     if (mode === "mock") expect(artifact.resolvedModel).toBe(MOCK_RESOLVED_MODEL)
   })

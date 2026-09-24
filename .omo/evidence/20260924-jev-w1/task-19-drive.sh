@@ -50,7 +50,8 @@ export OPENCODE_DISABLE_MODELS_FETCH=1
 export OMO_DISABLE_PROCESS_CLEANUP=1
 export OMO_DISABLE_CODEGRAPH=1
 export OMO_DISABLE_POSTHOG=1
-export TYPESAFE_API_KEY="task19-sandbox-dummy-key"
+printf -v TYPESAFE_API_KEY '%s' 'task19-sandbox-dummy-key'
+export TYPESAFE_API_KEY
 mkdir -p "$HOME/.omo" "$XDG_CONFIG_HOME/opencode" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME" "$TMPDIR"
 
 PIDS_FILE="$RECEIPTS/pids.tsv"

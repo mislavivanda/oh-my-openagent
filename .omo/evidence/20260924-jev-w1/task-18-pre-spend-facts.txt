@@ -1,0 +1,28 @@
+TODO 18 PRE-SPEND FACTS
+
+WHAT WAS TESTED
+One four-question System One call passed through the production real backend and a counting Fetch implementation returning a local fake response. No external endpoint was contacted.
+
+WHAT WAS OBSERVED
+HTTP request count: 1
+Question count: 4
+Outcome latencyMs: 2.0241730000000002
+Outcome input_tokens: 321
+Outcome output_tokens: 45
+Resolved model supplied by the local fake: jev-1.13.0
+The token values are deterministic local-fake response data. They prove that the backend carries both usage fields. The paid-run artifact records actual service usage separately.
+
+BILLING SOURCE
+Method: official TypeSafe documentation.
+URL: https://docs.typesafe.ai/models
+Quoted sentence: "Charged per input token. Output tokens are free."
+The page lists Jev 1.13 at $0.042 per million input tokens. The budget is therefore sized from actual input tokens, never inferred from HTTP request count.
+
+WORKTREE ENVIRONMENT GAP
+The task worktree has no .env or .env.local because both are gitignored and git worktree creation does not copy them. The standard setup and QA scripts source only the current REPO_ROOT .env, so a worktree-based paid run can report missing_api_key even when the machine credential exists. This run reads the two environment files from the main checkout by absolute path and writes nothing there.
+
+WHY IT IS ENOUGH
+The counting Fetch exactly measures one HTTP request for one four-question call. The decided outcome exposes latencyMs and both token counters. Official documentation independently identifies the billing unit. This file was written before the paid invocation.
+
+WHAT WAS OMITTED
+No credential value, authorization header, private environment value, or external response was retained.

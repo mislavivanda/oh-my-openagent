@@ -102,3 +102,7 @@ todo	artifact	kind	description
 19	.omo/evidence/20260924-jev-w1/task-19-cleanup-receipts.txt	qa	Individual spawned PID and bound port lifecycle receipts for both runs
 19	.omo/evidence/20260924-jev-w1/task-19-evidence.txt	qa	Reviewer-readable tested observed sufficient omitted and risk record
 19	.omo/evidence/20260924-jev-w1/task-19-verification.txt	gate	Shell JSONL Bun build acceptance isolation cleanup and diagnostics summary
+18	.omo/evidence/20260924-jev-w1/task-18-pre-spend-facts.txt	qa	Local counting-fetch request, latency, token, official billing, and worktree environment-gap facts written before paid use
+18	.omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt	baseline	Complete 15-fixture paid baseline with resolved model, usage totals, latency range, per-fixture results, and confusion matrices
+18	.omo/evidence/20260924-jev-w1/task-18-missing-key.txt	qa	All 15 fixtures return missing_api_key with zero HTTP requests and clean harness completion
+18	.omo/evidence/20260924-jev-w1/task-18-secret-scan.txt	qa	Repository-wide evidence pattern and literal credential scans both report zero matches

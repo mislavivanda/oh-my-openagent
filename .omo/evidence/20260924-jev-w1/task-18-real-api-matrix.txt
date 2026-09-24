@@ -1,0 +1,46 @@
+TODO 18 REAL API ACCURACY BASELINE
+
+STATUS
+complete
+
+RUN CONTRACT
+Exactly one paid harness invocation was made. The hard ceiling was 15 logical calls. The run completed all 15 fixtures with 15 HTTP requests and no retry. Accuracy was observed, not gated.
+
+MODEL AND USAGE
+resolvedModel: jev-1.13.0
+questionVersion: 1
+requestCount: 15
+callCeiling: 15
+input_tokens total: 13661
+output_tokens total: 4492
+latencyMs range: 104.03445599999986 to 322.695416
+
+HEADLINE ACCURACY
+fixture exact matches: 6 / 15 (40.0%)
+correct question answers: 48 / 60 (80.0%)
+
+PER-QUESTION CONFUSION MATRICES
+intent: explain -> investigate 1, explain -> explain 1; acknowledge -> acknowledge 1; implement -> implement 6; author -> author 1; investigate -> investigate 3; continue -> continue 2
+category: none -> none 8; visual-engineering -> visual-engineering 2; writing -> writing 1; quick -> none 2; deep -> deep 1; ultrabrain -> quick 1
+subagent: none -> none 13; explore -> none 1; oracle -> none 1
+ambiguous: false -> false 5; false -> true 6; true -> true 4
+
+PER-FIXTURE RESULTS
+no-delegation-port-question: expected explain/none/none/false; predicted investigate/none/none/false; mismatch
+no-delegation-zod-explanation: expected explain/none/none/false; predicted explain/none/none/false; exact
+no-delegation-acknowledgement: expected acknowledge/none/none/false; predicted acknowledge/none/none/false; exact
+obvious-category-modal-overflow: expected implement/visual-engineering/none/false; predicted implement/visual-engineering/none/false; exact
+obvious-category-changelog-entry: expected author/writing/none/false; predicted author/writing/none/true; mismatch
+obvious-subagent-find-callsites: expected investigate/none/explore/false; predicted investigate/none/none/true; mismatch
+obvious-subagent-flaky-race: expected investigate/none/oracle/false; predicted investigate/none/none/true; mismatch
+ambiguous-make-auth-better: expected implement/none/none/true; predicted implement/none/none/true; exact
+ambiguous-clean-this-up: expected implement/quick/none/true; predicted implement/none/none/true; mismatch
+multilingual-ko-profile-slow-function: expected investigate/deep/none/false; predicted investigate/deep/none/true; mismatch
+multilingual-ja-layout-fix: expected implement/visual-engineering/none/false; predicted implement/visual-engineering/none/true; mismatch
+continuation-continue: expected continue/none/none/true; predicted continue/none/none/true; exact
+continuation-go-on: expected continue/none/none/true; predicted continue/none/none/true; exact
+adversarial-question-shaped-work-order: expected implement/quick/none/false; predicted implement/none/none/false; mismatch
+adversarial-quick-framed-redesign: expected implement/ultrabrain/none/false; predicted implement/quick/none/true; mismatch
+
+WHAT WAS OMITTED
+No credential, authorization header, private environment value, or raw service payload was retained.

@@ -29,7 +29,7 @@ IntentRoutingAccuracyRunError: dry-run harness not implemented
 111 |   })
 112 | 
 113 |   test("#given the real API flags #when mode is selected #then both opt-in and key are required", () => {
-114 |     expect(selectRunMode({ JEV_W1_REAL_API: "1", TYPESAFE_API_KEY: "secret" }, false)).toBe("real")
+114 |     expect(selectRunMode({ JEV_W1_REAL_API: "1", credential: "redacted fixture" }, false)).toBe("real")
                                                                                              ^
 error: expect(received).toBe(expected)
 
