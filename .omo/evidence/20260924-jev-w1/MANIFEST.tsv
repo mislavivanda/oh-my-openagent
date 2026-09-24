@@ -86,3 +86,19 @@ todo	artifact	kind	description
 8	.omo/evidence/20260924-jev-w1/task-8-accuracy-green.txt	green	Focused suite passes 6 tests; direct --dry-run with both real flags present builds all 15 requests with callCount 0 and networkCallCount 0.
 8	.omo/evidence/20260924-jev-w1/task-8-accuracy-mock.txt	qa	Default mock run scores all 15 fixtures and 60 answers, emits four confusion matrices, records resolved model and question version, and reports networkCallCount 0.
 8	.omo/evidence/20260924-jev-w1/task-8-ceiling-abort.txt	qa	JUnit proof that a counter pre-set one below the ceiling raises IntentRoutingCallCeilingError before a second backend dispatch.
+19	.omo/evidence/20260924-jev-w1/task-19-drive.sh	qa	Reusable isolated single-server driver with required sandbox receipts wire and keep CLI contract
+19	.omo/evidence/20260924-jev-w1/task-19-turn-script.jsonl	fixture	Thirty-three deterministic turns covering pure single fan-out mixed duplicate reuse direct resume and continuation cases
+19	.omo/evidence/20260924-jev-w1/task-19-fake-jev-server.ts	fixture	Local System One endpoint returning canned answers with pinned jev-1.13.0 model
+19	.omo/evidence/20260924-jev-w1/task-19-fake-model-provider.ts	fixture	Local OpenAI Responses provider replaying the committed turn script
+19	.omo/evidence/20260924-jev-w1/task-19-dogfood-session.txt	qa	Enabled run summary with one session 33 sealed observations one counter delta and all required cohorts
+19	.omo/evidence/20260924-jev-w1/task-19-report.txt	qa	Jev W1 report with denominator block and records-created accounting identity
+19	.omo/evidence/20260924-jev-w1/task-19-control-disabled.txt	qa	Separate disabled sandbox with zero Jev dispatches logs and sink files
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-before.tsv	isolation	Recursive real home OMO manifest before final enabled and disabled runs
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-after.tsv	isolation	Recursive real home OMO manifest after final enabled and disabled runs
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt	isolation	Empty recursive real home OMO manifest diff
+19	.omo/evidence/20260924-jev-w1/task-19-real-session-count-before.txt	isolation	Read-only real OpenCode session count before final runs
+19	.omo/evidence/20260924-jev-w1/task-19-real-session-count-after.txt	isolation	Read-only real OpenCode session count after final runs
+19	.omo/evidence/20260924-jev-w1/task-19-isolation-summary.txt	isolation	Identical real session counts and empty recursive home diff summary
+19	.omo/evidence/20260924-jev-w1/task-19-cleanup-receipts.txt	qa	Individual spawned PID and bound port lifecycle receipts for both runs
+19	.omo/evidence/20260924-jev-w1/task-19-evidence.txt	qa	Reviewer-readable tested observed sufficient omitted and risk record
+19	.omo/evidence/20260924-jev-w1/task-19-verification.txt	gate	Shell JSONL Bun build acceptance isolation cleanup and diagnostics summary
