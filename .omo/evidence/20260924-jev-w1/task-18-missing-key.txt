@@ -1,0 +1,24 @@
+Task 18 missing-credential failure-path evidence
+
+WHAT WAS TESTED
+Command: env -u TYPESAFE_API_KEY JEV_W1_REAL_API=1 bun test packages/jev-core/src/intent-routing-accuracy.test.ts
+Surface: the same real-backend accuracy harness with the explicit real-mode gate active and the credential removed from the process environment.
+Purpose: prove that the real backend short-circuits every fixture without issuing a paid request and that the harness reports a complete failure-path artifact rather than crashing.
+
+WHAT WAS OBSERVED
+Command exit: 0
+Harness artifact status: complete
+Fixtures evaluated: 17
+Decision calls: 17
+HTTP requests: 0
+Input tokens: 0
+Output tokens: 0
+Unavailable reason counts: missing_api_key 17
+Every per-fixture result had status unavailable and reason missing_api_key.
+The confusion matrices were empty because no prediction was returned, which is the expected missing-credential behavior.
+
+WHY IT IS ENOUGH
+The injected counting fetch remained at zero while all 17 fixture ids were processed. This proves the short-circuit occurs before transport, no paid call is possible on this path, and the harness preserves an inspectable result for every fixture.
+
+WHAT WAS OMITTED
+Environment dumps, credentials, authorization headers, request bodies, raw test output, and machine-local paths were not retained.

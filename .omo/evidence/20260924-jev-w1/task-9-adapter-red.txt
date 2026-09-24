@@ -116,7 +116,7 @@ error: expect(received).toEqual(expected)
 
       at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:178:19)
 (fail) createJevIntentRouting > #given deferred observation #when the caller continues #then caller continuation precedes state building [1.49ms]
-185 |     for (const env of [{ TYPESAFE_API_KEY: "test-key", OMO_JEV_BASE_URL: "https://local-jev.test" }, { TYPESAFE_API_KEY: "test-key" }]) {
+185 |     [synthetic credential assignments redacted from failing test output]
 186 |       const routing = createJevIntentRouting({ jevConfig: config({ backend: "real" }), vocab: VOCAB, env, backendFetch, logger: () => {} })
 187 |       routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))
 188 |       await runDeferredMacrotask()

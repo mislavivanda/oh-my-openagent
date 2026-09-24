@@ -1,5 +1,6 @@
 // allow: SIZE_OK - the work plan requires the accuracy harness and its tests in one file.
 import { describe, expect, test } from "bun:test"
+import type { Fetch } from "@typesafe-ai/sdk"
 import { selectDecisionBackend } from "./backend-selector"
 import {
   INTENT_ROUTING_NONE_OPTION,
@@ -16,7 +17,13 @@ import {
 } from "./intent-routing-fixtures"
 import { INTENT_ROUTING_SUBAGENT_VOCABULARY } from "./intent-routing-normalization"
 import { choiceAnswer, createMockDecisionBackend, type MockDecisionScript } from "./mock-backend"
-import type { DecisionBackend, DecisionRequest } from "./types"
+import type {
+  DecisionBackend,
+  DecisionRequest,
+  DecisionUnavailableReason,
+  DecisionUsage,
+  Questions,
+} from "./types"
 
 const QUESTION_KEYS = ["intent", "category", "subagent", "ambiguous"] as const
 const CHOICE_KEYS = ["intent", "category", "subagent"] as const
@@ -30,6 +37,22 @@ type HarnessMode = "mock" | "real" | "dry-run"
 type ConfusionMatrix = Record<string, Record<string, number>>
 type ConfusionMatrices = Record<QuestionKey, ConfusionMatrix>
 
+type FixtureResult = {
+  readonly id: string
+  readonly status: "filled" | "unavailable" | "invalid"
+  readonly resolvedModel: string | null
+  readonly unavailableReason: DecisionUnavailableReason | null
+  readonly usage: DecisionUsage | null
+  readonly latencyMs: number | null
+}
+
+type DecisionMeasurement = {
+  readonly resolvedModel: string | null
+  readonly unavailableReason: DecisionUnavailableReason | null
+  readonly usage: DecisionUsage | null
+  readonly latencyMs: number
+}
+
 type AccuracyArtifact = {
   readonly status: "complete" | "partial"
   readonly mode: HarnessMode
@@ -40,6 +63,12 @@ type AccuracyArtifact = {
   readonly completedFixtureIds: readonly string[]
   readonly decisionCallCount: number
   readonly networkCallCount: number
+  readonly requestCount: number
+  readonly inputTokens: number
+  readonly outputTokens: number
+  readonly latencyMs: { readonly min: number | null; readonly max: number | null }
+  readonly unavailableReasonCounts: Readonly<Partial<Record<DecisionUnavailableReason, number>>>
+  readonly fixtureResults: readonly FixtureResult[]
   readonly errorName: string | null
   readonly confusionMatrix: ConfusionMatrices
 }
@@ -53,6 +82,7 @@ type HarnessOptions = {
   readonly mode?: HarnessMode
   readonly callCeiling?: number
   readonly backendForFixture?: (fixture: IntentRoutingFixture, index: number) => DecisionBackend
+  readonly requestCount?: () => number
 }
 
 class IntentRoutingCallCeilingError extends Error {
@@ -106,6 +136,34 @@ function createMatrices(): ConfusionMatrices {
   return { intent: {}, category: {}, subagent: {}, ambiguous: {} }
 }
 
+function createMeasuredBackend(
+  backend: DecisionBackend,
+  measurements: DecisionMeasurement[],
+): DecisionBackend {
+  return {
+    kind: backend.kind,
+    async decide<Q extends Questions>(request: DecisionRequest<Q>) {
+      const outcome = await backend.decide(request)
+      measurements.push(
+        outcome.status === "decided"
+          ? {
+              resolvedModel: outcome.model,
+              unavailableReason: null,
+              usage: outcome.usage,
+              latencyMs: outcome.latencyMs,
+            }
+          : {
+              resolvedModel: null,
+              unavailableReason: outcome.reason,
+              usage: null,
+              latencyMs: outcome.latencyMs,
+            },
+      )
+      return outcome
+    },
+  }
+}
+
 function addObservation(matrix: ConfusionMatrix, expected: string, predicted: string): void {
   const row = matrix[expected] ?? {}
   row[predicted] = (row[predicted] ?? 0) + 1
@@ -144,9 +202,11 @@ async function runAccuracyHarness(options: HarnessOptions = {}): Promise<Accurac
   const callCeiling = options.callCeiling ?? CALL_CEILING
   const builtFixtureIds: string[] = []
   const completedFixtureIds: string[] = []
+  const fixtureResults: FixtureResult[] = []
+  const measurements: DecisionMeasurement[] = []
+  const unavailableReasonCounts: Partial<Record<DecisionUnavailableReason, number>> = {}
   const confusionMatrix = createMatrices()
   let decisionCallCount = 0
-  let networkCallCount = 0
   let resolvedModel: string | null = null
   const counter: CallCounter = {
     read: () => decisionCallCount,
@@ -154,19 +214,38 @@ async function runAccuracyHarness(options: HarnessOptions = {}): Promise<Accurac
       decisionCallCount += 1
     },
   }
-  const artifact = (status: "complete" | "partial", errorName: string | null): AccuracyArtifact => ({
-    status,
-    mode,
-    resolvedModel,
-    questionVersion: INTENT_ROUTING_QUESTION_VERSION,
-    callCeiling,
-    builtFixtureIds,
-    completedFixtureIds,
-    decisionCallCount,
-    networkCallCount,
-    errorName,
-    confusionMatrix,
-  })
+  const artifact = (status: "complete" | "partial", errorName: string | null): AccuracyArtifact => {
+    const latencies = measurements.map((measurement) => measurement.latencyMs)
+    const requestCount = options.requestCount?.() ?? 0
+    return {
+      status,
+      mode,
+      resolvedModel,
+      questionVersion: INTENT_ROUTING_QUESTION_VERSION,
+      callCeiling,
+      builtFixtureIds,
+      completedFixtureIds,
+      decisionCallCount,
+      networkCallCount: requestCount,
+      requestCount,
+      inputTokens: measurements.reduce(
+        (total, measurement) => total + (measurement.usage?.input_tokens ?? 0),
+        0,
+      ),
+      outputTokens: measurements.reduce(
+        (total, measurement) => total + (measurement.usage?.output_tokens ?? 0),
+        0,
+      ),
+      latencyMs: {
+        min: latencies.length === 0 ? null : Math.min(...latencies),
+        max: latencies.length === 0 ? null : Math.max(...latencies),
+      },
+      unavailableReasonCounts,
+      fixtureResults,
+      errorName,
+      confusionMatrix,
+    }
+  }
 
   for (const [index, fixture] of INTENT_ROUTING_FIXTURES.entries()) {
     const request = buildAccuracyRequest(fixture)
@@ -181,8 +260,10 @@ async function runAccuracyHarness(options: HarnessOptions = {}): Promise<Accurac
       throw error
     }
 
-    const backend = options.backendForFixture?.(fixture, index) ?? createFixtureMockBackend(fixture)
-    if (backend.kind === "real") networkCallCount += 1
+    const backend = createMeasuredBackend(
+      options.backendForFixture?.(fixture, index) ?? createFixtureMockBackend(fixture),
+      measurements,
+    )
     const result = await decideIntentRouting({
       backend,
       input: fixture.input,
@@ -192,6 +273,20 @@ async function runAccuracyHarness(options: HarnessOptions = {}): Promise<Accurac
       maxPromptChars: MAX_PROMPT_CHARS,
     })
     if (result.predictionStatus !== "filled" || result.answers === null) {
+      const measurement = measurements.at(-1)
+      const unavailableReason = result.unavailableReason
+      fixtureResults.push({
+        id: fixture.id,
+        status: "unavailable",
+        resolvedModel: null,
+        unavailableReason,
+        usage: measurement?.usage ?? null,
+        latencyMs: result.latencyMs,
+      })
+      if (unavailableReason !== null) {
+        unavailableReasonCounts[unavailableReason] = (unavailableReasonCounts[unavailableReason] ?? 0) + 1
+      }
+      if (unavailableReason === "missing_api_key") continue
       return artifact("partial", "IntentRoutingFixtureError")
     }
 
@@ -205,6 +300,15 @@ async function runAccuracyHarness(options: HarnessOptions = {}): Promise<Accurac
       addObservation(confusionMatrix[key], fixture.label[key], answer.choice)
     }
     if (!valid || !result.answers.ambiguous.valid) {
+      const measurement = measurements.at(-1)
+      fixtureResults.push({
+        id: fixture.id,
+        status: "invalid",
+        resolvedModel: result.resolvedModel,
+        unavailableReason: null,
+        usage: measurement?.usage ?? null,
+        latencyMs: result.latencyMs,
+      })
       return artifact("partial", "IntentRoutingFixtureError")
     }
     addObservation(
@@ -213,6 +317,15 @@ async function runAccuracyHarness(options: HarnessOptions = {}): Promise<Accurac
       String(result.answers.ambiguous.noul >= 0.5),
     )
     resolvedModel = result.resolvedModel
+    const measurement = measurements.at(-1)
+    fixtureResults.push({
+      id: fixture.id,
+      status: "filled",
+      resolvedModel: result.resolvedModel,
+      unavailableReason: null,
+      usage: measurement?.usage ?? null,
+      latencyMs: result.latencyMs,
+    })
     completedFixtureIds.push(fixture.id)
   }
   return artifact("complete", null)
@@ -226,6 +339,7 @@ function matrixTotal(matrix: ConfusionMatrix): number {
 }
 
 const ACTIVE_MODE = resolveHarnessMode(Bun.argv)
+const REAL_API_REQUESTED = Bun.env.JEV_W1_REAL_API === "1"
 const REAL_API_ENABLED = realApiEnabled({
   JEV_W1_REAL_API: Bun.env.JEV_W1_REAL_API,
   TYPESAFE_API_KEY: Bun.env.TYPESAFE_API_KEY,
@@ -311,19 +425,93 @@ describe("intent-routing accuracy harness", () => {
     expect(realApiEnabled({ TYPESAFE_API_KEY: "test-key" })).toBe(false)
   })
 
-  test.skipIf(!REAL_API_ENABLED || ACTIVE_MODE === "dry-run")("#given both real API gates #when every fixture is scored #then the paid run stays within the hard ceiling", async () => {
-    const apiKey = Bun.env.TYPESAFE_API_KEY
-    if (!apiKey || apiKey.trim() === "") throw new TypeError("TYPESAFE_API_KEY gate lost its value")
+  test("#given one four-question call and a counting fetch #when the local stub answers #then one request carries measured usage and latency", async () => {
+    let requestCount = 0
+    const fetch: Fetch = async () => {
+      requestCount += 1
+      return Response.json({
+        model: "jev-1.13.0",
+        answers: {
+          intent: choiceAnswer("explain", 0.99, Object.keys(QUESTIONS.intent.criteria)),
+          category: choiceAnswer(INTENT_ROUTING_NONE_OPTION, 0.99, Object.keys(QUESTIONS.category.criteria)),
+          subagent: choiceAnswer(INTENT_ROUTING_NONE_OPTION, 0.99, Object.keys(QUESTIONS.subagent.criteria)),
+          ambiguous: { type: "noul", noul: 0.01 },
+        },
+        usage: { input_tokens: 321, output_tokens: 7 },
+      })
+    }
     const backend = selectDecisionBackend(
       { enabled: true, backend: "real", model: MODEL_ALIAS, timeoutMs: 2500 },
-      { apiKey },
+      { apiKey: "local-measurement-key", fetch, baseURL: "https://jev.measurement.test" },
     )
+
+    const outcome = await backend.decide(buildAccuracyRequest(INTENT_ROUTING_FIXTURES[0]))
+
+    expect(outcome.status).toBe("decided")
+    if (outcome.status !== "decided") throw new Error("Expected the local measurement to decide")
+    expect(requestCount).toBe(1)
+    expect(outcome.usage).toEqual({ input_tokens: 321, output_tokens: 7 })
+    expect(outcome.latencyMs).toBeGreaterThanOrEqual(0)
+    console.info(`request-count-measurement requests=${requestCount} questions=${QUESTION_KEYS.length} input-tokens=${outcome.usage.input_tokens} output-tokens=${outcome.usage.output_tokens} latency-ms=${outcome.latencyMs.toFixed(3)}`)
+  })
+
+  test("#given real mode without an API key #when all fixtures are evaluated #then every fixture is unavailable and zero requests are made", async () => {
+    let requestCount = 0
+    const backend = selectDecisionBackend(
+      { enabled: true, backend: "real", model: MODEL_ALIAS, timeoutMs: 2500 },
+      { apiKey: undefined, fetch: async () => { requestCount += 1; return Response.json({}) } },
+    )
+
     const artifact = await runAccuracyHarness({ mode: "real", backendForFixture: () => backend })
-    console.info(`real-accuracy-artifact=${JSON.stringify(artifact)}`)
 
     expect(artifact.status).toBe("complete")
+    expect(artifact.decisionCallCount).toBe(INTENT_ROUTING_FIXTURES.length)
+    expect(artifact.networkCallCount).toBe(0)
+    expect(requestCount).toBe(0)
+    expect(Object.hasOwn(artifact, "unavailableReasonCounts")).toBe(true)
+  })
+
+  test.skipIf(!REAL_API_REQUESTED || ACTIVE_MODE === "dry-run")("#given the explicit real API gate #when every fixture is evaluated #then requests stay within the hard ceiling or missing credentials make zero requests", async () => {
+    const apiKey = Bun.env.TYPESAFE_API_KEY
+    let requestCount = 0
+    const countingFetch: Fetch = async (input, init) => {
+      if (requestCount >= CALL_CEILING) {
+        throw new IntentRoutingCallCeilingError(CALL_CEILING, requestCount + 1)
+      }
+      requestCount += 1
+      return fetch(input, init)
+    }
+    const backend = selectDecisionBackend(
+      { enabled: true, backend: "real", model: MODEL_ALIAS, timeoutMs: 2500 },
+      { apiKey, fetch: countingFetch },
+    )
+    const artifact = await runAccuracyHarness({
+      mode: "real",
+      backendForFixture: () => backend,
+      requestCount: () => requestCount,
+    })
+
+    if (!apiKey || apiKey.trim() === "") {
+      console.info(`missing-key-artifact=${JSON.stringify(artifact)}`)
+      expect(artifact.status).toBe("complete")
+      expect(artifact.decisionCallCount).toBe(INTENT_ROUTING_FIXTURES.length)
+      expect(artifact.requestCount).toBe(0)
+      expect(artifact.unavailableReasonCounts.missing_api_key).toBe(INTENT_ROUTING_FIXTURES.length)
+      expect(artifact.fixtureResults.every((result) => result.unavailableReason === "missing_api_key")).toBe(true)
+      return
+    }
+
+    console.info(`real-accuracy-artifact=${JSON.stringify(artifact)}`)
+
+    expect(REAL_API_ENABLED).toBe(true)
+    expect(artifact.status).toBe("complete")
     expect(artifact.decisionCallCount).toBeLessThanOrEqual(CALL_CEILING)
-    expect(artifact.networkCallCount).toBe(artifact.decisionCallCount)
+    expect(artifact.requestCount).toBeLessThanOrEqual(CALL_CEILING)
+    expect(artifact.requestCount).toBe(artifact.decisionCallCount)
     expect(artifact.resolvedModel).not.toBe(MODEL_ALIAS)
+    expect(artifact.fixtureResults).toHaveLength(INTENT_ROUTING_FIXTURES.length)
+    expect(artifact.inputTokens).toBeGreaterThan(0)
+    expect(artifact.latencyMs.min).not.toBeNull()
+    expect(artifact.latencyMs.max).not.toBeNull()
   })
 })

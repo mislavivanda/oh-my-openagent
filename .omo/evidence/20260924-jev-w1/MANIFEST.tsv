@@ -70,3 +70,7 @@ todo	artifact	kind	description
 17	.omo/evidence/20260924-jev-w1/task-17-testfast-scope.txt	artifact	test:fast before and after verbatim, append-only check, grep -c intent-routing = 9, 469 pass 1 skip 0 fail across 48 files, exit 0
 17	.omo/evidence/20260924-jev-w1/task-17-markdown-audit-proof.txt	qa	Markdown audit negative proof in three runs: green, then RED naming docs/jev/HANDOFF.md:346 after a transient /home path, then green after revert
 17	.omo/evidence/20260924-jev-w1/task-17-notices-diff.txt	baseline	check-third-party-notices output byte-identical to the todo-1 baseline, zero new missing entries, exit status 1 unchanged
+18	.omo/evidence/20260924-jev-w1/task-18-request-count-measurement.txt	artifact	Pre-spend counting-fetch proof: one HTTP request for four questions, measured latency and usage fields, plus official input-token billing quote
+18	.omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt	baseline	Single paid run: resolved model, question version, 17 request ceiling, token totals, latency range, per-fixture metrics, and four confusion matrices
+18	.omo/evidence/20260924-jev-w1/task-18-missing-key.txt	qa	Missing-credential path evaluates all 17 fixtures as unavailable with zero HTTP requests and exits cleanly
+18	.omo/evidence/20260924-jev-w1/task-18-secret-scan.txt	qa	Recursive retained-evidence credential scan returns no matches after redacting two synthetic assignments from earlier RED transcripts

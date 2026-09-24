@@ -75,7 +75,7 @@ error: expect(received).toEqual(expected)
 123 |   })
 124 | 
 125 |   test("#given real API configuration #when the gate is evaluated #then both the explicit flag and API key are required", () => {
-126 |     expect(realApiEnabled({ JEV_W1_REAL_API: "1", TYPESAFE_API_KEY: "secret" })).toBe(true)
+126 |     [synthetic credential assignment redacted from failing test output]
                                                                                        ^
 error: expect(received).toBe(expected)
 
