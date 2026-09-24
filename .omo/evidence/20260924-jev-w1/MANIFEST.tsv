@@ -23,3 +23,7 @@ todo	artifact	kind	description
 4	.omo/evidence/20260924-jev-w1/task-4-questions-green.txt	green	GREEN run of intent-routing.test.ts: 13 pass, 0 fail, 122 expect calls, plus the per-test roster and the acceptance-criteria coverage map
 4	.omo/evidence/20260924-jev-w1/task-4-empty-vocab.txt	qa	Empty vocabulary throws IntentRoutingVocabularyError by name, per-list proof for categories, subagents, and intents, plus the same proof through the package barrel
 4	.omo/evidence/20260924-jev-w1/task-4-typecheck.txt	qa	Scoped tsgo clean on both new files with the LSP daemon unreachable recorded, harness-neutrality guard green, concurrent todo-6 typecheck error attributed
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-red.txt	red	RED focused run before implementation: 19 failures carry the explicit missing normalization assertion, exit 1
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-green.txt	green	GREEN focused run: 19 pass, 0 fail, covering normalization, total route derivation, prediction coherence, and vocabulary drift
+6	.omo/evidence/20260924-jev-w1/task-6-resume-unscorable.txt	qa	Direct task resume probe returns unscorable_resume with both normalized targets set to none, exit 0
+6	.omo/evidence/20260924-jev-w1/task-6-drift-proof.txt	qa	Removing oracle fails the drift test by name, then restoring it returns the 19-test suite to green

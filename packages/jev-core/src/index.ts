@@ -50,3 +50,4 @@ export {
   type IntentRoutingVocabulary,
   type IntentRoutingVocabularyEntry,
 } from "./intent-routing"
+export { INTENT_ROUTING_SUBAGENT_VOCABULARY, derivePredictedRoute, deriveRoute, normalizeObservedDelegation } from "./intent-routing-normalization"
