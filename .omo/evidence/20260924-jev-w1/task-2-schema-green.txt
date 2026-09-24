@@ -1,0 +1,21 @@
+WHAT WAS TESTED
+  Command: bun test packages/omo-opencode/src/config/schema/jev.test.ts
+  Surface: the Zod v4 jev config schema at packages/omo-opencode/src/config/schema/jev.ts
+  State:   JevIntentRoutingWireConfigSchema implemented and registered under JevWiresConfigSchema.intent_routing.
+  Intent:  prove every assertion that was RED in task-2-schema-red.txt is now GREEN.
+
+WHAT WAS OBSERVED
+  RED  was 6 pass / 5 fail across 11 tests.
+  GREEN is 11 pass / 0 fail across the same 11 tests. The 5 previously failing assertions now hold:
+    default shape includes wires.intent_routing, observe_only false is rejected with a not-yet-implemented
+    message, turn_seal_timeout_ms defaults to 120000, and a seal timeout at or below timeout_ms is rejected.
+
+RAW OUTPUT
+----------------------------------------
+bun test v1.4.0 (34cbb9a40)
+
+ 11 pass
+ 0 fail
+ 18 expect() calls
+Ran 11 tests across 1 file. [139.00ms]
+exit=0

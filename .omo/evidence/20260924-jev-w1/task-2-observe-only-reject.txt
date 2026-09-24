@@ -1,0 +1,55 @@
+WHAT WAS TESTED
+  Failure-path QA: the schema must REJECT any attempt to turn off observation-only mode, because the
+  apply phase that would act on an intent-routing prediction does not exist yet. A config that silently
+  accepted observe_only: false would promise behavior no code implements.
+  Exact invocation, run from the worktree root:
+$ bun -e 'import {JevConfigSchema} from "./packages/omo-opencode/src/config/schema/jev"; try { JevConfigSchema.parse({wires:{intent_routing:{observe_only:false}}}); console.log("NO THROW - FAIL") } catch(e) { console.log("threw:", String(e).slice(0,200)) }'
+
+RAW OUTPUT
+----------------------------------------
+threw: [
+  {
+    "code": "custom",
+    "path": [
+      "wires",
+      "intent_routing",
+      "observe_only"
+    ],
+    "message": "jev.wires.intent_routing.observe_only must stay true. Acting on intent-rout
+exit=0
+----------------------------------------
+
+WHAT WAS OBSERVED
+  The parse THREW. The output line begins with "threw:" and never prints "NO THROW - FAIL".
+  The rejection message names the feature as not yet implemented and points at the apply phase,
+  which is exactly what the matching unit test pins with /not yet implemented/i.
+
+WHY IT IS ENOUGH
+  This exercises the real exported schema through the real Zod parse path, not a test double.
+  It covers the only reachable misconfiguration for this field, since observe_only is a boolean
+  and true is accepted by the default-shape assertion in the unit suite.
+
+WHAT WAS OMITTED
+  The message is truncated to 200 characters by the invocation itself. No secrets are involved.
+
+ADDENDUM - full rejection message, because the 200-character slice above cuts off mid-sentence
+  The plan's invocation truncates at 200 chars, which lands before the words that the unit test
+  matches. This addendum prints the message in full so the /not yet implemented/i claim is checkable.
+$ bun -e 'import {JevConfigSchema} from "./packages/omo-opencode/src/config/schema/jev"; const r = JevConfigSchema.safeParse({wires:{intent_routing:{observe_only:false}}}); console.log("success:", r.success); if (!r.success) for (const i of r.error.issues) console.log("issue path:", i.path.join("."), "\nissue message:", i.message)'
+
+RAW OUTPUT
+----------------------------------------
+success: false
+issue path: wires.intent_routing.observe_only 
+issue message: jev.wires.intent_routing.observe_only must stay true. Acting on intent-routing predictions is not yet implemented, and lands with the apply phase.
+exit=0
+----------------------------------------
+
+ADDENDUM - the second refine, proving the two timeouts cannot be misconfigured into the dataset-destroying order
+$ bun -e 'import {JevConfigSchema} from "./packages/omo-opencode/src/config/schema/jev"; for (const seal of [5000, 4000]) { const r = JevConfigSchema.safeParse({wires:{intent_routing:{timeout_ms:5000,turn_seal_timeout_ms:seal}}}); console.log("turn_seal_timeout_ms=" + seal, "success:", r.success, r.success ? "" : "| " + r.error.issues[0].message) }'
+
+RAW OUTPUT
+----------------------------------------
+turn_seal_timeout_ms=5000 success: false | jev.wires.intent_routing.turn_seal_timeout_ms must be strictly greater than timeout_ms, otherwise turns seal before their first tool call and the recorded dataset is destroyed.
+turn_seal_timeout_ms=4000 success: false | jev.wires.intent_routing.turn_seal_timeout_ms must be strictly greater than timeout_ms, otherwise turns seal before their first tool call and the recorded dataset is destroyed.
+exit=0

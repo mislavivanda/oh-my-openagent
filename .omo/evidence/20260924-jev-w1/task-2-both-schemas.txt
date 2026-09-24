@@ -1,0 +1,80 @@
+WHAT WAS TESTED
+  Two-schema regeneration proof for the new jev.wires.intent_routing block.
+  The jev block is reachable through BOTH generated assets:
+    assets/oh-my-opencode.schema.json  (legacy plugin schema)
+    assets/omo.schema.json             (unified omo.json chain, under [opencode] and profiles.*.[opencode])
+  A missed regen surfaces later as a CI auto-commit diff on master, so both must be rebuilt.
+
+STEP 0 - baseline: both assets clean at HEAD before any build
+$ git diff --exit-code --stat assets/oh-my-opencode.schema.json assets/omo.schema.json
+exit=0  (0 = both clean at HEAD)
+
+STEP 1 - run ONLY `bun run build:schema`
+$ bun run build:schema
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+exit=0
+
+STEP 2 - both assets are now dirty vs HEAD
+$ git diff --exit-code --stat assets/oh-my-opencode.schema.json
+ assets/oh-my-opencode.schema.json | 74 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 73 insertions(+), 1 deletion(-)
+exit=1  (NON-zero = the legacy asset changed)
+$ git diff --exit-code --stat assets/omo.schema.json
+ assets/omo.schema.json | 148 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 146 insertions(+), 2 deletions(-)
+exit=1  (NON-zero = the unified asset changed)
+
+STEP 3 - run `bun run build:omo-schema`
+$ bun run build:omo-schema
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+exit=0
+
+STEP 4 - the dedicated omo generator agrees byte for byte with what build:schema wrote.
+This is the ZERO that matters: build:omo-schema introduces NO further change, so neither generator
+is stale and there is nothing left for CI to auto-commit.
+$ diff -q /tmp/jev-w1-e90b-omo-after-build-schema.json assets/omo.schema.json
+exit=0  (0 = byte-identical, build:omo-schema added no further change)
+
+READING NOTE, recorded because the literal wording could be misread.
+  `git diff --exit-code assets/omo.schema.json` compares the working tree against HEAD, so it stays
+  NON-zero after step 3 as well. That is correct and intended: the schema legitimately changed in this
+  commit, and it stays changed until the asset is committed. It does NOT mean build:omo-schema failed.
+  Proof of that, run immediately after step 3:
+$ git diff --exit-code --stat assets/omo.schema.json
+ assets/omo.schema.json | 148 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 146 insertions(+), 2 deletions(-)
+exit=1  (NON-zero vs HEAD, unchanged from step 2, same 146 insertions / 2 deletions)
+
+STEP 5 - final state of both assets after BOTH builds
+$ git diff --stat assets/oh-my-opencode.schema.json assets/omo.schema.json
+ assets/oh-my-opencode.schema.json |  74 ++++++++++++++++++-
+ assets/omo.schema.json            | 148 +++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 219 insertions(+), 3 deletions(-)
+
+STEP 6 - no unexpected files were dirtied by the two builds (dist/ is gitignored)
+$ git status --porcelain=v1
+ M assets/oh-my-opencode.schema.json
+ M assets/omo.schema.json
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/config/schema/jev.test.ts
+ M packages/omo-opencode/src/config/schema/jev.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+
+WHY IT IS ENOUGH
+  Step 0 proves both assets were clean before the builds, so every later diff is attributable to this change.
+  Step 2 proves BOTH assets carry the new jev.wires.intent_routing block, which is the failure mode the plan
+  calls out: regenerating only one of the two leaves the other stale and CI auto-commits it on master.
+  Step 4 proves the two generators agree, so the committed assets are the canonical output of both.
+  Step 6 proves the builds dirtied nothing beyond the two assets and the 5 pre-existing generated files that
+  bun install regenerated during todo 1, which are deliberately NOT staged.
+
+WHAT WAS OMITTED
+  The full schema text is not inlined here. It is recorded separately in task-2-schema-diff.txt.
+  No credentials, tokens, or environment dumps are involved in this proof.
