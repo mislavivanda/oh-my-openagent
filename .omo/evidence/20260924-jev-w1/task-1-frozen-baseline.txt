@@ -1,0 +1,27 @@
+# FROZEN BASELINE - jev-w1-intent-routing
+# This file is the comparison target for later gates (F2). It contains NO timestamps,
+# NO durations, NO absolute paths, and no other run-to-run-varying text, so a plain
+# diff against a re-measure yields only genuine regressions.
+bun_version=1.4.0
+node_version=v22.23.2
+head_sha=82460563fa1573c49b88d7c70620fac09a971d19
+branch=jev/w1-e90b
+command=env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+env_delta=OPENCODE_SERVER_PASSWORD unset (variable name only; value never recorded)
+exit=1
+sort=LC_ALL=C sort
+format=<relative-file-path>\t<full test name>
+pass=12777
+fail=7
+skip=3
+total_ran=12787
+files=1678
+BEGIN_FAILING_TESTS
+packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts	dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > accepts channel parameter
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > accepts latest channel
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+packages/omo-opencode/src/shared/module-resolution-failure.test.ts	isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+END_FAILING_TESTS

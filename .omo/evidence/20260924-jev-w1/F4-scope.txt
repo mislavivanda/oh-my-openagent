@@ -1,0 +1,410 @@
+F4 - Scope fidelity: the Must-NOT-Have list held
+=================================================
+
+VERDICT: APPROVE
+judged_sha: ccb259acee26cff091f50dcd1aa2bdbe72c717d5
+base: jev/foundation = 82460563fa1573c49b88d7c70620fac09a971d19
+branch: jev/w1-e90b (the plan spells this jev/w1)
+worktree: /home/opencode/projects/oh-my-openagent-jev-w1-e90b
+commits past base at judgement time: 17 (plan budget is 18)
+judged at: 2026-09-24
+
+WHAT WAS TESTED
+---------------
+Every item on the plan's "Must NOT have" list (plan lines 39-50) plus the five
+extra scope claims in the F4 mandate, run as literal commands against
+jev/foundation..HEAD. This is a read-only audit. Nothing was fixed, no source
+was modified, the plan was not edited, and no other worktree was touched.
+
+WHAT WAS OBSERVED
+-----------------
+
+CHECK 1 - six Phase 0 prose blocks, the resolver, model-selection, and every
+W4 file are UNTOUCHED.
+  $ git diff jev/foundation..HEAD --stat -- \
+      packages/omo-opencode/src/agents/sisyphus-dynamic-prompt-role.ts \
+      packages/omo-opencode/src/agents/sisyphus/ \
+      packages/omo-opencode/src/agents/hephaestus/gpt.ts \
+      packages/omo-opencode/src/tools/delegate-task/category-resolver.ts \
+      packages/delegate-core/src/model-selection.ts \
+      packages/omo-opencode/src/plugin/event-model-fallback.ts \
+      packages/omo-opencode/src/features/jev/model-error-triage.ts \
+      packages/jev-core/src/model-error-triage.ts
+  RESULT: empty output. PASS.
+
+  W4 test files byte-identical, proven by blob sha equality rather than by an
+  empty diff alone:
+    packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts
+      base 4f8ea0e8f5146a2e9fa1fb08b9c5da1798213847
+      head 4f8ea0e8f5146a2e9fa1fb08b9c5da1798213847
+    packages/omo-opencode/src/features/jev/model-error-triage.test.ts
+      base 9ab7a13ca59aa4bde20a06602781486eb5d2b630
+      head 9ab7a13ca59aa4bde20a06602781486eb5d2b630
+  Identical blob shas mean identical bytes. PASS.
+
+CHECK 2 - the shared W4 schema was not mutated.
+  $ git diff jev/foundation..HEAD -- packages/omo-opencode/src/config/schema/jev.ts \
+      | grep -E '^[-+].*JevWireConfigSchema = '
+  RESULT: empty output, grep exit 1. PASS.
+  Context: jev.ts did change (61 insertions, 1 deletion) but only to ADD
+  JevIntentRoutingWireConfigSchema and to point JevWiresConfigSchema.intent_routing
+  at it. The shared JevWireConfigSchema declaration that W4 consumes is unchanged,
+  and model_error_triage still defaults to
+  JevWireConfigSchema.default({ enabled: false, confidence_threshold: 0.8 }).
+
+CHECK 3 - observe_only is schema-only with no runtime read.
+  $ grep -rn "observe_only" packages/omo-opencode/src --include=*.ts \
+      | grep -v -E '(config/schema|\.test\.ts)'
+  RESULT: empty output, exit 1. PASS.
+  Full hit set is 7 lines, all inside config/schema (jev.ts lines 18, 23, 56)
+  or config/schema/jev.test.ts (lines 23, 81, 84, 86). The schema rejects
+  observe_only: false with a z.refine, so it is a validation constraint rather
+  than a runtime branch. No dead runtime branch on an always-true value.
+
+CHECK 4 - the report script has no CLI surface.
+  $ grep -rn "jev-w1-report" packages/omo-opencode/src/cli/
+  RESULT: empty output, exit 1. PASS.
+  $ grep -rn "jev-w1-report" assets/
+  RESULT: empty output. No help-schema surface. PASS.
+  docs/reference/cli.md exists (9578 bytes) and contains no occurrence; that
+  file is also untouched by the branch diff. PASS.
+  Repo-wide occurrences, each judged: script/jev-w1-report.{ts,test.ts,fixtures.ts}
+  (the script itself), docs/jev/HANDOFF.md and packages/jev-core/AGENTS.md
+  (two of the four allowed docs, describing how to run the file directly),
+  package.json (only the string script/jev-w1-report.test.ts inside the
+  test:fast file list, not an exposed run script and not a subcommand),
+  the plan, and evidence artifacts. None of these is a CLI subcommand,
+  a --help entry, or a user-facing CLI doc surface.
+
+CHECK 5 - no hook-registry wiring was added.
+  $ grep -rn "intentRouting\|intent-routing" \
+      packages/omo-opencode/src/create-hooks.ts \
+      packages/omo-opencode/src/config/schema/hooks.ts
+  RESULT: empty output, exit 1. PASS.
+  The wire rides plugin handlers directly, exactly as W4 does: plugin-interface.ts
+  threads an optional intentRouting into the chat.message and tool.execute.before
+  handler factories, and those two handlers call intentRouting.dispatch and
+  intentRouting.capture. No hook tier, no hooks schema key.
+
+CHECK 6 - no new dependency was added.
+  $ git diff jev/foundation..HEAD --name-only | grep -E 'package\.json|lock'
+  RESULT: package.json only. No lockfile in the diff at all.
+  The entire package.json diff is one line: the test:fast hardcoded file list
+  gains the new W1 test paths and script/jev-w1-report.test.ts. There is no
+  change to dependencies, devDependencies, optionalDependencies, or peerDependencies.
+  PASS.
+
+CHECK 7 - exactly four documentation files changed.
+  $ git diff jev/foundation..HEAD --name-only | grep -E '\.md$'
+  RESULT, complete list:
+    docs/jev/HANDOFF.md
+    docs/jev/dogfood-log.md
+    docs/reference/configuration.md
+    packages/jev-core/AGENTS.md
+  Exactly the four the plan allows (plan line 237), no more, no fewer. No other
+  markdown file in the repository was added, modified, renamed, or deleted.
+  PASS.
+  Judged separately as instructed: 107 files under .omo/evidence/20260924-jev-w1/
+  were added. These are evidence artifacts required by the plan and by root
+  AGENTS.md, not documentation, so they are not doc creep. The plan file
+  .omo/plans/jev-w1-intent-routing.md is absent from the diff, so the plan
+  was not edited.
+
+CHECK 8 - no README.md was added.
+  $ git diff jev/foundation..HEAD --name-status --diff-filter=A | grep -i readme
+  RESULT: empty output, exit 1.
+  $ git diff jev/foundation..HEAD --name-only | grep -i readme
+  RESULT: empty output, exit 1. No README was added and none was touched. PASS.
+
+CHECK 9 - no W2 / W3 / W5 work and no apply path. Observe-only end to end.
+  The two call sites are statement-position calls whose return value is discarded:
+    plugin/chat-message.ts:108        intentRouting.dispatch(input, output)
+    plugin/tool-execute-before.ts:62  intentRouting.capture(input, output)
+  Neither result feeds a branch, a return, or an assignment. The full
+  plugin-interface.ts diff adds only an optional intentRouting parameter spread
+  into three handler factories; it changes no existing behavior.
+  The JevIntentRouting contract itself is observe-only by type: dispatch takes
+  { readonly parts: readonly IntentRoutingTextPart[] } and returns void, and
+  capture takes { readonly args: Record<string, unknown> } and returns boolean.
+  Mutation search across production sources:
+    $ grep -rnE "output\.(args|parts)\s*(\[[^]]*\])?\s*=[^=]|input\.(tool|sessionID|agent)\s*=[^=]|delete output|Object\.assign\(output|Object\.assign\(input" \
+        packages/omo-opencode/src/features/jev/ packages/jev-core/src/ --include=*.ts \
+        | grep -v '\.test\.ts'
+    RESULT: empty output, exit 1.
+  Apply-path search:
+    $ grep -rniE "applyPrediction|apply_prediction|applyRouting|overrideCategory|forceCategory|setCategory|mutateCategory|rewriteAgent|applyIntent" \
+        packages/omo-opencode/src packages/jev-core/src script/ --include=*.ts \
+        | grep -v '\.test\.ts'
+    RESULT: 8 hits, all in files the branch never touched
+    (plugin-handlers/agent-key-remapper.ts, agents/builtin-agents/agent-overrides.ts,
+    agents/builtin-agents/hephaestus-agent.ts). None appears in the branch
+    name-status list, so all 8 are pre-existing and unrelated.
+  The schema closes the last door: observe_only rejects false, so there is no
+  config path that could switch an apply path on even if one existed.
+  No W2, W3, or W5 module, config key, or call site was added. PASS.
+
+CHECK 10 - no session-DB mining for ground truth.
+  $ grep -rniE "bun:sqlite|sqlite|Database\(|opencode\.db|\.db[\"']" \
+      packages/omo-opencode/src/features/jev/ --include=*.ts | grep -v '\.test\.ts'
+  RESULT: empty output, exit 1.
+  Same search over packages/jev-core/src/: empty output, exit 1.
+  No production source under features/jev/ opens the session DB, imports a
+  sqlite driver, or references opencode.db.
+  Ground truth is read from tool.execute.before arguments, proven by
+  features/jev/intent-routing-capture.ts: capture() gates on an allowlist of
+  the two delegation tools ("task", "call_omo_agent"), then reads
+  output.args.category, output.args.subagent_type,
+  output.args.requested_subagent_type, and output.args.task_id, and pairs the
+  observation with input.callID. Reads only, no writes back into output.
+  PASS.
+
+CHECK 11 - no logger-style rotation subsystem.
+  $ grep -rniE "rotat|\.1\b|backup" \
+      packages/omo-opencode/src/features/jev/intent-routing-sink.ts \
+      packages/omo-opencode/src/features/jev/intent-routing-sink-config.ts
+  RESULT: empty output. No rotation, no .1/.2 backup segments.
+  The sink is a size cap plus truncate-and-warn:
+    intent-routing-sink-config.ts:14  INTENT_ROUTING_SINK_SIZE_CAP_BYTES = 32 * 1024 * 1024
+    intent-routing-sink.ts:138        if (statSync(filePath).size + Buffer.byteLength(line) > sizeCapBytes)
+    intent-routing-sink.ts:139            truncateAndWrite(entry)
+    intent-routing-sink.ts:133        writeFileSync(filePath, lines.join(""), ...)   // overwrite in place
+    intent-routing-sink.ts:134        onTruncate({ filePath, counterEpoch, recordsLostToCap, sizeCapBytes })
+    intent-routing-sink-config.ts:87  default onTruncate logs "[jev] intent-routing sink truncated at size cap"
+  Truncation overwrites the single file and warns; it never renames a segment
+  to .1 or .2. The cap is justified by a measured bytes-per-day figure recorded
+  in a comment at intent-routing-sink-config.ts:12 ("about 8.4 high-volume days
+  for one process"), which is what the plan asked for. PASS.
+
+FINDINGS
+--------
+1. INFO - docs/reference/configuration.md adds a "- [Telemetry](#telemetry)"
+   table-of-contents entry alongside the required "- [Jev Intent Routing]"
+   entry. The Telemetry section already existed without a TOC link, so this is
+   a one-line fix to a pre-existing omission inside an explicitly allowed file.
+   It is not a new doc, not a new section, and does not breach the
+   "exactly four documentation files" boundary. No action required.
+2. INFO - the string "jev-w1-report" appears in root package.json. Verified it
+   is only "script/jev-w1-report.test.ts" inside the test:fast hardcoded file
+   list, which plan todo 17 explicitly requires. It is not an npm run script
+   for the report, not a CLI subcommand, and not a --help surface.
+3. INFO - "jev-w1-report" appears in docs/jev/HANDOFF.md (lines 44, 144, 293)
+   and packages/jev-core/AGENTS.md (line 85). Both are inside the four allowed
+   documentation files and both describe invoking the file directly with
+   "bun run script/jev-w1-report.ts". The plan's prohibited surfaces are the
+   CLI help schema and the CLI reference doc; assets/ and docs/reference/cli.md
+   are both clean. This does not breach the guardrail.
+4. INFO (not a scope defect, flagged for the wave lead) - the branch carries 17
+   commits past jev/foundation while the plan budgets 18 (plan line 287, and
+   grep -cE '^[[:space:]]+Commit: Y' returns 18). The worktree also has
+   uncommitted modifications, including packages/jev-core/src/intent-routing-accuracy.test.ts,
+   consistent with one implementation todo still in flight. Because of this I
+   deliberately did NOT commit this evidence: a commit now would consume the
+   final slot and force the remaining implementation commit to 19, breaking the
+   very count F1 audits. This file is staged with git add -f and left
+   uncommitted. Commit-count correctness itself is F1's call, not mine.
+
+WHY THIS IS ENOUGH
+------------------
+Every guardrail on the plan's Must-NOT-Have list maps to at least one literal
+command whose output is recorded above, and the two strongest claims are proven
+structurally rather than by absence of a diff: W4 test immutability by blob sha
+equality, and observe-only behavior by the discarded return values plus an empty
+mutation search plus a schema that rejects the apply mode. The doc boundary is
+proven by enumerating every markdown path in the diff rather than by spot checks.
+
+WHAT WAS OMITTED
+----------------
+No secrets, tokens, API keys, environment dumps, or auth headers appear in this
+file; none were encountered, since every command here is a git diff or a grep
+over tracked source. Correctness of the wire's behavior, its test quality, its
+latency budget, prose style compliance, and the commit count itself are outside
+the F4 mandate and belong to the other final verifiers.
+
+ADDENDUM - the branch moved mid-audit, so all 11 checks were re-run
+-------------------------------------------------------------------
+While this audit was running, another worker landed the final implementation
+commit a77a8289685c515d878d7af0d21e5560b1acddc9
+("test(jev): record the intent-routing real-API accuracy baseline"), taking the
+branch from 17 to 18 commits. That commit touched
+packages/jev-core/src/intent-routing-accuracy.test.ts plus 7 evidence artifacts,
+and no production source.
+
+All 11 checks were re-executed verbatim against the new HEAD and every one still
+passes:
+  C1  empty output; W4 test blob shas still 4f8ea0e8... and 9ab7a13c... on both sides
+  C2  empty output
+  C3  empty output
+  C4  empty output for both packages/omo-opencode/src/cli/ and assets/
+  C5  empty output
+  C6  package.json is still the only changed manifest, no lockfile, and the
+      dependency-line count in its diff is 0
+  C7  the same four markdown files, no others
+  C8  no README added or touched
+  C9  mutation search empty, exit 1
+  C10 sqlite search empty, exit 1
+  C11 rotation search empty, exit 1
+
+FINAL judged_sha: a77a8289685c515d878d7af0d21e5560b1acddc9 (18 commits past
+jev/foundation, exactly the plan budget of 18). The earlier per-check transcript
+above was captured at ccb259acee26cff091f50dcd1aa2bdbe72c717d5; both shas produce
+identical results for every check.
+
+Commit discipline for this file: the branch now sits AT the 18-commit budget, so
+committing this evidence would push it to 19 and break the count F1 audits. Per
+the F4 mandate this evidence is therefore left UNCOMMITTED, staged with
+git add -f. Verified that the other worker's commit did not sweep F4-scope.txt
+into itself and did not clobber the appended F4 MANIFEST row: F4-scope.txt is
+absent from a77a82896, the committed MANIFEST has no F4 row, and the working
+tree holds both with index status "A" and "M" respectively. The wave lead must
+decide how to land these two staged paths.
+
+## RE-RUN AT FINAL SHA
+
+JUDGED SHA: 97983438df915ff51418b19f4f2ce906fc59092f (HEAD of jev/w1-e90b at start AND end of this re-run)
+BASE: jev/foundation | COMMIT COUNT: 19 (18 plan + 1 acknowledged remediation)
+WHY: the original F4 judged ccb259ace = HEAD^^. a77a82896 (8 files) and 97983438d (40 files) were
+never scope-checked. The remediation's 40-file footprint is the specific risk this re-run exists for.
+VERDICT: APPROVE
+
+11. W2/W3/W4 owned paths untouched
+    cmd : git diff jev/foundation..HEAD --stat -- \
+            packages/omo-opencode/src/agents/sisyphus-dynamic-prompt-role.ts \
+            packages/omo-opencode/src/agents/sisyphus/ \
+            packages/omo-opencode/src/agents/hephaestus/gpt.ts \
+            packages/omo-opencode/src/tools/delegate-task/category-resolver.ts \
+            packages/delegate-core/src/model-selection.ts \
+            packages/omo-opencode/src/plugin/event-model-fallback.ts \
+            packages/omo-opencode/src/features/jev/model-error-triage.ts \
+            packages/jev-core/src/model-error-triage.ts
+    obs : NOTHING. Not one of the eight paths appears in the 19-commit diff.
+    PASS
+
+12. W4 test files byte-identical by blob sha
+    packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts
+      jev/foundation 4f8ea0e8f5146a2e9fa1fb08b9c5da1798213847
+      HEAD           4f8ea0e8f5146a2e9fa1fb08b9c5da1798213847   IDENTICAL
+    packages/omo-opencode/src/features/jev/model-error-triage.test.ts
+      jev/foundation 9ab7a13ca59aa4bde20a06602781486eb5d2b630
+      HEAD           9ab7a13ca59aa4bde20a06602781486eb5d2b630   IDENTICAL
+    PASS
+
+13. JevWireConfigSchema declaration not redefined
+    cmd : git diff jev/foundation..HEAD -- packages/omo-opencode/src/config/schema/jev.ts | grep -E '^[-+].*JevWireConfigSchema = '
+    obs : NOTHING (exit 1).
+    PASS
+
+14. observe_only confined to schema and tests
+    cmd : grep -rn "observe_only" packages/omo-opencode/src --include=*.ts | grep -v -E '(config/schema|\.test\.ts)'
+    obs : NOTHING (exit 1).
+    PASS
+
+15. No report CLI surface
+    cmd : grep -rn "jev-w1-report" packages/omo-opencode/src/cli/
+    obs : NOTHING (exit 1). The report stays a script/ entry, never a shipped subcommand.
+    PASS
+
+16. No hook-registry wiring
+    cmd : grep -rn "intentRouting\|intent-routing" packages/omo-opencode/src/create-hooks.ts packages/omo-opencode/src/config/schema/hooks.ts
+    obs : NOTHING (exit 1). The wire stays in plugin handlers, never a registered hook tier.
+    PASS
+
+17. No new dependency
+    cmd : git diff jev/foundation..HEAD --stat -- '*package.json' '*bun.lock' '*bun.lockb' '*package-lock.json' '*yarn.lock' '*pnpm-lock.yaml'
+    obs : package.json | 2 +-   (1 file changed, 1 insertion, 1 deletion). NO lockfile of any kind changed.
+          The single changed line is the "test:fast" script string, extended with the branch's own test
+          paths (a77a82896 added packages/jev-core/src/intent-routing-accuracy.test.ts; earlier commits
+          added the plugin-level intent-routing tests and script/jev-w1-report.test.ts).
+          The dependencies, devDependencies, optionalDependencies, and workspaces blocks are UNCHANGED.
+    PASS (no new dependency; the manifest touch is a test-script registration, not a dependency)
+
+18. Exactly four documentation files. RE-CHECKED AGAINST THE 40-FILE REMEDIATION.
+    183 files differ from jev/foundation. Classified:
+      docs (4, exactly as budgeted):
+        docs/jev/HANDOFF.md
+        docs/jev/dogfood-log.md
+        packages/jev-core/AGENTS.md
+        docs/reference/configuration.md
+      generated assets (2, not docs, regenerated because the config schema grew):
+        assets/oh-my-opencode.schema.json
+        assets/omo.schema.json
+      manifest (1): package.json  (test:fast only, see 17)
+      source + test + script (53 .ts): all under packages/jev-core/src, packages/omo-opencode/src,
+        script/jev-w1-report*, plus the 4 plugin handler seams and create-plugin-module.
+      evidence artifacts (the remainder, all under .omo/evidence/20260924-jev-w1/): artifacts, not docs.
+    Remediation 97983438d decomposed: 20 evidence artifacts + 20 source/test/script files. It added
+    ZERO documentation files and modified ZERO of the four budgeted docs.
+    a77a82896 decomposed: 7 evidence artifacts + 1 test file. Zero docs.
+    PASS
+
+19. Still observe-only end to end
+    no apply path        : grep for applyPrediction|usePrediction|actOnPrediction|routeTo(|overrideCategory|
+                           setCategory( across features/jev and plugin (non-test) -> NOTHING
+    nothing acts on a prediction : the three plugin seams call the wire for side effect only and discard
+                           every return value:
+                             chat-message.ts:108        intentRouting.dispatch(input, output)
+                             tool-execute-before.ts:62  intentRouting.capture(input, output)
+                             event.ts:109,144           intentRouting.handleSessionIdle(sessionID)
+                             event.ts:153               intentRouting.handleSessionDeleted(deletedSessionID)
+                           No predictedRoute or answers value is read in any of the three files.
+    no session-DB mining : grep -rniE 'opencode\.db|sqlite|bun:sqlite|Database\(' over features/jev,
+                           packages/jev-core/src, and script/jev-w1-report.ts -> NOTHING
+    sink bounding        : size cap plus truncate-and-warn, NOT logger-style .1/.2 rotation.
+                           intent-routing-sink.ts:138 checks statSync(filePath).size + byteLength(line)
+                           against sizeCapBytes and calls truncateAndWrite() (line 115), which records
+                           recordsLostToCap and sinkTruncations and fires onTruncate (line 134).
+                           grep for renameSync|rename(|copyFile|'.1'|'.2' in the sink -> NOTHING.
+    PASS
+
+20. Driver CLI contract survived the remediation. VERIFIED, NOT ASSUMED.
+    The remediation DID edit .omo/evidence/20260924-jev-w1/task-19-drive.sh (+22/-10 at 97983438d,
+    +3/-1 at a77a82896), so every clause was re-read at HEAD:
+      --sandbox   line 15  --sandbox) [ "$#" -ge 2 ] || fail "--sandbox requires a value"; SANDBOX=$2
+                  line 23  [ -n "$SANDBOX" ] || fail "--sandbox is required"
+      --receipts  line 16  --receipts) [ "$#" -ge 2 ] || fail "--receipts requires a value"; RECEIPTS=$2
+                  line 24  [ -n "$RECEIPTS" ] || fail "--receipts is required"
+      --wire      line 17  --wire) [ "$#" -ge 2 ] || fail "--wire requires a value"; WIRE=$2
+                  line 25  case "$WIRE" in enabled|disabled) ;; *) fail "--wire must be enabled or disabled" ;; esac
+      --keep      line 18  --keep) KEEP=true; shift ;;
+    receipts outside the sandbox, still enforced structurally after realpath normalization:
+      line 31  SANDBOX=$(realpath "$SANDBOX")
+      line 32  RECEIPTS=$(realpath "$RECEIPTS")
+      line 33  case "$RECEIPTS/" in "$SANDBOX/"*) fail "--receipts must live outside --sandbox" ;; esac
+    no global process matcher:
+      grep -nE 'pkill|pgrep' task-19-drive.sh -> NOTHING (exit 1). Zero occurrences of either, so there
+      is no global 'pkill -f opencode' / 'pgrep -f opencode'. Teardown remains per-PID from the
+      receipted pids.tsv.
+    Sandbox isolation intact after the edits: HOME, XDG_DATA_HOME, XDG_CONFIG_HOME, XDG_STATE_HOME,
+    XDG_CACHE_HOME and TMPDIR are all re-pointed under "$SANDBOX" (lines 43-48) before any run.
+    What the remediation actually changed, and why it is in scope:
+      - replaced a 70s poll of "$HOME/.omo/jev" for a counter_delta with a 200-iteration 0.1s poll that
+        cross-checks fake-Jev dispatch count against intent-log count, then hard-fails on mismatch;
+      - added a graceful POST /global/dispose before kill -TERM, asserting HTTP 200/204, which is the
+        driver-side half of the F-1 dispose-flush fix;
+      - added a final counter identity assertion off the raw sink, and widened the summary line with
+        final_counter_seq / records_created / records_evicted / records_in_flight.
+      - (a77a82896) replaced export TYPESAFE_API_KEY="literal" with printf -v then export, so the dummy
+        value is never a command-line argument. Secret-hygiene motivated, behaviour unchanged.
+    None of these add a flag, remove a flag, move receipts inside the sandbox, or introduce a global matcher.
+    PASS
+
+FINDINGS
+  No scope violations. Zero HIGH, zero MEDIUM, zero LOW.
+  The remediation's 40-file footprint is fully accounted for: 20 evidence artifacts, 19 source/test
+  files already inside the branch's own jev surface, and the driver script. It crossed no W2/W3/W4
+  boundary, added no dependency, added no document, opened no CLI surface, registered no hook, and
+  created no apply path.
+
+WHY THIS IS ENOUGH
+  Every gate was executed at the final sha rather than inferred from the earlier pass, the two
+  newly-landed commits were decomposed file-by-file against the four-document budget, and gate 20 was
+  re-read line-by-line at HEAD precisely because the remediation touched that script.
+
+WHAT WAS OMITTED
+  No secrets, tokens, credentials, or env dumps are reproduced. The sandbox port numbers and session
+  ids that the driver prints are not reprinted here; the driver already renders the port as
+  <sandbox-port>.
+
+INTEGRITY
+  judged sha 97983438df915ff51418b19f4f2ce906fc59092f, confirmed == HEAD at the moment of writing.
+  No source, test, plan, or configuration file was modified by this verifier. Nothing was committed.
+  The operator's real ~/.omo/ was never written. No other worktree was touched.

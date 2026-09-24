@@ -1,0 +1,12 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+JEV_W1_ACCURACY_ARTIFACT {"status":"complete","mode":"mock","requestedModel":"jev-latest","resolvedModel":"mock/jev-intent-routing-v1","questionVersion":1,"callCount":15,"networkCallCount":0,"builtRequestCount":15,"completedFixtureIds":["no-delegation-port-question","no-delegation-zod-explanation","no-delegation-acknowledgement","obvious-category-modal-overflow","obvious-category-changelog-entry","obvious-subagent-find-callsites","obvious-subagent-flaky-race","ambiguous-make-auth-better","ambiguous-clean-this-up","multilingual-ko-profile-slow-function","multilingual-ja-layout-fix","continuation-continue","continuation-go-on","adversarial-question-shaped-work-order","adversarial-quick-framed-redesign"],"fixtureExactMatches":15,"correctAnswers":60,"scoredAnswers":60,"confusionMatrices":{"intent":{"explain":{"explain":2},"acknowledge":{"acknowledge":1},"implement":{"implement":6},"author":{"author":1},"investigate":{"investigate":3},"continue":{"continue":2}},"category":{"none":{"none":8},"visual-engineering":{"visual-engineering":2},"writing":{"writing":1},"quick":{"quick":2},"deep":{"deep":1},"ultrabrain":{"ultrabrain":1}},"subagent":{"none":{"none":13},"explore":{"explore":1},"oracle":{"oracle":1}},"ambiguous":{"false":{"false":11},"true":{"true":4}}},"failure":null}
+
+ 6 pass
+ 0 fail
+ 15 expect() calls
+Ran 6 tests across 1 file. [129.00ms]
+
+--- direct --dry-run probe with both real flags present ---
+JEV_W1_ACCURACY_ARTIFACT {"status":"complete","mode":"dry-run","requestedModel":"jev-latest","resolvedModel":null,"questionVersion":1,"callCount":0,"networkCallCount":0,"builtRequestCount":15,"completedFixtureIds":["no-delegation-port-question","no-delegation-zod-explanation","no-delegation-acknowledgement","obvious-category-modal-overflow","obvious-category-changelog-entry","obvious-subagent-find-callsites","obvious-subagent-flaky-race","ambiguous-make-auth-better","ambiguous-clean-this-up","multilingual-ko-profile-slow-function","multilingual-ja-layout-fix","continuation-continue","continuation-go-on","adversarial-question-shaped-work-order","adversarial-quick-framed-redesign"],"fixtureExactMatches":0,"correctAnswers":0,"scoredAnswers":0,"confusionMatrices":{"intent":{},"category":{},"subagent":{},"ambiguous":{}},"failure":null}

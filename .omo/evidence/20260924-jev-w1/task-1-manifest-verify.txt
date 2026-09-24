@@ -1,0 +1,72 @@
+=== task-1 MANIFEST.tsv self-verification (final, after clean-env re-measure) ===
+date: 2026-09-24T15:21:38Z
+manifest: .omo/evidence/20260924-jev-w1/MANIFEST.tsv
+
+--- header check (row 1 must equal the literal tab-separated header) ---
+HEADER_OK
+header_cat_A: todo^Iartifact^Ikind^Idescription$
+header_field_count: 4
+
+--- per-row: 4 tab fields, kind in {red,green,artifact,baseline,qa}, path exists and non-empty ---
+OK	fields=4	bytes=2319	kind=artifact	.omo/evidence/20260924-jev-w1/task-1-worktree-verify.txt
+OK	fields=4	bytes=11540	kind=green	.omo/evidence/20260924-jev-w1/task-1-bun-install.txt
+OK	fields=4	bytes=20117	kind=baseline	.omo/evidence/20260924-jev-w1/task-1-full-test-baseline.txt
+OK	fields=4	bytes=1766	kind=green	.omo/evidence/20260924-jev-w1/task-1-typecheck-baseline.txt
+OK	fields=4	bytes=782	kind=green	.omo/evidence/20260924-jev-w1/task-1-test-fast.txt
+OK	fields=4	bytes=118	kind=baseline	.omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt
+OK	fields=4	bytes=7	kind=red	.omo/evidence/20260924-jev-w1/task-1-notices-exit.txt
+OK	fields=4	bytes=7318	kind=baseline	.omo/evidence/20260924-jev-w1/task-1-failure-inventory.txt
+OK	fields=4	bytes=19184	kind=artifact	.omo/evidence/20260924-jev-w1/task-1-failure-classification.txt
+OK	fields=4	bytes=1250	kind=qa	.omo/evidence/20260924-jev-w1/task-1-manifest-verify.txt
+OK	fields=4	bytes=7441	kind=baseline	.omo/evidence/20260924-jev-w1/task-1-full-test-baseline-clean-env.txt
+OK	fields=4	bytes=1990	kind=baseline	.omo/evidence/20260924-jev-w1/task-1-frozen-baseline.txt
+OK	fields=4	bytes=11513	kind=qa	.omo/evidence/20260924-jev-w1/task-1-baseline-decision.txt
+
+data_rows=13
+rows_ok=13
+rows_bad=0
+
+--- duplicate artifact paths (must be none) ---
+NO_DUPLICATES
+
+--- every task-1 file on disk is listed in the manifest ---
+LISTED   .omo/evidence/20260924-jev-w1/task-1-baseline-decision.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-bun-install.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-failure-classification.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-failure-inventory.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-frozen-baseline.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-full-test-baseline-clean-env.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-full-test-baseline.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-manifest-verify.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-notices-exit.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-test-fast.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-typecheck-baseline.txt
+LISTED   .omo/evidence/20260924-jev-w1/task-1-worktree-verify.txt
+unlisted_count=0
+
+--- secret scan: no artifact contains the OPENCODE_SERVER_PASSWORD value ---
+CLEAN .omo/evidence/20260924-jev-w1/task-1-baseline-decision.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-bun-install.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-failure-classification.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-failure-inventory.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-frozen-baseline.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-full-test-baseline-clean-env.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-full-test-baseline.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-manifest-verify.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-notices-exit.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-test-fast.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-typecheck-baseline.txt
+CLEAN .omo/evidence/20260924-jev-w1/task-1-worktree-verify.txt
+CLEAN .omo/evidence/20260924-jev-w1/MANIFEST.tsv
+leak_count=0
+
+--- frozen baseline is free of run-to-run-varying tokens ---
+absolute_paths=0
+durations=0
+iso_timestamps=0
+failing_test_lines=7
+
+NOTE: this file's own byte count is measured while it is still being written, so its final on-disk size is slightly larger than reported above. It is non-empty, which is what [ -s ] asserts.
+VERDICT=PASS

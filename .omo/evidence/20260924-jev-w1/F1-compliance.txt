@@ -1,0 +1,155 @@
+F1 - PLAN COMPLIANCE AUDIT - jev-w1-intent-routing
+==================================================
+Verdict:     APPROVE (with 1 item referred to the wave lead, see Finding 1)
+Judged sha:  a77a82896 (HEAD of jev/w1-e90b)
+Base:        jev/foundation
+Auditor:     F1, independent verifier. Judged only; fixed nothing, committed nothing.
+Method:      Audited against .omo/evidence/20260924-jev-w1/MANIFEST.tsv, never a regex over
+             the plan (a regex would capture the literal placeholder `task-<N>` and would
+             sweep in F-verifier rows that do not exist yet while F1-F5 run in parallel).
+
+WHAT WAS TESTED
+---------------
+The six asserts of the F1 mandate, in order, against the MANIFEST and against git.
+
+CHECK 1 - HEADER PRESENT ................................................. PASS
+  `head -1 MANIFEST.tsv | cat -A` -> todo^Iartifact^Ikind^Idescription$
+  Separators confirmed as real TABs (^I), not spaces. Exact 4-field header, no trailing
+  whitespace, terminated by a clean newline ($).
+
+CHECK 2 - EVERY LISTED ARTIFACT EXISTS AND IS NON-EMPTY .................. 1 EXCEPTION
+  109 artifact rows checked with the mandated invocation. Output was not silent:
+      MISSING_OR_EMPTY .omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt
+  108 of 109 artifacts exist and are non-empty. The single exception exists but is 0 bytes.
+  See Finding 1 - the root cause is a contradiction inside the plan, not executor fault,
+  and the substantive claim the artifact carries is independently corroborated below.
+
+CHECK 3 - EVERY TODO ID 1-19 IS REPRESENTED .............................. PASS
+  Mandated per-id loop printed NOTHING. All 19 ids carry at least one MANIFEST row.
+  Per-id row counts: 1:13  2:6  3:3  4:3  5:3  6:7  7:4  8:4  9:5  10:3  11:5  12:3
+                     13:6  14:6  15:9  16:5  17:2  18:4  19:16
+  F-verifier rows (F2, F4) are present and were correctly ignored for this check, per the
+  adjudicated deviation. They did not and must not cause a failure.
+
+CHECK 4 - COMMIT COUNT ................................................... PASS
+  `git log --oneline jev/foundation..HEAD | wc -l` = 18. Exactly the required 18.
+
+CHECK 5 - EVERY `Commit: Y` TODO PRODUCED A REAL COMMIT ................... PASS
+  Plan declares Commit: N for todo 1 and Commit: Y for todos 2-19 = 18 expected commits.
+  Extracted the 18 plan-stated messages and the 18 commit subjects, sorted, diffed:
+      plan count: 18   git count: 18   diff -> EXACT_SET_MATCH
+  Every commit subject matches its plan-stated message byte-for-byte. Zero mismatches,
+  zero extra commits, zero missing commits.
+  Note (not a defect): commit ORDER differs from plan todo order - todos 5/6, 12/13, 15/16
+  and 18/19 landed transposed and todo 8 landed late. The plan states no ordering
+  requirement, only per-todo messages, so this is informational. See Finding 4.
+
+CHECK 6 - ACCEPTANCE CRITERIA AND BOTH QA SCENARIOS EXECUTED ............. PASS
+  Read the full plan rows (sed -n '100,268p') and extracted every artifact filename the
+  plan demands across all 19 todos: 67 distinct filenames.
+      demanded but NOT in MANIFEST: (none)
+      demanded but NOT on disk:     (none)
+  All 67 plan-demanded artifacts are both registered and present. Both the happy and the
+  failure QA scenario artifacts are accounted for on every todo that declares them, and the
+  third scenario where a todo declares one (todo 2 two-schema proof, todo 6 drift proof,
+  todo 9 three negative proofs, todo 15 mutation + unref proofs, todo 19 isolation).
+
+  Thin-looking todos were checked against their own plan rows rather than against an
+  assumed red/green/qa template, and none is actually thin:
+      todo 3  (n=3) demands exactly record-red, record-green, guard-proof          -> exact
+      todo 4  (n=3) demands exactly questions-red, questions-green, empty-vocab    -> exact
+      todo 5  (n=3) demands exactly decide-red, decide-green, throwing-backend     -> exact
+      todo 10 (n=3) demands exactly turnstore-red, turnstore-green, eviction-count -> exact
+      todo 12 (n=3) demands exactly seal-red, seal-green, overlap-both-sides       -> exact
+      todo 17 (n=2) is a docs/config todo; demands testfast-scope + markdown-audit -> exact
+  No todo's evidence set is thinner than its plan row demands.
+
+CORROBORATION GATHERED BEYOND THE SIX CHECKS
+--------------------------------------------
+  - Todo 19 isolation claim verified independently of the empty diff file:
+    task-19-home-manifest-before.tsv and task-19-home-manifest-after.tsv are both 165973
+    bytes and `diff` between them is EMPTY. The real ~/.omo/ was genuinely untouched.
+    The 0-byte diff artifact is therefore a truthful rendering of a real empty diff.
+  - Todo 19 committed harness files all present and non-empty at their contracted paths:
+    task-19-drive.sh (12550 B, executable), task-19-turn-script.jsonl (33 turns, exceeding
+    the >=30 requirement), task-19-fake-jev-server.ts, task-19-fake-model-provider.ts.
+  - Todo 18 secret-scan acceptance criterion re-run independently:
+    `grep -rniE '(sk-|api[_-]?key|typesafe_api_key)[[:space:]]*[=:]' .omo/evidence/20260924-jev-w1/`
+    returns NOTHING. No credential material leaked into the evidence set.
+
+FINDINGS
+--------
+1. [REFERRED TO LEAD - plan defect, not executor defect]
+   .omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt is 0 bytes, so the mandated
+   check-2 invocation prints MISSING_OR_EMPTY for it instead of printing nothing.
+   Root cause is an irreconcilable contradiction WITHIN the plan itself:
+     - Plan line 267 (todo 19 QA, isolation scenario) requires:
+       "diff task-19-home-manifest-before.tsv task-19-home-manifest-after.tsv is EMPTY,
+        Evidence .omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt"
+     - Plan line 273 (this F1 row) requires every MANIFEST-listed artifact to satisfy [ -s ].
+   An empty diff written to a file IS a zero-byte file. The two clauses cannot both hold for
+   this one artifact. The executor satisfied the substantive clause - isolation proven - and
+   described the row honestly in the MANIFEST as "Empty recursive real home OMO manifest diff".
+   Independently corroborated above: the before/after manifests are byte-identical, so the
+   emptiness is real evidence of success, not a missing artifact or a skipped step.
+   I did not modify it; fixing evidence content is outside an independent verifier's remit.
+   Lead's call: either accept the 0-byte file as the correct rendering of an empty diff, or
+   have the executor write an explicit "EMPTY - isolation proven" line into it. Either way
+   this is presentation, not substance, and no re-run of todo 19 is warranted.
+
+2. [MEDIUM - wave integrity, outside my six checks but material]
+   F2 and F4 both judged sha ccb259ace, which is HEAD^, NOT HEAD a77a82896.
+     a77a82896 committed 2026-09-24T19:04:27Z
+     F4-scope.txt   written 2026-09-24 19:06:23  (1m56s AFTER HEAD existed)
+     F2-quality.txt written 2026-09-24 19:11:34  (7m07s AFTER HEAD existed)
+   HEAD was already on the branch when both wrote, so this is a stale-sha audit, not a race
+   they could not have avoided. HEAD is not evidence-only: it modifies the source file
+   packages/jev-core/src/intent-routing-accuracy.test.ts (+108/-9). The quality lane and the
+   scope lane therefore have an uncovered source change.
+   Mitigating: I spot-checked that file for the suppressions F2's lane screens for
+   (as any / @ts-ignore / @ts-expect-error / eslint-disable) and found NONE. Residual risk is
+   low, but the coverage gap is real and only the lead can decide whether F2 and F4 re-run
+   against a77a82896. Flagging, not adjudicating.
+
+3. [LOW - plan hygiene, non-blocking]
+   Plan checkboxes for todos 18 and 19 are still "- [ ]" (lines 246 and 254) even though both
+   produced their commits and their full evidence sets. Todos 1-17 are correctly "- [x]".
+   The plan file is gitignored so this never reaches history. I did not edit it - the mandate
+   forbids modifying the plan.
+
+4. [INFO - no action]
+   Commit order does not follow plan todo order (5/6, 12/13, 15/16, 18/19 transposed; todo 8
+   landed after todos 17-19). The plan imposes no ordering requirement, only per-todo commit
+   messages, and all 18 match exactly. Consistent with the adjudicated fold deviations.
+
+KNOWN DEVIATIONS - RECORDED, NOT RE-LITIGATED
+---------------------------------------------
+  - Branch renamed jev/w1 -> jev/w1-e90b (three concurrent sessions; one had claimed jev/w1).
+    Every plan reference to jev/w1 resolved to jev/w1-e90b for this audit.
+  - Todo 1 is Commit: N, so its 13 baseline artifacts were folded into todo 3's commit,
+    holding the count at 18. Confirmed: todo 1 has 13 MANIFEST rows and no commit of its own.
+  - Todo 13's test-isolation fix and todo 15's commit were combined after an autosquash hit a
+    MANIFEST.tsv conflict. Confirmed: both message strings are present exactly once.
+  - F2 and F4 evidence is staged but uncommitted by design, to hold the branch at 18 commits.
+    Confirmed present and staged. F-rows excluded from the 1-19 coverage check as instructed.
+
+WHY THIS IS ENOUGH
+------------------
+Five of the six mandated checks pass outright. The sixth fails only on a single artifact whose
+emptiness the plan itself demands, and whose underlying claim I re-verified from the
+independent before/after manifests rather than trusting the artifact. Coverage was proven
+per-todo-id and per-filename against the plan text (67/67), not by a row count, so a MANIFEST
+padded with duplicate rows could not have passed. Commit messages were compared as a sorted
+set diff, so a transposition, a duplicate, or a silent reword would have surfaced.
+
+WHAT WAS OMITTED
+----------------
+  - Code quality, scope fidelity, and functional correctness: F2, F3, F4, F5 lanes, not mine.
+    Exception: the narrow suppression spot-check in Finding 2, done only to size the risk of
+    the coverage gap I found, not to substitute for F2's review.
+  - Artifact CONTENT was not re-executed. I verified existence, registration, non-emptiness,
+    and plan-demanded filename coverage. I did not re-run the test suites or the paid API run.
+  - No secrets, tokens, env dumps, or auth headers are reproduced here. The secret scan is
+    reported as a clean/dirty verdict only.
+  - Nothing was fixed, no source, test, evidence body, or plan text was modified, and no
+    commit was created. Other worktrees and the operator's real ~/.omo/ were never touched.

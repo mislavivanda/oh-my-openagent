@@ -1,0 +1,31 @@
+{"normalized":{"normalizedCategory":"totally-made-up","normalizedSubagent":"none","routeClass":"category"},"route":{"kind":"scorable","route":"category:totally-made-up"}}
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-normalization.test.ts:
+74 |
+75 | describe("observed delegation normalization", () => {
+76 |   describe("#given raw delegation arguments covering every normalization rule", () => {
+77 |     describe("#when normalizing each delegation", () => {
+78 |       test.each(normalizationCases)("#then %s", (_name, args, expected) => {
+79 |         expect(normalizeObservedDelegation(args)).toEqual(expected)
+                                                       ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "normalizedCategory": "none",
++   "normalizedCategory": "totally-made-up",
+    "normalizedSubagent": "none",
+-   "routeClass": "unknown",
++   "routeClass": "category",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:79:51)
+(fail) observed delegation normalization > #given raw delegation arguments covering every normalization rule > #when normalizing each delegation > #then (e) an unrecognized category remains unknown [0.32ms]
+
+ 16 pass
+ 1 fail
+ 18 expect() calls
+Ran 17 tests across 1 file. [135.00ms]

@@ -1,0 +1,209 @@
+=== command: env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000 ===
+date: 2026-09-24T15:16:18Z
+env delta: OPENCODE_SERVER_PASSWORD unset (value never recorded)
+
+bun test v1.4.0 (34cbb9a40)
+
+script/sync-lazycodex-marketplace.test.ts:
+[sync-lazycodex-marketplace] previous-payload reconstruction: skipping missing LSP daemon dist at /tmp/omo-sync-prev-source-yhbG02/packages/lsp-daemon/dist
+[sync-lazycodex-marketplace] previous-payload reconstruction: skipping missing OMO root CLI dist at /tmp/omo-sync-prev-source-yhbG02/dist/cli
+[sync-lazycodex-marketplace] previous-payload reconstruction: skipping missing OMO node fallback CLI dist at /tmp/omo-sync-prev-source-yhbG02/dist/cli-node
+[materialize] wrote 148 frontend reference files from submodules
+[materialize] wrote 148 frontend reference files from submodules
+[materialize] wrote 148 frontend reference files from submodules
+Bundled 646 modules in 27ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 13ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 27ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 13ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 26ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 14ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 26ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 14ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 26ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 14ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 27ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 13ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 26ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 12ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+Bundled 646 modules in 26ms
+
+  omo.js  0.68 MB  (entry point)
+
+Bundled 274 modules in 13ms
+
+  omo-member.js  115.54 KB  (entry point)
+
+
+packages/omo-senpi/src/extension/compose.test.ts:
+omo-senpi component disabled by flag {
+  component: "beta",
+}
+
+packages/omo-senpi/src/extension/index.test.ts:
+omo-senpi ulw-loop inactive; omo binary not found undefined
+config-watch skipped: events capability missing undefined
+omo-senpi ulw-loop inactive; omo binary not found undefined
+config-watch skipped: events capability missing undefined
+
+packages/senpi-task/src/__adversarial__/chaos-bench.test.ts:
+[chaos] seed=senpi-task-w1-chaos base=2337725802 iterations=200
+
+packages/omo-opencode/src/shared/module-resolution-failure.test.ts:
+26 | 
+27 | describe("isModuleResolutionFailure", () => {
+28 |   it("#given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance", async () => {
+29 |     const resolveMessage = await captureRealImportFailure()
+30 | 
+31 |     expect(resolveMessage instanceof Error).toBe(false)
+                                                 ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/shared/module-resolution-failure.test.ts:31:45)
+(fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance [0.43ms]
+[lsp] ignored connection error notification failure during cleanup: Cannot call write after a stream was destroyed
+[lsp] ignored shutdown request failure during cleanup: LSP server workspace-edit-fixture at /tmp/lsp-apply-edit-PoNYry exited with code 0
+
+packages/omo-opencode/src/__tests__/perf/plugin-init.test.ts:
+empty-project: cold=30.9ms warm=[16.5, 17.4] median=17.4ms
+in-tree-fixture: cold=18.2ms warm=[15.4, 15.5] median=15.5ms
+
+  ⚙ read_file filePath=/src/index.ts  
+
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:
+26 | 
+27 |       // when
+28 |       const result = await getLatestVersion("beta")
+29 | 
+30 |       // then
+31 |       expect(result).toBe("2.0.0-beta.1")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "2.0.0-beta.1"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:31:22)
+(fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter [0.27ms]
+37 | 
+38 |       // when
+39 |       const result = await getLatestVersion("latest")
+40 | 
+41 |       // then
+42 |       expect(result).toBe("1.0.0")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "1.0.0"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:42:22)
+(fail) auto-update-checker/checker > getLatestVersion > accepts latest channel [0.14ms]
+48 | 
+49 |       // when
+50 |       const result = await getLatestVersion()
+51 | 
+52 |       // then
+53 |       expect(result).toBe("1.0.0")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "1.0.0"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:53:22)
+(fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest) [0.13ms]
+61 | 
+62 |       // when
+63 |       const result = await getLatestVersion("nonexistent-channel")
+64 | 
+65 |       // then
+66 |       expect(result).toBe("1.0.0")
+                          ^
+error: expect(received).toBe(expected)
+
+Expected: "1.0.0"
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:66:22)
+(fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing [0.10ms]
+72 | 
+73 |       // when
+74 |       const result = await getLatestVersion()
+75 | 
+76 |       // then
+77 |       expect(result).toBeNull()
+                          ^
+error: expect(received).toBeNull()
+
+Received: "3.0.1"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts:77:22)
+(fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status [0.11ms]
+
+packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts:
+107 |         requireFromHere.resolve("definitely-not-a-real-package-omo-doctor-test/package.json")
+108 |         throw new Error("expected the require.resolve probe to fail")
+109 |       } catch (error) {
+110 |         resolveMessage = error
+111 |       }
+112 |       expect(resolveMessage instanceof Error).toBe(false)
+                                                    ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts:112:47)
+(fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing [0.29ms]
+
+ 12777 pass
+ 3 skip
+ 7 fail
+ 1 snapshots, 84667 expect() calls
+Ran 12787 tests across 1678 files. [121.21s]
+exit=1

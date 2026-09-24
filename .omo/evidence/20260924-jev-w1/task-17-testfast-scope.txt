@@ -1,0 +1,72 @@
+TASK 17 - test:fast scope for the W1 intent-routing test files
+worktree: oh-my-openagent-jev-w1-e90b   branch: jev/w1-e90b
+date: 2026-09-24T17:48:44Z
+
+WHAT WAS TESTED
+  package.json test:fast is a hardcoded path list. A new test file outside those paths
+  never runs in the fast gate. Eight W1 test files sat outside the pre-existing paths
+  and were appended explicitly. This artifact proves, from the RUN OUTPUT, that every
+  W1 test file added on this branch actually executes under bun run test:fast.
+
+COMMAND 1 (the acceptance grep from the plan)
+  bun run test:fast 2>&1 | grep -c "intent-routing"
+  count: 1   (non-zero, as required)
+  Note: bun test default output is quiet and does not print per-file lines, so this
+  count comes from the echoed script line. Command 2 is the stronger per-file proof.
+
+COMMAND 2 (per-file proof from the run, not from the config)
+  bun run test:fast -- --reporter=junit --reporter-outfile=<tmp>/testfast.junit.xml
+  The junit reporter records one file= attribute per test file the runner actually
+  executed. Cross-checking that attribute set against
+  git diff --name-only jev/foundation..HEAD -- '*.test.ts':
+
+  EXECUTED  packages/jev-core/src/intent-routing-fixtures.test.ts
+  EXECUTED  packages/jev-core/src/intent-routing-normalization.test.ts
+  EXECUTED  packages/jev-core/src/intent-routing-record.test.ts
+  EXECUTED  packages/jev-core/src/intent-routing.test.ts
+  EXECUTED  packages/omo-opencode/src/config/schema/intent-routing-normalization-drift.test.ts
+  EXECUTED  packages/omo-opencode/src/config/schema/jev.test.ts
+  EXECUTED  packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+  EXECUTED  packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts
+  EXECUTED  packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+  EXECUTED  packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts
+  EXECUTED  packages/omo-opencode/src/features/jev/intent-routing.test.ts
+  EXECUTED  packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts
+  EXECUTED  packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts
+  EXECUTED  packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+  EXECUTED  packages/omo-opencode/src/plugin/intent-routing-budget.test.ts
+  EXECUTED  packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts
+  EXECUTED  packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+  EXECUTED  packages/omo-opencode/src/testing/create-plugin-module-intent-routing.test.ts
+  EXECUTED  script/jev-w1-report.test.ts
+
+  W1 test files on this branch: 19
+  of those executed by test:fast: 19
+
+PATHS APPENDED TO test:fast (package.json:135)
+  packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts
+  packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts
+  packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+  packages/omo-opencode/src/plugin/intent-routing-budget.test.ts
+  packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts
+  packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+  packages/omo-opencode/src/testing/create-plugin-module-intent-routing.test.ts
+  script/jev-w1-report.test.ts
+  The remaining 11 W1 test files were already inside the pre-existing directory paths
+  packages/jev-core, packages/omo-opencode/src/features/jev, and
+  packages/omo-opencode/src/config/schema, confirmed executed above.
+
+WHAT WAS OBSERVED
+
+ 458 pass
+ 0 fail
+ 1364 expect() calls
+Ran 458 tests across 49 files. [6.64s]
+
+WHY IT IS ENOUGH
+  The junit file= set is emitted by the runner itself, so it cannot agree with the
+  config while disagreeing with reality. Every W1 test file appears in it.
+
+WHAT WAS OMITTED
+  Full per-assertion junit XML (1364 expect calls) is not inlined. No secrets, tokens,
+  or env dumps are present in any captured output.

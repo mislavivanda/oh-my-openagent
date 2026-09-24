@@ -1,0 +1,41 @@
+F3 INDEPENDENT TODO-19 REDRIVE
+verdict: APPROVE
+
+WHAT WAS TESTED
+- Read plan row 276-277 verbatim, then invoked the committed task-19 driver from jev/w1-e90b with independently allocated sandbox and external receipts directories.
+- Enabled command: bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox <F3 sandbox> --receipts <F3 receipts> --wire enabled --keep
+- Disabled control used a separate sandbox and receipts directory with --wire disabled --keep.
+- Both runs used the local fake model and fake Jev servers. No paid API was contacted.
+
+WHAT WAS OBSERVED
+- Enabled receipt directory: /tmp/tmp.BrLYleAJiu; real receipt filenames are pids.tsv and ports.tsv.
+- Driver result: 33 turns, 33 sealed observations, 1 counter_delta, 32 Jev dispatches, and 32 intent-routing log lines.
+- All 33 observations share sessionID ses_f2b2782a5ffeB9FWLO56w569Ri.
+- Fan-out cohorts: zero=18, one=9, many=6.
+- predictionReused=1; observed call_omo_agent=4; unscorable_resume=2; isContinuationCandidate=2.
+- correlationStatus values reached: reliable only. sealedBy values reached: session_idle only.
+- Disabled control receipt directory: /tmp/tmp.hqjAHPqFcQ; pids.tsv and ports.tsv record its lifecycle. Intent-routing log lines=0 and sink files=0.
+- Read-only real OpenCode session count: before=420, after=420.
+- Recursive real ~/.omo manifest compared path, type, size, mtime_ns, and content hash. Before/after were byte-identical; diff was empty.
+
+KNOWN-UNREACHABLE CONFIRMATION
+- next_turn sealing remains unreachable in this driver. Each sequential opencode run reaches session.idle before the next prompt, so session_idle deterministically wins the first-seal race.
+- The redrive therefore does not treat absent next_turn, overlap marking, deferred finalization, or non-reliable correlation as failures. Those paths belong to todo 12's unit proofs.
+
+CLEANUP
+- Enabled PIDs checked dead: 1033746,1033747,1033777,1034183,1041780,1042053,1042320,1042464,1042608,1042866,1043010,1043153,1043298,1043441,1043818,1044192,1044566,1044939,1045348,1045946,1046439,1046888,1047497,1048207,1049010,1049259,1049394,1049528,1049775,1050134,1050568,1050861,1051108,1051576,1051722,1051856.
+- Enabled ports checked closed: 37665,40923,44209.
+- Control PIDs checked dead: 1053624,1053625,1053657,1053902,1055955,1056255,1056927,1057321,1057936,1058217,1058477,1058762,1059269,1059770,1060291,1060919,1061731,1062431,1063266,1064131,1065094,1065858,1066522,1067565,1069085,1069459,1069595,1069729,1069863,1070224,1070697,1070829,1071084,1071552,1071809,1071943.
+- Control ports checked closed: 36491,44021,45429.
+- Enabled and control sandboxes were explicitly removed and confirmed absent. The first diagnostic-attempt sandbox was also removed after its own pids.tsv and ports.tsv checks printed no survivors or bound ports.
+- No pgrep, pkill, or other global process matcher was used.
+
+WHY IT IS ENOUGH
+- This is a fresh real-harness run, not a reading of todo 19's prior outputs. It proves enabled observations and required cohorts, the separately sandboxed disabled control, host DB/home isolation, and process/port teardown.
+
+FINDINGS
+1. PASS: All required acceptance assertions passed with the exact counts above.
+2. LOW: The first unchanged enabled invocation reached all 33 turns but failed its internal dispatch/log equality check at 32/31. Its sandbox log had no plugin-load failure; all recorded PIDs and ports were dead/closed. A fresh unchanged invocation passed at 32/32, identifying a transient log-flush/count race rather than a product-path failure.
+
+WHAT WAS OMITTED
+- Raw sandbox logs and full prompts were not copied into the repository. They contain no needed additional proof and may include environment-specific diagnostic data.

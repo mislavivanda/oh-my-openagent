@@ -1,6 +1,11 @@
 import type { OhMyOpenCodeConfig } from "../config"
 
 import { updateSessionAgent } from "../features/claude-code-session-state"
+import {
+  createJevIntentRouting,
+  JEV_INTENT_ROUTING_VOCABULARY,
+  type JevIntentRouting,
+} from "../features/jev"
 import { detectSlashCommand, extractPromptText } from "../hooks/auto-slash-command/detector"
 import { isSyntheticOrInternalOnlyTextParts, log } from "../shared"
 import { applyUltraworkModelOverrideOnMessage } from "./ultrawork-model-override"
@@ -76,11 +81,16 @@ export function createChatMessageHandler(args: {
   pluginConfig: OhMyOpenCodeConfig
   firstMessageVariantGate: FirstMessageVariantGate
   hooks: ChatMessageHooks
+  intentRouting?: JevIntentRouting
 }): (
   input: ChatMessageInput,
   output: ChatMessageHandlerOutput
 ) => Promise<void> {
   const { ctx, pluginConfig, firstMessageVariantGate, hooks } = args
+  const intentRouting = args.intentRouting ?? createJevIntentRouting({
+    jevConfig: pluginConfig.jev,
+    vocab: JEV_INTENT_ROUTING_VOCABULARY,
+  })
   const pluginContext = ctx as PluginContextWithTui
   const runtimeFallbackEnabled = isRuntimeFallbackEnabled(hooks, pluginConfig)
 
@@ -95,6 +105,7 @@ export function createChatMessageHandler(args: {
       })
       return
     }
+    intentRouting.dispatch(input, output)
 
     if (input.agent) {
       updateSessionAgent(input.sessionID, input.agent)

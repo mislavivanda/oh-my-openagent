@@ -1,0 +1,35 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+172 |   const sealedBy = observations.map((record) => record.sealedBy)
+173 |   const statuses = observations.map((record) => record.predictionStatus)
+174 |   const correlations = observations.map((record) => record.correlationStatus)
+175 |   const sealed = observations.length
+176 |   const inFlight = counters.recordsCreated - sealed - counters.recordsEvicted
+177 |   if (inFlight < 0) throw new ReportIdentityError(counters.recordsCreated, sealed, counters.recordsEvicted)
+                                                                                                                ^
+ReportIdentityError: records_created 0 is less than sealed 2 plus evicted 0
+      at denominatorLines (<worktree>/script/jev-w1-report.ts:177:107)
+      at generateJevW1Report (<worktree>/script/jev-w1-report.ts:230:8)
+      at <anonymous> (<worktree>/script/jev-w1-report.test.ts:142:27)
+(fail) Jev W1 intent-routing report > #given observations newer than the latest counter snapshot #when the report renders #then row totals reconcile the stale snapshot without throwing [0.68ms]
+
+packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts:
+75 |           reDelivered.push(signal)
+76 |         },
+77 |       },
+78 |     }))
+79 |     const signalHandler = listeners.get("SIGTERM")
+80 |     if (signalHandler === undefined) throw new Error("SIGTERM flush handler was not installed")
+                                                    ^
+error: SIGTERM flush handler was not installed
+      at <anonymous> (<worktree>/packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts:80:48)
+(fail) createPluginDispose intent routing > #given SIGTERM during a live plugin #when signal cleanup runs #then intent-routing flushes before the signal is re-delivered [0.25ms]
+
+ 11 pass
+ 2 fail
+ 121 expect() calls
+Ran 13 tests across 2 files. [144.00ms]
+
+EXIT_CODE=1
+EXPECTED=nonzero

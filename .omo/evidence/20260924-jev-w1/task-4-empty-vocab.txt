@@ -1,0 +1,1 @@
+IntentRoutingVocabularyError: Intent-routing intents vocabulary must contain at least one option

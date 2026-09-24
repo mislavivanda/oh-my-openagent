@@ -1,0 +1,9 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 11 filtered out
+ 0 fail
+ 7 expect() calls
+Ran 1 test across 1 file. [132.00ms]
+
+OBSERVED: the focused test registered `process.on("unhandledRejection")`, injected a rejecting dispatcher, asserted the synchronous return and failure log, advanced two macrotasks, and observed zero unhandled-rejection events.

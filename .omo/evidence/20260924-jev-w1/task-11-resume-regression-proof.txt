@@ -1,0 +1,38 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:
+107 |   test("#given a task_id-only resume #when captured #then it is unscorable_resume rather than none and increments its counter", () => {
+108 |     const { capture, store, turn } = createHarness()
+109 | 
+110 |     expect(captureWithoutMutation(capture, "task", { task_id: "ses-child" })).toBe(true)
+111 | 
+112 |     expect(store.getTurn(SESSION_ID, turn.turnOrdinal)?.observed).toEqual([
+                                                                        ^
+error: expect(received).toEqual(expected)
+
+@@ -1,7 +1,12 @@
+  [
+-   ObjectContaining {
++   {
++     "callID": "call-1",
++     "category": null,
+      "normalizedCategory": "none",
+      "normalizedSubagent": "none",
+-     "routeClass": "unscorable_resume",
++     "requestedSubagentType": null,
++     "routeClass": "unknown",
++     "subagentType": null,
+      "taskId": "ses-child",
++     "tool": "task",
+    },
+
+- Expected  - 2
++ Received  + 7
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:112:67)
+(fail) createJevIntentRoutingCapture > #given a task_id-only resume #when captured #then it is unscorable_resume rather than none and increments its counter [1.02ms]
+
+ 7 pass
+ 1 fail
+ 26 expect() calls
+Ran 8 tests across 1 file. [202.00ms]

@@ -1,0 +1,41 @@
+PHASE: temporary queueMicrotask substitution; expected ordering test failure
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+357 |     routing.dispatch(currentTurn.input, currentTurn.output)
+358 |     await Promise.resolve()
+359 |     order.push("caller-continuation")
+360 |     await called.promise
+361 |
+362 |     expect(order).toEqual(["caller-continuation", "state-built"])
+                        ^
+error: expect(received).toEqual(expected)
+
+  [
+-   "caller-continuation",
+    "state-built",
++   "caller-continuation",
+  ]
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/features/jev/intent-routing.test.ts:362:19)
+(fail) createJevIntentRouting > #given an enabled turn #when the caller continues #then its continuation runs before state building begins [2.54ms]
+
+ 0 pass
+ 11 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [138.00ms]
+
+PHASE: restored setTimeout(..., 0) with unref(); expected ordering test pass
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 11 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [140.00ms]
+
+DIFF CONFIRMATION: `git diff --no-index /dev/null packages/omo-opencode/src/features/jev/intent-routing.ts` showed `setTimeout(..., 0)` and `timer.unref()` in the retained source, with no `queueMicrotask` call.

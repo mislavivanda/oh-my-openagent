@@ -1,0 +1,2 @@
+command: grep -rn "jev-w1-report" packages/omo-opencode/src/cli/
+result: no matches

@@ -1,0 +1,60 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:
+ 95 |   })
+ 96 | 
+ 97 |   test("#given call_omo_agent #when the attempt is captured #then the second delegation tool records an observation", () => {
+ 98 |     const { capture, store, turn } = createHarness()
+ 99 | 
+100 |     expect(captureWithoutMutation(capture, "call_omo_agent", { subagent_type: "explore" })).toBe(true)
+                                                                                                  ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:100:93)
+(fail) createJevIntentRoutingCapture > #given call_omo_agent #when the attempt is captured #then the second delegation tool records an observation [0.28ms]
+153 |     captureWithoutMutation(capture, "call_omo_agent", { subagent_type: "explore" }, "call-3")
+154 | 
+155 |     store.sealTurn(SESSION_ID, turn.turnOrdinal, "session_idle")
+156 | 
+157 |     const record = observationRecord(entries)
+158 |     expect(record?.observed.map((observation) => observation.callID)).toEqual(["call-1", "call-2", "call-3"])
+                                                                            ^
+error: expect(received).toEqual(expected)
+
+@@ -3,3 +3,2 @@
+    "call-2",
+-   "call-3",
+  ]
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:158:71)
+(fail) createJevIntentRoutingCapture > #given three delegation attempts with a duplicate target #when the turn seals #then one record preserves order and two distinct targets [0.47ms]
+198 |         return argumentNames.includes("category") || argumentNames.includes("subagent_type")
+199 |       })
+200 |       .map(([toolName]) => toolName)
+201 |       .sort()
+202 | 
+203 |     expect(registeredRoutingTools).toEqual([...JEV_INTENT_ROUTING_CAPTURE_TOOL_ALLOWLIST].sort())
+                                         ^
+error: expect(received).toEqual(expected)
+
+@@ -1,2 +1,3 @@
+  [
++   "call_omo_agent",
+    "task",
+
+- Expected  - 0
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:203:36)
+(fail) createJevIntentRoutingCapture > #given the registered tool argument schemas #when routing fields are enumerated #then every matching tool is allowlisted [9.65ms]
+
+ 5 pass
+ 3 fail
+ 22 expect() calls
+Ran 8 tests across 1 file. [204.00ms]

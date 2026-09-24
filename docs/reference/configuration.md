@@ -34,6 +34,8 @@ Complete reference for Oh My OpenCode plugin configuration. Every omo harness re
   - [Model Capabilities](#model-capabilities)
   - [Hashline Edit](#hashline-edit)
   - [Experimental](#experimental)
+  - [Telemetry](#telemetry)
+  - [Jev Intent Routing](#jev-intent-routing)
 - [Reference](#reference)
   - [Environment Variables](#environment-variables)
   - [Provider-Specific](#provider-specific)
@@ -1089,6 +1091,66 @@ When enabled, OmO registers the hash-anchored `edit` tool and activates the `has
 | Option      | Default | Description                                                            |
 | ----------- | ------- | ---------------------------------------------------------------------- |
 | `telemetry` | `true`  | Enable anonymous daily-active telemetry. Set to `false` to disable it. |
+
+### Jev Intent Routing
+
+Observation-only wire that predicts the delegation shape of a turn and records the prediction
+next to the delegations that actually happened. It does not change any routing decision.
+Disabled by default, and it only runs when the Jev decision layer itself is enabled.
+
+```jsonc
+{
+  "jev": {
+    "enabled": true,
+    "wires": {
+      "intent_routing": {
+        "enabled": true,
+        "observe_only": true,
+        "confidence_threshold": 0.8,
+        "timeout_ms": 2500,
+        "turn_seal_timeout_ms": 120000,
+        "max_prompt_chars": 8000,
+        "max_inflight": 8
+      }
+    }
+  }
+}
+```
+
+| Option                 | Default  | Range         | Description                                                                                                     |
+| ---------------------- | -------- | ------------- | --------------------------------------------------------------------------------------------------------------- |
+| `enabled`              | `false`  | boolean       | Turn the wire on. Also requires `jev.enabled: true`.                                                            |
+| `observe_only`         | `true`   | `true` only   | Schema-only. Setting it to `false` is rejected as a validation error, not accepted as a mode.                   |
+| `confidence_threshold` | `0.8`    | 0 to 1        | Labels a recorded prediction high or low confidence. It gates nothing while the wire is observation-only.       |
+| `timeout_ms`           | `2500`   | 100 to 30000  | Per-prediction timeout. Per-wire override of the global `jev.timeout_ms`.                                       |
+| `turn_seal_timeout_ms` | `120000` | 1000 to 600000 | How long a turn stays open for further delegations before its record is sealed. Must be greater than `timeout_ms`. |
+| `max_prompt_chars`     | `8000`   | 256 and up    | Hard cap on the serialized state payload sent with a prediction.                                                |
+| `max_inflight`         | `8`      | 1 to 64       | Hard cap on concurrent in-flight prediction dispatches.                                                         |
+
+Two rules the schema enforces, each of which rejects the whole config file on violation:
+
+- **`observe_only` is schema-only and rejects `false`.** Acting on an intent-routing
+  prediction is not implemented. There is no config path that enables it.
+- **`turn_seal_timeout_ms` must be strictly greater than `timeout_ms`.** The two bound
+  different things: `timeout_ms` is how long to wait for an answer, `turn_seal_timeout_ms` is
+  how long a turn may still receive delegations. If sealing used the prediction timeout,
+  nearly every record would close before its first tool call and the recorded data would be
+  worthless.
+
+`timeout_ms` exists separately from the global `jev.timeout_ms` because this wire sends four
+questions where the model-error triage wire sends one. Raising the global value to fit this
+wire would silently change model-error triage too.
+
+**Privacy: this wire writes prompt text to disk.** When it is enabled, the first 200
+characters of every user message are stored VERBATIM, in plain text, in append-only JSONL
+files under `~/.omo/jev/` (one file per process per UTC day, directory mode `0700`, file mode
+`0600`). **No secret scrubbing is performed.** An API key, token, password, customer name, or
+any other sensitive string that appears in the first 200 characters of a prompt is written out
+unredacted. A SHA-256 digest of the full prompt is stored alongside the head so repeated cases
+stay countable without retaining the full text, but the head itself is not hashed or masked.
+Leave this wire off unless you accept that, and never attach the raw files to a public issue
+or pull request. Nothing is uploaded anywhere; the files stay on your machine until you delete
+them.
 
 ---
 

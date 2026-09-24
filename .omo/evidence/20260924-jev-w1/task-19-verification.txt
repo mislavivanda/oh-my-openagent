@@ -1,0 +1,13 @@
+verification=pass
+shell_syntax=pass
+turn_script_jsonl=pass
+fake_jev_bun_build=pass
+fake_model_bun_build=pass
+enabled_acceptance_predicates=pass
+disabled_control_predicates=pass
+report_identity=pass
+isolation_predicates=pass
+cleanup_predicates=pass
+lsp_diagnostics=unavailable
+lsp_detail=workspace TypeScript 7.0.2 has no tsserver.js and no alternate TypeScript installation was found
+diagnostic_substitute=both standalone TypeScript entrypoints built successfully with Bun

@@ -1,0 +1,515 @@
+F2 - CODE QUALITY REVIEW (independent verifier; judge only, no fixes)
+=====================================================================
+judged_sha   = ccb259acee26cff091f50dcd1aa2bdbe72c717d5 ("test(jev): record isolated opencode-qa dogfood evidence for the intent-routing wire")
+branch       = jev/w1-e90b   (the plan text spells this jev/w1; it resolves to jev/w1-e90b in this worktree)
+base         = jev/foundation
+commits      = 17 on jev/foundation..HEAD at judgement time
+worktree     = /home/opencode/projects/oh-my-openagent-jev-w1-e90b
+runtime      = bun 1.4.0, node v22.23.2
+VERDICT      = APPROVE
+
+WHY THIS IS ENOUGH / WHAT IT COVERS
+  Every gate in the F2 plan row was executed against the real tree at the sha above, with two gates
+  run in their REDEFINED form (documented below with the reason the literal form is unsatisfiable).
+  Repo-convention checks 5-9 were run in addition to the plan row. No source, test, or plan file was
+  modified by this verification. Residual risk is stated at the end.
+
+
+GATE 1 - typecheck                                                              PASS
+  cmd : bun run typecheck
+  out : EXIT=0
+  note: ran tsgo --noEmit for the root, script/tsconfig.json, and all 28 workspace package
+        tsconfigs including packages/jev-core. Full log: /tmp/f2/typecheck.txt (transient).
+
+GATE 2 - meta-audit tests                                                       PASS
+  cmd : bun test script/shared-core-extraction-guard.test.ts \
+               script/package-registration-audit.test.ts \
+               packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+  out : EXIT=0  ->  25 pass, 0 fail, 37 expect() calls, 3 files, 837ms
+  note: this is the gate that would catch jev-core losing harness neutrality, a missing workspace
+        registration for the new package, or a machine-local absolute path in the new .md files.
+
+GATE 3 - type-suppression scan                                                  PASS
+  cmd : grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(git diff --name-only jev/foundation..HEAD -- '*.ts')
+  out : NOTHING printed (grep exit 1), across all 53 changed .ts files.
+
+GATE 4 - third-party notices, baseline-relative                                 PASS
+  cmd : node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt
+  out : NOTHING printed (diff exit 0). Notices output is byte-identical to the task-1 baseline.
+  note: the script's own non-zero exit is a pre-existing baseline condition and is deliberately
+        quarantined in task-1-notices-exit.txt ("exit=1"), so it cannot contaminate this diff.
+        Confirmed that artifact still reads exit=1, i.e. the baseline condition is unchanged.
+
+
+GATE 5 (REDEFINED) - FULL SUITE IS BASELINE-RELATIVE, NOT EXIT 0                 PASS
+  I USED THE REDEFINED FORM. Stating that explicitly, as instructed.
+  Why redefined: the plan row asks for `bun test --timeout 20000` exit 0. That is unsatisfiable at
+  this repo's baseline and always was. Todo 1 measured the untouched base commit
+  (82460563fa1573c49b88d7c70620fac09a971d19) and recorded 7 pre-existing failures, none in jev
+  scope: 2 caused by Bun 1.4.0 vs CI's pinned 1.3.12 (ResolveMessage is now `instanceof Error`), and
+  5 caused by order-dependent cross-file mock.module pollution in auto-update-checker that pass in
+  isolation. Judging exit 0 would reject the branch for defects it did not introduce.
+
+  cmd : env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+        (OPENCODE_SERVER_PASSWORD is set in this shell and leaks into tmux argv assertions, causing
+         ~15 spurious failures. The frozen baseline was measured with it unset; I measured the same
+         way so the two sets are comparable.)
+  out : 12924 pass, 3 skip, 7 fail, 1 snapshot, 89514 expect() calls
+        Ran 12934 tests across 1697 files. [146.86s]  EXIT=1
+
+  Comparison method: parsed every "(fail) <name>" line, attributed it to the preceding
+  "<path>.test.ts:" header, stripped the trailing "[Nms]" duration, emitted <relative-path>TAB<full
+  test name>, LC_ALL=C sorted, then comm'd against the BEGIN_FAILING_TESTS/END_FAILING_TESTS block
+  of task-1-frozen-baseline.txt. Parser sanity: 7 parsed == 7 raw "(fail)" markers == 7 reported.
+
+  NEW FAILURES VERSUS BASELINE : 0        <-- this is the PASS condition, and it is met
+  DISAPPEARED BASELINE FAILURES: 0        (informational; none vanished)
+  The observed failure set is an EXACT set-equality match with the frozen baseline:
+    packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts (ResolveMessage instanceof)
+    packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts (5x, mock.module pollution)
+    packages/omo-opencode/src/shared/module-resolution-failure.test.ts (ResolveMessage instanceof)
+
+  Counts moved as expected for added tests, not regressions: pass 12777 -> 12924 (+147),
+  files 1678 -> 1697 (+19), skip 3 -> 3 (unchanged), fail 7 -> 7 (unchanged).
+
+
+GATE 6 (REDEFINED) - PROSE GATE IS DIFF-SCOPED, NOT WHOLE-FILE                   PASS
+  I USED THE REDEFINED FORM. Stating that explicitly, as instructed.
+  Why redefined: the plan row greps whole changed files. docs/jev/HANDOFF.md already carries 22 em
+  dashes AT THE BASE COMMIT jev/foundation, authored before this branch existed. A whole-file grep
+  can therefore never pass, and stripping them would be scope creep into content this branch did not
+  write. The repo rule bans these in GENERATED content, so the correct unit of judgement is the
+  lines this branch ADDED.
+
+  cmd : git diff jev/foundation..HEAD -- . ':(exclude)assets/*' | grep -P '^\+' | grep -P '[\x{2014}\x{2013}]'
+  out : NOTHING printed (grep exit 1)
+  cmd : git diff jev/foundation..HEAD -- . ':(exclude)assets/*' | grep -P '^\+' | grep -P '\b(simply|obviously|clearly|moreover|furthermore)\b'
+  out : NOTHING printed (grep exit 1)
+  => this branch added ZERO em dashes, en dashes, or AI filler words.
+
+  TRANSPARENCY NUMBERS so a reader can confirm the pre-existing debt is unchanged:
+    whole-file grep over ALL changed files at HEAD (the plan's literal form): 34 matching lines
+      docs/jev/HANDOFF.md                                    21
+      packages/jev-core/AGENTS.md                             8
+      docs/reference/configuration.md                         4
+      packages/omo-opencode/src/plugin/tool-execute-before.ts 1
+    All four of those files ALREADY EXISTED at jev/foundation (verified with git cat-file -e), so
+    every one of the 34 hits sits on a pre-existing line. The diff-scoped greps above prove none of
+    them were added here.
+    docs/jev/HANDOFF.md em/en-dash occurrence count: base jev/foundation = 22, HEAD = 21.
+    The branch did not add any; it net-removed one. Pre-existing debt is unchanged or slightly lower.
+
+
+CHECK 5 - commit hygiene, generated bun-install files                            PASS
+  For each of the five permanently-dirty generated files, `git log --oneline jev/foundation..HEAD -- <path>`
+  returned 0 commits:
+    0  packages/omo-codex/plugin/components/codegraph/dist/cli.js
+    0  packages/omo-codex/plugin/components/codegraph/dist/serve.js
+    0  packages/omo-codex/scripts/install-dist/install-local.mjs
+    0  packages/omo-senpi/plugin/extensions/omo.js
+    0  packages/omo-senpi/plugin/extensions/omo-member.js
+  Cross-check: the full 162-file changed list contains no path matching
+  codegraph/dist | install-dist | senpi/plugin/extensions. None of the five is in any commit.
+  They remain dirty in the working tree only (bun install / the senpi bundling test regenerate them;
+  the suite run visibly re-emits omo.js and omo-member.js), which is the known repo condition.
+
+CHECK 6 - file sizes vs the 200 LOC soft limit                                   PASS (with notes)
+  Production (non-test) files added, raw / pure LOC (pure = non-blank, non-comment):
+    254 / 236  features/jev/intent-routing-turn-store.ts        no SIZE_OK marker
+    213 / 187  jev-core/src/intent-routing-record-validation.ts no marker; PURE LOC IS UNDER 200
+    201 / 189  features/jev/intent-routing-dispatch.ts          no marker; PURE LOC IS UNDER 200
+    200 / 191  jev-core/src/intent-routing.ts                   at the limit
+  Every other added production file is <= 197 raw. The module is genuinely split at real seams
+  rather than dumped in one file: turn-store is separated from turn-store-types.ts (98),
+  turn-record.ts (153), turn-prediction.ts (137); the sink is split into sink.ts (193) +
+  sink-reader.ts (95) + sink-counters.ts (94) + sink-config.ts (90); session-gate.ts (21) and
+  vocabulary.ts (27) are their own units. That is a real split, not a token gesture.
+  intent-routing-turn-store.ts at 254 raw / 236 pure is the single genuine overshoot, ~27% past the
+  soft limit, and it carries NO `// allow: SIZE_OK`. Its test file does carry one. This is a soft
+  limit and the file is cohesive (one state machine: key minting, tier-1/tier-2 reuse, seal, LRU
+  eviction), so I am recording it as a NOTE rather than a gate failure.
+  Test files over 200 raw: 6 carry an explicit `// allow: SIZE_OK` with a real justification
+  (accuracy harness 479 - deliberately one file per the plan; adapter suite 432; turn-store 373;
+  sink 259; report 278; runtime-effects 206). 4 test files sit at 205-284 raw without a marker
+  (seal 284, jev-core intent-routing 270, normalization 211, record 207); three of those are under
+  200 pure LOC. Minor inconsistency in marker application, not a correctness problem.
+
+CHECK 7 - empty catch blocks / test comment style                                PASS
+  Empty catch: grep -rnE 'catch\s*\([^)]*\)\s*\{\s*\}' over all changed .ts -> nothing. A
+  multiline-tolerant perl -0777 scan over the same file set also returned nothing.
+  Arrange-Act-Assert: grep -rniE '//\s*(arrange|act|assert)\b' over all added .test.ts -> nothing.
+  given/when/then: all 19 added test files use the #given/#when/#then naming convention; every test
+  name I inspected is a full "#given X #when Y #then Z" sentence. Lowest-density files
+  (chat-message.intent-routing-inert, tool-execute-before.intent-routing-inert) have 1 each because
+  they each contain exactly one large acceptance test, not because they skip the convention.
+  No `.only` / `.skip` anywhere in the added tests, so nothing is silently not running.
+
+CHECK 8 - catch-all files                                                        PASS
+  No added file matches /(utils|helpers|service)\.ts$. Naming is kebab-case and domain-specific
+  throughout (intent-routing-sink-counters.ts, intent-routing-turn-prediction.ts, and so on).
+
+CHECK 9 - do the tests assert real behavior, or mirror the implementation?
+  I read three files end to end and judged whether each would actually catch a regression.
+
+  (a) packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts (206)  WOULD CATCH
+      Asserts against an independently-held ground truth, not against the implementation's own
+      bookkeeping. It drives 50 real turns through the real chat.message handler with the real
+      dispatcher and real sink against a backend that never resolves, and pins:
+      maxFetches === MAX_INFLIGHT and activeFetches === MAX_INFLIGHT (counted by the injected fetch
+      itself, outside the code under test), dispatchesDropped === TURN_COUNT - MAX_INFLIGHT (48, an
+      exact arithmetic value, not "greater than zero"), max per-handler latency < 50ms, added total
+      latency < 50ms measured against a disabled-wire control run of the same 50 turns, and heap
+      growth < 16MB. Remove the in-flight cap and maxFetches/activeFetches break. Make the handler
+      await the prediction and maxHandlerMs blows past 50ms instantly, since the backend never
+      resolves. Leak a ref'd timer and the second test fails: it spawns a real child process with
+      the real wire and a hanging fetch and requires exit code 0 within 1500ms, having first proven
+      the fetch actually started (stdout marker child_fetch_started=1). That child test is the only
+      honest way to prove "unrefed timers let the process exit" and it does it properly.
+      It also pins the sink path under the temp root, so a regression writing outside the sandbox
+      fails here.
+
+  (b) packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts (373) WOULD CATCH
+      The strongest file of the three. It counts dispatches with an external counter and asserts
+      exact integers, which is what distinguishes a real cache test from a mirror. Tier-1
+      coalescing: two identical prompts -> dispatches === 1 and both ordinals resolve to the same
+      answers. Tier-2 completed reuse on a pinned model -> dispatches === 1 and predictionReused
+      true. The floating-alias case is the one that proves real thought: with model "jev-latest" and
+      no known resolution, reuse is DISABLED and dispatches === 2, but with currentResolvedModel
+      supplied it re-enables and drops back to 1. That is a correctness trap most implementations
+      get wrong, and the test would catch silently reusing a prediction made by a different
+      underlying model. Negative paths are covered with exact counts too: failed predecessor -> 2,
+      timed-out predecessor -> 2 plus the predecessor observably transitions to "timeout",
+      not-dispatched predecessor -> 1, evicted predecessor -> 3. A table-driven loop proves each of
+      questionVersion / vocabularyDigest / confidenceThreshold / configuredModelSpec is actually
+      load-bearing in the dedup key, so dropping any one from the key fails a specific case.
+      Eviction is pinned to exact survivors ([6,7,8]), an exact evictedCount (5), and a durable
+      counter_delta entry, so a silent eviction leak is caught. The seal/LRU-exemption pair is the
+      subtle one and both directions are pinned, including the "exemption prevents premature
+      finalization" case that asserts NO observation is emitted early and then that the eventual
+      observation carries sealedBy "next_turn" and correlationStatus "reliable". Normalization is
+      tested for both collision (padding/casing/system-reminder stripping collide) and
+      non-collision (trailing "!" does not), which catches an over-aggressive normalizer.
+      Ordinal minting is asserted distinct even when the dedup key is shared.
+
+  (c) packages/jev-core/src/intent-routing-accuracy.test.ts (479)                   WOULD CATCH
+      Asserts the harness's safety envelope rather than a score, which matches the plan's
+      measure-do-not-gate intent. Real regressions it catches: dry-run performing any backend or
+      network call (artifact pinned to zero calls); selectRunMode mis-routing across the four
+      JEV_W1_REAL_API / TYPESAFE_API_KEY combinations, including the important "real flag set but no
+      key still selects real (and short-circuits)" case; the call ceiling failing to abort, which is
+      pinned hard by putting the counter one below the ceiling and asserting the run rejects with
+      IntentRoutingCallCeilingError with backendCalls frozen at the pre-second-call value; and
+      partial-artifact integrity on failure, where a backend failure at fixture eight must leave
+      exactly the first seven fixture ids. The completion test pins artifact.status, that the
+      confusion matrices cover exactly QUESTION_IDS, and full fixture coverage.
+      Honest weakness: several assertions in the final test are conditional on mode, so the
+      "real" branch never executes in CI (mock mode), and there is deliberately no accuracy
+      threshold. That is by design, but it means this file proves the harness is safe and
+      well-formed, not that routing quality is good. The mock run visible in the suite output did
+      score 15/15 exact and 60/60 answers, which is a measurement, not a gate.
+
+  Overall: these are behavior tests, not implementation mirrors. The recurring pattern is an
+  externally-held counter or an independently-computed control run, compared with exact integers.
+  Weakest link is the mode-conditional block in (c), which I record as informational.
+
+
+FINDINGS
+  1. [INFO] Full suite exits 1, and that is correct and expected. 7 failures, set-identical to the
+     frozen baseline, 0 new, 0 disappeared. See GATE 5.
+  2. [INFO] Whole-file prose grep reports 34 hits across 4 files. All 4 files predate this branch
+     and all 34 hits are on pre-existing lines; the branch added none. See GATE 6.
+  3. [LOW] packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts is 254 raw / 236 pure
+     LOC, ~27% past the 200 LOC soft limit, and carries no `// allow: SIZE_OK` even though its own
+     test file does. Non-blocking (soft limit, cohesive single state machine, surrounding module is
+     genuinely split), but a marker or a further split would make the intent explicit.
+  4. [LOW] SIZE_OK markers are applied inconsistently to test files: 6 over-200 test files carry a
+     justified marker, 4 (seal 284, jev-core intent-routing 270, normalization 211, record 207) do
+     not. Three of those four are under 200 pure LOC. Cosmetic consistency issue only.
+  5. [INFO] In intent-routing-accuracy.test.ts the "real" mode assertions are gated behind
+     `if (mode === "real")` / `if (mode !== "real")`, so they never execute in CI. Deliberate (no
+     network in CI) and correctly paired with a zero-network assertion, but it means the real-API
+     path is proven only by the separate task-18 evidence, not by this suite.
+  6. [INFO] The five generated bun-install files remain dirty in the working tree and the suite run
+     re-emits omo.js / omo-member.js. Not committed anywhere on the branch (CHECK 5), so this is the
+     known repo condition, not branch pollution.
+
+  No HIGH or MEDIUM findings. Nothing above blocks the branch.
+
+WHAT WAS OMITTED / NOT CLAIMED
+  - I did not re-run task-18's real-API measurement and did not exercise any network path; no
+    credentials were read, used, or recorded, and no secret-bearing output is reproduced here.
+  - I did not audit scope fidelity (owned by F4), nor re-verify the opencode-qa dogfood evidence.
+  - I did not write to the operator's real ~/.omo; all transient logs went to /tmp/f2/.
+  - I modified no source, test, or plan file. Verifier role only; nothing was fixed.
+  - Commit count note: the branch stood at 17 commits. I staged this evidence with `git add -f` and
+    deliberately did NOT create a commit, since staging does not require one and the commit count is
+    itself audited. The file is staged-but-uncommitted by design.
+
+RESIDUAL RISK
+  Bun 1.4.0 here vs CI's pinned 1.3.12 means the 2 ResolveMessage failures will likely not reproduce
+  on CI, and CI may surface ordering differences the local single-process run does not. The suite is
+  also order-dependent in auto-update-checker, so a future file addition could perturb that cluster
+  independently of this branch.
+
+
+ADDENDUM - CONCURRENT COMMIT LANDED DURING THIS VERIFICATION (read this)
+========================================================================
+While I was running the gates, another worker committed a77a82896 ("test(jev): record the
+intent-routing real-API accuracy baseline"), moving the branch from 17 to 18 commits. It touched one
+SOURCE file, and it is one of the three I reviewed in CHECK 9:
+  packages/jev-core/src/intent-routing-accuracy.test.ts
+plus 7 evidence-only files. ccb259ace remains an ancestor of HEAD.
+
+This matters for honesty about what my full-suite run actually measured, so I checked it rather than
+assuming. The worker's edits to that test file were ALREADY PRESENT AS UNCOMMITTED CHANGES in the
+shared working tree when my suite ran. Proof: the JEV_W1_ACCURACY_ARTIFACT JSON emitted during my
+full-suite run already contained the exact fields that commit adds (inputTokens, outputTokens,
+latencyMs, fixtureResults, unavailableFixtures), and "git diff --stat HEAD" for that file is now
+empty. So the tree I measured is byte-equivalent to HEAD for the only source file that changed.
+My GATE 5 result therefore already covers a77a82896's content; it is not stale.
+
+Re-verified directly at HEAD = a77a82896:
+  bunx tsgo --noEmit -p packages/jev-core/tsconfig.json                -> exit 0
+  bun test packages/jev-core/src/intent-routing-accuracy.test.ts       -> 6 pass, 0 fail,
+                                                                          15 expect() calls,
+                                                                          mock run 15/15 exact,
+                                                                          60/60 answers, 0 network
+  grep suppressions over jev/foundation..HEAD '*.ts'                   -> NOTHING (exit 1)
+  prose diff-scoped, em/en dash plus AI filler, jev/foundation..HEAD   -> NOTHING (exit 1)
+
+The commit is additive: new FixtureResult / RunMetrics types and richer artifact fields
+(per-fixture expected/predicted/exact, unavailableFixtures, token counts, latency min/max). It adds
+reporting surface to the artifact and does not weaken or remove any assertion I credited in CHECK 9;
+the call-ceiling, partial-artifact, dry-run-zero-network, and selectRunMode assertions are intact.
+My CHECK 9 judgement on that file stands, and finding 5 (real-mode assertions gated behind
+"if (mode === real)" and thus never executed in CI) still applies at HEAD.
+
+VERDICT IS UNCHANGED: APPROVE, and it holds at BOTH ccb259ace and a77a82896.
+
+Commit-count consequence: the branch is now at 18 commits. Creating a commit for this evidence would
+make 19, i.e. past the audited 18-commit ceiling. This evidence file and the MANIFEST row are
+therefore STAGED WITH "git add -f" AND LEFT UNCOMMITTED, deliberately. Flagging it so the commit
+count is not mistaken for an omission.
+
+PROCESS NOTE / SHARED-WORKTREE HAZARD (for the wave owner)
+  Multiple workers are editing one working tree. My full suite ran against a tree that contained
+  another worker's uncommitted source edits. It resolved benignly here (that content became HEAD and
+  I re-verified it), but in general a gate run in a shared tree measures "whatever is on disk right
+  now", not a committed sha. Any future wave should either freeze the tree during gate runs or run
+  gates from a detached per-verifier worktree.
+
+## RE-RUN AT FINAL SHA
+
+JUDGED SHA: 97983438df915ff51418b19f4f2ce906fc59092f (HEAD of jev/w1-e90b at start AND end of this re-run)
+BASE: jev/foundation | COMMIT COUNT: 19 (18 plan + 1 acknowledged remediation)
+WHY: the original F2 judged ccb259ace = HEAD^^. Two commits were never reviewed:
+  a77a82896 test(jev): record the intent-routing real-API accuracy baseline (8 files, +232/-9)
+  97983438d fix(jev): thread real counters, flush on shutdown, de-tautologize the report identity (40 files, +2109/-39)
+VERDICT: APPROVE
+
+WHAT WAS TESTED / WHAT WAS OBSERVED
+
+1. bun run typecheck
+   cmd : bun run typecheck
+   obs : EXIT=0. tsgo --noEmit + typecheck:script + typecheck:packages (28 projects) all clean.
+   PASS
+
+2. Three repo meta-audit tests
+   cmd : bun test script/shared-core-extraction-guard.test.ts script/package-registration-audit.test.ts \
+         packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+   obs : EXIT=0. 25 pass, 0 fail, 37 expect() calls across 3 files.
+   PASS
+
+3. No type-escape hatches in changed TypeScript
+   cmd : grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(git diff --name-only jev/foundation..HEAD -- '*.ts')
+   obs : NOTHING (grep exit 1). 53 changed .ts files scanned.
+   PASS
+
+4. Third-party notices, baseline-relative
+   cmd : node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt
+   obs : NOTHING. diff exit 0. Byte-identical to the task-1 baseline.
+   PASS
+
+5. Full suite. REDEFINED: BASELINE-RELATIVE, NOT EXIT 0. Stated explicitly.
+   Why redefined: the plan's "exit 0" is unsatisfiable at the untouched base. jev/foundation itself
+   carries 7 pre-existing failures: 2 from Bun 1.4.0 vs CI's pinned 1.3.12 ResolveMessage shape, and
+   5 from order-dependent mock.module pollution in auto-update-checker. The gate that is actually
+   meaningful is ZERO NEW FAILURES against the frozen baseline.
+   cmd : env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+         (OPENCODE_SERVER_PASSWORD unset because it is set in this shell and leaks into tmux argv
+          assertions, producing 15 spurious failures; the frozen baseline was measured the same way)
+   obs : 12930 pass, 3 skip, 7 fail, 1 snapshot, 86233 expect() calls. Ran 12940 tests / 1697 files [125.44s].
+         Set-compared against task-1-frozen-baseline.txt BEGIN_FAILING_TESTS..END_FAILING_TESTS:
+           comm -23 now baseline  -> EMPTY   (zero NEW failures)
+           comm -13 now baseline  -> EMPTY   (zero baseline failures newly fixed/masked)
+         The 7 failures are exactly the frozen 7:
+           dependencies check > findCommentCheckerPackageBinary > ... ResolveMessage ...
+           isModuleResolutionFailure > ... real Bun dynamic-import failure ...
+           auto-update-checker/checker > getLatestVersion > (5 tests)
+   PASS (zero new failures)
+
+6. Prose hygiene. REDEFINED: DIFF-SCOPED, NOT WHOLE-FILE. Stated explicitly.
+   Why redefined: docs/jev/HANDOFF.md already carries 22 em dashes at jev/foundation, authored before
+   this branch. A whole-file grep can never pass, and stripping pre-existing dashes would be scope creep.
+   Only ADDED lines are judged.
+   cmd : git diff jev/foundation..HEAD -- . ':(exclude)assets/*' | grep -P '^\+' | grep -P '[\x{2014}\x{2013}]'
+   obs : NOTHING (exit 1).
+   cmd : git diff jev/foundation..HEAD -- . ':(exclude)assets/*' | grep -P '^\+' | grep -P '\b(simply|obviously|clearly|moreover|furthermore)\b'
+   obs : exactly ONE line, and it is self-referential: .omo/evidence/20260924-jev-w1/F2-quality.txt
+         records this gate's own grep command, so the pattern matches its own literal.
+         Re-run excluding the evidence artifact tree:
+           git diff jev/foundation..HEAD -- . ':(exclude)assets/*' ':(exclude).omo/evidence/*' | grep -P '^\+' | grep -P '\b(simply|...)\b'
+           -> NOTHING (exit 1).
+         Zero filler words in any source, test, script, or documentation line.
+   PASS (with a recorded self-reference note; see finding F2R-1)
+
+7. No generated bun-install files in any commit
+   cmd : git log --oneline jev/foundation..HEAD -- <each of the 5 paths>
+   obs : 0 commits for every one of:
+           packages/omo-codex/plugin/components/codegraph/dist/cli.js       -> 0
+           packages/omo-codex/plugin/components/codegraph/dist/serve.js     -> 0
+           packages/omo-codex/scripts/install-dist/install-local.mjs        -> 0
+           packages/omo-senpi/plugin/extensions/omo.js                      -> 0
+           packages/omo-senpi/plugin/extensions/omo-member.js               -> 0
+         git diff --name-only jev/foundation..HEAD over those paths -> NOTHING.
+         They remain unstaged working-tree dirt, exactly as task-1 recorded.
+   PASS
+
+8. Convention audit (empty catch / catch-all files / AAA)
+   obs : empty catch blocks in branch .ts            -> NOTHING
+         added files named utils.ts|helpers.ts|service.ts -> NOTHING
+         // Arrange | // Act | // Assert comments     -> NOTHING
+         every branch *.test.ts contains #given/#when/#then or // given/when/then -> no violations
+   PASS
+
+9. File sizes on added/changed source
+   RAW  PURE  FILE                                                              MARKER
+   274  254   packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts   YES (added by 97983438d)
+   367  334   packages/omo-opencode/src/testing/create-plugin-module.ts             YES (pre-existing file)
+   320  296   script/jev-w1-report.ts                                               YES
+   272  249   packages/omo-opencode/src/plugin/event.ts                             no  (PRE-EXISTING: 256 raw at base, branch net +16)
+   214  188   packages/jev-core/src/intent-routing-record-validation.ts             no  (pure 188 <= 200)
+   211  199   packages/omo-opencode/src/features/jev/intent-routing-dispatch.ts     no  (pure 199 <= 200)
+   200  191   packages/jev-core/src/intent-routing.ts                               no  (pure 191 <= 200)
+   112   -    packages/omo-opencode/src/plugin-dispose.ts  (grew 43 -> 112 in the remediation, well under limit)
+   PRIOR FINDING RESOLVED: intent-routing-turn-store.ts was flagged at 254 raw / 236 pure with NO marker.
+   The remediation grew it to 274/254 AND added the repo-sanctioned marker at line 1:
+     // allow: SIZE_OK - one state machine owns the turn lifecycle and its transition invariants.
+   Verified by size-per-commit: ccb259ace 254/236 marker=0 | a77a82896 254/236 marker=0 | 97983438d 274/254 marker=1.
+   Only residual: plugin/event.ts, a pre-existing overage the branch did not introduce (see F2R-2).
+   PASS
+
+10. QUALITY JUDGEMENT ON THE TWO PREVIOUSLY-UNREVIEWED COMMITS
+   See NEW COMMIT QUALITY below.
+
+NEW COMMIT QUALITY
+
+a77a82896 (todo 18, +108/-9 in packages/jev-core/src/intent-routing-accuracy.test.ts)
+  The substantive behavioural change is in selectRunMode: the old form was
+    env.JEV_W1_REAL_API === "1" && Boolean(env.TYPESAFE_API_KEY?.trim()) ? "real" : "mock"
+  which SILENTLY downgraded a requested real-API run to mock when the key was absent. The new form
+  keys only off JEV_W1_REAL_API. This is a correctness improvement for an evidence harness: a run
+  that claims mode "real" can no longer be a mock run wearing the label. task-18-missing-key.txt
+  confirms the replacement behaviour is loud and honest: mode real, HTTP request count 0, input and
+  output tokens 0, and all 15 fixtures marked unavailable with reason missing_api_key, without a crash.
+  The rest is instrumentation only (token totals, latency min/max, per-fixture expected/predicted
+  rows, unavailable-fixture reasons) threaded through an added createMeasuredBackend decorator that
+  wraps the real backend without altering its decision path. No production source touched.
+  Secret hygiene: no key literal appears in any added line; the sandbox dummy value is assigned via
+  printf -v before export rather than as a command-line argument.
+
+97983438d (remediation for three HIGH F5 findings)
+  F-3 (counters hard-coded) is genuinely fixed, and fixed STRUCTURALLY, not just behaviourally.
+  At ccb259ace, buildStoreCounterDelta literally wrote
+    turnsSeen: 0, turnsGatedOut: 0, turnsSynthetic: 0,
+    unscorableResumeCalls: 0, unscorableUnknownCalls: 0, dispatchesDropped: 0
+  At HEAD those six are REQUIRED fields on the input type and are read from input. Because they are
+  required, the TypeScript compiler now forces every call site to supply them, which is a stronger
+  guarantee than any test. The runtime threads them via a sourceCounters() closure, and the root
+  cause of a permanently-zero turnsSynthetic is also fixed: the dispatch layer previously rebuilt
+  parts as [{ type: "text", text }] and DROPPED the synthetic flag, so the seal could never classify
+  a turn as synthetic. It now carries synthetic: snapshot.synthetic through.
+  Three counters remain literal 0 in buildStoreCounterDelta (malformedWriteRejections,
+  recordsLostToCap, sinkTruncations). That is correct by ownership, not an oversight: those are
+  sink-side, maintained in intent-routing-sink.ts and surfaced through the reader, then merged with
+  Math.max. Not a defect.
+
+  DOES THE ANTI-HARDCODING TEST ACTUALLY CATCH A REGRESSION? YES.
+  "#given live eligible gated synthetic resume unknown and dropped turns #when final counters flush
+  #then all six measured counters are non-zero" drives the REAL adapter through six distinct stimuli
+  (one live turn, a resume capture, an unknown-category capture, a dropped turn under maxInflight 1,
+  a synthetic-parts turn, a wrong-session turn) and asserts six DIFFERENT derived values:
+  turnsSeen 4, turnsGatedOut 1, turnsSynthetic 1, unscorableResumeCalls 1, unscorableUnknownCalls 1,
+  dispatchesDropped 2. Reverting any single threading edit changes at least one of those values.
+  The red evidence is real, not decorative: F5-fix-counters-threaded-red.txt shows
+  "Matcher error: received value must be a non-null object", i.e. pre-fix NO counter_delta reached
+  the sink at all. Residual weakness: it pins one scenario, so an adversarial implementation that
+  returned exactly that six-value tuple would pass. Not a realistic regression mode. Accepted.
+
+  DOES THE ANTI-TAUTOLOGY (IDENTITY) TEST ACTUALLY CATCH A REGRESSION? YES.
+  F-2 was that in_flight was DEFINED as the residual (recordsCreated - sealed - recordsEvicted), so
+  "recordsCreated == sealed + evicted + inFlight" was true by construction and the check was dead code.
+  The fix introduces an INDEPENDENT measurement: recordsInFlight() in the turn store walks live
+  sessions and sums session.turns.size. It is observed, not derived, which is what breaks the tautology.
+  "#given a counter snapshot that overstates creation #when identity is checked #then independent
+  in-flight stays zero and the discrepancy is reported" writes recordsCreated 2 / recordsInFlight 0
+  against exactly ONE observation row. Traced by hand: sealedAtSnapshot 2, rowsAfterSnapshot 0,
+  inFlight 0, rowFloor 1, recordsCreated max(2,1)=2, identityTotal 1, 2 != 1 -> MISMATCH. The test
+  asserts the literal
+    identity: MISMATCH records_created(2) != sealed(1) + evicted(0) + in_flight(0) = 1
+  so the FAILING branch is genuinely exercised. This is the correct shape of an anti-tautology proof:
+  it proves the predicate CAN be false and pins the false case.
+  Caveat, recorded as F2R-3: the check no longer THROWS. ReportIdentityError was deleted and the
+  report now only prints "identity: MISMATCH ...". Nothing greps the rendered report for MISMATCH,
+  so the report alone would not fail a pipeline. This is partly compensated: task-19-drive.sh now
+  performs an INDEPENDENT hard-fail identity assertion straight off the raw sink jsonl
+    [ "$COUNTER_CREATED" -eq "$((SEALED + COUNTER_EVICTED + COUNTER_IN_FLIGHT))" ] || fail ...
+  where SEALED is counted from observation rows and the rest from the counter_delta, so that one is
+  also non-tautological. Net: acceptable, but the softening is a real reduction in enforcement.
+
+  F-1 (dispose never flushed under driver SIGTERM) is fixed by a signal-aware dispose path in
+  plugin-dispose.ts (43 -> 112 raw lines), with a test that installs a SIGTERM listener, asserts the
+  flush ran exactly once, asserts the signal is re-delivered, and asserts the listener is removed.
+  The red evidence shows the honest pre-fix failure "SIGTERM flush handler was not installed".
+  The driver additionally now performs a graceful POST /global/dispose before kill -TERM.
+
+  F-4 (no majority-class base rate) is fixed by fixtureBaseRate(), computed at runtime from
+  INTENT_ROUTING_FIXTURES, emitting category none 8/15, subagent none 13/15, combined none 21/30.
+  Weakest of the four tests: it asserts literal rendered strings, so a hard-coded constant would also
+  pass, and no test mutates the fixture set to prove the number tracks it. Recorded as F2R-4 (LOW).
+
+FINDINGS
+  F2R-1 INFO  Gate 6b matched exactly one added line, and that line is this very evidence file
+              (.omo/evidence/20260924-jev-w1/F2-quality.txt) recording the gate's own grep pattern.
+              Self-reference in an evidence artifact, not prose. Zero matches outside .omo/evidence/.
+  F2R-2 LOW   packages/omo-opencode/src/plugin/event.ts is 272 raw / 249 pure with no SIZE_OK marker.
+              PRE-EXISTING: 256 raw at jev/foundation. The branch added net +16 (18 added, 2 removed),
+              pushing an already-over-limit file further. Not branch-introduced; fixing it here would
+              be scope creep. Flagged for the file's owner, not as a branch defect.
+  F2R-3 LOW   script/jev-w1-report.ts no longer THROWS on an identity violation (ReportIdentityError
+              was deleted); it prints "identity: MISMATCH ...". No consumer greps the report for
+              MISMATCH. Compensated by task-19-drive.sh's independent hard-fail identity assertion.
+  F2R-4 LOW   The majority-class base-rate test asserts literal rendered strings
+              ("category_fixture_majority_class_base_rate: none 8/15 = 53.33%"). A hard-coded constant
+              in the report would satisfy it; no test proves the value is derived from
+              INTENT_ROUTING_FIXTURES. The production code does derive it correctly (verified by
+              reading fixtureBaseRate); the TEST is what is weak.
+  No HIGH or MEDIUM findings. None of the four block approval.
+
+WHY THIS IS ENOUGH
+  Both previously-unreviewed commits were read diff-by-diff at source level, not summarized from their
+  messages. The two gates the plan states unsatisfiably (5 and 6) were re-derived against the frozen
+  base measurement and the diff, and both redefinitions are stated in-line above. The full suite was
+  run at the final sha with the same env shape as the frozen baseline and set-compared in both
+  directions, so a masked-failure regression would have shown as a non-empty comm -13.
+
+WHAT WAS OMITTED
+  No secrets, tokens, env dumps, or auth headers are reproduced here. The one credential-adjacent
+  value observed (the task-19 sandbox dummy key) is a non-secret literal and is not reprinted.
+  The full 207-line suite transcript and the typecheck transcript were kept out of tree; only their
+  exit codes, counts, and the complete failure set are recorded, which is what the gate turns on.
+
+INTEGRITY
+  judged sha 97983438df915ff51418b19f4f2ce906fc59092f, confirmed == HEAD at the moment of writing.
+  No source, test, plan, or configuration file was modified by this verifier. Nothing was committed.
+  The operator's real ~/.omo/ was never written. No other worktree was touched.

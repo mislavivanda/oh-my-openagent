@@ -1,0 +1,252 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-normalization.test.ts:
+65 | 
+66 | describe("observed delegation normalization", () => {
+67 |   describe("#given raw delegation arguments covering every normalization rule", () => {
+68 |     describe("#when normalizing each delegation", () => {
+69 |       test.each(normalizationCases)("#then %s", (_name, args, expected) => {
+70 |         expect(normalizeObservedDelegation(args)).toEqual(expected)
+                                                       ^
+error: expect(received).toEqual(expected)
+
+@@ -2,4 +2,4 @@
+    "normalizedCategory": "none",
+-   "normalizedSubagent": "oracle",
+-   "routeClass": "subagent",
++   "normalizedSubagent": "none",
++   "routeClass": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:70:51)
+(fail) observed delegation normalization > #given raw delegation arguments covering every normalization rule > #when normalizing each delegation > #then (a) requested_subagent_type wins over the rewritten subagent_type [0.75ms]
+65 | 
+66 | describe("observed delegation normalization", () => {
+67 |   describe("#given raw delegation arguments covering every normalization rule", () => {
+68 |     describe("#when normalizing each delegation", () => {
+69 |       test.each(normalizationCases)("#then %s", (_name, args, expected) => {
+70 |         expect(normalizeObservedDelegation(args)).toEqual(expected)
+                                                       ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "normalizedCategory": "deep",
++   "normalizedCategory": "none",
+    "normalizedSubagent": "none",
+-   "routeClass": "category",
++   "routeClass": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:70:51)
+(fail) observed delegation normalization > #given raw delegation arguments covering every normalization rule > #when normalizing each delegation > #then (b) category-only remains a category after the sisyphus-junior rewrite [0.12ms]
+65 | 
+66 | describe("observed delegation normalization", () => {
+67 |   describe("#given raw delegation arguments covering every normalization rule", () => {
+68 |     describe("#when normalizing each delegation", () => {
+69 |       test.each(normalizationCases)("#then %s", (_name, args, expected) => {
+70 |         expect(normalizeObservedDelegation(args)).toEqual(expected)
+                                                       ^
+error: expect(received).toEqual(expected)
+
+@@ -2,4 +2,4 @@
+    "normalizedCategory": "none",
+-   "normalizedSubagent": "explore",
+-   "routeClass": "subagent",
++   "normalizedSubagent": "none",
++   "routeClass": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:70:51)
+(fail) observed delegation normalization > #given raw delegation arguments covering every normalization rule > #when normalizing each delegation > #then (c) subagent-only becomes a subagent route [0.07ms]
+65 | 
+66 | describe("observed delegation normalization", () => {
+67 |   describe("#given raw delegation arguments covering every normalization rule", () => {
+68 |     describe("#when normalizing each delegation", () => {
+69 |       test.each(normalizationCases)("#then %s", (_name, args, expected) => {
+70 |         expect(normalizeObservedDelegation(args)).toEqual(expected)
+                                                       ^
+error: expect(received).toEqual(expected)
+
+@@ -3,3 +3,3 @@
+    "normalizedSubagent": "none",
+-   "routeClass": "unscorable_resume",
++   "routeClass": "unknown",
+  }
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:70:51)
+(fail) observed delegation normalization > #given raw delegation arguments covering every normalization rule > #when normalizing each delegation > #then (d) a task_id without routing fields is an unscorable resume [0.05ms]
+75 |   describe("#given a task resume with no category or subagent", () => {
+76 |     describe("#when normalizing the resume", () => {
+77 |       test("#then it never becomes a none route", () => {
+78 |         const normalized = normalizeObservedDelegation({ tool: "task", task_id: "ses_x" })
+79 | 
+80 |         expect(normalized.routeClass).toBe("unscorable_resume")
+                                           ^
+error: expect(received).toBe(expected)
+
+Expected: "unscorable_resume"
+Received: "unknown"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:80:39)
+(fail) observed delegation normalization > #given a task resume with no category or subagent > #when normalizing the resume > #then it never becomes a none route [0.08ms]
+126 | 
+127 | describe("observed route derivation", () => {
+128 |   describe("#given one observation for every routeClass value", () => {
+129 |     describe("#when deriving the scoring route", () => {
+130 |       test.each(Object.values(routeCases))("#then every class has an explicit result", ({ observation, expected }) => {
+131 |         expect(deriveRoute(observation)).toEqual(expected)
+                                               ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "kind": "scorable",
+-   "route": "category:deep",
++   "kind": "unscorable",
++   "reason": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:131:42)
+(fail) observed route derivation > #given one observation for every routeClass value > #when deriving the scoring route > #then every class has an explicit result [0.08ms]
+126 | 
+127 | describe("observed route derivation", () => {
+128 |   describe("#given one observation for every routeClass value", () => {
+129 |     describe("#when deriving the scoring route", () => {
+130 |       test.each(Object.values(routeCases))("#then every class has an explicit result", ({ observation, expected }) => {
+131 |         expect(deriveRoute(observation)).toEqual(expected)
+                                               ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "kind": "scorable",
+-   "route": "subagent:explore",
++   "kind": "unscorable",
++   "reason": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:131:42)
+(fail) observed route derivation > #given one observation for every routeClass value > #when deriving the scoring route > #then every class has an explicit result [0.07ms]
+126 | 
+127 | describe("observed route derivation", () => {
+128 |   describe("#given one observation for every routeClass value", () => {
+129 |     describe("#when deriving the scoring route", () => {
+130 |       test.each(Object.values(routeCases))("#then every class has an explicit result", ({ observation, expected }) => {
+131 |         expect(deriveRoute(observation)).toEqual(expected)
+                                               ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,3 @@
+    "kind": "unscorable",
+-   "reason": "resume",
++   "reason": "unknown",
+  }
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:131:42)
+(fail) observed route derivation > #given one observation for every routeClass value > #when deriving the scoring route > #then every class has an explicit result [0.07ms]
+134 |   })
+135 | 
+136 |   describe("#given no delegation observation", () => {
+137 |     describe("#when deriving the scoring route", () => {
+138 |       test("#then the turn is a scorable none route", () => {
+139 |         expect(deriveRoute(null)).toEqual({ kind: "scorable", route: "none" })
+                                        ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "kind": "scorable",
+-   "route": "none",
++   "kind": "unscorable",
++   "reason": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:139:35)
+(fail) observed route derivation > #given no delegation observation > #when deriving the scoring route > #then the turn is a scorable none route [0.15ms]
+173 |         ["none", "none", { route: "none", coherent: true }],
+174 |         ["deep", "none", { route: "category:deep", coherent: true }],
+175 |         ["none", "explore", { route: "subagent:explore", coherent: true }],
+176 |         ["deep", "explore", { route: "category:deep", coherent: false }],
+177 |       ] as const)("#then category %s and subagent %s produce the expected result", (category, subagent, expected) => {
+178 |         expect(derivePredictedRoute(answers(category, subagent))).toEqual(expected)
+                                                                        ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,3 @@
+    "coherent": true,
+-   "route": "category:deep",
++   "route": "none",
+  }
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:178:67)
+(fail) predicted route derivation > #given independent category and subagent Choice answers > #when deriving their joint scoring route > #then category deep and subagent none produce the expected result [0.08ms]
+173 |         ["none", "none", { route: "none", coherent: true }],
+174 |         ["deep", "none", { route: "category:deep", coherent: true }],
+175 |         ["none", "explore", { route: "subagent:explore", coherent: true }],
+176 |         ["deep", "explore", { route: "category:deep", coherent: false }],
+177 |       ] as const)("#then category %s and subagent %s produce the expected result", (category, subagent, expected) => {
+178 |         expect(derivePredictedRoute(answers(category, subagent))).toEqual(expected)
+                                                                        ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,3 @@
+    "coherent": true,
+-   "route": "subagent:explore",
++   "route": "none",
+  }
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:178:67)
+(fail) predicted route derivation > #given independent category and subagent Choice answers > #when deriving their joint scoring route > #then category none and subagent explore produce the expected result [0.05ms]
+173 |         ["none", "none", { route: "none", coherent: true }],
+174 |         ["deep", "none", { route: "category:deep", coherent: true }],
+175 |         ["none", "explore", { route: "subagent:explore", coherent: true }],
+176 |         ["deep", "explore", { route: "category:deep", coherent: false }],
+177 |       ] as const)("#then category %s and subagent %s produce the expected result", (category, subagent, expected) => {
+178 |         expect(derivePredictedRoute(answers(category, subagent))).toEqual(expected)
+                                                                        ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "coherent": false,
+-   "route": "category:deep",
++   "coherent": true,
++   "route": "none",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-normalization.test.ts:178:67)
+(fail) predicted route derivation > #given independent category and subagent Choice answers > #when deriving their joint scoring route > #then category deep and subagent explore produce the expected result [0.04ms]
+
+ 3 pass
+ 12 fail
+ 15 expect() calls
+Ran 15 tests across 1 file. [132.00ms]
