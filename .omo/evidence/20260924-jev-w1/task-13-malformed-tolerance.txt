@@ -1,0 +1,15 @@
+TASK 13 MALFORMED TRAILING LINE TOLERANCE
+WHAT WAS TESTED: the test writes one valid observation, hand-appends the exact malformed fragment {"broken":, and invokes readIntentRoutingSink().
+COMMAND: HOME=$(mktemp -d) bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts --test-name-pattern malformed trailing line
+TEST_HOME=/tmp/tmp.xRoLQizlrX
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 9 filtered out
+ 0 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [144.00ms]
+TEST_EXIT=0
+WHAT WAS OBSERVED: the reader returned the valid record, reported malformedLines === 1, and did not throw.
+WHY IT IS ENOUGH: the focused test executes the real file append and reader boundary against an isolated HOME.
+WHAT WAS OMITTED: no real user sink, prompt, credential, or environment dump was read.

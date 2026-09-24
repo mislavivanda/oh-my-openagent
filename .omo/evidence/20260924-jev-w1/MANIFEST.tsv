@@ -48,3 +48,6 @@ todo	artifact	kind	description
 10	.omo/evidence/20260924-jev-w1/task-10-turnstore-red.txt	red	Focused RED run against the typed scaffold: 12 behavioral assertion failures, 6 pass, exit 1
 10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused GREEN run: 18 pass, 0 fail, 48 assertions covering ordinals, reuse, terminal states, cleanup, timeout, and normalization
 10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Default-cap proof drives 133 turns, counts exactly 5 evictions, and retains ordinals 6 through 133
+13	.omo/evidence/20260924-jev-w1/task-13-sink-red.txt	red	Focused sink RED run: 10 assertion failures against the behaviorless scaffold, isolated HOME, exit 1
+13	.omo/evidence/20260924-jev-w1/task-13-sink-green.txt	green	Focused sink GREEN run: 10 pass, 0 fail, measured 1724-byte observation, 17,240,000 bytes/day assumption, 66 MiB cap, real home unchanged
+13	.omo/evidence/20260924-jev-w1/task-13-malformed-tolerance.txt	qa	Focused malformed-tail proof: valid row retained, malformedLines equals 1, no throw, isolated HOME, exit 0
