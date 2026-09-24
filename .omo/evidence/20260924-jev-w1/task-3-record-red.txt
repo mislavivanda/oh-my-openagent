@@ -1,0 +1,162 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-record.test.ts:
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:119:28)
+(fail) intent-routing record validation > #given a fully populated observation #when validating #then it is accepted [0.76ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:125:28)
+(fail) intent-routing record validation > #given a counter delta #when validating #then it is accepted [0.14ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:132:28)
+(fail) intent-routing record validation > #given an unknown entry kind #when validating #then it is rejected [0.11ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:139:30)
+(fail) intent-routing record validation > #given an observation missing sealedBy #when validating #then it is rejected [0.09ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:139:30)
+(fail) intent-routing record validation > #given an observation missing correlationStatus #when validating #then it is rejected [0.04ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:147:28)
+(fail) intent-routing record validation > #given ambiguous confidence #when validating #then it is rejected [0.08ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:159:28)
+(fail) intent-routing record validation > #given sealedBy evicted #when validating #then it is rejected [0.08ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:168:28)
+(fail) intent-routing counter resolution > #given repeated process snapshots #when resolving #then the highest sequence replaces earlier values [0.11ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:180:28)
+(fail) intent-routing continuation cohort > #given the published lexicon #when inspected #then it is exact and frozen [0.11ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:199:28)
+(fail) intent-routing continuation cohort > #given lexicon prompts with trailing punctuation #when classifying #then they are candidates [0.18ms]
+14 | 
+15 | const contractPromise = import("./intent-routing-record").catch(() => null)
+16 | 
+17 | async function loadContract(): Promise<ContractModule> {
+18 |   const contract: unknown = await contractPromise
+19 |   expect(contract, "the shared intent-routing record contract must exist").not.toBeNull()
+                                                                                    ^
+error: the shared intent-routing record contract must exist
+
+Received: null
+
+      at loadContract (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:19:80)
+      at async <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/jev-core/src/intent-routing-record.test.ts:206:28)
+(fail) intent-routing continuation cohort > #given a non-lexicon prompt #when classifying #then it is not a candidate [0.11ms]
+
+ 0 pass
+ 11 fail
+ 11 expect() calls
+Ran 11 tests across 1 file. [136.00ms]

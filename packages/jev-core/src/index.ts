@@ -1,4 +1,17 @@
 export type * from "./types"
+export type * from "./intent-routing-record"
+export {
+  INTENT_ROUTING_CONTINUATION_LEXICON,
+  INTENT_ROUTING_PROMPT_HEAD_MAX_CHARS,
+  INTENT_ROUTING_SCHEMA_VERSION,
+  isIntentRoutingContinuationCandidate,
+} from "./intent-routing-record"
+export {
+  validateIntentRoutingCounterDelta,
+  validateIntentRoutingEntry,
+  validateIntentRoutingObservationRecord,
+} from "./intent-routing-record-validation"
+export { resolveIntentRoutingCounterDeltas } from "./intent-routing-counter-reader"
 export {
   choiceAnswer,
   createMockDecisionBackend,

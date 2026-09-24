@@ -16,3 +16,6 @@ todo	artifact	kind	description
 2	.omo/evidence/20260924-jev-w1/task-2-observe-only-reject.txt	qa	observe_only false rejected at parse time, plan one-liner output plus the untruncated refine message
 2	.omo/evidence/20260924-jev-w1/task-2-typecheck.txt	qa	bun run typecheck plus scoped tsgo runs over both changed files, the concurrent jev-core error attributed, LSP daemon unreachable recorded
 2	.omo/evidence/20260924-jev-w1/task-2-scoped-regression.txt	qa	386 pass 0 fail across every test file touching model_error_triage or a generated schema asset, incl. omo-schema-freshness
+3	.omo/evidence/20260924-jev-w1/task-3-record-red.txt	red	RED focused contract run: 11 failures name the missing shared intent-routing record contract
+3	.omo/evidence/20260924-jev-w1/task-3-record-green.txt	green	GREEN focused contract run: 11 pass, 0 fail, covering both entry arms and counter resolution
+3	.omo/evidence/20260924-jev-w1/task-3-guard-proof.txt	qa	Harness-neutrality guard runs green, catches a transient OpenCode import, then returns green after revert
