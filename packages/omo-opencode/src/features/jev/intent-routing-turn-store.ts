@@ -1,7 +1,4 @@
-import type {
-  IntentRoutingObservationRecord,
-  IntentRoutingObservedDelegation,
-} from "@oh-my-opencode/jev-core"
+import type { IntentRoutingObservedDelegation } from "@oh-my-opencode/jev-core"
 import { createMutableTurn } from "./intent-routing-turn-eviction"
 import {
   buildIntentRoutingTierOneKey,
@@ -25,6 +22,7 @@ import {
 } from "./intent-routing-turn-record"
 import {
   emitCounterDelta,
+  markOverlapAmbiguous,
   removeTurn,
   reuseCompletedPrediction,
   settleTurn,
@@ -161,6 +159,7 @@ export function createIntentRoutingTurnStore(
       return false
     }
     turn.observed.push(observation)
+    markOverlapAmbiguous(state, turn)
     if (observation.routeClass === "unscorable_resume") state.counters.unscorableResumeCalls += 1
     if (observation.routeClass === "unknown") state.counters.unscorableUnknownCalls += 1
     touchTurn(state, turn)
@@ -173,7 +172,7 @@ export function createIntentRoutingTurnStore(
     turn.terminalState = "sealed"
     turn.lifecycleState = "sealed"
     turn.sealedBy = input.sealedBy
-    turn.correlationStatus = input.correlationStatus ?? defaultCorrelationStatus(input.sealedBy)
+    turn.correlationStatus = turn.correlationStatus ?? defaultCorrelationStatus(input.sealedBy)
     turn.deferredFinalization = input.deferFinalization === true
     touchTurn(state, turn)
     tryFinalize(state, turn)
@@ -183,11 +182,9 @@ export function createIntentRoutingTurnStore(
   function finalizeTurn(
     sessionID: string,
     turnOrdinal: number,
-    correlationStatus?: IntentRoutingObservationRecord["correlationStatus"],
   ): boolean {
     const turn = state.sessions.get(sessionID)?.turns.get(turnOrdinal)
     if (turn === undefined || turn.terminalState !== "sealed") return false
-    if (correlationStatus !== undefined) turn.correlationStatus = correlationStatus
     turn.deferredFinalization = false
     return tryFinalize(state, turn)
   }
@@ -204,7 +201,6 @@ export function createIntentRoutingTurnStore(
       if (turn.terminalState === "live") {
         sealTurn({ sessionID, turnOrdinal: turn.turnOrdinal, sealedBy })
       } else if (turn.terminalState === "sealed") {
-        if (sealedBy === "dispose") turn.correlationStatus = "censored"
         turn.deferredFinalization = false
         tryFinalize(state, turn)
       }

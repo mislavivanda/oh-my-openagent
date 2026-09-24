@@ -52,3 +52,12 @@ export type {
 } from "./intent-routing-sink"
 export { readIntentRoutingSink } from "./intent-routing-reader"
 export type { IntentRoutingSinkReadResult } from "./intent-routing-reader"
+export {
+  DEFAULT_INTENT_ROUTING_DISPOSE_FLUSH_TIMEOUT_MS,
+  createIntentRoutingSealCoordinator,
+} from "./intent-routing-seal"
+export type {
+  IntentRoutingSealCoordinator,
+  IntentRoutingSealCoordinatorOptions,
+  IntentRoutingSealSink,
+} from "./intent-routing-seal"

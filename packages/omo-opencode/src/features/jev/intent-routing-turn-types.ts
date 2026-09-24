@@ -15,6 +15,7 @@ export const INTENT_ROUTING_PROMPT_HEAD_CHARS = 200
 export type IntentRoutingPromptPart = {
   readonly type?: string
   readonly text?: string
+  readonly synthetic?: boolean
 }
 
 export type IntentRoutingPredictionState =
@@ -78,7 +79,6 @@ export type IntentRoutingSealInput = {
   readonly sessionID: string
   readonly turnOrdinal: number
   readonly sealedBy: IntentRoutingObservationRecord["sealedBy"]
-  readonly correlationStatus?: IntentRoutingObservationRecord["correlationStatus"]
   readonly deferFinalization?: boolean
 }
 
@@ -102,11 +102,7 @@ export type IntentRoutingTurnStore = {
   startTurn(input: IntentRoutingStartTurnInput): IntentRoutingTurnHandle | null
   appendObservation(sessionID: string, turnOrdinal: number, observation: IntentRoutingObservedDelegation): boolean
   sealTurn(input: IntentRoutingSealInput): boolean
-  finalizeTurn(
-    sessionID: string,
-    turnOrdinal: number,
-    correlationStatus?: IntentRoutingObservationRecord["correlationStatus"],
-  ): boolean
+  finalizeTurn(sessionID: string, turnOrdinal: number): boolean
   deleteSession(sessionID: string): void
   dispose(): void
   getTurn(sessionID: string, turnOrdinal: number): IntentRoutingTurnSnapshot | undefined

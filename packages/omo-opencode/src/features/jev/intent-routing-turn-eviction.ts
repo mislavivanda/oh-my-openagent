@@ -43,7 +43,6 @@ function forceFinalizeDeferred(state: TurnStoreState, turn: MutableTurn): void {
     if (group !== undefined) completePendingGroup(state, group, undefined)
     else applyTimeout(state, turn, 0)
   }
-  turn.correlationStatus = "censored"
   tryFinalize(state, turn, true)
 }
 

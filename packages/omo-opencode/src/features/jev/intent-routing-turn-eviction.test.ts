@@ -89,7 +89,7 @@ describe("intent-routing observations and eviction", () => {
     const finalized = entries.find((entry) => entry.kind === "observation")
     expect(finalized?.kind).toBe("observation")
     if (finalized?.kind !== "observation") return
-    expect(finalized.correlationStatus).toBe("censored")
+    expect(finalized.correlationStatus).toBe("reliable")
     expect(store.inspect().evictedCount).toBe(0)
   })
 })

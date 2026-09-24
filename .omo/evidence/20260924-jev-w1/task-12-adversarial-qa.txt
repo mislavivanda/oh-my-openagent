@@ -1,0 +1,19 @@
+WHAT WAS TESTED: focused seal tests plus the hung-write adversarial tests under a temporary HOME.
+cancel_resume: APPLIES. Pending predictions were interrupted by session deletion and dispose; both became predictionStatus timeout before finalization, and dispose returned.
+stale_state: APPLIES. A next_turn predecessor stayed deferred until its successor sealed, was amended before finalization in the overlap case, then appeared exactly once with no update API.
+repeated_interruptions: APPLIES. session.idle twice, dispose twice, and an observation after finalization remained idempotent with one observation line.
+hung_or_long_commands: APPLIES. A never-resolving sink append was bounded by disposeFlushTimeoutMs and dispose returned below the asserted 250 ms ceiling.
+malformed_input: APPLIES. Unknown-session idle, resealing a terminal record, and an observation after finalization all failed closed without duplicate records.
+misleading_success_output: APPLIES. seal_timeout and dispose classified censored solely from sealedBy; next_turn remained reliable unless the observable overlap predicate fired.
+prompt_injection: DOES NOT APPLY. The coordinator inspects synthetic metadata and turn lifecycle only; it neither executes nor injects prompt text.
+flaky_tests: RULED OUT. Seal deadlines use fake timers, sink paths are unique under a temporary HOME, and the real-time hung-write threshold has a 25x margin.
+WHY IT IS ENOUGH: every applicable adversarial class has an executable assertion against the real turn store and sink boundary.
+WHAT WAS OMITTED: temporary paths, prompt bodies, credentials, environment dumps, and host HOME contents were not retained.
+
+TEST OUTPUT:
+bun test v1.4.0 (34cbb9a40)
+
+ 14 pass
+ 0 fail
+ 36 expect() calls
+Ran 14 tests across 2 files. [196.00ms]

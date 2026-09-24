@@ -18,6 +18,19 @@ export function touchTurn(state: TurnStoreState, turn: MutableTurn): void {
   if (session !== undefined) session.lastAccess = state.clocks.access
 }
 
+export function markOverlapAmbiguous(state: TurnStoreState, successor: MutableTurn): void {
+  const predecessor = [...(state.sessions.get(successor.sessionID)?.turns.values() ?? [])]
+    .findLast((turn) => (
+      turn.turnOrdinal < successor.turnOrdinal
+      && turn.terminalState === "sealed"
+      && turn.sealedBy === "next_turn"
+      && turn.deferredFinalization
+    ))
+  if (predecessor === undefined) return
+  predecessor.correlationStatus = "overlap_ambiguous"
+  successor.correlationStatus = "overlap_ambiguous"
+}
+
 export function emitCounterDelta(state: TurnStoreState): void {
   state.clocks.counterSequence += 1
   const entry: IntentRoutingCounterDelta = {
@@ -82,7 +95,6 @@ export function tryFinalize(
     return false
   }
   if (turn.deferredFinalization && !force) return false
-  if (force && turn.deferredFinalization) turn.correlationStatus = "censored"
   turn.deferredFinalization = false
   turn.finalized = true
   state.onEntry(buildObservationRecord(turn, state.now))

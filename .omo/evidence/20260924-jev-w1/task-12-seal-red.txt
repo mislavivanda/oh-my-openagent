@@ -1,0 +1,68 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:
+ 9 | 
+10 |     store.startTurn(baseTurn("next-turn", "second"))
+11 | 
+12 |     expect(first).not.toBeNull()
+13 |     if (first === null) return
+14 |     expect(store.getTurn("next-turn", first.turnOrdinal)).toMatchObject({
+                                                               ^
+error: expect(received).toMatchObject(expected)
+
+  {
+-   "correlationStatus": "reliable",
+-   "deferredFinalization": true,
+-   "sealedBy": "next_turn",
+-   "terminalState": "sealed",
++   "answers": {
++     "ambiguous": {
++       "noul": null,
++       "valid": false,
++     },
++     "category": {
++       "choice": null,
++       "confidence": null,
++       "probabilities": null,
++       "valid": false,
++     },
++     "intent": {
++       "choice": null,
++       "confidence": null,
++       "probabilities": null,
++       "valid": false,
++     },
++     "subagent": {
++       "choice": null,
++       "confidence": null,
++       "probabilities": null,
++       "valid": false,
++     },
++   },
++   "correlationStatus": null,
++   "dedupKey": "["next-turn","a7937b64b8caa58f03721bb6bacf5c78cb235febe0e70b1b84cd99541461a08e",1,"vocab-a",0.8,"jev-1.13.0"]",
++   "deferredFinalization": false,
++   "lifecycleState": "not_dispatched",
++   "normalizedPrompt": "first",
++   "observed": [],
++   "predictionReused": false,
++   "predictionState": "not_dispatched",
++   "promptHash": "a7937b64b8caa58f03721bb6bacf5c78cb235febe0e70b1b84cd99541461a08e",
++   "resolvedModel": null,
++   "reuseKey": "["next-turn","a7937b64b8caa58f03721bb6bacf5c78cb235febe0e70b1b84cd99541461a08e",1,"vocab-a",0.8,"jev-1.13.0"]",
++   "sealedBy": null,
++   "sessionID": "next-turn",
++   "terminalState": "live",
++   "turnOrdinal": 1,
+  }
+
+- Expected  - 4
++ Received  + 39
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:14:59)
+(fail) intent-routing seal semantics > #given a live turn #when its successor is created #then the predecessor is logically sealed before finalization [1.69ms]
+
+ 0 pass
+ 1 fail
+ 2 expect() calls
+Ran 1 test across 1 file. [140.00ms]

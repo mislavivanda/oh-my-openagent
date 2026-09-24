@@ -91,3 +91,10 @@ todo	artifact	kind	description
 13	.omo/evidence/20260924-jev-w1/task-13-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0 without an LSP server
 13	.omo/evidence/20260924-jev-w1/task-13-test-fast.txt	qa	Hard test-fast gate under a temporary HOME exits 0 with 444 passing tests across 43 files and proves the real ~/.omo hash is unchanged
 13	.omo/evidence/20260924-jev-w1/task-13-adversarial-qa.txt	qa	Invalid union, oversized and cyclic write rejection, malformed middle and partial-line tolerance, bounded dispose, double-truncation identity, dirty-worktree, and HOME-isolation proofs
+12	.omo/evidence/20260924-jev-w1/task-12-seal-red.txt	red	Focused seal RED under a temporary HOME proves a successor did not logically seal its predecessor before implementation
+12	.omo/evidence/20260924-jev-w1/task-12-seal-green.txt	green	Focused seal GREEN under a temporary HOME passes 12 tests for all four seal paths, synthetic skip, deferred finalization, overlap, inflation exclusion, and idempotence
+12	.omo/evidence/20260924-jev-w1/task-12-overlap-both-sides.txt	qa	Ordered synthetic-message then real-successor then late-observation probe marks predecessor and successor overlap_ambiguous before append
+12	.omo/evidence/20260924-jev-w1/task-12-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0 without an LSP server
+12	.omo/evidence/20260924-jev-w1/task-12-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests across 45 files including final seal and adversarial coverage
+12	.omo/evidence/20260924-jev-w1/task-12-adversarial-qa.txt	qa	Pending interruption, deferred stale state, repeated lifecycle events, hung sink writes, malformed input, mechanical classification, and prompt-injection rule-out are covered
+12	.omo/evidence/20260924-jev-w1/task-12-opencode-server-smoke.txt	qa	Isolated opencode-qa server smoke timed out at both 120 and 300 seconds before readiness; limitation is recorded for TODO 14 wiring QA
