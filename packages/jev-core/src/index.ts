@@ -51,3 +51,13 @@ export {
   type IntentRoutingVocabularyEntry,
 } from "./intent-routing"
 export { INTENT_ROUTING_SUBAGENT_VOCABULARY, derivePredictedRoute, deriveRoute, normalizeObservedDelegation } from "./intent-routing-normalization"
+export {
+  INTENT_ROUTING_FIXTURES,
+  INTENT_ROUTING_FIXTURE_CATEGORIES,
+  INTENT_ROUTING_FIXTURE_INTENTS,
+  INTENT_ROUTING_FIXTURE_SOURCES,
+  type IntentRoutingFixture,
+  type IntentRoutingFixtureIntent,
+  type IntentRoutingFixtureLabel,
+  type IntentRoutingFixtureSource,
+} from "./intent-routing-fixtures"
