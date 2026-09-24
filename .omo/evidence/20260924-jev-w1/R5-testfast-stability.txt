@@ -1,0 +1,56 @@
+R5 TEST:FAST STABILITY
+
+WHAT WAS TESTED
+
+The command `bun run test:fast` was run three times consecutively in one shell loop. The loop exited immediately on any nonzero test exit, so these results are one uninterrupted three-green streak, not selected retries.
+
+RUN 1
+  TASK15_P99 samples=200 cpuP99Us=113 cpuBoundUs=1000 wallP99Ms=0.111931
+  intent-routing synchronous p99: samples=200 cpuP99Us=94 cpuBoundUs=1000 wallP99Ms=0.093553
+  481 pass
+  1 skip
+  0 fail
+  1741 expect() calls
+  Ran 482 tests across 51 files. [6.14s]
+  TESTFAST_RUN_1_EXIT=0
+
+RUN 2
+  TASK15_P99 samples=200 cpuP99Us=151 cpuBoundUs=1000 wallP99Ms=0.149563
+  intent-routing synchronous p99: samples=200 cpuP99Us=88 cpuBoundUs=1000 wallP99Ms=0.087621
+  481 pass
+  1 skip
+  0 fail
+  1741 expect() calls
+  Ran 482 tests across 51 files. [6.16s]
+  TESTFAST_RUN_2_EXIT=0
+
+RUN 3
+  TASK15_P99 samples=200 cpuP99Us=118 cpuBoundUs=1000 wallP99Ms=0.116854
+  intent-routing synchronous p99: samples=200 cpuP99Us=79 cpuBoundUs=1000 wallP99Ms=0.078535
+  481 pass
+  1 skip
+  0 fail
+  1741 expect() calls
+  Ran 482 tests across 51 files. [6.14s]
+  TESTFAST_RUN_3_EXIT=0
+
+ADDITIONAL GATES
+
+  no-excuse audit: no violations in 3 changed TypeScript files, exit 0
+  pure LOC: helper 102, feature test 201, plugin budget test 174, size check exit 0
+  bun run typecheck: TYPECHECK_EXIT=0
+  focused restored budget suite: 14 pass, 0 fail, FOCUSED_GREEN_EXIT=0
+  temporary production seam diff after reverting negative proof: TEMPORARY_SEAM_DIFF_EXIT=0
+  LSP diagnostics: no diagnostics found in all 3 changed TypeScript files
+
+WHAT WAS OBSERVED
+
+All six gating CPU p99 values were 79 to 151 microseconds, far below the unchanged strict 1000-microsecond bound. All six informational wall p99 values were also printed, from 0.078535 to 0.149563 milliseconds. Test counts and assertion counts were identical across all three runs.
+
+WHY THIS IS ENOUGH
+
+Three immediate full fast-suite passes exercise both budget assertions under aggregate suite load rather than only in isolation. The stable counts and wide CPU headroom demonstrate that host scheduling no longer controls the gate. Typecheck and LSP independently cover static correctness.
+
+WHAT WAS OMITTED
+
+The repeated mock-accuracy JSON payloads are not copied here because they are unrelated to R5 and would obscure the relevant output. Their tests are included in every reported 481-pass total. No OpenCode server, todo-19 dogfood drive, or paid real-API harness was run.

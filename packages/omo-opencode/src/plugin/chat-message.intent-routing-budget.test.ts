@@ -6,6 +6,11 @@ import type { OhMyOpenCodeConfig } from "../config"
 import { JevConfigSchema } from "../config/schema/jev"
 import { _resetForTesting, setMainSession } from "../features/claude-code-session-state"
 import { createJevIntentRouting, type JevIntentRoutingDispatcher } from "../features/jev"
+import {
+  INTENT_ROUTING_BUDGET_SAMPLE_COUNT,
+  INTENT_ROUTING_CPU_P99_BOUND_US,
+  measureIntentRoutingSynchronousP99,
+} from "../features/jev/intent-routing-budget-test-support"
 import { createIntentRoutingTestSink } from "../features/jev/intent-routing-test-sink"
 import { createChatMessageHandler } from "./chat-message"
 import {
@@ -142,7 +147,7 @@ describe("chat.message Jev intent-routing budget clauses", () => {
     await routing.dispose()
   })
 
-  test("#given a max_prompt_chars prompt #when only the synchronous seam is sampled 200 times #then p99 stays below one millisecond", () => {
+  test("#given a max_prompt_chars prompt #when only the synchronous seam is sampled 200 times #then CPU-time p99 stays below one millisecond and wall p99 is reported", () => {
     const sessionID = "session-p99"
     setMainSession(sessionID)
     const routing = createJevIntentRouting({
@@ -153,19 +158,14 @@ describe("chat.message Jev intent-routing budget clauses", () => {
       sink: createIntentRoutingTestSink(),
     })
     const output = { parts: [{ type: "text", text: "x".repeat(8_000) }] }
-    const samples: number[] = []
 
-    for (let index = 0; index < 200; index += 1) {
-      const startedAt = performance.now()
+    const metrics = measureIntentRoutingSynchronousP99(() => {
       routing.observe({ sessionID }, output)
-      samples.push(performance.now() - startedAt)
-    }
-    samples.sort((left, right) => left - right)
-    const p99 = samples[Math.ceil(samples.length * 0.99) - 1] ?? Number.POSITIVE_INFINITY
+    })
 
-    console.log(`TASK15_P99 samples=200 p99Ms=${p99.toFixed(6)} boundMs=1`)
-    expect(samples).toHaveLength(200)
-    expect(p99).toBeLessThan(1)
+    console.log(`TASK15_P99 samples=${metrics.sampleCount} cpuP99Us=${metrics.cpuP99Us.toFixed(0)} cpuBoundUs=${INTENT_ROUTING_CPU_P99_BOUND_US} wallP99Ms=${metrics.wallP99Ms.toFixed(6)}`)
+    expect(metrics.sampleCount).toBe(INTENT_ROUTING_BUDGET_SAMPLE_COUNT)
+    expect(metrics.cpuP99Us).toBeLessThan(INTENT_ROUTING_CPU_P99_BOUND_US)
   })
 
   test("#given deferred state building #when the caller continues in a microtask #then the continuation precedes the macrotask", async () => {

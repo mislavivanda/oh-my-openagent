@@ -1,0 +1,68 @@
+R5 SYNCHRONOUS BUDGET INSTRUMENT
+
+WHAT WAS TESTED
+
+Surface: the unchanged synchronous `createJevIntentRouting().observe` callback measured by both plan-mandated budget tests.
+
+Focused command:
+  bun test packages/omo-opencode/src/features/jev/intent-routing.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts
+
+Each assertion still measures 200 samples with an 8000-character `max_prompt_chars` prompt. No sample is discarded. The full callback used by the prior wall-clock instrument remains inside the measured region.
+
+INSTRUMENT CHOICE
+
+The gating value is high-resolution per-thread CPU p99 in microseconds. Linux and macOS read `clock_gettime(CLOCK_THREAD_CPUTIME_ID)` through test-only Bun FFI. Windows reads the sum of user and kernel `GetThreadTimes` values. The library handle is closed after each 200-sample measurement.
+
+The strict gate remains one millisecond:
+  cpuP99Us < 1000
+
+Wall-clock p99 is measured over the same callback and always printed as `wallP99Ms`, but it is informational and non-gating. No wall-clock bound was raised.
+
+Why this instrument was needed:
+  - Wall elapsed time accumulates when another host process owns the CPU, so it cannot distinguish seam work from host scheduling.
+  - `process.cpuUsage()` was rejected after it reported 3455 microseconds of process CPU against 0.848237 milliseconds wall in an isolated file. It includes CPU from Bun runtime threads.
+  - Bun 1.4.0 `process.threadCpuUsage()` was also rejected for this sub-millisecond gate. A 10000-square-root probe reported p99 999 microseconds against wall p99 71.233 microseconds, showing effectively one-millisecond increments.
+  - Direct high-resolution thread CPU measured that same probe at CPU p99 71.735 microseconds against wall p99 72.284 microseconds. Empty-instrument p99 was 7.820 microseconds.
+
+NEGATIVE PROOF: REAL SYNCHRONOUS WORK STILL FAILS
+
+Temporary mutation inserted inside `createJevIntentRouting().observe` before its existing work:
+  let synchronousWork = 0
+  for (let index = 0; index < 2_000_000; index += 1) {
+    synchronousWork += Math.sqrt(index)
+  }
+  if (!Number.isFinite(synchronousWork)) return notDispatched("dispatch_error")
+
+Observed output:
+  TASK15_P99 samples=200 cpuP99Us=3617 cpuBoundUs=1000 wallP99Ms=3.615449
+  Expected: < 1000
+  Received: 3616.54
+
+  intent-routing synchronous p99: samples=200 cpuP99Us=3386 cpuBoundUs=1000 wallP99Ms=3.384829
+  Expected: < 1000
+  Received: 3386.056
+
+  12 pass
+  2 fail
+  NEGATIVE_TEST_EXIT=1
+
+The real synchronous loop made both strict assertions fail. It was then removed with a targeted edit. Production seam restoration proof:
+  git diff --exit-code -- packages/omo-opencode/src/features/jev/intent-routing.ts
+  TEMPORARY_SEAM_DIFF_EXIT=0
+
+RESTORED POSITIVE PROOF
+
+Observed output after removing the temporary work:
+  TASK15_P99 samples=200 cpuP99Us=310 cpuBoundUs=1000 wallP99Ms=0.308394
+  intent-routing synchronous p99: samples=200 cpuP99Us=86 cpuBoundUs=1000 wallP99Ms=0.081764
+  14 pass
+  0 fail
+  FOCUSED_GREEN_EXIT=0
+
+WHY THIS IS ENOUGH
+
+The gate now measures CPU consumed by the measured thread, so time when the host deschedules that thread does not accumulate. The one-millisecond claim was not widened. Both tests print the gating CPU p99 and informational wall p99 before asserting. The negative mutation proves the instrument detects genuine synchronous work rather than passing unconditionally.
+
+WHAT WAS OMITTED
+
+No OpenCode server, todo-19 dogfood drive, or paid real-API harness was run. This change modifies only test instrumentation and an evidence correction; observable routing behavior is unchanged. Raw logs contained no credentials or private environment data.

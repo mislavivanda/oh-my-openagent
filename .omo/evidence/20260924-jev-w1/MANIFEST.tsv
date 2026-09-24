@@ -103,3 +103,6 @@ R4	.omo/evidence/20260924-jev-w1/R4-category-green.txt	green	Runtime offered voc
 R4	.omo/evidence/20260924-jev-w1/R4-drift-proof.txt	qa	Category drift guard passes, fails naming writing after temporary removal, then passes after restoration
 R4	.omo/evidence/20260924-jev-w1/R4-size-conservation.txt	qa	Both oversized tests split below 200 lines with test and expect counts conserved; report waiver removed; no skip only or todo introduced
 R4	.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt	artifact	Todo-19 turns_synthetic marked pre-R2 and non-current; F3 ROUND 2 named as current post-R2 live evidence; unaffected figures enumerated
+R5	.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt	artifact	Amended todo-19 correction enumerates all seven moved report figures with old and F3 ROUND 2 values
+R5	.omo/evidence/20260924-jev-w1/R5-budget-instrument.txt	qa	High-resolution per-thread CPU p99 keeps the strict one-millisecond gate, reports wall p99, and fails under temporary synchronous work
+R5	.omo/evidence/20260924-jev-w1/R5-testfast-stability.txt	green	Three consecutive test:fast runs pass 481 with identical counts; CPU and informational wall p99 values plus typecheck and LSP outcomes recorded

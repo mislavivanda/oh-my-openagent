@@ -8,6 +8,11 @@ import {
   isJevIntentRoutingSessionEligible,
   type JevIntentRoutingDispatcher,
 } from "./intent-routing"
+import {
+  INTENT_ROUTING_BUDGET_SAMPLE_COUNT,
+  INTENT_ROUTING_CPU_P99_BOUND_US,
+  measureIntentRoutingSynchronousP99,
+} from "./intent-routing-budget-test-support"
 import { createIntentRoutingTestSink } from "./intent-routing-test-sink"
 
 const MAIN_SESSION = "session-main"
@@ -201,19 +206,15 @@ describe("createJevIntentRouting", () => {
     expect(calls[1]?.startsWith("https://local-jev.test/")).toBe(false)
   })
 
-  test("#given a max_prompt_chars prompt #when measuring the synchronous seam #then p99 stays below one millisecond", () => {
+  test("#given a max_prompt_chars prompt #when measuring the synchronous seam #then CPU-time p99 stays below one millisecond and wall p99 is reported", () => {
     setMainSession(MAIN_SESSION)
     const routing = createJevIntentRouting({ jevConfig: config({ maxInflight: 64 }), vocab: VOCAB, dispatcher: async () => FILLED_RESULT, logger: () => {} })
     const longOutput = output("x".repeat(8000))
-    const samples: number[] = []
-    for (let index = 0; index < 200; index += 1) {
-      const startedAt = performance.now()
+    const metrics = measureIntentRoutingSynchronousP99(() => {
       routing.observe({ sessionID: MAIN_SESSION }, longOutput)
-      samples.push(performance.now() - startedAt)
-    }
-    samples.sort((left, right) => left - right)
-    const p99 = samples[Math.ceil(samples.length * 0.99) - 1] ?? Number.POSITIVE_INFINITY
-    console.log(`intent-routing synchronous p99: ${p99.toFixed(3)}ms`)
-    expect(p99).toBeLessThan(1)
+    })
+    console.log(`intent-routing synchronous p99: samples=${metrics.sampleCount} cpuP99Us=${metrics.cpuP99Us.toFixed(0)} cpuBoundUs=${INTENT_ROUTING_CPU_P99_BOUND_US} wallP99Ms=${metrics.wallP99Ms.toFixed(6)}`)
+    expect(metrics.sampleCount).toBe(INTENT_ROUTING_BUDGET_SAMPLE_COUNT)
+    expect(metrics.cpuP99Us).toBeLessThan(INTENT_ROUTING_CPU_P99_BOUND_US)
   })
 })
