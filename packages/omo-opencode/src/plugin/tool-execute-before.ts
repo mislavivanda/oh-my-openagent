@@ -7,6 +7,7 @@ import { stopContinuation } from "./stop-continuation"
 
 import type { CreatedHooks } from "../create-hooks"
 import type { BackgroundManager } from "../features/background-agent"
+import type { JevIntentRoutingCapture } from "../features/jev"
 
 const BACKGROUND_WAIT_BLOCK_MESSAGE = [
   "Background task wait is already managed by the plugin.",
@@ -28,14 +29,15 @@ export function createToolExecuteBeforeHandler(args: {
   ctx: PluginContext
   hooks: CreatedHooks
   backgroundManager?: Pick<BackgroundManager, "hasActiveChildTasks" | "hasPendingParentWake">
+  intentRoutingCapture?: Pick<JevIntentRoutingCapture, "capture">
 }): (
   input: { tool: string; sessionID: string; callID: string },
   output: { args: Record<string, unknown> },
 ) => Promise<void> {
-  const { ctx, hooks, backgroundManager } = args
+  const { ctx, hooks, backgroundManager, intentRoutingCapture } = args
 
   return async (input, output): Promise<void> => {
-    // Strip mcp_ prefix from tool names — the model may emit mcp_background_output
+    // Strip mcp_ prefix from tool names - the model may emit mcp_background_output
     // but the runtime registry has it as background_output (fixes #2697)
     if (/^mcp_/i.test(input.tool)) {
       const stripped = input.tool.replace(/^mcp_/i, "")
@@ -47,6 +49,8 @@ export function createToolExecuteBeforeHandler(args: {
       })
       input.tool = stripped
     }
+
+    intentRoutingCapture?.capture(input, output)
 
     if (input.tool.toLowerCase() === "bash" && typeof output.args.command === "string") {
       if (output.args.command.includes("\x00")) {

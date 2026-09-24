@@ -77,3 +77,17 @@ todo	artifact	kind	description
 9	.omo/evidence/20260924-jev-w1/task-9-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
 9	.omo/evidence/20260924-jev-w1/task-9-test-fast.txt	qa	Hard test-fast gate exits 0 with 419 passing tests across 39 files, including the final adapter suite
 9	.omo/evidence/20260924-jev-w1/task-9-adversarial-qa.txt	qa	Prompt-as-data isolation, malformed inputs, max_inflight one, hung dispatch, stale snapshot, RED chronology, dirty-worktree classification, and scenario rulings
+11	.omo/evidence/20260924-jev-w1/task-11-capture-red.txt	red	Focused capture RED predates implementation and fails because the intent-routing capture module does not yet exist
+11	.omo/evidence/20260924-jev-w1/task-11-capture-green.txt	green	Focused capture GREEN passes 16 tests for both delegation tools, resume exclusion, ordered attempts, distinct targets, immutable args, handler invocation, malformed inputs, session symmetry, and registry drift
+11	.omo/evidence/20260924-jev-w1/task-11-allowlist-drift-proof.txt	qa	Negative control removes call_omo_agent, fails its direct capture and registry-drift checks, then passes after a matching-SHA256 restore
+11	.omo/evidence/20260924-jev-w1/task-11-resume-regression-proof.txt	qa	Negative control drops task_id capture, exposes normalized none plus unknown instead of unscorable_resume, then passes after a matching-SHA256 restore
+11	.omo/evidence/20260924-jev-w1/task-11-typecheck.txt	qa	Repository typecheck across root, scripts, and all workspace packages exits 0 after replacing invalid test fixture casts
+11	.omo/evidence/20260924-jev-w1/task-11-test-fast.txt	qa	Hard test-fast gate exits 0 with 444 passing tests across 43 files, including the final capture suite
+11	.omo/evidence/20260924-jev-w1/task-11-adversarial-qa.txt	qa	Seven malformed probes, allowlist and resume negative controls, immutable args, prompt-data isolation, dirty-worktree hashes, and non-applicable scenario rulings
+13	.omo/evidence/20260924-jev-w1/task-13-sink-red.txt	red	Focused sink RED under a temporary HOME fails only on the explicit unimplemented sink seam and proves the real ~/.omo hash is unchanged
+13	.omo/evidence/20260924-jev-w1/task-13-sink-green.txt	green	Focused sink GREEN under a temporary HOME passes 8 tests and 31 assertions for both union arms, interval and dispose flushes, permissions, malformed tolerance, process isolation, and epoch-safe truncation
+13	.omo/evidence/20260924-jev-w1/task-13-malformed-tolerance.txt	qa	Exact partial trailing-line probe returns the valid observation, counts malformedLines as 1, and does not throw
+13	.omo/evidence/20260924-jev-w1/task-13-bytes-per-day.txt	artifact	Measured 1,680-byte observation and 441-byte counter rows derive 3,487,008 expected bytes/day and the 32 MiB cap with 9.62 days at the stated high-use assumption
+13	.omo/evidence/20260924-jev-w1/task-13-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0 without an LSP server
+13	.omo/evidence/20260924-jev-w1/task-13-test-fast.txt	qa	Hard test-fast gate under a temporary HOME exits 0 with 444 passing tests across 43 files and proves the real ~/.omo hash is unchanged
+13	.omo/evidence/20260924-jev-w1/task-13-adversarial-qa.txt	qa	Invalid union, oversized and cyclic write rejection, malformed middle and partial-line tolerance, bounded dispose, double-truncation identity, dirty-worktree, and HOME-isolation proofs

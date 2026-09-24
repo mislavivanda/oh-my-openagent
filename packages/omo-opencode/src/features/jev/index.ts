@@ -34,3 +34,8 @@ export type {
   JevIntentRouting,
   JevIntentRoutingDispatcher,
 } from "./intent-routing"
+export {
+  JEV_INTENT_ROUTING_CAPTURE_TOOL_ALLOWLIST,
+  createJevIntentRoutingCapture,
+} from "./intent-routing-capture"
+export type { JevIntentRoutingCapture } from "./intent-routing-capture"

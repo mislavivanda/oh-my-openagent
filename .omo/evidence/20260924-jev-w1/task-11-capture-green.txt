@@ -1,0 +1,8 @@
+COMMAND: bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 16 pass
+ 0 fail
+ 50 expect() calls
+Ran 16 tests across 1 file. [421.00ms]
+exit=0
