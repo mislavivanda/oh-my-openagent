@@ -1,0 +1,1624 @@
+F1 PLAN COMPLIANCE AUDIT - jev-w1-intent-routing
+
+VERDICT: APPROVE (with 5 flagged non-blocking deviations, 2 of them found independently by F1)
+
+AUDITOR: F1, independent verifier. Did not implement any part of this work.
+WORKTREE: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+BRANCH: jev/w1-fffe (plan text writes jev/w1; four concurrent sessions each own a branch)
+BASE: jev/foundation
+PLAN READ FROM: /home/opencode/projects/oh-my-openagent/.omo/plans/jev-w1-intent-routing.md (main checkout, all 318 lines)
+F1 ROW: plan lines 272-273
+METHOD: checked against MANIFEST.tsv, never a regex over the plan file.
+
+
+=====================================================================
+SECTION 1. THE FOUR MECHANICAL CHECKS (plan line 273), IN ORDER
+=====================================================================
+
+--- CHECK (i) HEADER PRESENT ---
+$ head -1 .omo/evidence/20260924-jev-w1/MANIFEST.tsv | cat -A
+todo^Iartifact^Ikind^Idescription$
+exit=0
+RESULT: PASS. Exactly four tab-separated fields, no trailing content.
+
+--- CHECK (ii) EVERY LISTED ARTIFACT EXISTS AND IS NON-EMPTY ---
+$ bash -c 'awk -F"\t" "NR>1{print \$2}" .omo/evidence/20260924-jev-w1/MANIFEST.tsv | while read -r f; do [ -s "$f" ] || echo "MISSING_OR_EMPTY $f"; done'
+<no output>
+exit=0
+RESULT: PASS. Printed nothing.
+
+--- CHECK (iii) EVERY TODO ID 1 THROUGH 19 IS REPRESENTED ---
+$ bash -c 'for n in $(seq 1 19); do awk -F"\t" -v n="$n" "NR>1 && \$1==n{f=1} END{exit !f}" .omo/evidence/20260924-jev-w1/MANIFEST.tsv || echo "NO_MANIFEST_ROWS_FOR_TODO $n"; done'
+<no output>
+exit=0
+RESULT: PASS. Printed nothing. All 19 ids carry at least one row.
+
+--- CHECK (iv) COMMIT COUNT ---
+$ git log --oneline jev/foundation..jev/w1-fffe | wc -l
+18
+RESULT: PASS. Exactly 18, matching the plan's commit strategy (line 287): todo 1 is
+Commit: N, todos 2 through 19 are Commit: Y.
+
+--- SUPPORTING COUNT RECONCILIATION ---
+$ wc -l < .omo/evidence/20260924-jev-w1/MANIFEST.tsv
+89                        (1 header + 88 artifact rows)
+$ git ls-files .omo/evidence/20260924-jev-w1 | wc -l
+89                        (88 artifacts + MANIFEST.tsv itself)
+$ git status --porcelain --untracked-files=all .omo/evidence/20260924-jev-w1
+<no output>
+RESULT: the manifest enumerates every tracked evidence file and nothing is untracked or
+uncommitted. Evidence was staged with git add -f as the plan requires at line 290.
+
+ALL FOUR MECHANICAL CHECKS PASS.
+
+
+=====================================================================
+SECTION 2. COMMIT SUBJECTS VERSUS THE PLAN'S Commit: Y STRINGS
+=====================================================================
+
+$ git log --oneline --reverse jev/foundation..jev/w1-fffe
+
+ #   commit      subject                                                                    plan todo
+ 1   55e7dd855   feat(config): add default-off jev intent-routing wire schema                  2
+ 2   94ca0fede   feat(jev-core): declare the intent-routing jsonl entry union and counters     3
+ 3   f290337b6   feat(jev-core): add intent-routing question set with explicit none options    4
+ 4   916048f70   feat(jev-core): add delegation normalization, resume handling, and route
+                 derivation                                                                    6
+ 5   1cd5069c5   test(jev-core): add 15 hand-labeled intent-routing fixtures                   7
+ 6   7cdfaa3a4   feat(jev-core): add intent-routing decision with invalid-answer accounting    5
+ 7   112c4b63e   test(jev-core): add intent-routing accuracy harness with dry-run and
+                 call ceiling                                                                  8
+ 8   cdf8314ad   feat(jev): capture delegation ground truth across both tools and
+                 resume calls                                                                 11
+ 9   29d87478e   feat(jev): add intent-routing turn-record state machine with bounded
+                 eviction                                                                     10
+10   2f81fa368   feat(jev): add observe-only intent-routing adapter with fail-closed
+                 session gate                                                                  9
+11   d764cd5f7   feat(jev): add per-process intent-routing jsonl sink with counter entries    13
+12   569ba2366   feat(jev): add intent-routing seal semantics, correlation status, and
+                 dispose flush                                                                12
+13   cfb8b7f14   feat(jev): wire the observe-only intent-routing pass into the plugin
+                 handlers                                                                     14
+14   fa8b197d2   test(jev): prove the intent-routing wire is inert in output and runtime
+                 effects                                                                      15
+15   fb06897be   feat(jev): add the intent-routing agreement report script                    16
+16   241b3e9c4   docs(jev): record the observe-only intent-routing wire and correct stale
+                 W1 references                                                                17
+17   19e5eaa33   test(jev): record the intent-routing real-API accuracy baseline              18
+18   a5a47368c   test(jev): record isolated opencode-qa dogfood evidence for the
+                 intent-routing wire                                                          19
+
+EVERY subject string matches its plan Commit: Y string verbatim. All 18 present, none
+missing, no omnibus commit, no extra commit.
+
+ORDERING: commit order is not strict numeric todo order. Deviations are 6 and 7 before 5,
+11 and 10 before 9, 13 before 12, and 15 before 16. F1 checked each against the plan's own
+dependency matrix (lines 74-93) and wave-ordering notes (lines 66-70):
+ - Line 66 states wave 2 runs 4 and 6 first, then 5 and 7, then 8 last. 6 before 5 is
+   explicitly sanctioned. 5 and 7 are listed as mutually parallelizable, so either order is
+   permitted. Observed 4, 6, 7, 5, 8 is compliant.
+ - Wave 3: 9, 10, 11, 13 are mutually parallelizable; 10 blocks 13; 13 blocks 12; 10 and 11
+   block 12. Observed 11, 10, 9, 13, 12 satisfies 10 before 13, 13 before 12, and 10 and 11
+   before 12. Compliant.
+ - Wave 4: line 70 requires 16 before 17. Observed 14, 15, 16, 17. Compliant.
+ - Wave 5: observed 18 then 19, listed as parallel. Compliant.
+CONCLUSION: the ordering is dependency-correct. No violation.
+
+
+=====================================================================
+SECTION 3. PER-TODO ASSESSMENT, TODOS 2 THROUGH 19
+=====================================================================
+
+For each todo F1 confirmed three things from the artifacts themselves: the acceptance
+criteria were exercised rather than asserted, BOTH QA scenarios (happy and failure) have an
+artifact showing real command output, and the Commit: Y subject is on the branch in a
+dependency-valid position. Where the plan names a negative proof (a tamper, a revert, a
+deliberate regression), F1 confirmed the artifact contains the FAILING run with real
+assertion output AND the restored GREEN run, not a claim that it was done.
+
+TODO 2 - config schema. PASS.
+  happy: task-2-schema-red.txt (5 fail, 7 pass, exit 1, failures name the missing
+    wires.intent_routing) then task-2-schema-green.txt (12 pass, 0 fail, exit 0) which also
+    carries a per-test roster naming all four acceptance sub-criteria: the default-off
+    shape, the observe_only rejection, "the shared wire schema #when its shape is read #then
+    W4 keys are untouched", and both seal-timeout ordering tests.
+  failure: task-2-observe-only-reject.txt shows the exact plan one-liner and its output,
+    including the untruncated refine message naming the apply phase.
+  two-schema proof: task-2-both-schemas.txt. See deviation D1 in section 4.
+  Commit 55e7dd855 present.
+
+TODO 3 - shared record union. PASS.
+  happy: task-3-record-red.txt (11 failures naming the missing contract) then
+    task-3-record-green.txt (11 pass, 0 fail, 26 expect calls).
+  failure (negative proof): task-3-guard-proof.txt shows three runs. Guard green exit 0,
+    then with a transient @opencode-ai import the guard FAILS with the real offender line
+    "packages/jev-core/src/intent-routing-record.ts matches /@opencode-ai\//" and exit 1,
+    then green again exit 0 after revert. Genuine tamper and restore.
+  Commit 94ca0fede present.
+
+TODO 4 - four questions. PASS.
+  happy: task-4-questions-red.txt (two-phase RED, 12 contract assertions naming the missing
+    fourth key and the missing none options) then task-4-questions-green.txt (13 pass, 0
+    fail, 122 expect calls, plus the per-test roster and an acceptance-criteria coverage map).
+  failure: task-4-empty-vocab.txt shows IntentRoutingVocabularyError thrown by name, with a
+    per-list proof for categories, subagents and intents, and the same proof through the
+    package barrel.
+  Commit f290337b6 present.
+
+TODO 5 - decideIntentRouting. PASS.
+  happy: task-5-decide-red.txt (8 decision tests fail showing decideIntentRouting undefined
+    while the 13 todo-4 tests still pass, which pins the RED to the right cause) then
+    task-5-decide-green.txt (21 pass, 0 fail, 189 expect calls, exit 0).
+  failure: task-5-throwing-backend.txt, a targeted rejecting-backend run, 1 pass, 6 expect
+    calls, exit 0, asserting no exception escapes and the result is failed.
+  Commit 7cdfaa3a4 present.
+
+TODO 6 - normalization and route derivation. PASS.
+  happy: task-6-normalization-red.txt (19 failures) then task-6-normalization-green.txt (19
+    pass, 0 fail, exit 0).
+  failure part 1: task-6-resume-unscorable.txt prints
+    {"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unscorable_resume"}
+    which is the exact non-none outcome the plan demands.
+  failure part 2 (negative proof): task-6-drift-proof.txt removes oracle from the vocabulary
+    and captures three real failures with assertion text, including
+    "missing built-in subagents: oracle", exit 1, then restores and shows 19 pass exit 0.
+  Commit 916048f70 present.
+
+TODO 7 - fixtures. PASS.
+  happy: task-7-fixtures-red.txt (4 assertion failures naming the missing none labels, the
+    missing non-English prompts and the absent source classes) then task-7-fixtures-green.txt
+    (7 pass, 0 fail, 45 expect calls).
+  failure (negative proof): task-7-bad-label-proof.txt shows run 1 green, run 2 tampered
+    failing by fixture id with the message 'fixture subagent-oracle-1 labels subagent
+    "nonexistent-agent" which the question set cannot produce', run 3 green after revert.
+    The tampered source line is quoted. Genuine.
+  Commit 1cd5069c5 present. See cosmetic note D8.
+
+TODO 8 - accuracy harness. PASS.
+  happy: task-8-accuracy-red.txt (5 assertion failures for scoring, dry-run, ceiling,
+    partial retention and the real-API gate) then task-8-accuracy-mock.txt, which shows all
+    17 fixtures scored, four confusion matrices, zero network calls, dry-run zero calls and
+    partial retention.
+  failure: task-8-ceiling-abort.txt shows the stub counter aborting at
+    "ceiling=17 calls=17 error=IntentRoutingCallCeilingError", exit 0.
+  Commit 112c4b63e present.
+
+TODO 9 - observe-only adapter. PASS.
+  happy: task-9-adapter-red.txt (8 behavioral failures against a typed placeholder, 2 pass)
+    then task-9-adapter-green.txt (10 pass, 0 fail, 25 assertions) which also prints the
+    measured synchronous p99 of 0.009ms, satisfying the sub-1ms budget clause numerically.
+  failure, all three negative proofs the plan names:
+    task-9-no-unhandled-rejection.txt (1 pass, exit 0, unhandledRejection never fired),
+    task-9-inflight-bounded.txt (1 pass, exit 0, in-flight bounded and 3 dropped),
+    task-9-macrotask-ordering-proof.txt which is a genuine tamper: with queueMicrotask the
+    ordering assertion FAILS showing received ["state","caller"] against expected
+    ["caller","state"], exit 1, then the restored unrefed setTimeout passes exit 0.
+  Commit 2f81fa368 present.
+
+TODO 10 - turn-record state machine. PASS.
+  happy: task-10-turnstore-red.txt (12 behavioral failures against a typed scaffold, 6 pass)
+    then task-10-turnstore-green.txt (18 pass, 0 fail, 48 expect calls, exit 0).
+  failure: task-10-eviction-counter.txt prints machine-readable proof
+    {"cap":128,"driven":133,"evictedCount":5,"survivorCount":128,"firstSurvivor":6,
+    "lastSurvivor":133,"survivorsAreMostRecent":true}, which is exactly the plan's
+    maxTurnsPerSession + 5 with evictedCount === 5 and most-recent survivors.
+  Commit 29d87478e present.
+
+TODO 11 - dual-tool and resume capture. PASS.
+  happy: task-11-capture-red.txt (10 failures naming the absent capture module) then
+    task-11-capture-green.txt (10 pass, 0 fail, 68 expect calls).
+  failure, both negative proofs the plan names:
+    task-11-allowlist-drift-proof.txt removes call_omo_agent and captures three real
+    failures, including the registry-drift guard diff showing "call_omo_agent" present in
+    the schema set but absent from the allowlist, exit 1, then restored 10 pass exit 0.
+    task-11-resume-regression-proof.txt drops the task_id branch and captures the regression
+    verbatim, 'Expected: "unscorable_resume" / Received: "none"', exit 1, then restored 10
+    pass exit 0. This is the spurious-none regression the plan exists to prevent.
+  Commit cdf8314ad present.
+
+TODO 12 - seal semantics. PASS with disclosed deferral.
+  happy: task-12-seal-red.txt (11 failures naming the absent seal controller, 1 config
+    refine test already passing) then task-12-seal-green.txt (12 pass, 0 fail, 85 expect
+    calls, exit 0) written in the tested / observed / sufficiency / omissions format.
+  failure: task-12-overlap-both-sides.txt, the ordered overlap scenario, 1 pass, 19 expect
+    calls, exit 0, confirming the synthetic message did not seal turn 1, turn 2 sealed it by
+    next_turn without writing it, and the late observation marked BOTH sides
+    overlap_ambiguous before the predecessor's only append.
+  See deviation D2 in section 4 for the report-level assertion.
+  Commit 569ba2366 present.
+
+TODO 13 - JSONL sink. PASS.
+  happy: task-13-sink-red.txt (10 failures against the behaviorless scaffold under an
+    isolated HOME) then task-13-sink-green.txt (10 pass, 0 fail, exit 0). The plan requires
+    the measured bytes/day figure be recorded in the evidence file, and it is, with its
+    derivation: 1,724 bytes per line times 10,000 turns per process-day equals 17,240,000
+    bytes/day, cap set at four observation-days rounded to 66 MiB, max line 16 KiB. The
+    artifact also records the real ~/.omo/jev absence and an identical recursive real-home
+    listing hash before and after, which proves the isolated HOME held.
+  failure: task-13-malformed-tolerance.txt, valid row retained, malformedLines equals 1, no
+    throw, exit 0.
+  Commit d764cd5f7 present.
+
+TODO 14 - four-site wiring. PASS.
+  happy: task-14-wiring-red.txt (five assertion failures covering single construction,
+    handler identity, dispose flush, non-awaited dispatch and the shared gate) then
+    task-14-wiring-green.txt, a full test:fast transcript, 446 pass, 1 skip, 0 fail across
+    41 files, exit 0.
+  failure: task-14-not-awaited.txt shows the injected 3000ms dispatcher while chat.message
+    resolves in 1.347ms, far under the 50ms ceiling.
+  The todo also carries two artifacts beyond the plan's requirement,
+    task-14-opencode-qa-live.txt and task-14-opencode-qa-summary.txt, recording a real
+    isolated OpenCode run with host_session_count_before=399 and after=399.
+  Commit cfb8b7f14 present.
+
+TODO 15 - behavior-unchanged proof. PASS.
+  happy: task-15-inert-red.txt (mutation-backed RED across all three backend failure shapes)
+    then task-15-inert-green.txt (12 focused tests green, p99 over 200 samples, typecheck
+    exit 0, plugin 603 pass, jev 219 pass, test:fast 446 pass), plus
+    task-15-hanging-backend-stress.txt with the numeric Part C bounds:
+    addedWallMs=2.035, maxInFlight=4, dispatchesDropped=46, fetchStarts=4,
+    heapGrowthBytes=914049, observations=50, childExitCode=0. 4 plus 46 equals the 50
+    observations, so the in-flight bound and the drop counter reconcile exactly.
+  failure, both negative proofs the plan names:
+    task-15-mutation-detected.txt makes the seam append " [task-15 mutation]" and captures
+    the readable byte-identity diff for all three failure shapes, 0 pass 3 fail exit 1, then
+    the reverted run is 3 pass exit 0.
+    task-15-unref-proof.txt removes the timer unref and the child-exit assertion FAILS by
+    timing out (Expected false, Received true, 2015.89ms), exit 1, then with unref restored
+    the child exits 0 in 136ms, exit 0.
+  F1 independently re-ran the W4 scope diff for the five protected paths the criterion
+    names: empty output, exit 0. See minor deviation D7.
+  Commit fa8b197d2 present.
+
+TODO 16 - report script. PASS.
+  happy: task-16-report-output.txt, a full generated-corpus report. F1 verified the
+    substantive criteria from the output itself: every named denominator is present and
+    printed BEFORE any rate; the identity line reads
+    "records_created_identity sealed=32 evicted=1 in_flight=2 status=ok" and 32+1+2 equals
+    the printed records_created=35; the eligibility block reads
+    "headline_eligibility correlation_status=reliable censored_excluded=2
+    overlap_ambiguous_excluded=3"; resume and unknown are kept distinct
+    ("resume_only_excluded=1 unknown_scored=1"); none_recall (4/5) and none_precision (4/7)
+    differ on this corpus as the plan demands they must; coverage is named coverage and
+    carries distinct_target_cardinality plus a cardinality-weighted variant; the sealed_by
+    cross-tab renders a row per value; intent and ambiguous are labelled fixture-only. The
+    CLI isolation check is appended with MATCHES=0.
+  failure: task-16-empty-corpus.txt, zeroed denominators with explicit insufficient-data
+    labels and exit 0, no divide-by-zero and no crash.
+  See traceability deviation D6 for the dedicated report-test green run.
+  Commit fb06897be present.
+
+TODO 17 - test:fast, schemas, docs. PASS.
+  happy: task-17-testfast-scope.txt. The artifact contains the verbatim before and after
+    test:fast invocations, an append-only check, grep -c intent-routing = 9, and the run
+    result 469 pass, 1 skip, 0 fail across 48 files, exit 0. It also records the two schema
+    builds returning a zero diff with matching sha256 before and after, and typecheck exit 0.
+  failure (negative proof): task-17-markdown-audit-proof.txt shows run 1 green (16 pass),
+    run 2 RED with the offender named "docs/jev/HANDOFF.md:346" and exit 1, and run 3 green
+    after revert, plus a grep confirming the probe line is gone.
+  baseline-relative: task-17-notices-diff.txt shows the notices output byte-identical to the
+    todo-1 baseline with zero new missing entries.
+  This artifact also carries the full-suite baseline-relative comparison discussed in D5.
+  Commit 241b3e9c4 present.
+
+TODO 18 - real-API baseline. PASS.
+  pre-spend: task-18-request-count-measurement.txt records, BEFORE the paid run, the
+    counting-fetch result of 1 HTTP request for a 4-question call, the latency and usage
+    fields, and a billing statement resolved the first of the plan's two permitted ways,
+    with the source URL https://docs.typesafe.ai/models and an exact quoted sentence. The
+    plan forbids an unsourced billing assertion, and this is sourced.
+  happy: task-18-real-api-matrix.txt records resolvedModel jev-1.13.0 (a resolved id, not
+    the floating jev-latest alias), questionVersion 1, 17 of 17 fixtures, 17 HTTP requests
+    at or under the 17 ceiling, 19890 input and 5658 output tokens, latency range 105.711 to
+    242.373 ms, a per-fixture table, and all four confusion matrices. Accuracy is reported
+    without a threshold, including the weak 52.94% ambiguous figure, which matches the
+    plan's rule that a poor score is a finding and not a gate.
+  failure: task-18-missing-key.txt records the key-unset path evaluating all 17 fixtures as
+    unavailable with reason missing_api_key, 0 HTTP requests, and a clean exit 0.
+  F1 did NOT re-run the paid harness, per the budget constraint.
+  Commit 19e5eaa33 present. See deviation D4 for the secret-scan artifact.
+
+TODO 19 - isolated dogfood. PASS.
+  The four scripts the plan requires this todo to create and commit at exact paths are all
+  present and tracked: task-19-drive.sh (17423 bytes, executable), task-19-turn-script.jsonl
+  (32 turns), task-19-fake-jev-server.ts, task-19-fake-model-provider.ts.
+  happy: task-19-dogfood-session.txt and task-19-report.txt. F1 checked the acceptance
+    criteria against the numbers and confirmed they reconcile rather than merely appear:
+      observations=32, at or above the required 30, with counter_deltas=4
+      one session_id (ses_f2b28ca88ffeKJJHPrEq6kxBgO); the driver derives this at line 364
+        with a jq unique-length assertion scoped to kind=="observation", which is the correct
+        scoping because counter_delta rows carry no sessionID
+      fan_out_zero=15, fan_out_one=10, fan_out_many=7, summing to 32, all non-empty
+      prediction_reused=1, call_omo_agent_calls=11, unscorable_resume_calls=1,
+        continuation_candidates=1, each at or above its required minimum
+      intent_routing_logs=31 equals jev_requests=31, and 31 dispatches plus the 1 reused
+        prediction accounts for all 32 turns, so the log count matches the dispatched count
+        exactly as the criterion requires
+      records_created=32, evicted=0, in_flight=0, identity ok
+      real_session_count_before=420 and after=420
+  failure (disabled control, separate sandbox): task-19-control-disabled.txt shows
+    intent_routing_logs=0, jev_requests=0, sink_files=0, and host count 417 before and after.
+  isolation: task-19-home-manifest-diff.txt reads recursive_manifest_diff=EMPTY, diff_exit=0,
+    diff_lines=0. The before and after TSVs are both exactly 146826 bytes, consistent with a
+    genuine empty diff of a recursive path/type/size/mtime/hash manifest.
+  cleanup: task-19-receipts.txt lists cleanup_scope=recorded_pids_and_ports_only and
+    global_process_matcher_used=false, then enumerates every PID by role with an individual
+    exited or terminated status, and every port by role. No global matcher.
+  record: task-19-evidence-record.txt covers tested / observed / sufficiency / omissions as
+    the root AGENTS.md requires.
+  gates: task-19-gates.txt, 23297 bytes, shell and JSONL checks, strict evidence tsgo, full
+    typecheck, 45 focused tests and the 471-test fast suite, all exit 0.
+  See deviation D3 for the unreachable correlation statuses.
+  Commit a5a47368c present.
+
+NOTE ON HOST SESSION COUNTS ACROSS RUNS. The three live runs record different absolute host
+session counts (399 at todo 14 at 17:23, 417 at the disabled control at 19:08, 420 at the
+enabled run at 19:16). Each run is internally before equals after, which is exactly what the
+isolation criterion asks. The drift between runs is external, consistent with the operator's
+own OpenCode server and four concurrent agent sessions on this machine. Not a defect.
+
+
+=====================================================================
+SECTION 4. DEVIATIONS
+=====================================================================
+
+D1. TODO 2 TWO-SCHEMA PROOF WAS INVERTED. Verdict: HONEST AND SUFFICIENT.
+  The plan (line 115) asks the executor to run only build:schema, confirm
+  git diff --exit-code assets/omo.schema.json is non-zero, then run build:omo-schema and
+  confirm it is zero. F1 verified independently rather than taking the artifact's word:
+    $ grep -n "SCHEMA_OUTPUT_PATH" script/build-schema.ts script/build-omo-schema.ts
+    script/build-schema.ts:5:  const OMO_SCHEMA_OUTPUT_PATH = "assets/omo.schema.json"
+    script/build-schema.ts:6:  const LEGACY_SCHEMA_OUTPUT_PATH = "assets/oh-my-opencode.schema.json"
+    script/build-schema.ts:7:  const DIST_SCHEMA_OUTPUT_PATH = "dist/oh-my-opencode.schema.json"
+    script/build-omo-schema.ts:4: const SCHEMA_OUTPUT_PATH = "assets/omo.schema.json"
+  build:schema writes BOTH assets, so after it runs the omo asset is already regenerated and
+  a later build:omo-schema rewrites byte-identical content. git diff compares against HEAD,
+  so it cannot return to zero before the commit. The plan's direction is unsatisfiable.
+  The substituted proof in task-2-both-schemas.txt runs the only direction that exists:
+  reset both assets to HEAD, run only build:omo-schema, and show
+  git diff --exit-code assets/oh-my-opencode.schema.json returning 0 while
+  grep -c turn_seal_timeout_ms on that asset returns 0, proving the legacy asset would ship
+  stale. It then runs build:schema and shows both assets carrying the wire (4 and 8
+  occurrences) and re-running both builds leaving the sha256 pair unchanged.
+  The deviation is disclosed in the artifact under an explicit STEP 3 heading rather than
+  hidden. F1 confirmed the end state: git diff --exit-code on both assets is 0, and both
+  contain turn_seal_timeout_ms. The substitution proves the same property the plan wanted
+  (one build is not enough) and adds idempotency the plan did not ask for. No gap.
+
+D2. TODO 12 REPORT-LEVEL ASSERTION WAS DEFERRED TO TODO 16. Verdict: HONEST AND SUFFICIENT,
+  AND VERIFIED CLOSED.
+  The plan's todo-12 QA (line 199) asks that bun run script/jev-w1-report.ts exclude both
+  overlap sides from the headline. Todo 16 creates that script, and the plan's own
+  dependency matrix (line 86) has todo 12 BLOCKING todo 16, so the assertion cannot run at
+  todo 12. The plan contradicts itself here.
+  The executor disclosed the deferral in two places, task-12-overlap-both-sides.txt ("Report
+  level headline exclusion is deferred to todo 16 because script/jev-w1-report.ts does not
+  exist until that todo. No report script or stub was created here.") and
+  task-12-seal-green.txt, and proved the same predicate at unit level through
+  isIntentRoutingHeadlineEligible.
+  F1 confirmed the deferred assertion was then genuinely discharged at todo 16 rather than
+  dropped. task-16-report-output.txt contains the line
+    headline_eligibility correlation_status=reliable censored_excluded=2 overlap_ambiguous_excluded=3
+  which is the excluded-and-separately-counted behavior the plan demanded. No gap.
+
+D3. TODO 19 DOCUMENTED censored, overlap_ambiguous AND next_turn AS UNREACHABLE LIVE.
+  Verdict: HONEST AND SUFFICIENT.
+  The plan's own todo-19 acceptance criterion (line 265) offers the alternative "at least
+  one record per correlationStatus value OR an explicit note naming any value unreachable in
+  this script and why", and the same line already pre-declares next_turn unreachable with a
+  reason. The executor took the permitted alternative and emitted a machine-readable note:
+    correlation_unreachable=censored,overlap_ambiguous; sequential opencode run calls seal on
+    session_idle before the next prompt
+    next_turn_unreachable=sequential opencode run calls reach session.idle before the next prompt
+  F1 judged the mechanism rather than accepting the sentence. censored is defined as sealedBy
+  in {seal_timeout, dispose}. Every one of the 32 records sealed on session_idle, which wins
+  the first-seal race because each sequential opencode run reaches idle before the next
+  prompt is submitted; with nothing left live, neither the 120000ms seal timeout nor the
+  dispose path can fire. overlap_ambiguous requires a next_turn seal, which the same race
+  makes unreachable. The reason is internally consistent with the observed data
+  (correlation_reliable=32, censored=0, overlap_ambiguous=0, all sealed by session_idle).
+  Those paths are carried by todo 12's unit tests, which F1 confirmed green (12 pass, 0 fail)
+  and which include the ordered overlap scenario. No gap.
+
+D4. TODO 18 SECRET-SCAN CLAIM IS STALE AND FALSE ON THE FINAL TREE. Found independently by
+  F1. Verdict: NON-BLOCKING, but the artifact sentence should be corrected.
+  Todo 18's acceptance criterion (line 250) requires
+    grep -rniE '(sk-|api[_-]?key|typesafe_api_key)[[:space:]]*[=:]' .omo/evidence/20260924-jev-w1/
+  to return NOTHING, and task-18-secret-scan.txt asserts "Output: empty", "Exit: 1", and
+  "Empty output proves no matching assignment remains in any task artifact or manifest row."
+  F1 re-ran the exact command on the final branch state:
+    $ grep -rniE '(sk-|api[_-]?key|typesafe_api_key)[[:space:]]*[=:]' .omo/evidence/20260924-jev-w1/
+    .omo/evidence/20260924-jev-w1/task-19-drive.sh:60:export TYPESAFE_API_KEY="task19-local-dummy-key"
+    grep_exit=0
+  The claim does not hold as written. Root cause is ordering: task-18-secret-scan.txt was
+  written at 18:04 and task-19-drive.sh was created at 19:03, after the scan. Todos 18 and 19
+  are wave-5 parallel, so the later one changed the scanned directory.
+  WHY THIS IS NOT BLOCKING, established by F1 and not taken from any summary:
+   - The plan itself mandates the match. Todo 19 (line 258) requires "export a DUMMY
+     sandbox-only TYPESAFE_API_KEY", and line 262 requires committing task-19-drive.sh into
+     this exact evidence directory. The todo-18 criterion as literally written is therefore
+     unsatisfiable alongside todo 19. This is a second plan self-contradiction, like D2.
+   - No real credential exists. F1 scanned for real key shapes separately:
+       $ grep -rniE 'sk-[A-Za-z0-9]{10,}|ts_[A-Za-z0-9]{20,}' .omo/evidence/20260924-jev-w1/
+       grep_exit=1   (no matches)
+     The single match is the literal string task19-local-dummy-key, a fixed local value with
+     no external authority, read at drive.sh line 60 in its surrounding sandbox-export block.
+   - The fact is already disclosed elsewhere in the evidence set.
+     task-19-evidence-record.txt states "The dummy keys are fixed local literals with no
+     external authority. No real TypeSafe key or paid Jev call was used."
+   - Plan success criterion 9 ("no API key or machine-local path present in any retained
+     artifact") holds on substance.
+  RECOMMENDED FIX, one line: re-run the scan after todo 19 and record the single expected
+  dummy-literal match with its justification, or narrow the expression to exclude a
+  self-evident local dummy. This is an accuracy correction to a sentence, not a defect in
+  the delivered work.
+
+D5. TODO 1 PROCEEDED PAST A RED bun test BASELINE THAT THE PLAN CALLED A FULL STOP. Found
+  independently by F1. Verdict: NON-BLOCKING, compensating proof verified.
+  Todo 1 (line 103) states the executor MUST NOT proceed if bun test --timeout 20000 is red
+  at baseline for any reason other than the known THIRD-PARTY-NOTICES.md debt, and that a
+  red baseline is a FULL STOP, report and wait.
+  The baseline IS red. task-1-baseline-totals.txt records 12762 pass, 3 skip, 22 fail, exit 1.
+  The notices debt is a separate command (task-1-notices-baseline.txt, 4 missing entries,
+  exit 1 in task-1-notices-exit.txt), so the 22 bun-test failures are not that debt and the
+  FULL STOP clause was triggered on a literal reading. The executor proceeded.
+  F1 examined the 22 failures in task-1-baseline-failures.txt. All are environmental and
+  pre-existing: 10 tmux pane and window spawn tests, 2 team-layout-tmux tests, 5
+  auto-update-checker registry tests, 1 doctor dependencies test, 1 Bun module-resolution
+  test, and 3 cmux tmux tests. None touches the jev or W1 surface.
+  WHY THIS IS NOT BLOCKING:
+   - The executor did not ignore the red baseline. It froze the failing set to
+     task-1-baseline-failures.txt (22 lines of testfile TAB test name, sorted, ANSI and
+     timings stripped) precisely so later gates could be asserted baseline-relative.
+   - The full suite was re-run at todo 17 and diffed against that frozen set.
+     task-17-testfast-scope.txt records:
+       current : 12916 pass, 4 skip, 22 fail across 1695 files, exit 1
+       baseline: 12762 pass, 3 skip, 22 fail across 1678 files, exit 1
+       FAILSET_DIFF_EXIT=0, 22 of 22 failures byte-identical to the frozen todo-1 baseline.
+       Zero new failures.
+     The pass count rose by 154 as the W1 suites landed and the failing set did not move.
+   - The plan's own Verification strategy (line 55) establishes baseline-relative assertion
+     as the governing principle for a gate that is red at baseline, so the FULL STOP clause
+     is in tension with the plan's own design.
+  RESIDUAL GAP: the decision to proceed is nowhere argued in writing in the evidence set. The
+  frozen-failure artifact makes the deviation auditable, which is the opposite of concealment,
+  but a one-paragraph justification at todo 1 would have removed the need for F1 to
+  reconstruct it. Recommended, not blocking.
+
+D6. TODO 16's DEDICATED REPORT-TEST GREEN RUN IS NOT IN A TODO-16 ARTIFACT. Verdict:
+  NON-BLOCKING traceability weakness.
+  Todo 16's acceptance criteria name bun test script/jev-w1-report.test.ts GREEN. The RED is
+  captured in task-16-report-red.txt, and both QA scenario artifacts are present. The
+  dedicated green run of that file appears only inside the test:fast transcripts of later
+  todos. F1 confirmed the file is genuinely covered and green there:
+    task-17-testfast-scope.txt lists script/jev-w1-report.test.ts in the invocation and
+    records 469 pass, 1 skip, 0 fail across 48 files, exit 0
+    task-19-gates.txt lists the same file in the same invocation and exits 0
+  The criterion is satisfied by evidence F1 read. The weakness is that it is not traceable
+  from a todo-16-named artifact alone.
+
+D7. TODO 15's W4 SCOPE DIFF IS RECORDED WITH A PLACEHOLDER COMMAND. Verdict: NON-BLOCKING.
+  task-15-hanging-backend-stress.txt records the command as
+  "git diff jev/foundation..jev/w1-fffe --stat -- protected W4 paths" with w4_diff_exit=0 and
+  w4_diff_output_bytes=0, rather than the five literal paths the criterion names. F1 re-ran
+  the explicit list:
+    $ git diff jev/foundation..jev/w1-fffe --stat -- \
+        packages/omo-opencode/src/plugin/event-model-fallback.ts \
+        packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts \
+        packages/omo-opencode/src/features/jev/model-error-triage.ts \
+        packages/omo-opencode/src/features/jev/model-error-triage.test.ts \
+        packages/jev-core/src/model-error-triage.ts
+    <no output>
+    exit=0
+  The claim is true. The artifact under-documents the command it ran.
+
+D8. COSMETIC COUNT DRIFT. Verdict: NON-BLOCKING, no action required.
+  Todo 7 shipped 17 fixtures while the plan's mandated commit subject reads "add 15
+  hand-labeled intent-routing fixtures". The acceptance criterion is "at least 15", and the
+  plan fixes the commit string verbatim, so the commit is compliant and the wording is
+  merely stale. Separately, the manifest describes task-16-report-output.txt as a "32-record
+  corpus" while the report prints records_created=35 with sealed=32; the sealed count is the
+  referent.
+
+
+=====================================================================
+SECTION 5. VERDICT
+=====================================================================
+
+APPROVE.
+
+BASIS:
+ 1. All four mechanical checks in the F1 row pass, with exact outputs recorded in section 1.
+ 2. All 18 Commit: Y commits exist with subjects matching the plan verbatim, in an order that
+    satisfies the plan's own dependency matrix.
+ 3. Every todo 2 through 19 has BOTH QA scenarios backed by an artifact containing real
+    command output with exit codes, not a claim. Section 3 records the specific figures F1
+    read for each.
+ 4. All seven plan-named negative proofs (todo 3 guard import, todo 6 vocabulary drift, todo
+    7 bad fixture label, todo 9 queueMicrotask ordering, todo 11 allowlist and resume
+    regressions, todo 15 output mutation and timer unref, todo 17 markdown audit) show a
+    genuine FAILING run with real assertion text AND a restored GREEN run. None is asserted
+    without the failing half.
+ 5. The three known deviations are each HONEST AND SUFFICIENT. D1 and D2 arise from
+    assertions the plan wrote in directions its own structure makes impossible, and both
+    substitutions prove the intended property; D2's deferral was verified closed at todo 16.
+    D3 uses an alternative the plan's own criterion offers, with a reason F1 checked against
+    the observed data rather than accepted.
+ 6. The two deviations F1 found independently (D4, D5) are an inaccurate sentence and an
+    unargued procedural judgment. Neither conceals a functional gap: for D4 F1 proved no real
+    credential exists anywhere in the evidence set, and for D5 F1 verified a byte-identical
+    zero-new-failure comparison against the frozen baseline.
+
+NOT BLOCKING BUT WORTH FIXING BEFORE MERGE:
+ - D4: correct or narrow the claim in task-18-secret-scan.txt, since it is false as written
+   against the final tree.
+ - D5: add the written justification for proceeding past the red baseline.
+
+SCOPE F1 DID NOT COVER, BY INSTRUCTION:
+ - Did not re-run the paid todo-18 harness.
+ - Did not spawn OpenCode servers or run task-19-drive.sh. F3 and F5 own the re-drive.
+ - Did not use any global process matcher.
+ - Did not modify any source file, test, doc, or evidence file other than creating this one.
+ - Did not commit, push, or open a PR.
+ - Gate greenness as such is F2's row; scope fidelity is F4's; measurement naming is F5's.
+
+
+#####################################################################
+#####################################################################
+##                                                                 ##
+##                       ROUND 2 RE-VERIFICATION                   ##
+##                                                                 ##
+#####################################################################
+#####################################################################
+
+CONTEXT: F2, F3 and F5 rejected after round 1. Three remediation commits landed on top of
+the tree F1 audited in round 1, so the round-1 approval is stale and re-earned below.
+Round 1 above is left byte-intact; nothing in it is rewritten.
+
+ROUND 2 VERDICT: APPROVE for the F1 row, with one MUST-CLOSE-BEFORE-MERGE item handed to
+F3 and F5 (item N1 below). F1 does NOT certify todo 19's live figures as current.
+
+
+=====================================================================
+R2.1 THE FOUR MECHANICAL CHECKS, RE-RUN
+=====================================================================
+
+--- CHECK (i) HEADER PRESENT ---
+$ head -1 .omo/evidence/20260924-jev-w1/MANIFEST.tsv | cat -A
+todo^Iartifact^Ikind^Idescription$
+RESULT: PASS, unchanged.
+
+--- CHECK (ii) EVERY LISTED ARTIFACT EXISTS AND IS NON-EMPTY ---
+$ bash -c 'awk -F"\t" "NR>1{print \$2}" .omo/evidence/20260924-jev-w1/MANIFEST.tsv | while read -r f; do [ -s "$f" ] || echo "MISSING_OR_EMPTY $f"; done'
+<no output>
+RESULT: PASS. This now covers the 11 new R rows as well as the original 88.
+
+--- CHECK (iii) EVERY TODO ID 1 THROUGH 19 IS REPRESENTED ---
+$ bash -c 'for n in $(seq 1 19); do awk -F"\t" -v n="$n" "NR>1 && \$1==n{f=1} END{exit !f}" .omo/evidence/20260924-jev-w1/MANIFEST.tsv || echo "NO_MANIFEST_ROWS_FOR_TODO $n"; done'
+<no output>
+RESULT: PASS. Adding non-numeric R1, R2, R3 ids did not disturb the numeric coverage check,
+because the awk comparison is per-id equality rather than a row count.
+$ awk -F"\t" 'NR>1{print $1}' MANIFEST.tsv | sort -u
+1 10 11 12 13 14 15 16 17 18 19 2 3 4 5 6 7 8 9 R1 R2 R3
+
+--- CHECK (iv) COMMIT COUNT ---
+$ git log --oneline jev/foundation..jev/w1-fffe | wc -l
+21
+RESULT: 21, not the 18 the F1 row names. Adjudicated in section R2.2.
+
+--- RECONCILIATION ---
+$ wc -l < MANIFEST.tsv        -> 100   (1 header + 99 rows)
+$ git ls-files ... | wc -l    -> 100   (99 artifacts + MANIFEST)
+88 round-1 rows plus 11 new R rows equals 99. Reconciles exactly.
+
+
+=====================================================================
+R2.2 THE COMMIT-COUNT RULING: F1 EVALUATES IT RATHER THAN ACCEPTING IT
+=====================================================================
+
+F1 ACCEPTS the orchestrator's ruling. The reasoning below is F1's own, not a restatement.
+
+WHAT THE PLAN ACTUALLY BINDS. Plan line 287 reads "18 commits, one per verified increment.
+Todo 1 is baseline-only (Commit: N); todos 2 through 19 each carry Commit: Y with an exact
+message, totalling 18. Never one end-of-run omnibus." The normative clause is "one commit
+per verified increment, never an omnibus". The number 18 is derived arithmetic over the
+todo list, not an independent requirement, and the plan derives it explicitly in the same
+sentence. The plan assumed a clean first pass; its F-wave has no branch for remediation.
+
+WHY 21 PRESERVES THE BOUND PROPERTY.
+ 1. Each remediation commit is one verified increment scoped to one verifier's finding set:
+    c4191702c to F2's jev-core findings, b5ec772b0 to F5's metrics findings, f9bc61f9e to
+    F3's isolation findings plus F2's file-size review.
+ 2. Each follows the plan's own commit precondition at line 289, "Commit only after that
+    todo's RED and GREEN evidence files exist". F1 confirmed a RED and a GREEN artifact for
+    every one: R1-jev-core-red/green, R3-coverage-red/green, and for R2 both
+    R2-isolation-red/green and R2-plugin-red/green.
+ 3. None is an omnibus in the sense the clause forbids. There is no end-of-run catch-all.
+ 4. The repo's own root AGENTS.md rule points the same way: "If a commit fails or hooks
+    reject it, fix the issue and create a new commit; do not amend the failed commit."
+ 5. Plan line 293 forbids force-pushing shared history. Squashing 21 back to 18 would
+    require exactly that and would erase the remediation from the PR reviewer's view.
+
+WHAT F1 WOULD REQUIRE IF IT DID NOT ACCEPT. The deviation must be visible and self
+documenting rather than silent. It is: the manifest carries dedicated R1, R2 and R3 rows,
+each remediation commit carries its own failing-first and green artifacts, and the commit
+subjects name the fix. That is the disclosure F1 would have demanded, already present. No
+further condition.
+
+ONE RESERVATION, NON-BLOCKING, see finding N2: commit f9bc61f9e touches 25 files with 1417
+insertions and its subject names only the three behavior fixes, omitting the file-size
+splits it also performs.
+
+
+=====================================================================
+R2.3 THE ELEVEN NEW R ARTIFACTS
+=====================================================================
+
+All present, non-empty, and tracked in git. Sizes in bytes:
+
+  R1-jev-core-red.txt              2095   TRACKED
+  R1-jev-core-green.txt            3193   TRACKED
+  R1-accuracy-baseline-note.txt    1527   TRACKED
+  R2-isolation-red.txt             2342   TRACKED
+  R2-isolation-green.txt           1166   TRACKED
+  R2-plugin-red.txt                2299   TRACKED
+  R2-plugin-green.txt             14580   TRACKED
+  R2-size-review.txt               3913   TRACKED
+  R3-coverage-red.txt              3136   TRACKED
+  R3-coverage-green.txt            4186   TRACKED
+  R3-figure-restatement.txt        2594   TRACKED
+
+Every R RED artifact contains a real failing run with assertion text and an exit code, not
+a claim. F1 read each:
+  R1 red: 25 pass 2 fail exit 1, showing the category coercion diff
+    (normalizedCategory "not-a-runtime-category" / routeClass "category" where "none" and
+    "unknown" were required) and the intent vocabulary drift listing all seven old options
+    against the six production options.
+  R2 isolation red: 0 pass 2 fail exit 1, showing zero-state dispose creating the output
+    directory and the sink resolving to /home/opencode/.omo/jev instead of the test home.
+  R2 plugin red: 0 pass 2 fail exit 1, showing turnsSynthetic stuck at 0 and the deduped
+    idle delivering 1 seal trigger where 2 were required.
+  R3 red: 1 fail exit 1 on category_coverage 17/23 where 18/23 was required, plus a second
+    exit-1 run showing none recall and none precision both returning numerator 0.
+
+
+=====================================================================
+R2.4 SCOPE OF EACH REMEDIATION COMMIT
+=====================================================================
+
+F1 required that each commit be scoped to its own findings and smuggle in nothing unrelated.
+
+c4191702c  R1, 9 files, +214 -39. jev-core fixtures, normalization, their two tests, the
+  accuracy test, and three R1 evidence files plus the manifest. Entirely within the two
+  defects named in the subject. SCOPED.
+
+b5ec772b0  R3, 6 files, +218 -6. script/jev-w1-report-metrics.ts (8 lines) and
+  script/jev-w1-report.test.ts (31 lines) plus three R3 evidence files and the manifest.
+  The smallest of the three and precisely on target. SCOPED.
+
+f9bc61f9e  R2, 25 files, +1417 -835. Two groups:
+  (a) behavior, matching the subject: sink lazy creation and call-time HOME, synthetic turn
+      counting, sealing past idle dedup. Touches intent-routing-sink.ts, turn-store.ts,
+      chat-message.ts (2 lines), event.ts (4 lines), create-plugin-module.ts (1 line).
+  (b) file-size splits responding to F2's size review: sink.ts into sink-contract.ts plus
+      sink-reader.ts, turn-store.ts into turn-counters.ts, turn-identity.ts, turn-lru.ts and
+      turn-store-contract.ts, and create-plugin-module.test.ts (551 lines deleted) into five
+      files including a shared test-support module.
+  F1 checked the one component that looked like it might be out of scope. Is
+  create-plugin-module.test.ts a pre-existing file that W1 had no business touching?
+    $ git log --oneline jev/foundation..a5a47368c -- packages/omo-opencode/src/testing/create-plugin-module.test.ts
+    cfb8b7f14 feat(jev): wire the observe-only intent-routing pass into the plugin handlers
+  It was already modified by W1 at todo 14, so it is a W1-owned file and splitting it is a
+  response to a size finding on W1's own change, governed by the repo's 200 LOC soft limit
+  and .omo/rules/file-size-architectural-smell.md. Documented in R2-size-review.txt, which
+  also records seven retained waivers each carrying an invariant-specific reason.
+  VERDICT: SCOPED to F3 plus F2 findings. Nothing unrelated smuggled in. See N2 for the
+  subject-versus-content reservation.
+
+MUST-NOT-HAVE LIST STILL HOLDS ACROSS ALL 21 COMMITS. F1 re-ran the protected-path check
+over the full range rather than only the new commits:
+  $ git diff jev/foundation..jev/w1-fffe --stat -- \
+      packages/omo-opencode/src/agents/sisyphus-dynamic-prompt-role.ts \
+      packages/omo-opencode/src/agents/sisyphus/ \
+      packages/omo-opencode/src/agents/hephaestus/gpt.ts \
+      packages/omo-opencode/src/tools/delegate-task/category-resolver.ts \
+      packages/delegate-core/src/model-selection.ts \
+      packages/omo-opencode/src/plugin/event-model-fallback.ts \
+      packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts \
+      packages/omo-opencode/src/features/jev/model-error-triage.ts \
+      packages/omo-opencode/src/features/jev/model-error-triage.test.ts \
+      packages/jev-core/src/model-error-triage.ts
+    <no output>, exit 0.  PASS.
+  $ git diff jev/foundation..jev/w1-fffe -- packages/omo-opencode/src/config/schema/jev.ts \
+      | grep -E '^[-+].*JevWireConfigSchema = '
+    <no output>, exit 1.  The shared W4 schema is still untouched.  PASS.
+
+
+=====================================================================
+R2.5 PRIOR FINDING D4, RE-CHECKED
+=====================================================================
+
+STATUS: STILL A NON-DEFECT, and now demonstrably unsatisfiable as literally written.
+
+$ grep -rniE '(sk-|api[_-]?key|typesafe_api_key)[[:space:]]*[=:]' .omo/evidence/20260924-jev-w1/
+.omo/evidence/20260924-jev-w1/F1-compliance.txt:431:    .omo/evidence/20260924-jev-w1/task-19-drive.sh:60:export TYPESAFE_API_KEY="task19-local-dummy-key"
+.omo/evidence/20260924-jev-w1/task-19-drive.sh:60:export TYPESAFE_API_KEY="task19-local-dummy-key"
+exit=0
+
+There are now TWO matches rather than one. The second is F1's own round-1 report, which
+quotes the offending line verbatim as part of documenting the finding. This is a useful
+proof rather than a new problem: it shows the todo-18 criterion cannot be satisfied once
+anyone writes the finding down, which is independent confirmation that the criterion as
+worded, not the work, is what is defective.
+
+$ grep -rniE 'sk-[A-Za-z0-9]{10,}|ts_[A-Za-z0-9]{20,}|Bearer [A-Za-z0-9._-]{20,}' .omo/evidence/20260924-jev-w1/
+<no output>
+exit=1
+
+NOTHING REAL LEAKED. The only matching value remains the literal task19-local-dummy-key,
+which plan line 258 mandates and plan line 262 mandates committing into this directory.
+Plan success criterion 9 holds on substance. D4 remains correctly characterized as a stale
+sentence in task-18-secret-scan.txt, not a defect in the delivered work. The recommended
+fix is unchanged and still unapplied: narrow the expression or record the expected
+dummy-literal match.
+
+
+=====================================================================
+R2.6 PRIOR FINDING D5, RE-CHECKED AGAINST THE LEDGER
+=====================================================================
+
+STATUS: CLOSED.
+
+F1 read .omo/start-work/ledger.jsonl in the main checkout. Line 10 is the task-completed
+entry for todo 1 and carries both a frozen_baseline object and an orchestrator_decision
+object. The decision records:
+  plan_clause: "todo 1 says a red bun test baseline is a FULL STOP except for the known
+    THIRD-PARTY-NOTICES debt"
+  verdict: "PROCEED"
+  rationale: the 22 failures are byte-identical in count and character to the Phase A
+    user-ratified frozen baseline recorded in the same ledger (Bun 1.4.0 against CI-pinned
+    1.3.12); the tree is unmodified at 82460563f so the failures are provably pre-existing;
+    the frozen list makes new breakage distinguishable, which is the property the FULL STOP
+    clause protects; every later gate in this plan is baseline-relative.
+
+F1 did not accept the rationale on its face. Two checks:
+ 1. The frozen_baseline families decomposition is
+    "tmux pane/window spawn runner assertions (13)", "auto-update-checker registry fetch (5)",
+    "Bun non-Error throwable classification (2)", "team-layout tmux split-window arg drift (2)".
+    That sums to 22 and matches, family for family, the categorization F1 derived
+    independently in round 1 by reading task-1-baseline-failures.txt. The ledger is
+    describing the same artifact F1 already read, not a different one.
+ 2. The rationale cites a Phase A precedent "recorded in this same ledger". Ledger lines 2
+    and 3 are jev-phase-a entries, so the referenced precedent exists in the file rather
+    than being an unverifiable appeal.
+
+This is exactly the written justification F1 said was missing. D5's residual gap was "the
+decision to proceed is nowhere argued in writing", and it now is, in a durable, dated,
+machine-readable record that names the clause it is overriding and the property it is
+preserving. D5 is CLOSED. No residual gap.
+
+
+=====================================================================
+R2.7 PRIOR FINDING D8, RE-CHECKED AFTER R1
+=====================================================================
+
+STATUS: CLOSED, and superseded by a genuine correctness fix that F1 had not caught.
+
+$ grep -oE 'intent: "[a-z-]+"' packages/jev-core/src/intent-routing-fixtures.ts | sort | uniq -c
+      1 intent: "evaluation"
+      1 intent: "fix"
+      6 intent: "implementation"
+      3 intent: "investigation"
+      5 intent: "open-ended"
+      1 intent: "research"
+
+Seventeen fixtures, unchanged in count. The intent label set is now exactly
+research, implementation, investigation, evaluation, fix, open-ended, which is precisely
+the six intent classes plan line 131 names from the Phase 0 prose table. Before R1 the
+fixtures used seven ad hoc labels (implement, investigate, explain, acknowledge, continue,
+review, author) that the production question set cannot produce. Coherent, and an
+improvement: the fixture arm and the production arm now ask the same question. The plan's
+acceptance criterion is "at least 15" so 17 remains compliant, and the mandated commit
+subject string is fixed by the plan, so D8 was only ever cosmetic.
+
+CONSEQUENCE F1 CHECKED. Changing the intent option set invalidates the intent axis of the
+one paid todo-18 baseline. R1 disclosed this rather than leaving it: R1-accuracy-baseline
+note.txt states the retained artifact "must not be presented as a fresh measurement of the
+corrected harness", records the old seven options against the new six, confirms the paid
+harness was NOT re-run because the budget was spent, and confirms the task-18 artifact was
+not edited. That is the correct handling: disclose, do not re-spend, do not rewrite history.
+
+
+=====================================================================
+R2.8 NEW FINDINGS FROM ROUND 2
+=====================================================================
+
+N1. TODO 19's LIVE DOGFOOD EVIDENCE IS NOW STALE AND R2 SHIPPED NO STALENESS NOTE.
+  Severity: MUST CLOSE BEFORE MERGE. Owner: F3 and F5, not F1.
+  Commit f9bc61f9e changed runtime behavior that todo 19's live run measured:
+  synthetic turn counting and sealing past idle dedup. R2-plugin-red.txt proves the old
+  code left turnsSynthetic at 0 in all cases. Todo 19's retained report records:
+    $ grep -nE "turns_synthetic|records_sealed_by_session_idle" task-19-report.txt
+    4:turns_synthetic=0
+    8:records_sealed_by_session_idle=32
+  The value turns_synthetic=0 is therefore not a measurement. It is the broken counter's
+  constant, retained in a committed report with no correction.
+  F1 checked whether R2 disclosed this, since R1 and R3 both set the precedent:
+    $ grep -niE "task-19|todo.?19|dogfood|re-?drive|stale|supersed" R2-*.txt
+    <no output>, exit 1
+    $ grep -ilE "stale|supersed|restat" R1-*.txt R3-*.txt
+    R1-accuracy-baseline-note.txt
+    R3-figure-restatement.txt
+  R1 and R3 each shipped a note for the evidence their change invalidated. R2 shipped none,
+  which is an inconsistency in remediation discipline rather than a coding defect.
+  No post-R2 live re-drive exists. F3-redrive.txt is timestamped 19:34 and the R2 artifacts
+  are 19:51 to 19:55, so every live artifact on this branch predates the behavior change.
+  WHY F1 DOES NOT BLOCK ON IT: F1's row audits artifact presence, acceptance-criteria
+  execution and commit reality, all of which still hold. The live re-drive is explicitly
+  F3's and F5's row, both of which rejected and must re-run on the post-R2 tree anyway.
+  WHAT F1 REQUIRES: F3 re-drives todo 19 on the current tree, and R2 gains a staleness note
+  matching the R1 and R3 precedent. F1 explicitly does NOT certify todo 19's live figures.
+
+N2. COMMIT f9bc61f9e's SUBJECT UNDER-DESCRIBES ITS CONTENT. Severity: non-blocking.
+  The subject names three behavior fixes. The commit also performs file-size splits across
+  the sink, the turn store and create-plugin-module.test.ts, deleting a 551-line test file
+  and adding five replacements. A reviewer reading only the subject would not expect a
+  25-file, 1417-insertion diff. The work is in scope and is documented in R2-size-review.txt,
+  so this is a reviewability weakness rather than smuggling. A subject clause such as "and
+  split oversized modules at named seams" would have removed the surprise.
+
+N3. A REAL ISOLATION DEFECT EXISTED THAT ROUND-1 ARTIFACT READING COULD NOT HAVE CAUGHT.
+  Severity: informational, already fixed. Recorded because it calibrates F1's own method.
+  R2-isolation-red.txt proves the pre-fix sink created /home/opencode/.omo/jev on a
+  zero-state dispose and resolved its root from the HOME captured at module load rather
+  than call time. In round 1 F1 accepted task-19-home-manifest-diff.txt as empty. That
+  artifact was truthful: todo 19 spawns child processes with HOME already pointed into the
+  sandbox, so the module-load-time resolution bug cannot fire there. The bug only bites
+  in-process when HOME changes after import, which is what F3's own harness did. Artifact
+  reading was therefore incapable of surfacing it, and F3's independent re-drive was the
+  only thing that could. The verifier wave worked as designed.
+  R2 cleaned up the leaked directory after proving it empty (R2-isolation-green.txt records
+  the rmdir with exit 0).
+  F1 VERIFIED THE FIX LIVE rather than trusting the artifact. F1 ran the full fast suite,
+  which includes the sink tests, and then inspected the real home:
+    $ bun run test:fast    -> 479 pass, 1 skip, 0 fail across 48 files, exit 0
+    $ ls -la /home/opencode/.omo/jev
+      ls: cannot access '/home/opencode/.omo/jev': No such file or directory
+    $ ls /home/opencode/.omo/
+      codegraph  lsp-daemon  omo.jsonc  omo.jsonc.bak.2026-09-18T14-39-06-443Z  runtime
+  The directory was not recreated by a full suite run. The lazy-creation and call-time HOME
+  fix holds under live exercise, not only under its own regression test.
+
+
+=====================================================================
+R2.9 INDEPENDENT GATE SIGNAL
+=====================================================================
+
+F1 ran one cheap gate itself rather than relying on R2's transcript. No servers, no paid
+API, no global process matcher, no file modified.
+
+$ bun run test:fast
+ 479 pass
+ 1 skip
+ 0 fail
+ 1733 expect() calls
+Ran 480 tests across 48 files. [6.20s]
+TESTFAST_EXIT=0
+
+This matches R2-plugin-green.txt's recorded 479 pass, 1 skip, 0 fail exactly, and is up
+from the 469 pass recorded at todo 17, consistent with the regressions R1, R2 and R3 added.
+Deep gate adjudication remains F2's row.
+
+$ git status --porcelain
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+Only the five pre-existing generated files the plan forbids reverting. F1 modified no
+source file, test, doc, or evidence file other than this one.
+
+
+=====================================================================
+R2.10 ROUND 2 VERDICT
+=====================================================================
+
+APPROVE, for the F1 row, scoped as stated.
+
+BASIS:
+ 1. Checks (i), (ii) and (iii) pass unchanged, and (ii) now also covers all 11 R artifacts,
+    each of which F1 confirmed exists, is non-empty, and is tracked.
+ 2. Check (iv) returns 21. F1 evaluated the orchestrator's ruling on its merits and accepts
+    it: the plan's binding property is one commit per verified increment with no omnibus,
+    21 satisfies it, each remediation commit carries its own RED and GREEN evidence per plan
+    line 289, and squashing to preserve a derived number would require the force-push plan
+    line 293 forbids while hiding remediation from the reviewer. Section R2.2 states what
+    F1 would otherwise have required, and finds it already satisfied.
+ 3. All three remediation commits are scoped to their own findings. The one component that
+    looked out of scope, create-plugin-module.test.ts, was verified to be a W1-owned file
+    already modified at todo 14.
+ 4. The Must-NOT-Have protected paths and the shared W4 schema remain untouched across all
+    21 commits, re-verified over the full range.
+ 5. D5 is CLOSED by a ledger entry whose rationale F1 cross-checked against the frozen
+    baseline artifact and the referenced Phase A entries.
+ 6. D8 is CLOSED and superseded by R1's correction, whose paid-baseline consequence R1
+    disclosed properly without re-spending the budget or editing history.
+ 7. D4 remains a non-defect; F1 re-confirmed no real credential exists anywhere in the
+    evidence set.
+
+CARRIED FORWARD, NOT CLOSED BY F1:
+ - N1, the only must-close item. Todo 19's live evidence predates R2's behavior change and
+   turns_synthetic=0 is a known-broken constant sitting uncorrected in a committed report.
+   F3 must re-drive on the post-R2 tree and R2 should gain a staleness note matching the
+   R1 and R3 precedent. F1 does not certify todo 19's live figures as current.
+ - D4's stale sentence in task-18-secret-scan.txt, still unapplied, still cosmetic.
+ - N2, commit f9bc61f9e's subject under-describing its diff.
+
+SCOPE F1 DID NOT COVER IN ROUND 2, BY INSTRUCTION: did not re-run the paid harness, did not
+spawn OpenCode servers or run task-19-drive.sh, used no global process matcher, touched
+neither the main checkout beyond reading the plan and the ledger nor any sibling worktree,
+created no commit, push or PR.
+
+
+#####################################################################
+#####################################################################
+##                                                                 ##
+##                       ROUND 3 RE-VERIFICATION                   ##
+##                                                                 ##
+#####################################################################
+#####################################################################
+
+CONTEXT: a fourth remediation commit b6fed3f98 landed, closing F2's three round-2 findings
+and answering F1's round-2 N1. The branch is now 22 commits. Rounds 1 and 2 above are left
+byte-intact.
+
+ROUND 3 VERDICT: APPROVE for the F1 row. N1 is CLOSED. Two new non-blocking findings are
+recorded, one of which (N4) is a currently RED gate that belongs to F2's row and which F1
+diagnosed rather than merely reported.
+
+
+=====================================================================
+R3.1 THE FOUR MECHANICAL CHECKS, RE-RUN ON THE 22-COMMIT TREE
+=====================================================================
+
+--- CHECK (i) HEADER PRESENT ---
+$ head -1 MANIFEST.tsv | cat -A
+todo^Iartifact^Ikind^Idescription$
+PASS, unchanged.
+
+--- CHECK (ii) EVERY LISTED ARTIFACT EXISTS AND IS NON-EMPTY ---
+$ bash -c 'awk -F"\t" "NR>1{print \$2}" MANIFEST.tsv | while read -r f; do [ -s "$f" ] || echo "MISSING_OR_EMPTY $f"; done'
+<no output>
+PASS. Now covers the 5 new R4 rows in addition to the 88 original and 11 R1-R3 rows.
+
+--- CHECK (iii) EVERY TODO ID 1 THROUGH 19 IS REPRESENTED ---
+$ bash -c 'for n in $(seq 1 19); do awk -F"\t" -v n="$n" "NR>1 && \$1==n{f=1} END{exit !f}" MANIFEST.tsv || echo "NO_MANIFEST_ROWS_FOR_TODO $n"; done'
+<no output>
+PASS. Adding R4 did not disturb numeric coverage.
+$ awk -F"\t" 'NR>1{print $1}' MANIFEST.tsv | sort -u
+1 10 11 12 13 14 15 16 17 18 19 2 3 4 5 6 7 8 9 R1 R2 R3 R4
+
+--- CHECK (iv) COMMIT COUNT ---
+$ git log --oneline jev/foundation..jev/w1-fffe | wc -l
+22
+
+--- RECONCILIATION ---
+$ wc -l < MANIFEST.tsv        -> 105   (1 header + 104 rows)
+$ git ls-files ... | wc -l    -> 105   (104 artifacts + MANIFEST)
+99 prior rows plus 5 new R4 rows equals 104. Reconciles exactly.
+
+--- THE FIVE R4 ARTIFACTS ---
+All exist, are non-empty, and are tracked:
+  R4-category-red.txt            RED, 19 pass 1 fail, the offered custom category normalizing as unknown
+  R4-category-green.txt          GREEN, built-in and configured custom normalize as category, never-offered stays unknown
+  R4-drift-proof.txt             negative proof, see R3.4
+  R4-size-conservation.txt       conservation measurements, independently re-verified in R3.5
+  R4-task19-staleness-note.txt   the N1 response, adjudicated in R3.3
+
+
+=====================================================================
+R3.2 SCOPE OF b6fed3f98
+=====================================================================
+
+$ git show --numstat --format="" b6fed3f98 | grep -vE "\.omo/evidence|intent-routing|jev-w1-report"
+<no output>
+
+Every file in the commit is either an intent-routing source or test file, the report test,
+or a W1 evidence artifact. No unrelated production file is touched. The 22 files are:
+ - jev-core normalization source and test (the custom-category fix and the drift guard)
+ - the question/decision test split: intent-routing.test.ts reduced, plus
+   intent-routing-test-vocabulary.ts, intent-routing-decision-test-support.ts,
+   intent-routing-decision-answers.test.ts, intent-routing-decision-failures.test.ts
+ - the accuracy split: intent-routing-accuracy.test.ts reduced, plus
+   intent-routing-accuracy-real.test.ts, -contract.ts, -fixtures.ts, -harness.ts
+ - omo-opencode intent-routing-capture.ts and .test.ts and intent-routing.ts, threading the
+   offered vocabulary through so a configured category can be recognized
+ - script/jev-w1-report.test.ts, one line, removing a now-unnecessary size waiver
+ - the manifest and the five R4 evidence files
+
+MUST-NOT-HAVE LIST STILL HOLDS ACROSS ALL 22 COMMITS, re-run over the full range:
+ $ git diff jev/foundation..jev/w1-fffe --stat -- <the ten protected paths>
+   <no output>, exit 0.  PASS.
+ $ git diff jev/foundation..jev/w1-fffe -- packages/omo-opencode/src/config/schema/jev.ts \
+     | grep -E '^[-+].*JevWireConfigSchema = '
+   <no output>, exit 1.  Shared W4 schema untouched.  PASS.
+
+VERDICT: SCOPED to F2's three round-2 findings. Nothing unrelated smuggled in.
+
+
+=====================================================================
+R3.3 FINDING N1: CLOSED
+=====================================================================
+
+F1's round-2 N1 required two things: a post-R2 live run, and a staleness note matching the
+R1 and R3 precedent. Both now exist. F1 verified the note's specific claims rather than
+accepting them.
+
+CLAIM 1, that F3-redrive.txt is a post-R2 live run. VERIFIED BY TIMESTAMP, not by assertion:
+  $ ls --time-style=full-iso F3-redrive.txt
+    2026-09-24 20:08:20  F3-redrive.txt        (54974 bytes, up from 26342 in round 1)
+  $ git log --format="%h %cI" -4
+    f9bc61f9e 2026-09-24T19:55:20+00:00       <- R2
+    b6fed3f98 2026-09-24T20:21:30+00:00       <- R4
+  F3's re-drive at 20:08:20 postdates R2's commit at 19:55:20. It is genuinely post-R2.
+  In round 2 F1 recorded F3-redrive.txt at 19:34, which predated R2. That observation is
+  now superseded by the file having been rewritten with a round-2 section.
+
+CLAIM 2, the cited line ranges. VERIFIED, each resolves to real content:
+  line 439-442   "ROUND 2 RE-VERIFICATION" heading followed by "ROUND 2 VERDICT: APPROVE"
+  lines 715-751  the post-R2 report, carrying turns_synthetic=0, records_created=32,
+                 records_sealed_by_session_idle=32, in_flight=0, and
+                 records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+  lines 657-665  the functional count comparison: observations 32 to 32, fan_out_zero
+                 15 to 15, fan_out_one 10 to 10, fan_out_many 7 to 7, and an explicit note
+                 that counter delta snapshots moved from 4 to 16 without changing sealed
+                 records or fan-out
+
+CLAIM 3, that F3 approved. VERIFIED: F3-redrive.txt line 442 reads "ROUND 2 VERDICT: APPROVE"
+  while its line 2 retains the round-1 "VERDICT: REJECT", so the file honestly preserves
+  both positions rather than overwriting the rejection.
+
+DOES F1 STILL REQUIRE A FRESH LIVE RUN? NO. Reasoning:
+ 1. A genuine post-R2 live run exists and F1 confirmed its recency independently of any
+    claim in the note.
+ 2. The verifier who owns the live surface re-drove it and approved.
+ 3. The functional shape is unchanged across remediation (32 observations, 15/10/7 cohorts,
+    32 sealed, 0 evicted, 0 in flight), so a third drive would re-derive the same shape.
+ 4. The cost is roughly 80 minutes of real driving for no new information.
+ Requiring another drive here would be verification theatre. N1 is CLOSED on the live-run
+ question, and converts into the smaller, non-blocking N3 below.
+
+
+=====================================================================
+R3.4 FINDING N2: NOT REPEATED. THE SERIES IS REVIEWABLE.
+=====================================================================
+
+F1's round-2 N2 was that f9bc61f9e bundled behavior fixes with file-size splits while its
+subject named only the behavior fixes, so a reviewer would be surprised by a 25-file diff.
+
+b6fed3f98 has the same two-part shape, 22 files, behavior plus splits. It does NOT repeat
+the weakness, because its subject declares both parts:
+  "fix(jev): honor custom categories, guard category drift, and split oversized tests"
+The third clause names the split. A reviewer reading only the subject now expects the test
+reorganization. This is a direct improvement responsive to N2.
+
+OVERALL SERIES REVIEWABILITY: GOOD, with the one known blemish at f9bc61f9e.
+ - 18 plan commits, each with a plan-fixed subject, one per verified increment.
+ - 4 remediation commits, each scoped to one verifier's finding set, each carrying its own
+   failing-first and green artifacts, each with dedicated manifest rows under R1 to R4.
+ - A reviewer can read the series as 18 increments plus 4 labelled remediation fixes and can
+   reach the evidence for any one of them from the manifest alone.
+ - Only f9bc61f9e requires reading R2-size-review.txt to understand its full diff. A
+   subject amendment there would close the gap, but rewriting a landed commit costs more
+   than it buys, so F1 does not require it.
+
+NEGATIVE PROOF QUALITY HELD. R4-drift-proof.txt is a genuine three-phase tamper, matching
+the standard set in rounds 1 and 2: guard green at 21 pass, then with `writing` removed from
+INTENT_ROUTING_CATEGORY_VOCABULARY the suite fails 20 pass 1 fail exit 1 with the named
+message "missing built-in categories: writing", then green again at 21 pass after
+restoration. The guard derives production members from the authoritative built-in category
+record rather than repeating a literal, which is the correct construction.
+
+
+=====================================================================
+R3.5 R4's CONSERVATION CLAIMS, INDEPENDENTLY RE-VERIFIED
+=====================================================================
+
+F1 did not accept R4-size-conservation.txt on its word and re-measured.
+
+$ wc -l <the eleven split files>
+  159 intent-routing.test.ts                      57 intent-routing-test-vocabulary.ts
+  128 intent-routing-decision-test-support.ts    113 intent-routing-decision-answers.test.ts
+  110 intent-routing-decision-failures.test.ts    96 intent-routing-accuracy.test.ts
+  125 intent-routing-accuracy-real.test.ts       155 intent-routing-accuracy-contract.ts
+   61 intent-routing-accuracy-fixtures.ts        161 intent-routing-accuracy-harness.ts
+  155 script/jev-w1-report.test.ts
+Every file is under 200 lines. Largest is 161. CLAIM HOLDS.
+
+$ bun test intent-routing.test.ts intent-routing-decision-answers.test.ts intent-routing-decision-failures.test.ts
+  21 pass, 0 fail, 189 expect() calls, Ran 21 tests across 3 files
+Claimed before the split: 21 tests, 189 expect() calls in 1 file. Delta 0 on both. HOLDS.
+
+$ bun test intent-routing-accuracy.test.ts intent-routing-accuracy-real.test.ts
+  7 pass, 1 skip, 0 fail, 35 expect() calls, Ran 8 tests across 2 files
+Claimed before the split: 8 tests, 7 pass 1 conditional skip, 35 expect() calls. Delta 0 on
+tests, assertions, and conditional skip sites. HOLDS.
+
+$ grep -rnE "\.only\(|\.todo\(|\bit\.skip\(|\btest\.skip\(" packages/jev-core/src/intent-routing*.test.ts
+  <no output>, exit 1.  No unconditional skip, only, or todo was introduced. HOLDS.
+
+This is the strongest conservation evidence in the whole set: counts conserved exactly, not
+approximately, and verified by F1's own runs rather than read from a transcript.
+
+
+=====================================================================
+R3.6 NEW FINDING N3: THE R4 STALENESS NOTE UNDERSTATES THE STALE SET
+=====================================================================
+
+Severity: non-blocking. Action: amend the note to R3's enumeration standard.
+
+The note names exactly one stale figure, turns_synthetic, and lists "the recorded
+delegation attempts" among the todo-19 figures that "remain valid". F1 tested that by
+diffing todo-19's committed report against F3's post-remediation round-2 report over the
+whole denominator and rate block:
+
+  $ diff <todo-19 committed report> <F3 round-2 post-remediation report>
+  unscorable_unknown_calls               0   ->   12
+  unknown_only_records                   0   ->    7
+  unrepresentable_route_mismatches       0   ->    9
+  exact_route_agreement denominator     26   ->   30
+  multi_route_turns                      5   ->    1
+  category_coverage distinct_target_cardinality    11 -> 0
+  category_cardinality_weighted_coverage denominator 33 -> 31, cardinality 11 -> 0
+
+SEVEN figures moved, not one. The largest is the unknown-category accounting going from 0
+to 12 unscorable unknown calls and 9 unrepresentable route mismatches. That is caused by
+R1 making unrecognized categories normalize to `unknown` instead of being coerced into a
+category, which is exactly the defect F2 reported; the todo-19 driver uses QA-only invalid
+category targets, so those calls now classify correctly. The note's sentence that the
+recorded delegation attempts "remain valid" is therefore contradicted by the accounting of
+those very attempts.
+
+WHY THIS IS NOT BLOCKING:
+ - The corrected direction is MORE honest. The old report showed 0 representability
+   failures; the corrected one surfaces 12. The remediation improved the measurement.
+ - No headline agreement figure changes. Every affected numerator is 0 in both versions,
+   because the fake Jev server's canned answers never match the observed routes. F1
+   confirmed category_coverage numerator is 0 with denominator 31 in both reports.
+ - The note's operative instruction is correct and sufficient: it names F3 ROUND 2 as "the
+   current evidence" and directs that any current figure be cited from there rather than
+   from todo-19. A reader following that instruction reaches the corrected numbers.
+WHAT F1 REQUIRES: the note should enumerate all seven moved figures with old and new values,
+matching the standard R3-figure-restatement.txt already set for the todo-16 artifact. This
+is a precision fix to a disclosure note, not a defect in code or in live evidence.
+
+
+=====================================================================
+R3.7 NEW FINDING N4: test:fast IS CURRENTLY RED, AND IT IS NOT R4's DOING
+=====================================================================
+
+Severity: must be resolved before merge. Owner: F2's row. F1 diagnosed it rather than
+merely reporting it, because an undiagnosed red gate would be the wrong thing to hand over.
+
+$ bun run test:fast
+  run A: 480 pass, 1 skip, 1 fail, 482 tests across 51 files, exit 1
+  run B: 479 pass, 1 skip, 2 fail, 482 tests across 51 files, exit 1
+
+The failures are both the plan's 1ms synchronous-budget assertions:
+  chat.message Jev intent-routing budget clauses > ... p99 stays below one millisecond
+    TASK15_P99 samples=200 p99Ms=3.162237 boundMs=1     Expected < 1, Received 3.1622370
+  createJevIntentRouting > ... p99 stays below one millisecond
+    intent-routing synchronous p99: 2.195ms             Expected < 1, Received 2.1953919
+
+IS b6fed3f98 THE CAUSE? NO. F1 established this three ways.
+ 1. R4's only algorithmic change is in normalizeObservedDelegation, which went from a
+    module-level Set lookup to a linear scan over the offered categories:
+      -    if (!categoryNames.has(category.value)) return unknownDelegation()
+      +    if (!offeredCategories.some(({ name }) => name === category.value)) return unknownDelegation()
+    That function is called from intent-routing-capture.ts:134, which is the
+    tool.execute.before capture path. The two failing tests measure the chat.message
+    dispatch seam in intent-routing.ts, whose only R4 change is passing a reference at
+    line 184 (`offeredCategories: args.vocab.categories`), an O(1) operation.
+      $ grep -n "normalizeObservedDelegation" packages/omo-opencode/src/features/jev/intent-routing.ts
+        <no match>
+    The changed code is not on the measured path.
+ 2. Isolated, the tests pass 5 times out of 5:
+      run 1 p99 0.731ms   run 2 0.762ms   run 3 0.642ms   run 4 0.582ms   run 5 0.644ms
+      1 pass, 0 fail each time.
+ 3. Every p99 reading recorded anywhere in this evidence set, across all four remediation
+    rounds, lies between 0.004ms and 0.278ms:
+      TASK15_P99 0.117613 0.121067 0.123303 0.130374 0.153856 0.174831 0.213589
+      synchronous p99 0.004 0.009 0.080 0.086 0.101 0.109 0.215 0.221 0.278
+    The host is currently far slower than when any of those were captured, which is
+    consistent with five concurrent verifier sessions plus the operator's own server on an
+    8-core box (load average 1.76 at the time of the failing run).
+
+DIAGNOSIS: shared-host load sensitivity against a hard 1ms wall-clock bound with thin
+headroom, not a functional regression. The bound itself is plan-mandated at line 41, so the
+requirement is sound; the measurement is what is fragile on a contended machine. It will
+flake in CI for the same reason.
+F1 DOES NOT SILENTLY PASS THIS. It is handed to F2, which owns gate greenness, with the
+diagnosis above so F2 can decide between re-running on a quiet host, raising the sample
+floor, or measuring CPU time instead of wall clock.
+
+REAL HOME REMAINED CLEAN THROUGHOUT. After every suite run above:
+  $ ls /home/opencode/.omo/jev
+    ls: cannot access '/home/opencode/.omo/jev': No such file or directory
+R2's lazy-sink fix continues to hold under repeated live exercise.
+
+
+=====================================================================
+R3.8 FINAL POSITION ON THE COMMIT COUNT, NOW 22
+=====================================================================
+
+F1 accepts 22, on the same reasoning it applied at 21 in round 2, applied again rather than
+assumed.
+
+The plan's binding clause at line 287 is "one commit per verified increment, never an
+omnibus"; 18 is arithmetic derived in that same sentence from the todo list, not an
+independent requirement. 22 equals 18 plan commits plus 4 remediation commits. Each
+remediation commit is one verified increment scoped to one verifier's finding set, and each
+satisfies the plan's own commit precondition at line 289 that RED and GREEN evidence exist
+first. For R4 specifically, F1 confirmed R4-category-red.txt (19 pass 1 fail, exit 1) and
+R4-category-green.txt, plus a third negative proof in R4-drift-proof.txt. None of the four
+is an end-of-run omnibus. Squashing back to 18 would require the force-push plan line 293
+forbids, would contradict root AGENTS.md's "create a new commit; do not amend", and would
+erase four rounds of remediation from the PR reviewer's view.
+
+F1's standing condition is unchanged and remains satisfied: the deviation must be visible
+and self-documenting. The manifest carries dedicated R1, R2, R3 and R4 rows, and every
+remediation commit subject names its fix. No further condition. If the count grows again,
+F1 will apply the same test rather than a new number: one verified increment per commit,
+RED and GREEN evidence present, subject honest about the diff, no omnibus.
+
+
+=====================================================================
+R3.9 ROUND 3 VERDICT
+=====================================================================
+
+APPROVE, for the F1 row.
+
+BASIS:
+ 1. Checks (i), (ii) and (iii) pass; (ii) now also covers all 5 R4 artifacts, each verified
+    present, non-empty and tracked. Manifest and tracked-file counts reconcile at 105.
+ 2. Check (iv) returns 22 and F1 accepts it under the same evaluated reasoning as round 2,
+    restated and re-applied in R3.8.
+ 3. b6fed3f98 is scoped to F2's three round-2 findings; no unrelated production file is
+    touched, and the protected paths plus the shared W4 schema remain clean across all 22
+    commits.
+ 4. N2 is not repeated. b6fed3f98's subject names its split, and the 22-commit series is
+    reviewable from the manifest alone.
+ 5. N1 is CLOSED. F1 verified by timestamp that F3's re-drive postdates R2, confirmed every
+    line range the note cites resolves to real content, and confirmed F3's round-2 APPROVE.
+    F1 does not require a fresh 80-minute drive.
+ 6. R4's conservation claims are exactly true, re-measured by F1: 21 tests and 189 expects
+    conserved, 8 tests and 35 expects conserved, all split files under 200 lines, no new
+    skip, only, or todo.
+
+CARRIED FORWARD, NOT CLOSED BY F1:
+ - N4, the only must-resolve item. test:fast is RED in F1's hands on two plan-mandated 1ms
+   p99 budget assertions. F1 established it is host-load sensitivity and NOT caused by R4,
+   with the changed code proven to be off the measured path and 5 of 5 isolated passes.
+   Adjudication belongs to F2.
+ - N3, the R4 staleness note enumerates one stale figure where seven moved. Non-blocking
+   because the note routes readers to F3 ROUND 2, which carries the corrected values, and
+   because the corrected direction surfaces more honesty rather than less.
+ - D4's stale sentence in task-18-secret-scan.txt, unchanged, still cosmetic.
+ - N2's subject blemish on f9bc61f9e, accepted as landed.
+
+F1 DOES NOT CERTIFY: gate greenness (F2), the live dogfood surface beyond confirming F3's
+re-drive is genuinely post-R2 (F3), or metric naming (F5).
+
+SCOPE F1 DID NOT COVER IN ROUND 3, BY INSTRUCTION: did not re-run the paid harness, did not
+spawn OpenCode servers or run task-19-drive.sh, used no global process matcher, touched no
+sibling worktree, created no commit, push or PR, and modified no file but this one.
+
+
+#####################################################################
+#####################################################################
+##                                                                 ##
+##            FINAL CONFIRMATION - LAST GATE BEFORE PR             ##
+##                                                                 ##
+#####################################################################
+#####################################################################
+
+CONTEXT: commit 7158548cf landed, closing F1's round-3 N4 and N3. Branch is 23 commits.
+This is the last gate before push and PR. Rounds 1, 2 and 3 above are byte-intact.
+
+FINAL VERDICT: APPROVE. N4 CLOSED. N3 CLOSED. No blocking defect remains. Six residual
+items are listed in FINAL.7 for the PR description.
+
+
+=====================================================================
+FINAL.1 THE FOUR MECHANICAL CHECKS ON THE 23-COMMIT TREE
+=====================================================================
+
+(i)   $ head -1 MANIFEST.tsv | cat -A
+      todo^Iartifact^Ikind^Idescription$                                    PASS
+(ii)  $ awk ... | while read -r f; do [ -s "$f" ] || echo MISSING_OR_EMPTY; done
+      <no output>                                                           PASS
+(iii) $ for n in $(seq 1 19); do ... done
+      <no output>                                                           PASS
+(iv)  $ git log --oneline jev/foundation..jev/w1-fffe | wc -l
+      23
+
+$ awk -F"\t" 'NR>1{print $1}' MANIFEST.tsv | sort -u
+1 10 11 12 13 14 15 16 17 18 19 2 3 4 5 6 7 8 9 R1 R2 R3 R4 R5
+
+ROW COUNT NOW INTENTIONALLY EXCEEDS DISTINCT ARTIFACTS BY ONE. F1 chased this rather than
+waving it through, because in every prior round the two reconciled exactly.
+  $ wc -l < MANIFEST.tsv                                  -> 108  (1 header + 107 rows)
+  $ git ls-files .omo/evidence/20260924-jev-w1 | wc -l     -> 107  (106 artifacts + MANIFEST)
+  $ awk -F"\t" 'NR>1{print $2}' MANIFEST.tsv | wc -l       -> 107 rows
+  $ awk -F"\t" 'NR>1{print $2}' MANIFEST.tsv | sort -u | wc -l -> 106 distinct paths
+  $ awk -F"\t" 'NR>1{print $2}' MANIFEST.tsv | sort | uniq -d
+    .omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt
+CAUSE: that one file carries both an R4 row (original note) and an R5 row (amended note).
+R5 amended an artifact R4 created, so the manifest records both provenances against the
+same path. Both rows resolve to the same existing, non-empty, tracked file, which is why
+check (ii) still passes. This is deliberate provenance, not a duplicate or a stray row, but
+a reviewer counting rows against files should know the difference of one is expected.
+
+THE THREE R5 ROWS ALL RESOLVE:
+  R4-task19-staleness-note.txt   amended, existing, non-empty, tracked (shared with R4)
+  R5-budget-instrument.txt       existing, non-empty, tracked
+  R5-testfast-stability.txt      existing, non-empty, tracked
+
+
+=====================================================================
+FINAL.2 SCOPE OF 7158548cf
+=====================================================================
+
+$ git show --numstat --format="" 7158548cf | grep -vE "\.omo/evidence" | grep -vE "test"
+<no output>
+
+THIS COMMIT TOUCHES NO PRODUCTION SOURCE AT ALL. Its seven files are the manifest, the
+amended staleness note, two new R5 evidence files, the two budget test files, and one new
+test-support module. That is the correct shape for an instrument change: the thing being
+measured must not move while the instrument is replaced.
+
+F1 confirmed the measured seam did not move:
+  $ git diff --exit-code -- packages/omo-opencode/src/features/jev/intent-routing.ts
+    exit=0
+  $ grep -nE "Math.sqrt|synchronousWork|2_000_000|for \(let index" .../intent-routing.ts
+    <no output>, exit 1.  No leftover mutation from the negative proof.
+
+F1 also checked that the new support module does not leak into production surface:
+  $ grep -rn "intent-routing-budget-test-support" --include=*.ts packages/ script/
+    packages/omo-opencode/src/features/jev/intent-routing.test.ts
+    packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts
+  $ grep -n "budget-test-support" packages/omo-opencode/src/features/jev/index.ts
+    <no output>, exit 1.  Not exported from the feature barrel.
+It is imported by the two budget tests only and is absent from the barrel, so it adds no
+runtime surface despite living under src/.
+
+MUST-NOT-HAVE LIST STILL HOLDS ACROSS ALL 23 COMMITS (protected prose blocks,
+category-resolver, model-selection, the five W4 files, and the shared JevWireConfigSchema):
+re-verified, empty diff and no shared-schema line. SCOPED.
+
+
+=====================================================================
+FINAL.3 N4, THE BUDGET GATE: CLOSED
+=====================================================================
+
+F1 required four things. All four verified, three of them by F1's own execution rather than
+by reading the transcript.
+
+(a) THE GATE IS STILL STRICT AT UNDER 1000us. Not widened.
+    $ grep -n "BOUND_US" .../intent-routing-budget-test-support.ts
+      4: export const INTENT_ROUTING_CPU_P99_BOUND_US = 1_000
+    Both tests assert `expect(metrics.cpuP99Us).toBeLessThan(INTENT_ROUTING_CPU_P99_BOUND_US)`
+    at intent-routing.test.ts:218 and chat-message.intent-routing-budget.test.ts:168. The
+    plan's one-millisecond number at plan line 41 is unchanged; only the instrument moved.
+
+(b) THE INSTRUMENT IS GENUINELY PER-THREAD CPU TIME.
+    measureIntentRoutingSynchronousP99 brackets each of 200 samples with
+    threadCpuClock.nowNanoseconds(), backed by clock_gettime with clockID 3 on Linux and 16
+    on Darwin, which are CLOCK_THREAD_CPUTIME_ID on those platforms, and by the sum of
+    kernel and user GetThreadTimes on Windows. The FFI handle is closed in a finally block.
+    Wall time is sampled over the identical region in the same loop.
+
+(c) THE NEGATIVE PROOF IS REAL. F1 DID NOT TAKE THIS ON TRUST AND DID NOT MODIFY ANY REPO
+    FILE TO CHECK IT. An assertion that cannot fail is not an assertion, so F1 wrote a
+    standalone probe under /tmp that imports the shipped helper and feeds it two callbacks:
+      $ bun /tmp/opencode/f1-final/probe.ts
+        EMPTY      cpuP99Us=45   wallP99Ms=0.004233 samples=200 passes=true
+        REAL_WORK  cpuP99Us=6456 wallP99Ms=6.911486 samples=200 passes=false
+        BOUND_US=1000 sink_finite=true
+    A real 2,000,000-iteration square-root loop drives the gating value to 6456us, which is
+    6.5 times the bound and would fail the assertion, while an empty callback measures 45us
+    and passes. The instrument detects genuine synchronous work and is not a no-op.
+    This independently reproduces the direction of the committed negative proof
+    (3617us and 3386us against the 1000us bound, exit 1) without touching the repo.
+    The committed proof's revert is separately confirmed in FINAL.2.
+
+(d) THE WALL-CLOCK FIGURE IS STILL RECORDED FOR THE REVIEWER. Both tests print it before
+    asserting:
+      intent-routing synchronous p99: samples=... cpuP99Us=... cpuBoundUs=1000 wallP99Ms=...
+      TASK15_P99 samples=... cpuP99Us=... cpuBoundUs=1000 wallP99Ms=...
+    It is logged, never asserted, so the plan's original number stays visible without
+    gating on a quantity the host can corrupt.
+
+(e) STABILITY IN F1'S OWN HANDS. Four full runs, all green:
+      run 1   exit 0   481 pass, 1 skip, 0 fail   cpuP99Us 203 and 82   wall 0.202376 / 0.081205
+      run 2   exit 0   481 pass, 1 skip, 0 fail   cpuP99Us 230 and 80   wall 0.229077 / 0.079835
+      run 3   exit 0   481 pass, 1 skip, 0 fail   cpuP99Us 113 and 90   wall 0.098810 / 0.089673
+      run 4   exit 0   481 pass, 1 skip, 0 fail   cpuP99Us 221 and 133  wall 0.227707 / 0.138752
+    Runs 1 to 3 were at host load average 0.46. Because a quiet host proves little about an
+    instrument whose whole purpose is load immunity, F1 ran a fourth under DELIBERATE
+    CONTENTION: eight concurrent CPU burners spawned with their PIDs captured, host load
+    average rising to 3.36, which is roughly double the 1.76 at which the old wall-clock
+    gate failed in round 3. test:fast still exited 0 with the gating CPU p99 at 221us and
+    133us, comfortably inside the bound.
+    HONEST LIMIT OF THIS EVIDENCE: the contention F1 generated did not itself reproduce a
+    wall-clock blowup in that run, so this corroborates the fix rather than constituting a
+    controlled A/B against the old instrument. The combination that matters is round 3
+    failing at load 1.76 and round 4 passing at load 3.36 under the new instrument.
+    CLEANUP: every burner was terminated by its recorded PID and re-checked with kill -0;
+    none survived. No global process matcher was used at any point.
+
+N4 IS CLOSED. The gate is strict, the instrument measures real work, the wall figure
+remains visible, and the suite is stable in F1's hands including under load.
+
+WORTH CREDITING: R5-budget-instrument.txt documents two REJECTED instruments with the
+measurements that disqualified them, process.cpuUsage reporting 3455us against 0.848237ms
+wall because it includes Bun runtime threads, and Bun 1.4.0 process.threadCpuUsage
+quantizing to roughly one-millisecond steps (p99 999us against 71.233us wall). Recording
+why the easy options were rejected is better engineering disclosure than most passing
+gates carry.
+
+
+=====================================================================
+FINAL.4 N3, THE UNDER-ENUMERATED NOTE: CLOSED
+=====================================================================
+
+F1 checked the amended note line by line against its OWN round-3 diff, which was computed
+independently in R3.6 before the note existed.
+
+  F1 round-3 diff                                    amended note      match
+  unscorable_unknown_calls 0 -> 12                   item 1, 0 -> 12       yes
+  unknown_only_records 0 -> 7                        item 2, 0 -> 7        yes
+  unrepresentable_route_mismatches 0 -> 9            item 3, 0 -> 9        yes
+  exact_route_agreement denominator 26 -> 30         item 4, 26 -> 30      yes
+  multi_route_turns 5 -> 1                           item 5, 5 -> 1        yes
+  category_coverage cardinality 11 -> 0              item 6, 11 -> 0       yes
+  weighted category coverage denom 33 -> 31,         item 7, 33 -> 31,     yes
+    cardinality 11 -> 0                                and 11 -> 0
+
+All seven, no more and no fewer. The enumeration is COMPLETE against F1's independent
+computation. The note is also more precise than F1's own finding required: it records that
+the numerators stay 0 on items 4, 6 and 7, which prevents a reader from mistaking a moved
+denominator for a changed agreement result.
+
+THE CONTRADICTED CLAIM WAS CORRECTED, NOT QUIETLY DROPPED. The prior note listed "the
+recorded delegation attempts" among figures that "remain valid". The amended note states
+plainly: "The old zero unknown accounting did not remain valid. R1 correctly normalized
+never-offered categories as unknown, so the post-remediation report exposes the previously
+hidden 12 unknown calls and 9 unrepresentable route mismatches." That is an explicit
+retraction of the specific sentence F1 flagged, which is the right way to fix a disclosure
+defect. It also cites the exact line ranges it was verified against.
+
+N3 IS CLOSED.
+
+
+=====================================================================
+FINAL.5 CUMULATIVE STATE OF EVERY FINDING F1 RAISED
+=====================================================================
+
+  ROUND  ID   FINDING                                              FINAL STATE
+  1      D1   todo-2 two-schema proof inverted                     accepted, honest and sufficient
+  1      D2   todo-12 report assertion deferred to todo 16         closed, verified discharged
+  1      D3   todo-19 unreachable correlation statuses             accepted, plan-permitted
+  1      D4   task-18 secret-scan sentence stale                   OPEN, cosmetic, see FINAL.7
+  1      D5   todo-1 red baseline FULL STOP unargued               closed by the ledger
+  1      D6   todo-16 report test green only via test:fast         accepted, traceability only
+  1      D7   todo-15 W4 diff logged with placeholder paths        accepted, F1 re-ran it
+  1      D8   plan says 15 fixtures, 17 shipped                    closed, superseded by R1
+  2      N1   todo-19 live evidence stale, no note                 closed by F3 round 2 plus R4
+  2      N2   f9bc61f9e subject under-describes its diff           OPEN, accepted as landed
+  2      N3   R4 note under-enumerated the stale set               CLOSED by R5
+  3      N4   test:fast red on flaky wall-clock budget             CLOSED by R5
+  3      N3   (same as above)                                      CLOSED
+
+Nothing F1 raised remains blocking. Two items stay open and are carried to the PR.
+
+
+=====================================================================
+FINAL.6 COMMIT COUNT, NOW 23: FINAL POSITION
+=====================================================================
+
+ACCEPTED, on the standing test F1 committed to in round 3 rather than a new number.
+23 equals 18 plan commits plus 5 remediation commits. For R5 specifically:
+ - one verified increment, scoped to F1's own two round-3 findings and nothing else
+ - failing-first evidence present: R5-budget-instrument.txt records the negative mutation
+   at exit 1 before the restored green, and F1 independently reproduced that the assertion
+   can fail
+ - green evidence present: R5-testfast-stability.txt, corroborated by F1's four runs
+ - subject honest about the diff: "measure the seam budget in cpu time and enumerate stale
+   dogfood figures" names both halves, following the improvement first seen at b6fed3f98
+ - not an omnibus
+Squashing to a cosmetic 18 would still require the force-push plan line 293 forbids and
+would erase five rounds of adversarial remediation from the reviewer's view. The PR is
+strictly more trustworthy at 23 commits than it would be at 18.
+
+
+=====================================================================
+FINAL.7 WHAT A REVIEWER MUST BE TOLD: RESIDUAL RISK FOR THE PR BODY
+=====================================================================
+
+Nothing here blocks the merge. All six should appear in the PR description so the reviewer
+is not the one to discover them.
+
+1. HISTORICAL ARTIFACTS ARE NOT CURRENT MEASUREMENTS. Two committed artifacts describe
+   pre-remediation code and are retained deliberately rather than rewritten.
+   - task-19-report.txt: seven figures moved, enumerated in R4-task19-staleness-note.txt.
+     The current live evidence is F3-redrive.txt ROUND 2.
+   - task-18-real-api-matrix.txt: its intent confusion matrix scored a seven-option
+     question that R1 replaced with the six production options. Not re-measured, because
+     the paid budget was spent, as recorded in R1-accuracy-baseline-note.txt.
+   RISK: someone quotes a retained number as a fresh result. Mitigated by both notes; the
+   PR should link them.
+
+2. D4, THE STALE SECRET-SCAN SENTENCE. task-18-secret-scan.txt asserts the prescribed grep
+   returns empty. It does not, and has not since todo 19 landed. The matches are
+   task-19-drive.sh's mandated dummy key task19-local-dummy-key and F1's own report
+   quoting it. NO REAL CREDENTIAL EXISTS: F1 re-ran a scan for real key shapes
+   (sk-..., ts_..., Bearer ...) across the whole evidence set in rounds 2 and 3 and it
+   returned nothing. The todo-18 criterion is unsatisfiable alongside todo 19's own
+   requirements. Cosmetic, but the sentence is false as written and should be narrowed.
+
+3. N2, COMMIT f9bc61f9e's SUBJECT. It names three behavior fixes but also performs
+   file-size splits across the sink, the turn store and create-plugin-module.test.ts, for a
+   25-file diff. In scope and documented in R2-size-review.txt, but a reviewer reading only
+   the subject will be surprised. Later commits corrected this habit.
+
+4. NEW TEST-ONLY PLATFORM DEPENDENCY. The budget gate now reaches libc clock_gettime, and
+   GetThreadTimes on Windows, through Bun FFI from test code. It fails closed: a failed
+   clock read throws ThreadCpuClockError rather than silently passing, which is the right
+   direction. But CI runs ubuntu, macos and windows, and this path has been exercised here
+   on Linux only. RISK: a first CI run on macOS or Windows surfaces an FFI or clockID
+   problem. Cheap to detect, and it cannot produce a false green.
+
+5. MANIFEST ROW COUNT EXCEEDS DISTINCT ARTIFACTS BY ONE, BY DESIGN.
+   R4-task19-staleness-note.txt carries both an R4 and an R5 row because R5 amended it.
+   107 rows, 106 distinct paths, 107 tracked files including the manifest. Expected, and
+   noted so nobody reads it as a stray row.
+
+6. THE FULL SUITE IS STILL RED AT THE INHERITED BASELINE. 22 pre-existing failures across
+   tmux spawn, auto-update registry, Bun non-Error classification and team-layout, frozen
+   at todo 1 in task-1-baseline-failures.txt and byte-identical since. W1 added none. The
+   orchestrator's PROCEED decision is recorded in the ledger. A reviewer running
+   `bun test` will see a non-zero exit that this branch did not cause; test:fast is the
+   green gate at 481 pass, 1 skip, 0 fail.
+
+
+=====================================================================
+FINAL.8 VERDICT
+=====================================================================
+
+APPROVE. This is F1's final position.
+
+All four mechanical checks pass on the 23-commit tree, with the one row-count anomaly
+chased to a deliberate provenance duplicate. 7158548cf is scoped to F1's own two findings
+and touches no production source. N4 is closed with the gate still strict at 1000us, the
+instrument proven capable of failing by F1's own out-of-tree probe, the wall figure still
+printed for the reviewer, and four green test:fast runs including one under deliberate
+eight-way CPU contention at load 3.36. N3 is closed with an enumeration that matches F1's
+independent diff on all seven figures and an explicit retraction of the sentence F1
+contradicted.
+
+Across five adversarial rounds the work absorbed every finding F1 raised, and in three
+cases (R1's category normalization, R3's transitive coherence gate, R5's rejected
+instruments) the implementers found and fixed defects beyond what the verifiers reported.
+The two items left open are a false sentence in one evidence file and an under-descriptive
+commit subject. Neither affects the shipped behavior, which remains observe-only and
+proven inert.
+
+F1 DOES NOT CERTIFY, BY INSTRUCTION AND BY ROW: gate greenness as a whole (F2), the live
+dogfood surface beyond confirming F3's re-drive is genuinely post-remediation (F3), scope
+fidelity as a whole (F4), or metric naming (F5).
+
+FINAL ROUND CONSTRAINTS HONORED: no paid harness, no OpenCode server, no task-19 drive, no
+global process matcher at any point, every spawned burner terminated by recorded PID with
+survival re-checked, no sibling worktree touched, the main checkout only read, no commit,
+no push, no PR, and no file modified anywhere except this one.

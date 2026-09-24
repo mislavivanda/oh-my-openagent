@@ -106,3 +106,8 @@ R4	.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt	artifact	Todo-19 t
 R5	.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt	artifact	Amended todo-19 correction enumerates all seven moved report figures with old and F3 ROUND 2 values
 R5	.omo/evidence/20260924-jev-w1/R5-budget-instrument.txt	qa	High-resolution per-thread CPU p99 keeps the strict one-millisecond gate, reports wall p99, and fails under temporary synchronous work
 R5	.omo/evidence/20260924-jev-w1/R5-testfast-stability.txt	green	Three consecutive test:fast runs pass 481 with identical counts; CPU and informational wall p99 values plus typecheck and LSP outcomes recorded
+F1	.omo/evidence/20260924-jev-w1/F1-compliance.txt	qa	Plan-compliance audit, 4 rounds, final APPROVE: manifest header, artifact existence, todos 1-19 coverage, commit-count reasoning, N1/N3/N4 raised and closed
+F2	.omo/evidence/20260924-jev-w1/F2-quality.txt	qa	Code-quality review, 4 rounds, REJECT then REJECT then APPROVE: 6 then 3 defects found, baseline-relative suite comparison, size-waiver audit, final APPROVE
+F3	.omo/evidence/20260924-jev-w1/F3-redrive.txt	qa	Independent live re-drive, 2 rounds, REJECT then APPROVE: caught the real-home sink leak, then attributed isolation correctly after the fix
+F4	.omo/evidence/20260924-jev-w1/F4-scope.txt	qa	Scope-fidelity audit, 3 rounds, all APPROVE: full Must-NOT-Have sweep, changed-file inventory, prose blocks sha256-identical to base
+F5	.omo/evidence/20260924-jev-w1/F5-integrity.txt	qa	Measurement-integrity audit, 3 rounds, REJECT then APPROVE: caught coverage gated by coherence, verified metric computations not labels

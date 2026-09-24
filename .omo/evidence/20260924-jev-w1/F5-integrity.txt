@@ -1,0 +1,465 @@
+F5 MEASUREMENT INTEGRITY AUDIT
+
+VERDICT: REJECT
+
+REJECTION BASIS
+
+The report labels category_coverage and subagent_coverage as per-question coverage, but the computation is not independent per question. script/jev-w1-report-metrics.ts:88-93 requires prediction.coherent for both categoryCorrect and subagentCorrect. A correct category answer is therefore changed to an incorrect category coverage result when the separate subagent answer is non-none, and vice versa. The same incoherence is also reported by coherence_rate.
+
+The repository's synthetic corpus proves the mismatch. Its record at script/jev-w1-report.fixtures.ts:149 has observed category quick, predicted category quick, and predicted subagent oracle. Category choice quick covers the observed category target. The renderer reports category_coverage 17/23 and category_cardinality_weighted_coverage 20/26 because prediction.coherent is false. Computing each Choice answer on its own conditioning set gives category coverage 18/23 and cardinality-weighted category coverage 21/26. This is one coherence failure charged again as a category miss. The label category_coverage does not disclose the coherence gate.
+
+This conflicts with the stated metric model in the plan's known limitations: category and subagent are two independent Choice answers, while coherence is reported separately. Either remove the coherence gate from the per-question coverage computation or rename and document the metric as coherent_category_coverage. The remaining audited obligations pass, but a mislabeled metric requires REJECT.
+
+COMMAND LOG
+
+All shell commands ran with working directory set to the jev/w1-fffe worktree. Read operations inspected only the main-checkout plan and files in the audited worktree. No F3 artifact or sandbox was read.
+
+1. Bind isolated paths.
+Command:
+  F5_SANDBOX="$(mktemp -d)"; F5_RECEIPTS="$(mktemp -d)"
+Exit: 0
+
+2. Build the independent corpus.
+Command:
+  bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox "$F5_SANDBOX" --receipts "$F5_RECEIPTS" --wire enabled --keep
+First attempt result: the shell tool terminated the command at its 120000 ms caller timeout after 31 completed turns. No driver exit code was produced. The driver's trap terminated its recorded processes and released its recorded ports.
+
+3. Clean the caller-timed-out attempt by owned receipts only.
+Command:
+  while read -r pid; do kill -0 "$pid" 2>/dev/null && echo "FAILED_RUN_PID_ALIVE=$pid"; done < "$F5_RECEIPTS/pids"; while read -r port; do (exec 3<>"/dev/tcp/127.0.0.1/$port") 2>/dev/null && echo "FAILED_RUN_PORT_BOUND=$port"; done < "$F5_RECEIPTS/ports"; rm -rf "$F5_SANDBOX"
+Exit: 0
+Output: FAILED_RUN_CLEANUP=ok
+
+4. Retry the required local-fake drive with a sufficient caller timeout.
+Command:
+  bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox "$F5_SANDBOX" --receipts "$F5_RECEIPTS" --wire enabled --keep
+Exit: 0
+Observed driver summary:
+  wire=enabled
+  turns=32
+  observations=32
+  fan_out_zero=15
+  fan_out_one=10
+  fan_out_many=7
+  prediction_reused=1
+  call_omo_agent_calls=11
+  unscorable_resume_calls=1
+  continuation_candidates=1
+  correlation_reliable=32
+  correlation_censored=0
+  correlation_overlap_ambiguous=0
+  jev_requests=31
+  records_created=32
+  records_evicted=0
+  in_flight=0
+  records_created_identity=ok
+  real_session_count_before=426
+  real_session_count_after=426
+
+5. Run the report against the independent sink.
+Command:
+  bun run script/jev-w1-report.ts --root "$F5_SANDBOX/home/.omo/jev"
+Exit: 0
+
+6. Assert live corpus structure from the reader and metric functions.
+Command:
+  bun -e '<read the F5 corpus; assert records identity, reliable and filled eligibility, resume exclusion, exact cardinality at most one; print metric structures and the SEALED_BY_VALUES constant>'
+Exit: 0
+Observed:
+  created=32 sealed=32 evicted=0 in_flight=0
+  sealedBy=next_turn,session_idle,seal_timeout,dispose,session_deleted
+  reliable=32 censored=0 overlap_ambiguous=0
+  filled_and_reliable=32 resume_only_excluded=1 scored=31
+  exact_cardinality_max=1
+  none_recall=0/15
+  none_precision=0/0
+
+7. Generate the repository synthetic corpus and render selected integrity lines.
+Command:
+  bun -e 'import { writeSyntheticCorpus } from "./script/jev-w1-report.fixtures.ts"; import { buildJevW1Report } from "./script/jev-w1-report.ts"; writeSyntheticCorpus(process.env.F5_SYNTHETIC); process.stdout.write(buildJevW1Report(process.env.F5_SYNTHETIC))'
+Exit: 0
+Observed:
+  records_created=35 sealed=32 evicted=1 in_flight=2
+  reliable=27 censored=2 overlap_ambiguous=3
+  resume_only_excluded=1 unknown_scored=1 mixed_resume_routes_retained=1
+  unknown_only_records=1
+  unrepresentable_route_mismatches=1
+  none_recall=4/5 rate=0.800000
+  none_precision=4/7 rate=0.571429
+
+8. Independently condition category and subagent coverage by their own Choice answer, without the separate coherence result.
+Command:
+  bun -e '<read live and synthetic corpora; apply the report eligibility; score each category or subagent answer only against its corresponding distinct target set>'
+Exit: 0
+Observed synthetic independent values:
+  category numerator=18 denominator=23 target_cardinality=15 weighted_numerator=21 weighted_denominator=26
+  subagent numerator=19 denominator=23 target_cardinality=7 weighted_numerator=20 weighted_denominator=24
+Reported synthetic category values:
+  category numerator=17 denominator=23 target_cardinality=15 weighted_numerator=20 weighted_denominator=26
+This one-count difference is the rejection finding.
+
+9. Assert the retained paid baseline fields without making a network call.
+Command:
+  bun -e '<read task-18-real-api-matrix.txt; assert resolved versioned model, question version, request ceiling, tokens, latency, four matrices, billing source or narrowed claim, all four scores, and explicit poor-score disclosure>'
+Exit: 0
+Observed:
+  resolved_model=jev-1.13.0
+  question_version=1
+  requests=17 of 17 allowed
+  input_tokens=19890
+  output_tokens=5658
+  latency_ms=105.711 to 242.373
+  confusion_matrices=intent,category,subagent,ambiguous
+  billing_source=https://docs.typesafe.ai/models
+  billing_quote_present=true
+  poor_accuracy_plainly_stated=true
+
+10. Remove the sandbox and check only receipt-owned PIDs and ports.
+Command:
+  rm -rf "$F5_SANDBOX"; while read -r pid; do kill -0 "$pid" 2>/dev/null && echo "SURVIVED $pid"; done < "$F5_RECEIPTS/pids"; while read -r port; do (exec 3<>"/dev/tcp/127.0.0.1/$port") 2>/dev/null && echo "PORT_STILL_BOUND $port"; done < "$F5_RECEIPTS/ports"; [ ! -d "$F5_SANDBOX" ]
+Exit: 0
+Output:
+  SANDBOX_REMOVED=ok
+No SURVIVED or PORT_STILL_BOUND line was printed.
+
+FULL LIVE DENOMINATOR BLOCK
+
+DENOMINATORS
+turns_seen=32
+turns_gated_out=0
+turns_synthetic=0
+records_created=32
+records_with_prediction=32
+records_sealed_by_next_turn=0
+records_sealed_by_session_idle=32
+records_sealed_by_seal_timeout=0
+records_sealed_by_dispose=0
+records_sealed_by_session_deleted=0
+records_evicted=0
+in_flight=0
+orphan_observations=0
+unscorable_resume_calls=1
+resume_only_records=1
+unscorable_unknown_calls=0
+unknown_only_records=0
+unrepresentable_route_mismatches=0
+dispatches_dropped=0
+invalid_answers=0
+incoherent_predictions=31
+malformed_lines=0
+malformed_write_rejections=0
+records_lost_to_cap=0
+sink_truncations=0
+prediction_reused=1
+truncated_input=0
+prediction_status_filled=32
+prediction_status_failed=0
+prediction_status_timeout=0
+prediction_status_not_dispatched=0
+correlation_status_reliable=32
+correlation_status_censored=0
+correlation_status_overlap_ambiguous=0
+counter_process_snapshots=1
+records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+
+LIVE ELIGIBILITY AND RATES
+
+ELIGIBILITY
+headline_eligibility correlation_status=reliable censored_excluded=0 overlap_ambiguous_excluded=0
+prediction_rate_eligibility filled=32 failed_excluded=0 timeout_excluded=0 not_dispatched_excluded=0
+scoring_audit resume_only_excluded=1 unknown_scored=0 mixed_resume_routes_retained=0
+scored_incorrect invalid=0 incoherent=31
+observed_delegations=attempts_not_successes
+minimum_data sealed_records=32 required=30 status=sufficient
+
+RATES
+exact_route_agreement numerator=0 denominator=26 rate=0.000000
+multi_route_turns=5
+category_coverage numerator=0 denominator=31 distinct_target_cardinality=11 rate=0.000000
+category_cardinality_weighted_coverage numerator=0 denominator=33 distinct_target_cardinality=11 rate=0.000000
+subagent_coverage numerator=0 denominator=31 distinct_target_cardinality=10 rate=0.000000
+subagent_cardinality_weighted_coverage numerator=0 denominator=32 distinct_target_cardinality=10 rate=0.000000
+none_recall numerator=0 denominator=15 rate=0.000000
+none_precision numerator=0 denominator=0 rate=insufficient data
+coherence_rate numerator=0 denominator=31 rate=0.000000
+
+PER-METRIC ASSESSMENT
+
+PASS: records_created identity. Live 32 = 32 sealed + 0 evicted + 0 in flight. Synthetic 35 = 32 sealed + 1 evicted + 2 in flight.
+
+PASS: eviction and sealing are disjoint by construction. IntentRoutingSealedBy and SEALED_BY_VALUES contain next_turn, session_idle, seal_timeout, dispose, and session_deleted. Neither contains evicted.
+
+PASS: headline eligibility. script/jev-w1-report-render.ts:113-115 selects reliable first, then filled, then excludes resume-only records before every calculateJevW1Metrics call. Censored and overlap_ambiguous counts are printed separately. Synthetic output proves 2 censored and 3 overlap records are excluded from headline scoring.
+
+PASS: resume-only exclusion. The live resume-only record is excluded before metrics, leaving 31 scored records from 32 eligible predictions. The synthetic resume-only record contributes to no rate numerator or denominator. Mixed resume plus substantive route records retain the substantive route.
+
+PASS: none recall and none precision names and conditioning. script/jev-w1-report-metrics.ts:119-126 conditions recall on actualNone and precision on predictedNone. Live denominators differ, 15 versus 0. The synthetic corpus supplies numeric rates that differ, recall 4/5 = 0.800000 and precision 4/7 = 0.571429.
+
+REJECT: per-question coverage computation. The renderer uses coverage labels and displays cardinality, but script/jev-w1-report-metrics.ts:88-93 adds prediction.coherent to each independent question's correctness. The synthetic category result is understated from 18/23 to 17/23, and its weighted numerator from 21 to 20, because the separate subagent answer is incoherent. This is a hidden conditioning rule and a duplicate penalty.
+
+PASS WITH DEFINITION NOTE: distinct-target cardinality is displayed beside category and subagent coverage. The cardinality-weighted variant uses max(1, target set size) as each turn's weight. This is a weighted binary set-membership rate, not target recall. Its label is acceptable only with that definition; it does not cure the rejected coherence gate.
+
+PASS: fixture-only labels. The report prints `FIXTURE-SCORED ONLY: no live harness ground truth`, then marks both intent_coverage and ambiguous_coverage as live_ground_truth=unavailable.
+
+PASS: exact route agreement cardinality restriction. calculateJevW1Metrics filters exact turns with routes.size < 2. The live assertion found maximum exact cardinality 1. Unknown records have scorable cardinality 0 but are forced incorrect by hasUnknown, preserving representability failure.
+
+PASS: resume and unknown separation. Core normalization returns unscorable_resume only for task_id resume calls and unknown for unrepresentable routes. The renderer excludes only resume-only records. Unknown records remain scored, increment unknown_only_records and unrepresentable_route_mismatches, and score incorrect. Synthetic output proves all three facts.
+
+PASS: paid baseline structure and billing. The model is resolved jev-1.13.0, not jev-latest. It records question version 1, 17 requests at the 17 request ceiling, token totals, latency range, per-fixture results, and all four confusion matrices. The billing statement includes an exact quote and source URL.
+
+PASS: accuracy disclosure. The retained fixture figures are intent 82.35%, category 70.59%, subagent 76.47%, and ambiguous 52.94% over 17 fixtures. The ambiguous score is near chance and below the 11/17 majority-label rate of 64.71%. The artifact places 52.94% in its own matrix heading and repeats it in WHY IT IS ENOUGH as a retained finding. It states that no accuracy threshold gates the result. No score was rounded up or omitted.
+
+SOURCE FILES READ
+
+- Main-checkout plan lines 270-281 and 296-318, plus todo 16 and todo 18 acceptance text
+- script/jev-w1-report-metrics.ts
+- script/jev-w1-report-render.ts
+- script/jev-w1-report.ts
+- script/jev-w1-report-reader.ts
+- script/jev-w1-report.fixtures.ts
+- script/jev-w1-report.test.ts
+- packages/jev-core/src/intent-routing-record.ts
+- packages/jev-core/src/intent-routing-normalization.ts
+- packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts
+- docs/jev/HANDOFF.md
+- .omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt
+
+NETWORK AND ISOLATION
+
+No paid harness was rerun. No Jev API network call was made. The drive used its local fake endpoint and dummy key. The real OpenCode session count stayed 426 before and after. No global process matcher was used. The F5 sandbox is removed. Every PID and port listed in the F5 receipts is inactive.
+
+ROUND 2 RE-VERIFICATION
+
+ROUND 2 VERDICT: APPROVE
+
+The round 1 coverage rejection is remediated. Per-question category and subagent coverage no longer depend on overall route coherence. The synthetic category result is now 18/23 and its cardinality-weighted result is 21/26. The affected fan_out=one, sealed_by=next_turn cell is now 2/2 for both category coverage variants.
+
+The todo-18 intent figure requires a permanent qualification. Intent accuracy 82.35% was measured against the superseded seven-option fixture question and is not a valid headline for the six-option production question. R1-accuracy-baseline-note.txt discloses that exact defect and says the retained aggregate must not be presented as a fresh measurement. Retaining the original paid artifact unchanged is acceptable historical evidence because the companion note is explicit and no current documentation publishes the stale figure. Any PR, release note, benchmark table, or current-baseline summary must show current intent accuracy as unverified or not measured. A new intent headline requires a separately authorized paid run against the six-option question and a new artifact. Category 70.59%, subagent 76.47%, and ambiguous 52.94% remain valid for their unchanged questions. The poor ambiguous score remains unrounded and visible.
+
+ROUND 2 COMMAND LOG
+
+1. Bind new isolated paths.
+Command:
+  F5_R2_SANDBOX="$(mktemp -d)"; F5_R2_RECEIPTS="$(mktemp -d)"
+Exit: 0
+
+2. Build a new corpus with the current branch.
+Command:
+  bash .omo/evidence/20260924-jev-w1/task-19-drive.sh --sandbox "$F5_R2_SANDBOX" --receipts "$F5_R2_RECEIPTS" --wire enabled --keep
+Exit: 0
+Observed:
+  turns=32
+  observations=32
+  counter_deltas=16
+  fan_out_zero=15
+  fan_out_one=10
+  fan_out_many=7
+  prediction_reused=1
+  call_omo_agent_calls=11
+  unscorable_resume_calls=1
+  correlation_reliable=32
+  correlation_censored=0
+  correlation_overlap_ambiguous=0
+  records_created=32
+  records_evicted=0
+  in_flight=0
+  records_created_identity=ok
+  real_session_count_before=430
+  real_session_count_after=430
+
+3. Run the report against the new sink.
+Command:
+  bun run script/jev-w1-report.ts --root "$F5_R2_SANDBOX/home/.omo/jev"
+Exit: 0
+
+4. Assert current live structure through the reader and metric functions.
+Command:
+  bun -e '<read the round 2 corpus; assert records identity, sealedBy disjointness, reliable eligibility, resume-only exclusion, and unknown visibility; print metrics>'
+Exit: 0
+Observed:
+  created=32 sealed=32 evicted=0 in_flight=0
+  sealedBy=next_turn,session_idle,seal_timeout,dispose,session_deleted
+  reliable=32 censored=0 overlap_ambiguous=0
+  eligible=32 resume_only_excluded=1 scored=31
+  unknown_only_records=7 unknown_scored=9
+
+5. Generate and render the current synthetic corpus.
+Command:
+  F5_SYNTHETIC="$F5_R2_RECEIPTS/synthetic-corpus" bun -e '<writeSyntheticCorpus; buildJevW1Report; assert corrected headline, cross-tab, none, and coherence figures>'
+Exit: 0
+Observed:
+  category_coverage numerator=18 denominator=23 distinct_target_cardinality=15 rate=0.782609
+  category_cardinality_weighted_coverage numerator=21 denominator=26 distinct_target_cardinality=15 rate=0.807692
+  fan_out=one sealed_by=next_turn records=2 exact_route_agreement=1/2:0.500000 category_coverage=2/2:1.000000 distinct_target_cardinality=2 category_cardinality_weighted_coverage=2/2:1.000000
+  none_recall numerator=4 denominator=5 rate=0.800000
+  none_precision numerator=4 denominator=7 rate=0.571429
+  coherence_rate numerator=22 denominator=23 rate=0.956522
+
+6. Run the report test.
+Command:
+  bun test script/jev-w1-report.test.ts
+Exit: 0
+Observed: 11 pass, 0 fail, 149 assertions.
+
+7. Run the corrected fixture and mock accuracy tests with the real API gate disabled.
+Command:
+  JEV_W1_REAL_API= bun test packages/jev-core/src/intent-routing-fixtures.test.ts packages/jev-core/src/intent-routing-accuracy.test.ts
+Exit: 0
+Observed: 15 pass, 1 skip, 0 fail, 81 assertions. The complete mock artifact used the corrected six-option intent vocabulary for 17 fixtures. networkCallCount=0 and requestCount=0. No paid or real Jev call occurred.
+
+8. Remove the new sandbox and check only receipt-owned PIDs and ports.
+Command:
+  rm -rf "$F5_R2_SANDBOX"; while read -r pid; do kill -0 "$pid" 2>/dev/null && echo "SURVIVED $pid"; done < "$F5_R2_RECEIPTS/pids"; while read -r port; do (exec 3<>"/dev/tcp/127.0.0.1/$port") 2>/dev/null && echo "PORT_STILL_BOUND $port"; done < "$F5_R2_RECEIPTS/ports"; [ ! -d "$F5_R2_SANDBOX" ]
+Exit: 0
+Output:
+  F5_R2_SANDBOX_REMOVED=ok
+No SURVIVED or PORT_STILL_BOUND line was printed.
+
+ROUND 2 LIVE DENOMINATORS
+
+turns_seen=32
+turns_gated_out=0
+turns_synthetic=0
+records_created=32
+records_with_prediction=32
+records_sealed_by_next_turn=0
+records_sealed_by_session_idle=32
+records_sealed_by_seal_timeout=0
+records_sealed_by_dispose=0
+records_sealed_by_session_deleted=0
+records_evicted=0
+in_flight=0
+orphan_observations=0
+unscorable_resume_calls=1
+resume_only_records=1
+unscorable_unknown_calls=12
+unknown_only_records=7
+unrepresentable_route_mismatches=9
+dispatches_dropped=0
+invalid_answers=0
+incoherent_predictions=31
+malformed_lines=0
+malformed_write_rejections=0
+records_lost_to_cap=0
+sink_truncations=0
+prediction_reused=1
+truncated_input=0
+prediction_status_filled=32
+prediction_status_failed=0
+prediction_status_timeout=0
+prediction_status_not_dispatched=0
+correlation_status_reliable=32
+correlation_status_censored=0
+correlation_status_overlap_ambiguous=0
+counter_process_snapshots=1
+records_created_identity sealed=32 evicted=0 in_flight=0 status=ok
+
+ROUND 2 LIVE ELIGIBILITY AND RATES
+
+headline_eligibility correlation_status=reliable censored_excluded=0 overlap_ambiguous_excluded=0
+prediction_rate_eligibility filled=32 failed_excluded=0 timeout_excluded=0 not_dispatched_excluded=0
+scoring_audit resume_only_excluded=1 unknown_scored=9 mixed_resume_routes_retained=0
+scored_incorrect invalid=0 incoherent=31
+observed_delegations=attempts_not_successes
+minimum_data sealed_records=32 required=30 status=sufficient
+
+exact_route_agreement numerator=0 denominator=30 rate=0.000000
+multi_route_turns=1
+category_coverage numerator=0 denominator=31 distinct_target_cardinality=0 rate=0.000000
+category_cardinality_weighted_coverage numerator=0 denominator=31 distinct_target_cardinality=0 rate=0.000000
+subagent_coverage numerator=0 denominator=31 distinct_target_cardinality=10 rate=0.000000
+subagent_cardinality_weighted_coverage numerator=0 denominator=32 distinct_target_cardinality=10 rate=0.000000
+none_recall numerator=0 denominator=15 rate=0.000000
+none_precision numerator=0 denominator=0 rate=insufficient data
+coherence_rate numerator=0 denominator=31 rate=0.000000
+
+ROUND 2 COMPUTATION AUDIT
+
+PASS: category and subagent coverage. script/jev-w1-report-metrics.ts:88-93 now checks only the corresponding answer validity, unknown status, and membership in the corresponding target set. prediction.coherent is absent. The round 1 duplicate penalty is removed.
+
+PASS: cardinality-weighted coverage. script/jev-w1-report-metrics.ts:100-114 consumes categoryCorrect or subagentCorrect after the coherence gate was removed. It uses the same per-question hit for both the ordinary and weighted numerator.
+
+PASS: none recall. script/jev-w1-report-metrics.ts:119 and :125 conditions the denominator on actualNone and the numerator on valid route answers plus predictedNone. It does not consume routeCorrect or coherent. The synthetic test that overrides coherent and routeCorrect to false while retaining a valid none prediction still yields 1/1.
+
+PASS: none precision. script/jev-w1-report-metrics.ts:120 and :126 conditions the denominator on predictedNone and the numerator on valid route answers plus actualNone. It does not consume routeCorrect or coherent. The same forced-neighbour test yields 1/1.
+
+PASS: exact route agreement. toScoredTurn computes routeCorrect at script/jev-w1-report-metrics.ts:96 with one explicit prediction.coherent requirement. calculateJevW1Metrics uses routeCorrect once at :122 after restricting observed route cardinality to 0 or 1. Per-question coverage and none metrics do not reuse routeCorrect.
+
+PASS: coherence rate. script/jev-w1-report-metrics.ts:127 counts coherent directly over scored turns. script/jev-w1-report-render.ts:140 renders it independently. The corrected coverage figures changed while synthetic coherence stayed 22/23 and exact route agreement stayed 12/19.
+
+PASS: records identity and seal disjointness. The new corpus has 32 = 32 sealed + 0 evicted + 0 in flight. SEALED_BY_VALUES still excludes evicted.
+
+PASS: reliable-only eligibility. All 32 new records are reliable. The report separately prints censored_excluded=0 and overlap_ambiguous_excluded=0 before scoring.
+
+PASS: resume and unknown separation. One resume-only record is excluded, leaving 31 scored turns. Sink and normalization changes make unknown behavior visible in this corpus: 12 unknown calls, 7 unknown-only records, and 9 scored unrepresentable mismatches. Unknown records remain in scoring instead of being excluded with resume.
+
+ROUND 2 BASELINE JUDGMENT
+
+The production intent vocabulary is research, implementation, investigation, evaluation, fix, and open-ended. The corrected fixture vocabulary is byte-for-byte the same six names, and intent-routing-fixtures.test.ts compares the fixture list against createJevIntentRoutingVocabulary(). The old paid run instead asked implement, investigate, explain, acknowledge, continue, review, and author.
+
+The old intent 82.35% is stale and cannot describe the shipping question. Publishing it as current production intent accuracy would be a measurement-integrity blocker. The existing R1 note is adequate for preserving the immutable paid artifact as historical evidence because it names both vocabularies, says the figures are not comparable, states the paid run was not repeated, and forbids presenting the retained aggregate as fresh. The note does not turn 82.35% into a current result.
+
+Required presentation from this point:
+- Current production intent accuracy: unverified or not measured.
+- Historical seven-option intent result: 82.35%, stale, not comparable to the shipping six-option question.
+- Category accuracy: 70.59%, still valid for the unchanged category question.
+- Subagent accuracy: 76.47%, still valid for the unchanged subagent question.
+- Ambiguous accuracy: 52.94%, still valid for the unchanged ambiguous question and near chance.
+- Any new current intent percentage requires a separately authorized paid run and a new evidence artifact. It must not overwrite task-18.
+
+Round 1 line 210 is superseded only for the intent interpretation. Its category, subagent, ambiguous, and poor-score disclosure findings remain valid. The intent 82.35% must now be read only as the historical seven-option result described above.
+
+ROUND 2 NETWORK AND ISOLATION
+
+No paid harness was rerun. No real Jev API call was made. The driver used a local fake endpoint and a dummy key. The mock accuracy run recorded zero network requests. The real OpenCode session count remained 430. No global process matcher was used. The round 2 sandbox is removed, and every PID and port listed in the round 2 receipts is inactive.
+
+ROUND 3 TARGETED RE-VERIFICATION
+
+ROUND 3 VERDICT: APPROVE
+
+SCOPE AND COMMAND
+
+This round inspected the category normalization change, its capture wiring, the unchanged report treatment of unknown and resume, the round 2 corpus inputs, and the R1, R3, and R4 staleness notes. It did not run the 80-minute driver because the round 2 corpus cannot exercise the changed branch.
+
+Focused command:
+  bun test packages/jev-core/src/intent-routing-normalization.test.ts packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts script/jev-w1-report.test.ts
+Exit: 0
+Observed: 42 pass, 0 fail, 263 assertions across 3 files.
+
+CATEGORY NORMALIZATION CONSEQUENCE
+
+PASS: offered custom categories are representable routes. createJevIntentRouting receives one runtime vocabulary. It sends args.vocab to the prediction dispatch engine at packages/omo-opencode/src/features/jev/intent-routing.ts:114-123 and sends the same args.vocab.categories to capture at :177-185. captureIntentRoutingDelegationAttempt forwards that offered list to normalizeObservedDelegation at packages/omo-opencode/src/features/jev/intent-routing-capture.ts:122-135. There is no second hardcoded category decision in this path.
+
+PASS: normalization uses the offered set. packages/jev-core/src/intent-routing-normalization.ts:74-99 accepts a category value only when one offered entry has the same name. An offered custom value is emitted as routeClass category with its own normalizedCategory. This restores the intended comparison because the model and the harness observation are now judged against the same runtime option set.
+
+PASS: the change removes false representability failures rather than hiding real ones. Before this fix, an offered custom category was forced to routeClass unknown. The report then incremented unknown_only_records or unrepresentable_route_mismatches, set hasUnknown, omitted the real category target, and forced category coverage incorrect. Those effects made the unknown counts too high and category coverage too low. An offered custom category is now a scorable category target, so those false penalties disappear.
+
+PASS: unknown remains reachable and meaningful. A category name absent from the offered runtime vocabulary still returns routeClass unknown at intent-routing-normalization.ts:88-90. Invalid non-string or empty fields, a category combined with requested_subagent_type, a category combined with an incompatible subagent_type, and a subagent outside the supported subagent vocabulary also remain unknown. The focused normalization test proves deep and project-special are category routes when offered, while never-offered stays unknown.
+
+UNKNOWN AND RESUME REPORT HANDLING
+
+PASS: report semantics are unchanged and the buckets remain separate. script/jev-w1-report-metrics.ts:42-49 defines resume-only as every observation being unscorable_resume. Unknown-only first removes resume observations, then requires every substantive observation to be unknown. The predicates cannot classify the same unknown-only record as resume-only.
+
+PASS: unknown stays in scoring. script/jev-w1-report-render.ts:84-88 prints unscorable_resume_calls, resume_only_records, unscorable_unknown_calls, unknown_only_records, and unrepresentable_route_mismatches as separate counters. Its scoring path at :109-115 excludes only isResumeOnly. script/jev-w1-report-metrics.ts:63-75 sets hasUnknown for unknown routes, keeps the record, prevents unknown from becoming actual none, and scores the unrepresentable route as incorrect.
+
+PASS: resume remains excluded for the original reason. A task_id-only call still normalizes to unscorable_resume, has its own counter, and is removed before turn-level rates. The capture test separately proves task_id increments unscorableResumeCalls and never enters none.
+
+ROUND 2 CORPUS RE-DRIVE DECISION
+
+No re-drive was necessary. The round 2 runtime offered the built-in category names quick, deep, and writing in task-19-drive.sh:241-245. Its scripted category calls used qa-quick, qa-deep, and qa-writing in task-19-turn-script.jsonl. Those qa-prefixed values were never in the offered vocabulary. They were unknown before this commit and remain unknown after it. The corpus contains no offered custom category that could change from unknown to category under the new branch.
+
+The round 2 figures therefore stand, including unscorable_unknown_calls=12, unknown_only_records=7, unrepresentable_route_mismatches=9, category distinct-target cardinality 0, and category coverage 0/31. Those poor figures are not softened. They reflect never-offered scripted category values, not the custom-category defect that this commit fixes.
+
+STALENESS DISCLOSURE JUDGMENT
+
+PASS: R1, R3, and R4 are collectively adequate when read through the manifest and this verifier record. MANIFEST.tsv indexes all three notes and names the exact superseded claim in each description.
+
+- R1 states that intent 82.35% measured the old seven-option question, forbids presenting it as fresh for the six-option production question, and records that no paid rerun occurred. Current production intent accuracy remains unverified. Category 70.59%, subagent 76.47%, and ambiguous 52.94% remain valid for their unchanged questions. Ambiguous 52.94% remains near chance and must stay visible.
+- R3 names every old and corrected synthetic coverage figure, identifies historical RED output, and lists neighbouring figures that did not change. Current category coverage is 18/23 and current cardinality-weighted category coverage is 21/26.
+- R4 identifies the old todo-19 turns_synthetic=0 as stale even though its numeric value is zero, names F3 ROUND 2 as current evidence, and enumerates the unaffected todo-19 counts. F5 ROUND 2 also independently observed turns_synthetic=0 after the synthetic-accounting fix.
+
+The story is not too fragmented to present honestly because each note names its source artifact, the invalid or superseded field, the replacement evidence, and the figures that remain valid. A reviewer can discover all three from MANIFEST.tsv without guessing. The presentation remains acceptable only if summaries cite the notes rather than lifting old task-18 intent accuracy, old task-16 category coverage, or old task-19 synthetic accounting as current values.
+
+ROUND 3 NETWORK AND ISOLATION
+
+No paid harness was run. No real Jev API call was made. No OpenCode process, server, sandbox, or port was created in round 3. No global process matcher was used. There was therefore no round 3 process or sandbox to tear down.

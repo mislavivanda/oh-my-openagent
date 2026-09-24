@@ -1,0 +1,1192 @@
+F2 CODE QUALITY VERIFICATION
+
+VERDICT: REJECT
+
+===============================================================================
+ROUND 2 RE-VERIFICATION
+===============================================================================
+
+ROUND 2 VERDICT: REJECT
+
+ROUND 2 WORKTREE HYGIENE
+
+The initial and final `GIT_MASTER=1 git status --short` outputs contain the same five generated paths recorded in round 1:
+
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+
+No source, test, documentation, or evidence file other than F2-quality.txt was edited by F2 round 2.
+
+AUDIT TARGET
+
+worktree: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+branch: jev/w1-fffe
+head: f9bc61f9e09397fd96385acb492eff6479eed4c7
+remediation commits:
+- c4191702c fix(jev-core): reject unknown categories and align the fixture intent vocabulary
+- b5ec772b0 fix(jev): stop gating per-question coverage on prediction coherence
+- f9bc61f9e fix(jev): create the sink lazily, count synthetic turns, and reach sealing past idle dedup
+
+ROUND 2 REQUIRED GATES
+
+1. Typecheck
+
+command:
+bun run typecheck
+
+exit: 0
+
+output:
+$ tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages
+$ tsgo --noEmit -p script/tsconfig.json
+$ tsgo --noEmit for every registered package, including jev-core and omo-opencode
+
+result: PASS
+
+2. Full Bun suite with baseline-relative comparison
+
+command:
+bun test --timeout 20000
+
+exit: 1, expected from the frozen Bun 1.4.0 baseline
+
+output summary:
+bun test v1.4.0 (34cbb9a40)
+12926 pass
+4 skip
+22 fail
+1 snapshots, 83548 expect() calls
+Ran 12952 tests across 1698 files. [122.72s]
+
+canonical failure comparison output:
+current_failure_count=22
+new_failure_count=0
+missing_baseline_failure_count=0
+byte_for_byte_sorted_cmp_exit=0
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  /tmp/jev-w1-f2-r2-current-failures.txt
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  .omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt
+
+result: PASS under the required baseline-relative rule
+
+3. Focused architecture audits
+
+command:
+bun test script/shared-core-extraction-guard.test.ts script/package-registration-audit.test.ts packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+
+exit: 0
+
+output:
+bun test v1.4.0 (34cbb9a40)
+25 pass
+0 fail
+37 expect() calls
+Ran 25 tests across 3 files. [459.00ms]
+
+result: PASS
+
+4. Forbidden TypeScript suppression patterns, literal required command
+
+command:
+grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(GIT_MASTER=1 git diff --name-only jev/foundation..jev/w1-fffe -- '*.ts')
+
+exit: 2
+
+output:
+grep: packages/omo-opencode/src/testing/create-plugin-module.test.ts: No such file or directory
+
+result: FAIL. The remediation deleted a test file, and the literal full-branch gate now passes a deleted path to grep.
+
+semantic follow-up command:
+grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(GIT_MASTER=1 git diff --diff-filter=ACMR --name-only jev/foundation..jev/w1-fffe -- '*.ts')
+
+exit: 1, expected for no matches
+output: none
+
+The current files contain no forbidden suppression pattern, but the required literal gate is not green.
+
+5. Forbidden punctuation and filler patterns, literal required command
+
+command:
+grep -rnP '[\x{2014}\x{2013}]|\b(simply|obviously|clearly|moreover|furthermore)\b' $(GIT_MASTER=1 git diff --name-only jev/foundation..jev/w1-fffe)
+
+exit: 2
+
+output:
+grep: packages/omo-opencode/src/testing/create-plugin-module.test.ts: No such file or directory
+
+result: FAIL for the same deleted-path reason.
+
+semantic follow-up command using `--diff-filter=ACMR`:
+exit: 1, expected for no matches
+output: none
+
+The current files contain no prohibited punctuation or filler hit. No generated schema hit occurred.
+
+6. Third-party notice headings
+
+command:
+bash -c 'node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt'
+
+exit: 0
+output: none
+
+result: PASS
+
+7. Build
+
+command:
+bun run build
+
+exit: 0
+
+output summary:
+All materialize, plugin, CLI, schema, declaration, LSP, Senpi, and Codex build stages completed.
+Final line: build: all steps completed
+
+result: PASS
+
+8. LSP diagnostics
+
+files checked:
+- packages/jev-core/src/intent-routing-normalization.ts
+- packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts
+- packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+- packages/omo-opencode/src/plugin/event.ts
+- script/jev-w1-report-metrics.ts
+
+tool output for each:
+Request initialize failed with message: The TypeScript of the workspace (TypeScript 7.0.2 at "/home/opencode/projects/oh-my-openagent-jev-w1-fffe/node_modules/typescript/lib") provides no tsserver.js. No other valid TypeScript installation was found. Exiting.
+
+The repo-native typecheck passed. LSP remains unavailable for the same environment reason recorded in round 1. This is not a rejection reason.
+
+ROUND 2 REMEDIATION REVIEW
+
+1. Unknown-category normalization
+
+original probe command:
+bun -e 'import { normalizeObservedDelegation } from "./packages/jev-core/src/intent-routing-normalization"; console.log(JSON.stringify(normalizeObservedDelegation({ category: "not-a-runtime-category" })))'
+
+exit: 0
+output:
+{"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}
+
+focused test command:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts
+
+exit: 0
+output:
+19 pass
+0 fail
+39 expect() calls
+
+The fixed eight built-in categories now reject an unknown literal. The implementation-presence test is gone and the new case is behavioral. This part of the original defect is fixed.
+
+New blocking regression found while tracing the runtime vocabulary:
+
+command:
+bun -e with createAvailableCategories, createJevIntentRoutingVocabulary, and normalizeObservedDelegation for category `project-special`
+
+exit: 0
+output:
+{"offeredByProduction":true,"observed":{"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}}
+
+packages/omo-opencode/src/plugin/available-categories.ts:6-23 merges user-defined categories into the production options. packages/omo-opencode/src/features/jev/intent-routing-vocabulary.ts:19-29 sends those dynamic options to Jev. packages/jev-core/src/intent-routing-normalization.ts:6-15 and 85-86 accepts only the eight built-ins. A valid configured category can therefore be predicted by the shipped question but is always recorded as unrepresentable when the harness chooses it. The remediation replaced the original false acceptance with a false rejection for custom categories.
+
+2. Synthetic messages
+
+independent probe command:
+bun -e with createChatMessageHandler, createIntentRoutingSealController, a synthetic text part, and a counting dispatcher
+
+exit: 0
+output:
+{"turnsSynthetic":1,"turnCount":0,"dispatchCalls":0}
+
+focused wiring test command:
+bun test packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts
+
+exit: 0
+output:
+5 pass
+0 fail
+21 expect() calls
+
+The handler now calls observe before its synthetic-message return. The controller records one synthetic turn, creates no live turn, seals nothing, and dispatches no prediction. Original defect 2 is fixed.
+
+3. Fixture intent vocabulary and stale paid baseline
+
+source review:
+- packages/jev-core/src/intent-routing-fixtures.ts:25-32 now uses research, implementation, investigation, evaluation, fix, open-ended.
+- packages/omo-opencode/src/features/jev/intent-routing-vocabulary.ts:10-17 uses the same six choices.
+- packages/jev-core/src/intent-routing-fixtures.test.ts:51-58 compares fixture and production choices.
+
+The mock full-suite artifact used the corrected six-choice vocabulary. The drift test is behavioral and failed-first evidence is retained.
+
+Stale paid figure judgment: ADEQUATE DISCLOSURE.
+
+.omo/evidence/20260924-jev-w1/R1-accuracy-baseline-note.txt states that the retained 82.35 percent intent figure and confusion matrix measured the old seven-choice question, are not comparable to the corrected shipped question, and must not be presented as a fresh measurement. The historical paid artifact was left unchanged, the paid harness was not rerun, and the staleness note is indexed immediately after the original artifact in MANIFEST.tsv. Preserving the paid artifact and adding an append-only superseding note is the correct evidence treatment. No accuracy threshold gates this observe-only wire. Original defect 3 is fixed, and the stale paid figure is not a blocker after this disclosure.
+
+4. Idle dedup ordering
+
+source reading:
+packages/omo-opencode/src/plugin/event.ts:137-142 calls `intentRouting.onSessionIdle(sessionID)` before `shouldDispatchIdleEvent` can return.
+
+regression execution:
+packages/omo-opencode/src/plugin/intent-routing-handler-wiring.test.ts passed its duplicate-idle case. It drives two identical real idle events, asserts two intent-routing seal triggers, and asserts one dispatch to the shared idle consumer.
+
+Original defect 4 is fixed. Intent routing observes every real idle edge while existing consumers retain dedup behavior.
+
+5. Split modules, waivers, and test preservation
+
+targeted command:
+bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts packages/omo-opencode/src/testing/create-plugin-module-startup.test.ts packages/omo-opencode/src/testing/create-plugin-module-runtime-skills.test.ts packages/omo-opencode/src/testing/create-plugin-module-migration.test.ts packages/omo-opencode/src/testing/create-plugin-module-lifecycle.test.ts script/jev-w1-report.test.ts
+
+exit: 0
+output:
+56 pass
+0 fail
+274 expect() calls
+
+Plugin-init preservation check:
+old_test_count=15
+new_test_count=15
+old_expect_calls=39
+new_expect_calls=39
+
+No plugin-init test case or assertion count was removed by the split. The renamed tests flatten their former describe context into full given-style names.
+
+Sink split assessment:
+- intent-routing-sink.ts: 248 lines, mutable writer and epoch state
+- intent-routing-sink-contract.ts: 74 lines, constants and public contract
+- intent-routing-sink-reader.ts: 64 lines, home resolution and tolerant reads
+
+The reader and contract boundaries are coherent. Lazy writable state prevents an empty enabled sink from creating a file, while malformed writes and positive counters still create retained accounting. The split preserves the original append, counter, truncation, and permission paths. ACCEPT.
+
+Turn-store split assessment:
+- intent-routing-turn-store.ts: 398 lines
+- intent-routing-turn-store-contract.ts: 104 lines
+- intent-routing-turn-identity.ts: 60 lines
+- intent-routing-turn-counters.ts: 22 lines
+- intent-routing-turn-lru.ts: 33 lines
+
+The pure identity, counter, LRU, and contract concerns moved out. The remaining 398-line closure owns sessions, pending reservation tokens, waiter ordinals, timeout handles, completion, eviction, seal state, and finalization. Moving those mutable transitions across modules would require shared mutable identity or a larger object protocol. The waiver names that failure mode. Because the 200-line rule is soft and a substantive split already removed every pure concern, I ACCEPT the 398-line turn-store waiver.
+
+Retained waiver evaluation:
+
+ACCEPT:
+- intent-routing-seal.test.ts: one ordered state-machine matrix and shared fake clock/sink
+- intent-routing-seal.ts: one window and deferred-finalization controller
+- intent-routing-sink.test.ts: one temp-home filesystem and JSONL integration contract
+- intent-routing-turn-store.ts: one reservation and finalization identity after pure concern extraction
+- intent-routing.ts: one shared adapter lifecycle identity
+- plugin/event.ts: one ordered idle-dedup and lifecycle handler
+- testing/create-plugin-module.ts: one observable construction and disposal sequence
+
+REJECT:
+- packages/jev-core/src/intent-routing-accuracy.test.ts:1 still says only that the work plan requires one file. At 517 lines, this is the same non-architectural waiver rejected in round 1.
+- script/jev-w1-report.test.ts:1 still carries a SIZE_OK waiver at 156 lines, below the 200-line soft limit. It remains stale and unnecessary.
+
+The remediation report says seven waivers remain because it reviewed only packages/omo-opencode. The full branch still contains nine added SIZE_OK annotations. Two round-1 rejections were not remediated. packages/jev-core/src/intent-routing.test.ts also remains 537 lines without a waiver and still combines question-builder and decision-runner suites.
+
+Original size defect 5 is improved but not fully fixed. The 398-line turn store is accepted. The unchanged accuracy waiver, stale report waiver, and 537-line combined core test remain blocking convention defects.
+
+6. Non-behavioral normalization test
+
+packages/jev-core/src/intent-routing-normalization.test.ts removed the implementation-presence test. The new unrecognized-category table row executes normalization and asserts its result. Original defect 6 is fixed.
+
+7. Per-question coverage remediation
+
+script/jev-w1-report-metrics.ts:88-93 now computes category and subagent correctness independently of joint-route coherence. Exact route agreement still requires coherence at line 96. None recall and precision now use their own conditioning sets at lines 125-126. The updated report tests passed. The split did not weaken these metrics.
+
+ROUND 2 BLOCKING DEFECTS
+
+1. Valid user-defined categories are offered by the production Jev question but normalized as unknown.
+
+files and lines:
+packages/omo-opencode/src/plugin/available-categories.ts:6-23
+packages/omo-opencode/src/features/jev/intent-routing-vocabulary.ts:19-29
+packages/jev-core/src/intent-routing-normalization.ts:6-15,85-86
+
+demonstration:
+The direct probe printed `{"offeredByProduction":true,"observed":{"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}}` for configured category `project-special`.
+
+2. The literal required grep gates are not green after the test-file deletion.
+
+command and output:
+Both required grep commands exit 2 and print `grep: packages/omo-opencode/src/testing/create-plugin-module.test.ts: No such file or directory`. Filtered follow-ups prove the remaining files have no banned match, but the mandated full-branch invocations do not print nothing.
+
+3. Round-1 file-size convention defects remain outside the seven reviewed omo-opencode waivers.
+
+files and lines:
+packages/jev-core/src/intent-routing-accuracy.test.ts:1, 517 lines
+script/jev-w1-report.test.ts:1, 156 lines
+packages/jev-core/src/intent-routing.test.ts:1-537
+
+demonstration:
+The branch contains nine added SIZE_OK annotations, not seven. The accuracy waiver still cites the plan, the report waiver remains below the limit, and the 537-line combined core test remains unsplit.
+
+ROUND 2 FINAL DECISION
+
+Typecheck, build, audit tests, notices, focused remediation tests, and the baseline-relative full suite pass. new_failure_count=0 and missing_baseline_failure_count=0. Synthetic accounting, idle ordering, fixture vocabulary drift, stale paid-result disclosure, per-question coverage, plugin-init test splitting, and the non-behavioral test are accepted. Approval remains blocked by custom-category misclassification, two literal grep gate failures, and unresolved file-size convention defects.
+
+ROUND 2 VERDICT: REJECT
+
+AUDIT TARGET
+
+worktree: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+branch: jev/w1-fffe
+head: a5a47368c446b5bc7cf25a8e0320c67d1bda5fd9
+base: jev/foundation at 82460563f
+
+BASELINE RULE
+
+The literal F2 requirement that `bun test --timeout 20000` exit 0 is not achievable on this machine. Bun is 1.4.0, while CI pins 1.3.12. The frozen foundation baseline contains 22 known failures. I applied the plan's baseline-relative rule: canonicalize the current failing-test set as sorted `file<TAB>test-name` lines, compare those bytes with task-1-baseline-failures.txt, and require both new_failure_count and missing_baseline_failure_count to be 0. This rule prevents both a new regression and the silent disappearance of a baseline failure.
+
+REQUIRED GATES
+
+1. Typecheck
+
+command:
+bun run typecheck
+
+exit: 0
+
+output:
+$ tsgo --noEmit && bun run typecheck:script && bun run typecheck:packages
+$ tsgo --noEmit -p script/tsconfig.json
+$ tsgo --noEmit -p packages/rules-engine/tsconfig.json && tsgo --noEmit -p packages/delegate-core/tsconfig.json && tsgo --noEmit -p packages/jev-core/tsconfig.json && tsgo --noEmit -p packages/mcp-stdio-core/tsconfig.json && tsgo --noEmit -p packages/mcp-client-core/tsconfig.json && tsgo --noEmit -p packages/git-bash-mcp/tsconfig.json && tsgo --noEmit -p packages/lsp-core/tsconfig.json && tsgo --noEmit -p packages/utils/tsconfig.json && tsgo --noEmit -p packages/model-core/tsconfig.json && tsgo --noEmit -p packages/omo-config-core/tsconfig.json && tsgo --noEmit -p packages/prompts-core/tsconfig.json && tsgo --noEmit -p packages/comment-checker-core/tsconfig.json && tsgo --noEmit -p packages/hashline-core/tsconfig.json && tsgo --noEmit -p packages/tmux-core/tsconfig.json && tsgo --noEmit -p packages/team-core/tsconfig.json && tsgo --noEmit -p packages/openclaw-core/tsconfig.json && tsgo --noEmit -p packages/boulder-state/tsconfig.json && tsgo --noEmit -p packages/telemetry-core/tsconfig.json && tsgo --noEmit -p packages/claude-code-compat-core/tsconfig.json && tsgo --noEmit -p packages/skills-loader-core/tsconfig.json && tsgo --noEmit -p packages/agents-md-core/tsconfig.json && tsgo --noEmit -p packages/omo-codex/plugin/shared/tsconfig.json && tsgo --noEmit -p packages/omo-codex/tsconfig.json && tsgo --noEmit -p packages/omo-senpi/tsconfig.json && tsgo --noEmit -p packages/senpi-task/tsconfig.json && tsgo --noEmit -p packages/pi-goal/tsconfig.json && tsgo --noEmit -p packages/pi-webfetch/tsconfig.json && tsgo --noEmit -p packages/omo-opencode/tsconfig.json
+
+result: PASS
+
+2. Full Bun suite with baseline-relative comparison
+
+command:
+bun test --timeout 20000
+
+exit: 1, expected from the frozen Bun 1.4.0 baseline
+
+output summary:
+bun test v1.4.0 (34cbb9a40)
+12918 pass
+4 skip
+22 fail
+1 snapshots, 85264 expect() calls
+Ran 12944 tests across 1695 files. [126.06s]
+
+current canonical failure-set extraction output:
+current_failure_count=22
+new_failure_count=0
+missing_baseline_failure_count=0
+
+canonical byte comparison command:
+cmp -s /tmp/jev-w1-f2-current-failures-sorted.txt .omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt
+
+exit: 0
+
+output:
+byte_for_byte_sorted_cmp_exit=0
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  /tmp/jev-w1-f2-current-failures-sorted.txt
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  .omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt
+
+The unsorted execution-order extraction had the same 22-member set but a different order. The baseline file is sorted, so sorting is the canonical set representation used for the byte comparison.
+
+result: PASS under the required baseline-relative rule
+
+3. Focused architecture audits
+
+command:
+bun test script/shared-core-extraction-guard.test.ts script/package-registration-audit.test.ts packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+
+exit: 0
+
+output:
+bun test v1.4.0 (34cbb9a40)
+25 pass
+0 fail
+37 expect() calls
+Ran 25 tests across 3 files. [457.00ms]
+
+result: PASS
+
+4. Forbidden TypeScript suppression patterns
+
+command:
+grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(GIT_MASTER=1 git diff --name-only jev/foundation..jev/w1-fffe -- '*.ts')
+
+exit: 1, expected for no matches
+output: none
+
+result: PASS
+
+5. Forbidden punctuation and filler patterns
+
+command:
+grep -rnP '[\x{2014}\x{2013}]|\b(simply|obviously|clearly|moreover|furthermore)\b' $(GIT_MASTER=1 git diff --name-only jev/foundation..jev/w1-fffe)
+
+exit: 1, expected for no matches
+output: none
+
+No generated schema hit occurred.
+
+result: PASS
+
+6. Third-party notice headings
+
+command:
+bash -c 'node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt'
+
+exit: 0
+output: none
+
+result: PASS
+
+ADDITIONAL VERIFICATION
+
+Build command:
+bun run build
+
+exit: 0
+
+output summary:
+build:materialize completed
+build:git-bash-mcp completed
+build:tui completed
+build:codex-install completed
+build:index completed
+build:cli completed
+build:node-require-shim completed
+build:cli-node completed
+build:shared-skills-assets completed
+build:schema completed
+build:omo-schema completed
+build:declarations completed
+build:lsp-tools-mcp completed
+build:lsp-daemon completed
+build:senpi-plugin completed
+build:codex-plugin completed
+build: all steps completed
+
+result: PASS
+
+LSP diagnostics were requested for packages/jev-core/src, packages/omo-opencode/src/features/jev, packages/omo-opencode/src/plugin, and script.
+
+tool result for each scope:
+Request initialize failed with message: The TypeScript of the workspace (TypeScript 7.0.2 at "/home/opencode/projects/oh-my-openagent-jev-w1-fffe/node_modules/typescript/lib") provides no tsserver.js. No other valid TypeScript installation was found. Exiting.
+
+LSP could not initialize in this workspace because the repo uses the native TypeScript preview without tsserver.js. No LSP diagnostic result was available. The repo-native `bun run typecheck` command passed with exit 0. This is an environment limitation, not the reason for rejection.
+
+Empty-catch scan command:
+python3 scan over every changed TypeScript file using `catch\s*(?:\([^)]*\))?\s*\{\s*\}`
+
+exit: 0
+output:
+empty_catch_count=0
+
+Unknown-category behavior probe:
+bun -e 'import { normalizeObservedDelegation } from "./packages/jev-core/src/intent-routing-normalization"; console.log(JSON.stringify(normalizeObservedDelegation({ category: "not-a-runtime-category" })))'
+
+exit: 0
+output:
+{"normalizedCategory":"not-a-runtime-category","normalizedSubagent":"none","routeClass":"category"}
+
+Synthetic-message wiring probe:
+bun -e with createChatMessageHandler, an injected intentRouting.observe counter, and a synthetic text part
+
+exit: 0
+output:
+observe_calls=0
+
+TEST CHANGE REVIEW
+
+command:
+GIT_MASTER=1 git diff jev/foundation..jev/w1-fffe --stat -- '*.test.ts'
+
+exit: 0
+
+output summary:
+20 test files changed
+4234 insertions
+4 deletions
+
+The only modified pre-existing test files were packages/omo-opencode/src/config/schema/jev.test.ts, packages/omo-opencode/src/plugin-dispose.test.ts, and packages/omo-opencode/src/testing/create-plugin-module.test.ts. Direct diff review found no deleted assertion. The four deletions are import/default-shape or dependency-construction replacements made to add the new wire. All other changed test files are additions. No existing test was deleted or weakened to make a gate pass.
+
+SOURCE QUALITY ASSESSMENT
+
+Core implementation:
+
+packages/jev-core/src/intent-routing.ts
+The question builder is typed, harness-neutral, and validates blank, duplicate, reserved, empty, and oversized vocabularies. Error handling is explicit. The file name is specific.
+
+packages/jev-core/src/intent-routing-record.ts
+The discriminated record union is readable and bounded. Continuation classification is deterministic.
+
+packages/jev-core/src/intent-routing-record-validation.ts
+Validation checks exact keys, finite values, enums, hashes, and record shape. It contains no empty catch and no harness import.
+
+packages/jev-core/src/intent-routing-counter-reader.ts
+The highest-epoch and highest-sequence selection is concise and correct.
+
+packages/jev-core/src/intent-routing-decision.ts
+Unavailable and thrown backend outcomes degrade to explicit failed results. Raw invalid answer fields are retained. The catch body is not empty.
+
+packages/jev-core/src/intent-routing-normalization.ts
+The discriminated derived route is readable, but category values are never checked against the runtime vocabulary. This is blocking defect 1.
+
+packages/jev-core/src/intent-routing-fixtures.ts
+The fixture corpus is hand-written and includes multilingual, continuation, ambiguous, and adversarial turns. Its intent labels do not match the production intent vocabulary. This is blocking defect 3.
+
+packages/jev-core/src/index.ts
+The barrel contains exports only.
+
+OpenCode adapter:
+
+packages/omo-opencode/src/features/jev/intent-routing-plugin-factory.ts
+The factory maps runtime categories into a shared adapter instance.
+
+packages/omo-opencode/src/features/jev/intent-routing-dispatch.ts
+Work is deferred to an unrefed macrotask, in-flight work is bounded, and rejection paths resolve to failed results without an unhandled rejection.
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.ts
+Capture is allowlisted, preserves raw args, and records attempts before tool execution.
+
+packages/omo-opencode/src/features/jev/intent-routing-session-gate.ts
+The fail-closed gate is short and shared between dispatch and capture.
+
+packages/omo-opencode/src/features/jev/intent-routing-seal-record.ts
+Materialization keeps bounded prompt text and complete counters without mutating turns.
+
+packages/omo-opencode/src/features/jev/intent-routing-seal.ts
+Logical seal and deferred finalization are separated. Async writes are bounded at disposal. The controller's synthetic-turn path is sound in isolation, but production chat wiring does not invoke it.
+
+packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+Permissions, per-process files, line limits, epochs, size caps, and malformed-tail tolerance are implemented. The module combines reader, process identity, scheduler, writer, truncation, and counter translation in 325 lines. Its size waiver is not accepted.
+
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts
+The state transitions and two-tier reuse are explicit, but the 508-line module also contains public types, normalization, hashing, key creation, counters, LRU eviction, prediction reservation, sealing, and cleanup. Its size waiver is not accepted.
+
+packages/omo-opencode/src/features/jev/intent-routing-vocabulary.ts
+The production six-intent vocabulary is concise. It conflicts with the accuracy fixture vocabulary.
+
+packages/omo-opencode/src/features/jev/intent-routing.ts
+One shared object owns the lifecycle and failures are isolated. The 219-line size waiver is accepted.
+
+packages/omo-opencode/src/features/jev/index.ts
+The barrel contains exports only.
+
+Report implementation:
+
+script/jev-w1-report-reader.ts
+The reader validates lines and resolves process counter snapshots before summing across processes.
+
+script/jev-w1-report-metrics.ts
+Resume-only, unknown, none precision, none recall, coverage, weighted coverage, coherence, and exact route agreement use distinct denominators.
+
+script/jev-w1-report-render.ts
+Denominators precede rates, integrity identity is checked, censored and overlap records are excluded, and insufficient data is explicit.
+
+script/jev-w1-report.fixtures.ts
+The generated corpus is deterministic and covers the required cohorts.
+
+script/jev-w1-report.ts
+The entry is a script, not a CLI subcommand, and argument errors are typed.
+
+Plugin wiring:
+
+packages/omo-opencode/src/testing/create-plugin-module.ts creates one intent-routing instance and passes it to chat, tool, event, and dispose handlers. packages/omo-opencode/src/plugin-interface.ts preserves that identity. packages/omo-opencode/src/plugin/tool-execute-before.ts captures before the existing category rewrite. packages/omo-opencode/src/plugin-dispose.ts catches disposal failures. packages/omo-opencode/src/plugin/chat-message.ts and packages/omo-opencode/src/plugin/event.ts contain the blocking lifecycle omissions described below.
+
+Naming and error handling:
+
+No new banned catch-all filename named utils.ts, helpers.ts, or service.ts exists. New implementation filenames are kebab-case. No empty catch block exists. Changed index.ts files carry exports only. No Arrange-Act-Assert comments were added. Test names use the repo's given/when/then style, including nested describe context where applicable.
+
+SIZE WAIVER REVIEW
+
+The request stated that four `// allow: SIZE_OK` annotations existed. The branch diff contains eleven. I evaluated all eleven.
+
+1. packages/jev-core/src/intent-routing-accuracy.test.ts:1, 517 lines
+REJECT. "The work plan requires" is not an architectural reason. Harness implementation, artifact assembly, and tests can be split into a named test-support module and a focused test file.
+
+2. packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:1, 428 lines
+ACCEPT. The shared fake clock, sink, and ordered seal/finalization matrix exercise one state machine.
+
+3. packages/omo-opencode/src/features/jev/intent-routing-seal.ts:1, 258 lines
+ACCEPT. It is modestly above the soft limit and one closure owns the coupled logical-seal and finalization windows.
+
+4. packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:1, 369 lines
+ACCEPT. The filesystem permissions, truncation, epoch, and malformed-tail cases share one integration fixture.
+
+5. packages/omo-opencode/src/features/jev/intent-routing-sink.ts:1, 325 lines
+REJECT. The annotation names several separable concerns. Reader and file discovery can move to a focused reader module without splitting writer state.
+
+6. packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:1, 508 lines
+REJECT. Pure normalization, hash/key functions, public types, and the mutable store can be separated while the reservation identity remains in one closure.
+
+7. packages/omo-opencode/src/features/jev/intent-routing.ts:1, 219 lines
+ACCEPT. It is only 19 lines above the soft limit and one shared instance must own dispatch, capture, seal, and disposal identity.
+
+8. packages/omo-opencode/src/plugin/event.ts:1, 269 lines
+ACCEPT. The branch adds a narrow lifecycle call to an existing centralized event sequence.
+
+9. packages/omo-opencode/src/testing/create-plugin-module.test.ts:1, 551 lines
+REJECT. The file tests unrelated i18n, TUI, skill source, duplicate plugin, migration, sweep, and intent-routing concerns. Shared dependency setup can move to a named test-support module and suites can be split by startup concern.
+
+10. packages/omo-opencode/src/testing/create-plugin-module.ts:1, 368 lines
+ACCEPT. The production initialization order is the behavior under review, and keeping the ordered server sequence together is justified.
+
+11. script/jev-w1-report.test.ts:1, 129 lines
+REJECT. The file is below the 200-line soft limit, so the waiver is stale and unnecessary.
+
+Additional size assessment:
+packages/jev-core/src/intent-routing.test.ts is 537 lines without a waiver and combines question-builder and decision-runner suites. It should be split by those two concerns. The 217-line fixture corpus and 210-line generated report fixture are mostly declarative data and are accepted. The other modest test overages are single-behavior matrices.
+
+TEST QUALITY ASSESSMENT
+
+Most new tests are behavioral and use given/when/then naming. They cover error paths, timing, mutation identity, counter epochs, permissions, overlap, disposal, reporting denominators, and output invariance.
+
+One test is only an implementation-presence assertion: packages/jev-core/src/intent-routing-normalization.test.ts:35-37 dynamically imports the module and asserts that it exists. The behavioral table below it already proves the module can load and work. This test is a mirror, not a behavioral regression guard.
+
+packages/jev-core/src/intent-routing-record.test.ts:156-171 and packages/jev-core/src/intent-routing.test.ts:318-323 pin exported constants. Those constants are versioned public data contracts, so I do not reject them independently, but they do not replace behavioral coverage.
+
+BLOCKING DEFECTS
+
+1. Unknown category values are scored as valid category routes.
+
+files and lines:
+packages/jev-core/src/intent-routing-normalization.ts:62-82
+packages/jev-core/src/intent-routing-normalization.test.ts:39-110
+
+demonstration:
+The normalization function validates subagents against a vocabulary but returns every non-empty category as routeClass "category". The behavior probe returned `{"normalizedCategory":"not-a-runtime-category","normalizedSubagent":"none","routeClass":"category"}`. There is no unrecognized-category test. This violates the stated unknown-route contract and can turn an unrepresentable category into a scorable disagreement instead of the required unknown bucket.
+
+2. Production chat wiring bypasses synthetic-turn accounting.
+
+files and lines:
+packages/omo-opencode/src/plugin/chat-message.ts:97-104
+packages/omo-opencode/src/features/jev/intent-routing-seal.ts:185-189
+packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:286-298
+
+demonstration:
+chat-message returns before `intentRouting.observe` for a synthetic part. The injected-handler probe printed `observe_calls=0`. The controller's direct unit test proves `turnsSynthetic` increments only when its onMessage method receives that message, but production never sends it. The report exposes turns_synthetic as a required denominator, so the live value is undercounted.
+
+3. The paid accuracy harness evaluates a different intent vocabulary from production.
+
+files and lines:
+packages/jev-core/src/intent-routing-fixtures.ts:32-41
+packages/jev-core/src/intent-routing-accuracy.test.ts:108-114
+packages/omo-opencode/src/features/jev/intent-routing-vocabulary.ts:10-17
+
+demonstration:
+The harness asks intent choices `implement, investigate, explain, acknowledge, continue, review, author`. Production asks `research, implementation, investigation, evaluation, fix, open-ended`. The real-API artifact's intent confusion matrix therefore does not measure the live question set. Existing tests validate fixture labels only against the fixture-created vocabulary, so this drift remains green.
+
+4. Idle sealing is placed after event dedup and is absent from normalized synthetic-idle dispatch.
+
+files and lines:
+packages/omo-opencode/src/plugin/event.ts:105-116
+packages/omo-opencode/src/plugin/event.ts:127-142
+
+demonstration:
+Normalized status-idle events dispatch the existing idle hooks without calling intent routing. A real session.idle can return at line 140 due to the shared dedup window before line 141 calls `onSessionIdle`. The new controller is idempotent and needs the first idle edge. This ordering can convert a reliable idle seal into a later timeout or dispose seal marked censored.
+
+5. Several file-size waivers do not justify the oversized modules.
+
+files and lines:
+packages/jev-core/src/intent-routing-accuracy.test.ts:1
+packages/omo-opencode/src/features/jev/intent-routing-sink.ts:1
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:1
+packages/omo-opencode/src/testing/create-plugin-module.test.ts:1
+script/jev-w1-report.test.ts:1
+packages/jev-core/src/intent-routing.test.ts:1-537
+
+demonstration:
+The line-count scan reports 517, 325, 508, 551, 129, and 537 lines respectively. The rejected waiver reasons either cite the plan, combine separable concerns, cover unrelated startup suites, or annotate a file below the limit.
+
+6. A new test is a non-behavioral implementation-presence mirror.
+
+file and lines:
+packages/jev-core/src/intent-routing-normalization.test.ts:35-37
+
+demonstration:
+The test only calls requireNormalizationModule and has no behavioral assertion beyond module existence. The table-driven normalization cases already provide the correct behavioral load and execution proof.
+
+FINAL DECISION
+
+The six required gates pass under the mandated baseline-relative interpretation, and the build passes. Approval is blocked by the live normalization, synthetic-accounting, accuracy-vocabulary, and idle-sealing defects, plus unresolved file-size and test-quality convention violations.
+
+WORKTREE HYGIENE
+
+The initial and final `GIT_MASTER=1 git status --short` commands reported the same tracked path set:
+
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+
+These generated paths were already dirty before F2 commands began. F2 did not edit a source file, test, or document. The F2 evidence file is ignored by normal status output but exists at the required path.
+
+VERDICT: REJECT
+
+===============================================================================
+ROUND 3 RE-VERIFICATION
+===============================================================================
+
+ROUND 3 VERDICT: APPROVE
+
+===============================================================================
+FINAL CODE-QUALITY CONFIRMATION
+===============================================================================
+
+FINAL VERDICT: APPROVE
+
+FINAL WORKTREE HYGIENE
+
+The initial and final `GIT_MASTER=1 git status --short` outputs contain the same five generated paths:
+
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+
+These paths were already dirty before final confirmation. F2 modified only F2-quality.txt.
+
+AUDIT TARGET
+
+worktree: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+branch: jev/w1-fffe
+head: 7158548cf07a28a18e5fe86f75b755438fc653da
+branch commits above jev/foundation: 23
+final commit: 7158548cf fix(jev): measure the seam budget in cpu time and enumerate stale dogfood figures
+
+TIMING INSTRUMENT REVIEW
+
+Changed test-only helper:
+packages/omo-opencode/src/features/jev/intent-routing-budget-test-support.ts
+
+The helper measures the same synchronous callback for 200 samples. It reads high-resolution CPU time for the current thread using CLOCK_THREAD_CPUTIME_ID on Linux and macOS and GetThreadTimes user plus kernel time on Windows. It measures wall elapsed time over the same callback. The gate remains:
+
+cpuP99Us < 1000
+
+The bound was not increased. The measured callback was not narrowed. Both feature-level and plugin-level tests still invoke `routing.observe` with an 8000-character prompt.
+
+Focused positive command:
+bun test packages/omo-opencode/src/features/jev/intent-routing.test.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts
+
+exit: 0
+
+output:
+TASK15_NO_AWAIT dispatcherHandlerMs=1.599 dispatcherInFlight=1
+TASK15_NO_AWAIT fetchHandlerMs=0.122 fetchInFlight=1
+TASK15_P99 samples=200 cpuP99Us=167 cpuBoundUs=1000 wallP99Ms=0.166163
+intent-routing synchronous p99: samples=200 cpuP99Us=116 cpuBoundUs=1000 wallP99Ms=0.115122
+14 pass
+0 fail
+35 expect() calls
+Ran 14 tests across 2 files. [176.00ms]
+
+Wall-clock p99 remains present in both reviewer-visible output lines as `wallP99Ms`. It is informational rather than hidden.
+
+Independent negative proof without a source mutation:
+
+I invoked the real createJevIntentRouting observe seam inside measureIntentRoutingSynchronousP99 and added a 2,000,000-iteration square-root loop inside the measured callback. No repository file was changed.
+
+intentional exit: 1
+
+output:
+F2_NEGATIVE samples=200 cpuP99Us=7529 cpuBoundUs=1000 wallP99Ms=7.517585
+Expected: < 1000
+Received: 7529.403
+
+The strict gate trips when the measured seam consumes real synchronous CPU. This confirms the new instrument does not pass unconditionally and did not quietly widen the 1000-microsecond limit.
+
+Judgment:
+The instrument is a genuine improvement for the stated shared-host flake. Per-thread CPU excludes time when the test thread is descheduled by unrelated processes while retaining CPU consumed by the seam. The wall metric remains visible for diagnosis. The negative proof demonstrates sensitivity to added synchronous work.
+
+TEST INTEGRITY
+
+Comparison base: b6fed3f98
+
+Static pre/post source scan over the two modified test files:
+old_tests=14
+new_tests=14
+old_expects=33
+new_expects=34
+old_modifiers=[]
+new_modifiers=[]
+
+Git numstat:
+11 additions, 10 deletions in packages/omo-opencode/src/features/jev/intent-routing.test.ts
+11 additions, 11 deletions in packages/omo-opencode/src/plugin/chat-message.intent-routing-budget.test.ts
+
+No test was deleted. No `.skip`, `.skipIf`, `.only`, or `.todo` modifier was added. One additional expectation now pins the 200-sample count in the shared helper result. The old wall p99 assertion was replaced by the CPU p99 assertion on the same seam and prompt. The underlying budget claim remains strict and is covered by the independent negative proof.
+
+STALE DOGFOOD NOTE
+
+The amended file is `.omo/evidence/20260924-jev-w1/R4-task19-staleness-note.txt`, a plain text evidence artifact. Its diff contains only prose and enumerated historical figures. It does not import, execute, or modify code.
+
+The amendment names all seven report figures moved by R1 and R2:
+- unscorable_unknown_calls
+- unknown_only_records
+- unrepresentable_route_mismatches
+- exact_route_agreement denominator
+- multi_route_turns
+- category_coverage target cardinality
+- category_cardinality_weighted_coverage denominator and target cardinality
+
+The same commit contains separate test-instrument code changes, but the staleness-note amendment itself is prose-only.
+
+FINAL FULL GATE SET
+
+Typecheck command:
+bun run typecheck
+
+exit: 0
+
+output summary:
+Root, script, and every package tsgo project passed.
+
+Full suite command:
+bun test --timeout 20000
+
+exit: 1, expected from the frozen Bun 1.4.0 baseline
+
+output summary:
+12928 pass
+4 skip
+22 fail
+1 snapshots, 87511 expect() calls
+Ran 12954 tests across 1701 files. [122.23s]
+
+Canonical failure comparison:
+current_failure_count=22
+new_failure_count=0
+missing_baseline_failure_count=0
+byte_for_byte_sorted_cmp_exit=0
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  /tmp/jev-w1-f2-final-current-failures.txt
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  .omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt
+
+Focused audit command:
+bun test script/shared-core-extraction-guard.test.ts script/package-registration-audit.test.ts packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+
+exit: 0
+
+output:
+25 pass
+0 fail
+37 expect() calls
+Ran 25 tests across 3 files. [430.00ms]
+
+TypeScript banned-pattern command:
+grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(GIT_MASTER=1 git diff --diff-filter=d --name-only jev/foundation..jev/w1-fffe -- '*.ts')
+
+exit: 1, expected for no matches
+output: none
+
+Punctuation and filler command:
+grep -rnP '[\x{2014}\x{2013}]|\b(simply|obviously|clearly|moreover|furthermore)\b' $(GIT_MASTER=1 git diff --diff-filter=d --name-only jev/foundation..jev/w1-fffe)
+
+exit: 1, expected for no matches
+output: none
+
+Notice command:
+bash -c 'node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt'
+
+exit: 0
+output: none
+
+TEST:FAST STABILITY
+
+Independent run 1:
+bun run test:fast
+
+exit: 0
+
+relevant output:
+TASK15_P99 samples=200 cpuP99Us=115 cpuBoundUs=1000 wallP99Ms=0.113788
+intent-routing synchronous p99: samples=200 cpuP99Us=132 cpuBoundUs=1000 wallP99Ms=0.130994
+481 pass
+1 skip
+0 fail
+1741 expect() calls
+Ran 482 tests across 51 files. [6.12s]
+
+Independent run 2:
+bun run test:fast
+
+exit: 0
+
+relevant output:
+TASK15_P99 samples=200 cpuP99Us=257 cpuBoundUs=1000 wallP99Ms=0.255994
+intent-routing synchronous p99: samples=200 cpuP99Us=99 cpuBoundUs=1000 wallP99Ms=0.098113
+481 pass
+1 skip
+0 fail
+1741 expect() calls
+Ran 482 tests across 51 files. [6.12s]
+
+Both runs have identical test and assertion totals. All four gating values are below 1000 microseconds. All four informational wall values are printed.
+
+BUILD AND LSP
+
+Build command:
+bun run build
+
+exit: 0
+
+output summary:
+All materialize, plugin, CLI, schema, declaration, LSP, Senpi, and Codex build stages completed.
+Final line: build: all steps completed
+
+LSP diagnostics were attempted on all three changed TypeScript files. The configured LSP still cannot initialize because workspace TypeScript 7.0.2 provides no tsserver.js and no alternate TypeScript installation was found. The repo-native typecheck and build both pass. This remains an environment limitation, not a branch defect.
+
+RESIDUAL RISKS FOR THE PR DESCRIPTION
+
+1. The gating helper uses Bun FFI and operating-system thread CPU APIs. Current Linux, macOS, and Windows implementations are explicit, but cross-platform CI should remain a required merge gate. A musl environment may not provide `libc.so.6` under that name.
+
+2. Per-thread CPU time does not count time spent blocked in a future synchronous wait or synchronous I/O call. The current seam has no such operation and the separate no-awaited-I/O and behavior tests remain green. Human review should preserve the no-blocking-I/O invariant or add a separate coarse elapsed-time guard if a blocking primitive is ever introduced.
+
+3. The full suite remains baseline-relative on this Bun 1.4.0 machine because of the frozen 22 Bun-version failures. CI on pinned Bun 1.3.12 remains the authoritative zero-failure gate.
+
+FINAL CODE-QUALITY POSITION
+
+The CPU-time gate is strict, stable under repeated suite load, and independently proven to fail under genuine synchronous work. Wall-clock p99 remains visible. No test was removed or disabled. The staleness-note amendment is prose-only. All required gates pass under the established baseline-relative rule.
+
+FINAL VERDICT: APPROVE
+
+ROUND 3 WORKTREE HYGIENE
+
+The initial and final `GIT_MASTER=1 git status --short` outputs contain the same five generated paths:
+
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+
+These paths were already dirty before round 3. F2 round 3 modified only F2-quality.txt.
+
+AUDIT TARGET
+
+worktree: /home/opencode/projects/oh-my-openagent-jev-w1-fffe
+branch: jev/w1-fffe
+head: b6fed3f98a1b2f655ceea4a52eb3c112ffcb4a28
+branch commits above jev/foundation: 22
+remediation commit: b6fed3f98 fix(jev): honor custom categories, guard category drift, and split oversized tests
+
+ROUND 3 CATEGORY NORMALIZATION
+
+Independent three-case probe command:
+bun -e with normalizeObservedDelegation and offered categories `deep` and `project-special`
+
+exit: 0
+
+output:
+{"builtIn":{"normalizedCategory":"deep","normalizedSubagent":"none","routeClass":"category"},"custom":{"normalizedCategory":"project-special","normalizedSubagent":"none","routeClass":"category"},"absent":{"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}}
+
+Judgment:
+- Built-in `deep` remains a scorable category route.
+- Offered custom `project-special` is now a scorable category route.
+- Never-offered `never-offered` remains reachable as `routeClass: "unknown"`.
+
+Call-path reading:
+- packages/omo-opencode/src/features/jev/intent-routing.ts:177-185 passes `args.vocab.categories` into capture.
+- packages/omo-opencode/src/features/jev/intent-routing-capture.ts:110-136 threads the offered entries into normalization.
+- packages/jev-core/src/intent-routing-normalization.ts:74-99 validates a category against the supplied offered entries.
+
+Focused test command:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+
+exit: 0
+
+output:
+31 pass
+0 fail
+114 expect() calls
+Ran 31 tests across 2 files. [212.00ms]
+
+Category drift proof:
+I independently removed `writing` from an in-memory copy of INTENT_ROUTING_CATEGORY_VOCABULARY and applied the production DEFAULT_CATEGORIES comparison.
+
+exit: 0
+
+output:
+missing built-in categories: writing
+
+The committed drift test at packages/jev-core/src/intent-routing-normalization.test.ts:232-242 compares both missing and stale category names. The guard is capable of failing for a missing built-in category. Round-2 custom-category defect is fixed.
+
+ROUND 3 TEST SPLIT CONSERVATION
+
+Pre-split source was read from commit f9bc61f9e. Post-split source was read from the current tree.
+
+Focused accuracy command:
+bun test packages/jev-core/src/intent-routing-accuracy.test.ts packages/jev-core/src/intent-routing-accuracy-real.test.ts
+
+exit: 0
+
+output:
+7 pass
+1 skip
+0 fail
+35 expect() calls
+Ran 8 tests across 2 files. [134.00ms]
+
+Conservation:
+- before: 8 tests, 7 pass, 1 conditional skip, 35 expect() calls
+- after: 8 tests, 7 pass, 1 conditional skip, 35 expect() calls
+- old conditional skip sites: 2
+- new conditional skip sites: 2
+- old and new `.only`: 0
+- old and new `.todo`: 0
+
+Accuracy split line counts:
+- intent-routing-accuracy.test.ts: 96
+- intent-routing-accuracy-real.test.ts: 125
+- intent-routing-accuracy-contract.ts: 155
+- intent-routing-accuracy-fixtures.ts: 61
+- intent-routing-accuracy-harness.ts: 161
+
+Focused question and decision command:
+bun test packages/jev-core/src/intent-routing.test.ts packages/jev-core/src/intent-routing-decision-answers.test.ts packages/jev-core/src/intent-routing-decision-failures.test.ts
+
+exit: 0
+
+output:
+21 pass
+0 fail
+189 expect() calls
+Ran 21 tests across 3 files. [129.00ms]
+
+Conservation:
+- before: 21 tests, 21 pass, 189 expect() calls
+- after: 21 tests, 21 pass, 189 expect() calls
+- old and new skip sites: 0
+- old and new `.only`: 0
+- old and new `.todo`: 0
+
+Question and decision split line counts:
+- intent-routing.test.ts: 159
+- intent-routing-test-vocabulary.ts: 57
+- intent-routing-decision-test-support.ts: 128
+- intent-routing-decision-answers.test.ts: 113
+- intent-routing-decision-failures.test.ts: 110
+
+The new modules have specific responsibilities. The accuracy contract, fixture construction, runner, mock cases, and gated real cases are separated without altering the paid-run gate. Question construction, valid and invalid answers, and failure boundaries are separated without losing an assertion or test. No test was weakened by a modifier.
+
+ROUND 3 SIZE WAIVER REVIEW
+
+The branch now has exactly seven added SIZE_OK annotations. The invalid accuracy waiver and unnecessary report waiver are gone. Every split result listed above is below 200 physical lines.
+
+1. packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts, 428 lines
+ACCEPT. One ordered state-machine matrix shares the fake clock, sink, overlap amendment, persistence, and disposal fixtures.
+
+2. packages/omo-opencode/src/features/jev/intent-routing-seal.ts, 258 lines
+ACCEPT. Per-session logical seal and deferred finalization mutate one controller and window identity.
+
+3. packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts, 408 lines
+ACCEPT. Permission, lazy root, call-time HOME, truncation, epoch, and malformed-tail cases use one temp-home filesystem and JSONL integration contract.
+
+4. packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts, 398 lines
+ACCEPT. Public contracts, prompt identity, counters, and pure LRU selection were already extracted. The remaining session maps, pending reservations, timeout handles, waiter ordinals, async completion, eviction, sealing, and finalization must share one mutable reservation identity. The named invariant justifies this soft-limit exception.
+
+5. packages/omo-opencode/src/features/jev/intent-routing.ts, 220 lines
+ACCEPT. One adapter instance owns dispatch, capture, seal, and disposal identity. The custom-category change adds only the offered vocabulary handoff.
+
+6. packages/omo-opencode/src/plugin/event.ts, 269 lines
+ACCEPT. Real and normalized idle dedup maps, fallback cleanup, hook dispatch, sealing, and deletion are one ordered lifecycle handler.
+
+7. packages/omo-opencode/src/testing/create-plugin-module.ts, 368 lines
+ACCEPT. Later init stages consume identities created by earlier stages, and construction and disposal order are observable behavior.
+
+Every remaining waiver states coupled state and the failure a split could permit. All seven are acceptable.
+
+ROUND 3 CORRECTED GREP GATES
+
+I agree with excluding deleted paths. The gate asks whether files present in the candidate branch contain banned content. An intentionally deleted file cannot violate the candidate tree. `--diff-filter=d` preserves added, copied, modified, renamed, type-changed, unmerged, and unknown entries while excluding deletions that grep cannot open.
+
+TypeScript command:
+grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(GIT_MASTER=1 git diff --diff-filter=d --name-only jev/foundation..jev/w1-fffe -- '*.ts')
+
+exit: 1, expected for no matches
+output: none
+
+Punctuation and filler command:
+grep -rnP '[\x{2014}\x{2013}]|\b(simply|obviously|clearly|moreover|furthermore)\b' $(GIT_MASTER=1 git diff --diff-filter=d --name-only jev/foundation..jev/w1-fffe)
+
+exit: 1, expected for no matches
+output: none
+
+Both corrected gates PASS.
+
+ROUND 3 FULL GATE SET
+
+Typecheck command:
+bun run typecheck
+
+exit: 0
+
+output summary:
+Root, script, and every package tsgo project passed.
+
+Full suite command:
+bun test --timeout 20000
+
+exit: 1, expected from the frozen Bun 1.4.0 baseline
+
+output summary:
+12928 pass
+4 skip
+22 fail
+1 snapshots, 88717 expect() calls
+Ran 12954 tests across 1701 files. [123.75s]
+
+Canonical failure comparison:
+current_failure_count=22
+new_failure_count=0
+missing_baseline_failure_count=0
+byte_for_byte_sorted_cmp_exit=0
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  /tmp/jev-w1-f2-r3-current-failures.txt
+a3004c8e3a3a40d62c7fed7d7a9cefb75dbefb5a1865e458d0bf365a3a896aa5  .omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt
+
+Focused audit command:
+bun test script/shared-core-extraction-guard.test.ts script/package-registration-audit.test.ts packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+
+exit: 0
+
+output:
+25 pass
+0 fail
+37 expect() calls
+Ran 25 tests across 3 files. [456.00ms]
+
+Notice command:
+bash -c 'node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt'
+
+exit: 0
+output: none
+
+Build command:
+bun run build
+
+exit: 0
+
+output summary:
+All materialize, plugin, CLI, schema, declaration, LSP, Senpi, and Codex build stages completed.
+Final line: build: all steps completed
+
+LSP diagnostics were attempted on normalization, capture, accuracy-harness, and decision-test-support files. Each returned the existing environment limitation:
+Request initialize failed because workspace TypeScript 7.0.2 provides no tsserver.js and no alternate TypeScript installation was found.
+
+The repo-native typecheck passed. LSP unavailability is not a branch defect.
+
+F3 LIVE APPROVAL SURVIVAL JUDGMENT
+
+F3 APPROVAL SURVIVES R4.
+
+R4 changes production behavior only by passing the already-built offered category vocabulary into normalization. F3's committed dogfood turn script uses built-in categories only. Those category names were offered before R4, remain offered after R4, and the independent probe confirms built-in `deep` still normalizes to the same category route. Unknown handling for a never-offered value and support for user-defined categories do not alter any F3 turn. The remaining R4 changes only split test support and test files. They are not imported by the OpenCode runtime entry. A second 80-minute live re-drive would not exercise a changed F3 input or runtime outcome.
+
+ROUND 3 FINAL DECISION
+
+All round-2 blocking findings are remediated. Custom and built-in categories remain scorable, genuinely absent categories remain unknown, category drift is guarded, corrected grep gates are clean, test and assertion conservation is exact, every split result is under 200 lines, all seven remaining waivers are justified, and all required gates pass under the established baseline-relative rule.
+
+ROUND 3 VERDICT: APPROVE
