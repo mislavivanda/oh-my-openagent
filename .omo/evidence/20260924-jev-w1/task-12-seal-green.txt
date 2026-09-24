@@ -1,0 +1,20 @@
+WHAT WAS TESTED
+Command: bun test packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts
+Surface: intent-routing seal controller, real JSONL sink, manual seal and flush schedulers, and Jev config refine.
+Purpose: prove all seal triggers, mechanical correlation classification, synthetic immunity, orphan counter deltas, deferred finalization, overlap amendment, headline exclusion, exactly-once append, and bounded dispose flush.
+
+WHAT WAS OBSERVED
+bun test v1.4.0 (34cbb9a40)
+
+ 12 pass
+ 0 fail
+ 85 expect() calls
+Ran 12 tests across 1 file. [171.00ms]
+
+exit=0
+
+WHY IT IS ENOUGH
+The focused suite drives each state transition through the public controller and reads persisted rows back through the tolerant sink reader. It verifies seal_timeout and dispose are censored, both sides of overlap are overlap_ambiguous before persistence, only reliable records are headline-eligible, and every turn ordinal is appended once.
+
+WHAT WAS OMITTED
+No provider credentials, environment dumps, auth headers, or private logs were captured. The report-level assertion against script/jev-w1-report.ts is deferred to todo 16 because todo 16 creates that script. This task proves the same exclusion predicate at unit level through isIntentRoutingHeadlineEligible.

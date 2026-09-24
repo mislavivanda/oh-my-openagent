@@ -1,0 +1,21 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 11 filtered out
+ 0 fail
+ 19 expect() calls
+Ran 1 test across 1 file. [133.00ms]
+
+exit=0
+
+WHAT WAS TESTED
+Ordered unit scenario: turn 1, synthetic message, real turn 2, then a late delegation while turn 2 is live.
+
+WHAT WAS OBSERVED
+The synthetic message left turn 1 live. Turn 2 logically sealed turn 1 by next_turn without writing it. The late delegation marked both turns overlap_ambiguous before session.idle finalized either row. Both persisted rows were excluded by isIntentRoutingHeadlineEligible.
+
+WHY IT IS ENOUGH
+The scenario fixes event order and reads the append-only sink after deferred finalization, proving the predecessor amendment happened before its only append.
+
+WHAT WAS OMITTED
+Report-level headline exclusion is deferred to todo 16 because script/jev-w1-report.ts does not exist until that todo. No report script or stub was created here.

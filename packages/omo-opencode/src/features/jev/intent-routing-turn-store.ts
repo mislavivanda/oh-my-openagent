@@ -38,6 +38,7 @@ export type IntentRoutingTurnRecord = {
   readonly unavailableReason: IntentRoutingDecisionResult["unavailableReason"]
   readonly resolvedModel: string | null
   readonly latencyMs: number | null
+  readonly truncatedInput: boolean
   readonly observed: readonly IntentRoutingObservedDelegation[]
   readonly sealedBy: IntentRoutingSealedBy | null
   readonly correlationStatus: IntentRoutingCorrelationStatus | null
@@ -90,7 +91,13 @@ export type IntentRoutingTurnStore = {
   readonly getTurn: (sessionID: string, turnOrdinal: number) => IntentRoutingTurnRecord | undefined
   readonly listTurns: (sessionID: string) => readonly IntentRoutingTurnRecord[]
   readonly sealTurn: (input: IntentRoutingSealInput) => boolean
+  readonly markOverlap: (input: {
+    readonly sessionID: string
+    readonly predecessorOrdinal: number
+    readonly successorOrdinal: number
+  }) => boolean
   readonly finalizeTurn: (input: { readonly sessionID: string; readonly turnOrdinal: number }) => boolean
+  readonly recordSyntheticTurn: () => void
   readonly deleteSession: (sessionID: string) => void
   readonly getCounters: () => IntentRoutingCounters
   readonly getMapSizes: () => { readonly sessions: number; readonly reuseSessions: number }
@@ -102,7 +109,8 @@ type MutableTurn = {
   predictionReused: boolean; state: IntentRoutingTurnState; predictionStatus: IntentRoutingPredictionStatus | "pending"
   notDispatchedReason: string | null; answers: IntentRoutingDecisionAnswers | null
   invalidAnswerCount: number; unavailableReason: IntentRoutingDecisionResult["unavailableReason"]
-  resolvedModel: string | null; latencyMs: number | null; observed: IntentRoutingObservedDelegation[]
+  resolvedModel: string | null; latencyMs: number | null; truncatedInput: boolean
+  observed: IntentRoutingObservedDelegation[]
   sealedBy: IntentRoutingSealedBy | null; correlationStatus: IntentRoutingCorrelationStatus | null
   awaitingFinalization: boolean; deferFinalization: boolean; finalized: boolean; access: number
   questionVersion: number; confidenceThreshold: number; configuredModelSpec: string
@@ -151,6 +159,21 @@ export function isPinnedIntentRoutingModelSpec(model: string): boolean {
   return /(?:^|\/)jev-\d{4}-\d{2}-\d{2}$/u.test(model)
 }
 
+export function classifyIntentRoutingCorrelationStatus(
+  sealedBy: IntentRoutingSealedBy,
+  overlapMarked: boolean,
+): IntentRoutingCorrelationStatus {
+  switch (sealedBy) {
+    case "seal_timeout":
+    case "dispose":
+      return "censored"
+    case "next_turn":
+    case "session_idle":
+    case "session_deleted":
+      return overlapMarked ? "overlap_ambiguous" : "reliable"
+  }
+}
+
 function defaultScheduleTimeout(callback: () => void, delayMs: number): IntentRoutingTimeoutHandle {
   const timer = setTimeout(callback, delayMs)
   timer.unref()
@@ -164,6 +187,7 @@ function snapshot(turn: MutableTurn): IntentRoutingTurnRecord {
     state: turn.state, predictionStatus: turn.predictionStatus, notDispatchedReason: turn.notDispatchedReason,
     answers: turn.answers === null ? null : structuredClone(turn.answers), invalidAnswerCount: turn.invalidAnswerCount,
     unavailableReason: turn.unavailableReason, resolvedModel: turn.resolvedModel, latencyMs: turn.latencyMs,
+    truncatedInput: turn.truncatedInput,
     observed: turn.observed.map((entry) => structuredClone(entry)), sealedBy: turn.sealedBy,
     correlationStatus: turn.correlationStatus, awaitingFinalization: turn.awaitingFinalization,
   }
@@ -197,15 +221,16 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     session.access = access
   }
   const finalize = (turn: MutableTurn): boolean => {
-    if (turn.finalized || turn.predictionStatus === "pending" || turn.state !== "sealed") return false
+    if (
+      turn.finalized || turn.predictionStatus === "pending" || turn.state !== "sealed" ||
+      turn.sealedBy === null || turn.correlationStatus === null
+    ) return false
     turn.awaitingFinalization = false
     turn.finalized = true
     options.onFinalize?.(snapshot(turn))
     return true
   }
-  const emitEviction = (): void => {
-    counters.recordsEvicted += 1
-    counters.recordsLostToCap += 1
+  const emitCounterDelta = (): void => {
     monotonicSeq += 1
     options.onCounterDelta?.({
       kind: "counter_delta", schemaVersion: INTENT_ROUTING_SCHEMA_VERSION,
@@ -236,14 +261,15 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
   }
   const evictTurn = (session: SessionTurns, turn: MutableTurn): void => {
     if (turn.awaitingFinalization) {
-      turn.correlationStatus = "censored"
       turn.deferFinalization = false
       finalize(turn)
     }
     turn.state = "evicted"
     removeTurnReuse(turn)
     session.turns.delete(turn.turnOrdinal)
-    emitEviction()
+    counters.recordsEvicted += 1
+    counters.recordsLostToCap += 1
+    emitCounterDelta()
   }
   const oldestTurn = (session: SessionTurns): MutableTurn | undefined => {
     let oldest: MutableTurn | undefined
@@ -297,6 +323,7 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     turn.unavailableReason = result.unavailableReason
     turn.resolvedModel = result.resolvedModel
     turn.latencyMs = result.latencyMs
+    turn.truncatedInput = result.truncatedInput
     if (result.predictionStatus === "filled" && result.resolvedModel) {
       turn.reuseKey = createIntentRoutingCompletedCacheKey(turn.preDispatchKey, result.resolvedModel)
       getReuse(turn.sessionID).completed.set(turn.reuseKey, { turnOrdinal: turn.turnOrdinal, result: structuredClone(result) })
@@ -328,10 +355,16 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     if (reuse) for (const pending of reuse.pending.values()) pending.timeout?.cancel()
     for (const turn of session.turns.values()) {
       if (turn.predictionStatus === "pending") applyPrediction(turn, failedPrediction(turn, "timeout"))
-      turn.state = "sealed"
-      turn.sealedBy = sealedBy
-      turn.correlationStatus = sealedBy === "dispose" ? "censored" : (turn.correlationStatus ?? "reliable")
+      if (turn.state !== "sealed") {
+        turn.state = "sealed"
+        turn.sealedBy = sealedBy
+        turn.correlationStatus = classifyIntentRoutingCorrelationStatus(
+          sealedBy,
+          turn.correlationStatus === "overlap_ambiguous",
+        )
+      }
       turn.deferFinalization = false
+      turn.awaitingFinalization = true
       finalize(turn)
     }
     sessions.delete(sessionID)
@@ -346,7 +379,8 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
       sessionID: input.sessionID, turnOrdinal: session.nextOrdinal++, dedupKey: promptHash,
       preDispatchKey, reuseKey: preDispatchKey, predictionReused: false, state: "created",
       predictionStatus: "pending", notDispatchedReason: null, answers: null, invalidAnswerCount: 0,
-      unavailableReason: null, resolvedModel: null, latencyMs: null, observed: [], sealedBy: null,
+      unavailableReason: null, resolvedModel: null, latencyMs: null, truncatedInput: false,
+      observed: [], sealedBy: null,
       correlationStatus: null, awaitingFinalization: false, deferFinalization: false, finalized: false,
       access: 0, questionVersion: input.questionVersion, confidenceThreshold: input.confidenceThreshold,
       configuredModelSpec: input.configuredModelSpec,
@@ -398,7 +432,11 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
     appendObservation: ({ sessionID, observation }) => {
       const session = sessions.get(sessionID)
       const turn = session ? [...session.turns.values()].toReversed().find((candidate) => candidate.state !== "sealed") : undefined
-      if (!session || !turn) { counters.orphanObservations += 1; return false }
+      if (!session || !turn) {
+        counters.orphanObservations += 1
+        emitCounterDelta()
+        return false
+      }
       turn.observed.push(structuredClone(observation))
       touch(turn, session)
       return true
@@ -417,11 +455,25 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
       if (!turn || turn.state === "evicted" || turn.state === "sealed") return false
       turn.state = "sealed"
       turn.sealedBy = input.sealedBy
-      turn.correlationStatus = input.sealedBy === "seal_timeout" || input.sealedBy === "dispose" ?
-        "censored" : "reliable"
+      turn.correlationStatus = classifyIntentRoutingCorrelationStatus(
+        input.sealedBy,
+        turn.correlationStatus === "overlap_ambiguous",
+      )
       turn.deferFinalization = input.deferFinalization === true
       turn.awaitingFinalization = turn.deferFinalization || turn.predictionStatus === "pending"
       if (!turn.awaitingFinalization) finalize(turn)
+      return true
+    },
+    markOverlap: ({ sessionID, predecessorOrdinal, successorOrdinal }) => {
+      const session = sessions.get(sessionID)
+      const predecessor = session?.turns.get(predecessorOrdinal)
+      const successor = session?.turns.get(successorOrdinal)
+      if (
+        !predecessor || !successor || predecessor.sealedBy !== "next_turn" ||
+        predecessor.state !== "sealed" || successor.state === "sealed" || successor.state === "evicted"
+      ) return false
+      predecessor.correlationStatus = "overlap_ambiguous"
+      successor.correlationStatus = "overlap_ambiguous"
       return true
     },
     finalizeTurn: ({ sessionID, turnOrdinal }) => {
@@ -429,6 +481,11 @@ export function createIntentRoutingTurnStore(options: IntentRoutingTurnStoreOpti
       if (!turn) return false
       turn.deferFinalization = false
       return finalize(turn)
+    },
+    recordSyntheticTurn: () => {
+      counters.turnsSeen += 1
+      counters.turnsSynthetic += 1
+      emitCounterDelta()
     },
     deleteSession: (sessionID) => clearSession(sessionID, "session_deleted"),
     getCounters: () => ({ ...counters }),

@@ -1,0 +1,174 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:241:28)
+(fail) intent-routing seal controller > #given two real turns #when the successor arrives then idles #then next_turn and session_idle are the first seals [1.15ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:252:53)
+(fail) intent-routing seal controller > #given a live turn #when the distinct seal timeout fires #then seal_timeout is censored [0.23ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:264:38)
+(fail) intent-routing seal controller > #given a live turn #when the controller disposes #then dispose is censored and flushed [0.24ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:276:38)
+(fail) intent-routing seal controller > #given a live turn #when session.deleted arrives #then session_deleted seals and finalizes it [0.17ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:287:28)
+(fail) intent-routing seal controller > #given a live turn #when a synthetic message arrives #then it neither seals nor creates a successor [0.15ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:302:53)
+(fail) intent-routing seal controller > #given a timeout-sealed turn with no successor #when delegation arrives #then it is an orphan counter_delta [0.21ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:313:38)
+(fail) intent-routing seal controller > #given turn two logically seals turn one #when turn two idles #then turn one finalizes once with no rewrite path [0.20ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:331:38)
+(fail) intent-routing seal controller > #given an ordered overlap proof #when synthetic then successor then late delegation arrive #then both sides amend before finalization [0.20ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:361:53)
+(fail) intent-routing seal controller > #given Jev predicts none and no delegation is observed #when the turn seals early #then apparent agreement is censored from headline rates [0.25ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at harness (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:187:22)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:376:38)
+(fail) intent-routing seal controller > #given finalized records #when read from the append-only sink #then every seal and status is set exactly once [0.21ms]
+126 |
+127 | function requireSealModule(): SealModule {
+128 |   expect(
+129 |     loadedModule,
+130 |     "intent-routing seal module must exist before turns can be logically sealed and finalized",
+131 |   ).not.toBeNull()
+              ^
+error: intent-routing seal module must exist before turns can be logically sealed and finalized
+
+Received: null
+
+      at requireSealModule (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:131:9)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts:398:24)
+(fail) intent-routing seal controller > #given a never-settling sink append #when dispose flushes #then its bounded timeout releases disposal [0.24ms]
+
+ 1 pass
+ 11 fail
+ 13 expect() calls
+Ran 12 tests across 1 file. [150.00ms]
+
+exit=1

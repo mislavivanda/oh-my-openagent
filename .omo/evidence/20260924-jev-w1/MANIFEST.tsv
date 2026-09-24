@@ -51,3 +51,6 @@ todo	artifact	kind	description
 13	.omo/evidence/20260924-jev-w1/task-13-sink-red.txt	red	Focused sink RED run: 10 assertion failures against the behaviorless scaffold, isolated HOME, exit 1
 13	.omo/evidence/20260924-jev-w1/task-13-sink-green.txt	green	Focused sink GREEN run: 10 pass, 0 fail, measured 1724-byte observation, 17,240,000 bytes/day assumption, 66 MiB cap, real home unchanged
 13	.omo/evidence/20260924-jev-w1/task-13-malformed-tolerance.txt	qa	Focused malformed-tail proof: valid row retained, malformedLines equals 1, no throw, isolated HOME, exit 0
+12	.omo/evidence/20260924-jev-w1/task-12-seal-red.txt	red	Focused RED run: 11 assertion failures name the absent seal controller module, 1 config-refine test passes, exit 1
+12	.omo/evidence/20260924-jev-w1/task-12-seal-green.txt	green	Focused GREEN run: 12 pass, 0 fail, covering seal triggers, bias classification, deferred finalization, exactly-once append, and bounded dispose flush
+12	.omo/evidence/20260924-jev-w1/task-12-overlap-both-sides.txt	qa	Ordered overlap proof marks predecessor and successor overlap_ambiguous before finalization; report-level exclusion deferred to todo 16
