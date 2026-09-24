@@ -1,0 +1,47 @@
+TEMPORARY IMPLEMENTATION: queueMicrotask
+EXPECTED: final ordering assertion fails because state builds before caller continuation
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+197 |     const routing = createJevIntentRouting({ jevConfig: config(), vocab: VOCAB, backend, logger: () => {} })
+198 |     routing.observe({ sessionID: MAIN_SESSION }, output("implement this"))
+199 |     await Promise.resolve()
+200 |     order.push("caller")
+201 |     await runDeferredMacrotask()
+202 |     expect(order).toEqual(["caller", "state"])
+                        ^
+error: expect(received).toEqual(expected)
+
+  [
+-   "caller",
+    "state",
++   "caller",
+  ]
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/features/jev/intent-routing.test.ts:202:19)
+(fail) createJevIntentRouting > #given deferred observation #when the caller continues #then caller continuation precedes state building [3.62ms]
+
+ 0 pass
+ 9 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [139.00ms]
+
+QUEUE_MICROTASK_EXIT_CODE=1
+
+RESTORED IMPLEMENTATION: setTimeout(..., 0) with unref()
+EXPECTED: final ordering assertion passes
+
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 9 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [133.00ms]
+
+MACROTASK_EXIT_CODE=0
