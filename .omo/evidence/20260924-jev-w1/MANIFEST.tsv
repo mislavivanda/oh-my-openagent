@@ -33,3 +33,6 @@ todo	artifact	kind	description
 5	.omo/evidence/20260924-jev-w1/task-5-decide-red.txt	red	RED focused run: 8 decision tests fail with assertion output showing decideIntentRouting is undefined, while all 13 todo-4 tests pass
 5	.omo/evidence/20260924-jev-w1/task-5-decide-green.txt	green	GREEN focused run: 21 pass, 0 fail, covering labels, invalid accounting, failure mapping, truncation, and todo-4 questions
 5	.omo/evidence/20260924-jev-w1/task-5-throwing-backend.txt	qa	Targeted rejecting-backend proof: 1 pass, 0 fail, asserting synchronous invocation does not throw and the awaited result is failed
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-red.txt	red	RED accuracy-harness run: 5 assertion failures for scoring, dry-run builds, ceiling abort, partial retention, and real-API gate; exit 1
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-mock.txt	green	Mock accuracy harness scores all 17 fixtures with four confusion matrices, proves zero network calls, dry-run zero calls, partial retention, scoped tsgo exit 0, and focused tests exit 0
+8	.omo/evidence/20260924-jev-w1/task-8-ceiling-abort.txt	qa	Focused stub-counter proof aborts call 18 at the hard ceiling of 17 with IntentRoutingCallCeilingError; exit 0
