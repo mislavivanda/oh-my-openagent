@@ -1,0 +1,8 @@
+command: bun test packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 18 pass
+ 0 fail
+ 48 expect() calls
+Ran 18 tests across 1 file. [146.00ms]
+exit_code=0

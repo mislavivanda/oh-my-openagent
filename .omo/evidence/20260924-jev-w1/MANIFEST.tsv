@@ -45,3 +45,6 @@ todo	artifact	kind	description
 11	.omo/evidence/20260924-jev-w1/task-11-capture-green.txt	green	Focused GREEN run: 10 pass, 0 fail, covering both delegation tools, resume, ordering, counts, gates, drift, and args immutability
 11	.omo/evidence/20260924-jev-w1/task-11-allowlist-drift-proof.txt	qa	Removing call_omo_agent fails its capture case and registry-drift guard, then restored suite returns green
 11	.omo/evidence/20260924-jev-w1/task-11-resume-regression-proof.txt	qa	Omitting task_id makes resume normalize to spurious none, then restored suite returns green
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-red.txt	red	Focused RED run against the typed scaffold: 12 behavioral assertion failures, 6 pass, exit 1
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused GREEN run: 18 pass, 0 fail, 48 assertions covering ordinals, reuse, terminal states, cleanup, timeout, and normalization
+10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Default-cap proof drives 133 turns, counts exactly 5 evictions, and retains ordinals 6 through 133
