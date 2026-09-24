@@ -1,0 +1,144 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+41 | 
+42 |   test("#given a known corpus #when rendered #then every denominator precedes every rate and has its known count", () => {
+43 |     const denominatorIndex = output.indexOf("DENOMINATORS\n")
+44 |     const rateIndex = output.indexOf("RATES\n")
+45 | 
+46 |     expect(denominatorIndex).toBe(0)
+                                  ^
+error: expect(received).toBe(expected)
+
+Expected: 0
+Received: -1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:46:30)
+(fail) Jev W1 intent-routing report > #given a known corpus #when rendered #then every denominator precedes every rate and has its known count [1.02ms]
+63 |       ["correlation_status_censored", 2], ["correlation_status_overlap_ambiguous", 3],
+64 |     ])
+65 |   })
+66 | 
+67 |   test("#given counter snapshots across truncation epochs #when resolved #then the highest sequence in the highest epoch supersedes older values", () => {
+68 |     expect(output).toContain("counter_process_snapshots=2")
+                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "counter_process_snapshots=2"
+Received: "not implemented\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:68:20)
+(fail) Jev W1 intent-routing report > #given counter snapshots across truncation epochs #when resolved #then the highest sequence in the highest epoch supersedes older values [0.22ms]
+70 |     expect(outputValue(output, "turns_seen")).toBe(40)
+71 |     expect(outputValue(output, "records_created")).toBe(35)
+72 |   })
+73 | 
+74 |   test("#given censored and overlap-marked records #when headline eligibility is applied #then both are counted but excluded", () => {
+75 |     expect(output).toContain("headline_eligibility correlation_status=reliable censored_excluded=2 overlap_ambiguous_excluded=3")
+                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "headline_eligibility correlation_status=reliable censored_excluded=2 overlap_ambiguous_excluded=3"
+Received: "not implemented\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:75:20)
+(fail) Jev W1 intent-routing report > #given censored and overlap-marked records #when headline eligibility is applied #then both are counted but excluded [0.11ms]
+76 |     expect(output).toContain("exact_route_agreement numerator=12 denominator=19 rate=0.631579")
+77 |     expect(outputValue(output, "correlation_status_overlap_ambiguous")).toBe(3)
+78 |   })
+79 | 
+80 |   test("#given resume-only unknown-only and mixed resume records #when scored #then resume and unknown remain distinct", () => {
+81 |     expect(output).toContain("scoring_audit resume_only_excluded=1 unknown_scored=1 mixed_resume_routes_retained=1")
+                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "scoring_audit resume_only_excluded=1 unknown_scored=1 mixed_resume_routes_retained=1"
+Received: "not implemented\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:81:20)
+(fail) Jev W1 intent-routing report > #given resume-only unknown-only and mixed resume records #when scored #then resume and unknown remain distinct [0.09ms]
+84 |     expect(outputValue(output, "unrepresentable_route_mismatches")).toBe(1)
+85 |     expect(output).toContain("exact_route_agreement numerator=12 denominator=19")
+86 |   })
+87 | 
+88 |   test("#given unavailable invalid and incoherent predictions #when rates are computed #then only unavailable statuses are absent", () => {
+89 |     expect(output).toContain("prediction_rate_eligibility filled=29 failed_excluded=1 timeout_excluded=1 not_dispatched_excluded=1")
+                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "prediction_rate_eligibility filled=29 failed_excluded=1 timeout_excluded=1 not_dispatched_excluded=1"
+Received: "not implemented\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:89:20)
+(fail) Jev W1 intent-routing report > #given unavailable invalid and incoherent predictions #when rates are computed #then only unavailable statuses are absent [0.09ms]
+90 |     expect(output).toContain("scored_incorrect invalid=1 incoherent=1")
+91 |     expect(output).toContain("coherence_rate numerator=22 denominator=23 rate=0.956522")
+92 |   })
+93 | 
+94 |   test("#given distinct none conditioning sets and mixed fan-out #when metrics render #then recall precision and coverage are named correctly", () => {
+95 |     expect(output).toContain("none_recall numerator=4 denominator=5 rate=0.800000")
+                        ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "none_recall numerator=4 denominator=5 rate=0.800000"
+Received: "not implemented\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:95:20)
+(fail) Jev W1 intent-routing report > #given distinct none conditioning sets and mixed fan-out #when metrics render #then recall precision and coverage are named correctly [0.09ms]
+101 |     expect(output).toContain("intent_coverage live_ground_truth=unavailable")
+102 |     expect(output).toContain("ambiguous_coverage live_ground_truth=unavailable")
+103 |   })
+104 | 
+105 |   test("#given all fan-out and sealing cohorts #when cross-tabbed #then every bucket and sealedBy value has a row and continuation is separate", () => {
+106 |     for (const fanOut of ["zero", "one", "many"] as const) expect(output).toContain(`fan_out=${fanOut}`)
+                                                                                ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "fan_out=zero"
+Received: "not implemented\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:106:75)
+(fail) Jev W1 intent-routing report > #given all fan-out and sealing cohorts #when cross-tabbed #then every bucket and sealedBy value has a row and continuation is separate [0.17ms]
+19 |   "correlation_status_reliable", "correlation_status_censored", "correlation_status_overlap_ambiguous",
+20 | ] as const
+21 | 
+22 | function outputValue(output: string, name: string): number {
+23 |   const line = output.split("\n").find((candidate) => candidate.startsWith(`${name}=`))
+24 |   if (line === undefined) throw new Error(`Missing report value: ${name}`)
+                                                                              ^
+error: Missing report value: turns_seen
+      at outputValue (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:24:74)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:122:53)
+(fail) Jev W1 intent-routing report > #given an empty sink #when rendered #then denominators are zero and every rate is insufficient data [0.40ms]
+
+ 0 pass
+ 8 fail
+ 7 expect() calls
+Ran 8 tests across 1 file. [132.00ms]
+
+EXIT_CODE=1
+
+REFINEMENT_RED_CROSS_TAB_CARDINALITY
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+107 |     for (const sealedBy of ["next_turn", "session_idle", "seal_timeout", "dispose", "session_deleted"] as const) {
+108 |       expect(output).toContain(`sealed_by=${sealedBy}`)
+109 |     }
+110 |     expect(output).toContain("CONTINUATION COHORT")
+111 |     expect(output).toContain("continuation_candidate records=2")
+112 |     expect(output).toContain("fan_out=many sealed_by=dispose records=3 exact_route_agreement=0/0:insufficient data category_coverage=3/3:1.000000 distinct_target_cardinality=3 category_cardinality_weighted_coverage=4/4:1.000000 subagent_coverage=2/3:0.666667 distinct_target_cardinality=3 subagent_cardinality_weighted_coverage=3/4:0.750000")
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "fan_out=many sealed_by=dispose records=3 exact_route_agreement=0/0:insufficient data category_coverage=3/3:1.000000 distinct_target_cardinality=3 category_cardinality_weighted_coverage=4/4:1.000000 subagent_coverage=2/3:0.666667 distinct_target_cardinality=3 subagent_cardinality_weighted_coverage=3/4:0.750000"
+Received: "DENOMINATORS\nturns_seen=40\nturns_gated_out=4\nturns_synthetic=3\nrecords_created=35\nrecords_with_prediction=29\nrecords_sealed_by_next_turn=6\nrecords_sealed_by_session_idle=8\nrecords_sealed_by_seal_timeout=7\nrecords_sealed_by_dispose=7\nrecords_sealed_by_session_deleted=4\nrecords_evicted=1\nin_flight=2\norphan_observations=2\nunscorable_resume_calls=2\nresume_only_records=1\nunscorable_unknown_calls=1\nunknown_only_records=1\nunrepresentable_route_mismatches=1\ndispatches_dropped=2\ninvalid_answers=1\nincoherent_predictions=1\nmalformed_lines=2\nmalformed_write_rejections=1\nrecords_lost_to_cap=5\nsink_truncations=1\nprediction_reused=2\ntruncated_input=1\nprediction_status_filled=29\nprediction_status_failed=1\nprediction_status_timeout=1\nprediction_status_not_dispatched=1\ncorrelation_status_reliable=27\ncorrelation_status_censored=2\ncorrelation_status_overlap_ambiguous=3\ncounter_process_snapshots=2\nrecords_created_identity sealed=32 evicted=1 in_flight=2 status=ok\n\nELIGIBILITY\nheadline_eligibility correlation_status=reliable censored_excluded=2 overlap_ambiguous_excluded=3\nprediction_rate_eligibility filled=29 failed_excluded=1 timeout_excluded=1 not_dispatched_excluded=1\nscoring_audit resume_only_excluded=1 unknown_scored=1 mixed_resume_routes_retained=1\nscored_incorrect invalid=1 incoherent=1\nobserved_delegations=attempts_not_successes\nminimum_data sealed_records=32 required=30 status=sufficient\n\nRATES\nexact_route_agreement numerator=12 denominator=19 rate=0.631579\nmulti_route_turns=4\ncategory_coverage numerator=17 denominator=23 distinct_target_cardinality=15 rate=0.739130\ncategory_cardinality_weighted_coverage numerator=20 denominator=26 distinct_target_cardinality=15 rate=0.769231\nsubagent_coverage numerator=19 denominator=23 distinct_target_cardinality=7 rate=0.826087\nsubagent_cardinality_weighted_coverage numerator=20 denominator=24 distinct_target_cardinality=7 rate=0.833333\nnone_recall numerator=4 denominator=5 rate=0.800000\nnone_precision numerator=4 denominator=7 rate=0.571429\ncoherence_rate numerator=22 denominator=23 rate=0.956522\n\nFAN-OUT BY SEALED-BY CROSS-TAB\nfan_out=zero sealed_by=next_turn records=2 exact_route_agreement=1/2:0.500000 category_coverage=1/2:0.500000 subagent_coverage=2/2:1.000000 none_recall=1/2:0.500000 none_precision=1/1:1.000000 coherence_rate=2/2:1.000000\nfan_out=zero sealed_by=session_idle records=1 exact_route_agreement=1/1:1.000000 category_coverage=1/1:1.000000 subagent_coverage=1/1:1.000000 none_recall=1/1:1.000000 none_precision=1/1:1.000000 coherence_rate=1/1:1.000000\nfan_out=zero sealed_by=seal_timeout records=2 exact_route_agreement=2/2:1.000000 category_coverage=2/2:1.000000 subagent_coverage=2/2:1.000000 none_recall=2/2:1.000000 none_precision=2/2:1.000000 coherence_rate=2/2:1.000000\nfan_out=zero sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data\nfan_out=zero sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data\nfan_out=one sealed_by=next_turn records=2 exact_route_agreement=1/2:0.500000 category_coverage=1/2:0.500000 subagent_coverage=1/2:0.500000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/2:0.500000\nfan_out=one sealed_by=session_idle records=4 exact_route_agreement=2/4:0.500000 category_coverage=2/4:0.500000 subagent_coverage=3/4:0.750000 none_recall=0/0:insufficient data none_precision=0/2:0.000000 coherence_rate=4/4:1.000000\nfan_out=one sealed_by=seal_timeout records=3 exact_route_agreement=2/3:0.666667 category_coverage=2/3:0.666667 subagent_coverage=3/3:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=3/3:1.000000\nfan_out=one sealed_by=dispose records=1 exact_route_agreement=0/1:0.000000 category_coverage=1/1:1.000000 subagent_coverage=0/1:0.000000 none_recall=0/0:insufficient data none_precision=0/1:0.000000 coherence_rate=1/1:1.000000\nfan_out=one sealed_by=session_deleted records=2 exact_route_agreement=1/2:0.500000 category_coverage=1/2:0.500000 subagent_coverage=2/2:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=2/2:1.000000\nfan_out=many sealed_by=next_turn records=1 exact_route_agreement=0/0:insufficient data category_coverage=1/1:1.000000 subagent_coverage=1/1:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/1:1.000000\nfan_out=many sealed_by=session_idle records=1 exact_route_agreement=1/1:1.000000 category_coverage=1/1:1.000000 subagent_coverage=1/1:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/1:1.000000\nfan_out=many sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data\nfan_out=many sealed_by=dispose records=3 exact_route_agreement=0/0:insufficient data category_coverage=3/3:1.000000 subagent_coverage=2/3:0.666667 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=3/3:1.000000\nfan_out=many sealed_by=session_deleted records=1 exact_route_agreement=1/1:1.000000 category_coverage=1/1:1.000000 subagent_coverage=1/1:1.000000 none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=1/1:1.000000\n\nCONTINUATION COHORT\ncontinuation_candidate records=2 exact_route_agreement=2/2:1.000000 category_coverage=2/2:1.000000 subagent_coverage=2/2:1.000000 none_recall=1/1:1.000000 none_precision=1/1:1.000000 coherence_rate=2/2:1.000000\n\nFIXTURE-SCORED ONLY: no live harness ground truth\nintent_coverage live_ground_truth=unavailable\nambiguous_coverage live_ground_truth=unavailable\n\nLIMITATIONS\nlive_disagreements_reproducible=false fixture_growth=manual prompt_head_chars_retained=200\nPROMPT SHA-256 RECURRENCE\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000001 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000002 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000003 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000004 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000005 count=2\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000006 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000007 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000008 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000009 count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000a count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000b count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000c count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000d count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000e count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000000f count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000010 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000011 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000012 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000013 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000014 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000015 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000016 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000017 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000018 count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000019 count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001a count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001b count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001c count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001d count=1\nprompt_full_sha256=000000000000000000000000000000000000000000000000000000000000001f count=1\nprompt_full_sha256=0000000000000000000000000000000000000000000000000000000000000020 count=1\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/script/jev-w1-report.test.ts:112:20)
+(fail) Jev W1 intent-routing report > #given all fan-out and sealing cohorts #when cross-tabbed #then every bucket and sealedBy value has a row and continuation is separate [0.44ms]
+
+ 7 pass
+ 1 fail
+ 142 expect() calls
+Ran 8 tests across 1 file. [144.00ms]
+REFINEMENT_EXIT_CODE=1

@@ -1,0 +1,86 @@
+DENOMINATORS
+turns_seen=0
+turns_gated_out=0
+turns_synthetic=0
+records_created=0
+records_with_prediction=0
+records_sealed_by_next_turn=0
+records_sealed_by_session_idle=0
+records_sealed_by_seal_timeout=0
+records_sealed_by_dispose=0
+records_sealed_by_session_deleted=0
+records_evicted=0
+in_flight=0
+orphan_observations=0
+unscorable_resume_calls=0
+resume_only_records=0
+unscorable_unknown_calls=0
+unknown_only_records=0
+unrepresentable_route_mismatches=0
+dispatches_dropped=0
+invalid_answers=0
+incoherent_predictions=0
+malformed_lines=0
+malformed_write_rejections=0
+records_lost_to_cap=0
+sink_truncations=0
+prediction_reused=0
+truncated_input=0
+prediction_status_filled=0
+prediction_status_failed=0
+prediction_status_timeout=0
+prediction_status_not_dispatched=0
+correlation_status_reliable=0
+correlation_status_censored=0
+correlation_status_overlap_ambiguous=0
+counter_process_snapshots=0
+records_created_identity sealed=0 evicted=0 in_flight=0 status=ok
+
+ELIGIBILITY
+headline_eligibility correlation_status=reliable censored_excluded=0 overlap_ambiguous_excluded=0
+prediction_rate_eligibility filled=0 failed_excluded=0 timeout_excluded=0 not_dispatched_excluded=0
+scoring_audit resume_only_excluded=0 unknown_scored=0 mixed_resume_routes_retained=0
+scored_incorrect invalid=0 incoherent=0
+observed_delegations=attempts_not_successes
+insufficient data: sealed_records=0 required=30
+
+RATES
+exact_route_agreement numerator=0 denominator=0 rate=insufficient data
+multi_route_turns=0
+category_coverage numerator=0 denominator=0 distinct_target_cardinality=0 rate=insufficient data
+category_cardinality_weighted_coverage numerator=0 denominator=0 distinct_target_cardinality=0 rate=insufficient data
+subagent_coverage numerator=0 denominator=0 distinct_target_cardinality=0 rate=insufficient data
+subagent_cardinality_weighted_coverage numerator=0 denominator=0 distinct_target_cardinality=0 rate=insufficient data
+none_recall numerator=0 denominator=0 rate=insufficient data
+none_precision numerator=0 denominator=0 rate=insufficient data
+coherence_rate numerator=0 denominator=0 rate=insufficient data
+
+FAN-OUT BY SEALED-BY CROSS-TAB
+fan_out=zero sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_idle records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=zero sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_idle records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=one sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=next_turn records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_idle records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=seal_timeout records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=dispose records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+fan_out=many sealed_by=session_deleted records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+CONTINUATION COHORT
+continuation_candidate records=0 exact_route_agreement=0/0:insufficient data category_coverage=0/0:insufficient data distinct_target_cardinality=0 category_cardinality_weighted_coverage=0/0:insufficient data subagent_coverage=0/0:insufficient data distinct_target_cardinality=0 subagent_cardinality_weighted_coverage=0/0:insufficient data none_recall=0/0:insufficient data none_precision=0/0:insufficient data coherence_rate=0/0:insufficient data
+
+FIXTURE-SCORED ONLY: no live harness ground truth
+intent_coverage live_ground_truth=unavailable
+ambiguous_coverage live_ground_truth=unavailable
+
+LIMITATIONS
+live_disagreements_reproducible=false fixture_growth=manual prompt_head_chars_retained=200
+PROMPT SHA-256 RECURRENCE
+
+EXIT_CODE=0
