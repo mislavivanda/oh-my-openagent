@@ -31,3 +31,6 @@ todo	artifact	kind	description
 6	.omo/evidence/20260924-jev-w1/task-6-category-vocab-red.txt	red	Made-up category is incorrectly scored before category vocabulary enforcement, and the new focused assertion fails.
 6	.omo/evidence/20260924-jev-w1/task-6-category-vocab-green.txt	green	Made-up category normalizes to unknown after the fix, and all 17 focused tests pass.
 6	.omo/evidence/20260924-jev-w1/task-6-category-drift-proof.txt	qa	Temporary writing removal fails naming the missing category, restoration passes both drift tests, and git diff shows writing restored.
+5	.omo/evidence/20260924-jev-w1/task-5-decide-red.txt	red	TDD RED proves decideIntentRouting is absent before implementation.
+5	.omo/evidence/20260924-jev-w1/task-5-decide-green.txt	green	Focused decision suite passes 13 tests and 42 assertions after implementation.
+5	.omo/evidence/20260924-jev-w1/task-5-throwing-backend.txt	qa	Rejecting backend returns failed with transport_error and no exception escapes.

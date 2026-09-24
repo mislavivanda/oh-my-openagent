@@ -48,6 +48,11 @@ export {
   INTENT_ROUTING_QUESTION_VERSION,
   IntentRoutingVocabularyError,
   buildIntentRoutingQuestions,
+  decideIntentRouting,
+  type IntentRoutingDecisionResult,
+  type IntentRoutingInput,
+  type IntentRoutingLabels,
+  type IntentRoutingThresholdLabel,
   type IntentRoutingVocabulary,
   type IntentRoutingVocabularyOption,
 } from "./intent-routing"
