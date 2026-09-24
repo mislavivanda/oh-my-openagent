@@ -1,0 +1,78 @@
+TASK 6 ADVERSARIAL QA
+
+Malformed input: APPLIES. Observable cases follow. Empty, null, undefined, numeric, and unknown routing values must be unknown. When category and subagent coexist, category wins because the task harness rewrites category calls to sisyphus-junior. When task_id coexists with a valid routing field, the explicit routing field wins because the call is not resume-only.
+
+Stale state: APPLIES. The frozen vocabulary is guarded by intent-routing-normalization-drift.test.ts. task-6-drift-proof.txt shows a baseline GREEN, a RED naming the temporarily removed hephaestus member, and a restored GREEN.
+
+Dirty worktree: APPLIES. The status receipt follows. The five generated postinstall outputs are the two codegraph dist files, install-local.mjs, and the two omo-senpi extension files. Remaining changes are TODO 4 peer files or TODO 6 files. The drift experiment restored SHA256 c59605abebf81a97b2969fec849b03407c3969fffe4e822a52378e7b4f5298d6, matching before and after. The barrel receipt follows and must retain both intent-routing and intent-routing-normalization exports.
+
+Misleading success output: APPLIES. task-6-normalization-red.txt predates the implementation and fails with the named assertion `normalization failed for rule (a): requested_subagent_type overrides the rewritten subagent_type`, not an import or syntax error. task-6-normalization-green.txt then records 16 pass, 0 fail.
+
+Prompt injection: NOT APPLICABLE. This pure function parses scalar tool arguments and never interprets prompts or executes supplied text.
+Cancel/resume interruption: NOT APPLICABLE as a stateful failure class. The function is synchronous and owns no cancellation state; resume-only argument classification is separately exercised and returns unscorable_resume.
+Hung commands: NOT APPLICABLE. The module performs no I/O, timers, subprocesses, promises, or loops over caller-controlled collections.
+Flaky tests: NOT APPLICABLE. Tests use fixed plain objects with no clock, randomness, network, filesystem, or process-global state.
+Repeated interruptions: NOT APPLICABLE. Each call is stateless, synchronous, and deterministic from its argument object.
+
+MALFORMED INPUT OBSERVABLES
+empty object: {"tool":"","category":null,"subagentType":null,"requestedSubagentType":null,"taskId":null,"callID":null,"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}
+category and subagent: {"tool":"task","category":"deep","subagentType":"oracle","requestedSubagentType":null,"taskId":null,"callID":null,"normalizedCategory":"deep","normalizedSubagent":"none","routeClass":"category"}
+empty strings: {"tool":"task","category":null,"subagentType":null,"requestedSubagentType":null,"taskId":null,"callID":null,"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}
+null values: {"tool":"task","category":null,"subagentType":null,"requestedSubagentType":null,"taskId":null,"callID":null,"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}
+undefined values: {"tool":"task","category":null,"subagentType":null,"requestedSubagentType":null,"taskId":null,"callID":null,"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}
+numeric category: {"tool":"task","category":null,"subagentType":null,"requestedSubagentType":null,"taskId":null,"callID":null,"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}
+unknown agent: {"tool":"task","category":null,"subagentType":"nonexistent-agent","requestedSubagentType":null,"taskId":null,"callID":null,"normalizedCategory":"none","normalizedSubagent":"none","routeClass":"unknown"}
+task_id plus category: {"tool":"task","category":"deep","subagentType":null,"requestedSubagentType":null,"taskId":"ses_x","callID":null,"normalizedCategory":"deep","normalizedSubagent":"none","routeClass":"category"}
+task_id plus subagent: {"tool":"task","category":null,"subagentType":"explore","requestedSubagentType":null,"taskId":"ses_x","callID":null,"normalizedCategory":"none","normalizedSubagent":"explore","routeClass":"subagent"}
+
+DIRTY WORKTREE RECEIPT
+ M packages/jev-core/src/index.ts
+ M packages/jev-core/src/sdk-type-compat.test.ts
+ M packages/jev-core/src/types.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/intent-routing-normalization.test.ts
+?? packages/jev-core/src/intent-routing-normalization.ts
+?? packages/jev-core/src/intent-routing.test.ts
+?? packages/jev-core/src/intent-routing.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-normalization-drift.test.ts
+c59605abebf81a97b2969fec849b03407c3969fffe4e822a52378e7b4f5298d6  packages/jev-core/src/intent-routing-normalization.ts
+diff --git a/packages/jev-core/src/index.ts b/packages/jev-core/src/index.ts
+index 129a86b89..551e0e7a1 100644
+--- a/packages/jev-core/src/index.ts
++++ b/packages/jev-core/src/index.ts
+@@ -37,3 +37,20 @@ export {
+   validateIntentRoutingEntry,
+   validateIntentRoutingObservationRecord,
+ } from "./intent-routing-record"
++export {
++  INTENT_ROUTING_QUESTION_VERSION,
++  IntentRoutingVocabularyError,
++  buildIntentRoutingQuestions,
++  type IntentRoutingVocabulary,
++  type IntentRoutingVocabularyEntry,
++} from "./intent-routing"
++export {
++  INTENT_ROUTING_SUBAGENT_VOCABULARY,
++  derivePredictedRoute,
++  deriveRoute,
++  normalizeObservedDelegation,
++  type IntentRoutingDerivedRoute,
++  type IntentRoutingPredictedRoute,
++  type IntentRoutingPredictionAnswers,
++  type IntentRoutingRoute,
++} from "./intent-routing-normalization"
+
+HARNESS-NEUTRALITY GUARD
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 0 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [158.00ms]
+
+LSP DIAGNOSTICS RECEIPT
+All four changed TypeScript files were submitted to lsp_diagnostics. The configured TypeScript server could not initialize because this repository pins TypeScript 7.0.2 native preview, whose package intentionally has no tsserver.js, and no alternate tsserver installation exists. This is an environment/tooling limitation, not a source diagnostic. The repository-native `bun run typecheck` gate is clean across the root, scripts, jev-core, and omo-opencode; see task-6-typecheck.txt.
