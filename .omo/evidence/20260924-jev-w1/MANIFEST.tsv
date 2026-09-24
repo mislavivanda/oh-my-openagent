@@ -1,0 +1,18 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260924-jev-w1/task-1-worktree-fffe.txt	artifact	Worktree proof: branch jev/w1-fffe at 82460563f, jev/foundation ancestry check exit 0, clean git status
+1	.omo/evidence/20260924-jev-w1/task-1-install-fffe.txt	artifact	bun install full output, 544 packages installed, exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-test-fast.txt	baseline	bun run test:fast baseline: 317 pass, 0 fail across 31 files, exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-full-test.txt	baseline	bun test --timeout 20000 full output with trailing exit line, exit 1
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-failures.txt	baseline	Frozen failing-test set: 22 lines of testfile TAB test name, sorted, ANSI and timings stripped
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-totals.txt	baseline	Full-suite totals: 12762 pass, 3 skip, 22 fail, 12787 tests across 1678 files, exit 1
+1	.omo/evidence/20260924-jev-w1/task-1-typecheck-baseline.txt	baseline	bun run typecheck baseline across root, script, and 28 workspace projects, exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt	baseline	check-third-party-notices heading plus 4 missing-entry lines only, no exit line, for byte-for-byte diff
+1	.omo/evidence/20260924-jev-w1/task-1-notices-exit.txt	baseline	check-third-party-notices exit status only, exit=1, kept apart from the heading list
+1	.omo/evidence/20260924-jev-w1/task-1-manifest-selfcheck.txt	qa	Self-check proving the manifest header is exact and every listed artifact exists and is non-empty
+2	.omo/evidence/20260924-jev-w1/task-2-schema-red.txt	red	RED run of jev.test.ts before the schema change: 5 fail, 7 pass, exit 1, failures name the missing wires.intent_routing
+2	.omo/evidence/20260924-jev-w1/task-2-schema-green.txt	green	GREEN run of jev.test.ts after adding JevIntentRoutingWireConfigSchema: 12 pass, 0 fail, exit 0, plus the per-test roster
+2	.omo/evidence/20260924-jev-w1/task-2-both-schemas.txt	artifact	Two-schema regeneration proof with every command and exit code, sha256 of both assets, and the build:omo-schema-only staleness demo
+2	.omo/evidence/20260924-jev-w1/task-2-schema-diff.txt	artifact	Recorded git diff of assets/oh-my-opencode.schema.json and assets/omo.schema.json for review
+2	.omo/evidence/20260924-jev-w1/task-2-observe-only-reject.txt	qa	observe_only false rejected at parse time, plan one-liner output plus the untruncated refine message
+2	.omo/evidence/20260924-jev-w1/task-2-typecheck.txt	qa	bun run typecheck plus scoped tsgo runs over both changed files, the concurrent jev-core error attributed, LSP daemon unreachable recorded
+2	.omo/evidence/20260924-jev-w1/task-2-scoped-regression.txt	qa	386 pass 0 fail across every test file touching model_error_triage or a generated schema asset, incl. omo-schema-freshness
