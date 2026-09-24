@@ -1,8 +1,10 @@
 export type ChoiceQuestion<O extends string = string> = {
   readonly type: "choice"
   readonly instructions: string
-  readonly criteria: Readonly<Record<O, string | null>>
+  readonly criteria: Readonly<Record<O, QuestionDescription>>
 }
+
+export type QuestionDescription = string | { [key: string]: JsonValue } | JsonValue[] | null
 
 export type NoulQuestion = {
   readonly type: "noul"

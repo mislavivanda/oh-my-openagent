@@ -30,3 +30,16 @@ todo	artifact	kind	description
 2	.omo/evidence/20260924-jev-w1/task-2-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
 2	.omo/evidence/20260924-jev-w1/task-2-test-fast.txt	qa	Hard test-fast gate exits 0 with 342 passing tests across 32 files
 2	.omo/evidence/20260924-jev-w1/task-2-dirty-worktree.txt	artifact	Porcelain status classifies task-2 files, five known build outputs, concurrent peer TODO 3 files, and no unexpected paths
+4	.omo/evidence/20260924-jev-w1/task-4-questions-red.txt	red	Focused assertion RED predates implementation and fails because buildIntentRoutingQuestions is absent from the jev-core barrel
+4	.omo/evidence/20260924-jev-w1/task-4-questions-green.txt	green	Focused question-set GREEN passes 6 tests and 24 assertions for keys, none sentinels, labels, structured criteria, and invalid vocabulary
+4	.omo/evidence/20260924-jev-w1/task-4-empty-vocab.txt	qa	Empty vocabulary failure scenario prints the named IntentRoutingVocabularyError and exits 0
+4	.omo/evidence/20260924-jev-w1/task-4-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+4	.omo/evidence/20260924-jev-w1/task-4-test-fast.txt	qa	Hard test-fast gate exits 0 with 366 passing tests across 35 files
+4	.omo/evidence/20260924-jev-w1/task-4-adversarial-qa.txt	qa	Malformed-input probes, barrel reachability, RED chronology, dirty-worktree classification, scenario applicability, and diagnostics receipt
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-red.txt	red	Focused assertion RED predates implementation and names requested_subagent_type precedence as the intended failing behavior
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-green.txt	green	Focused normalization GREEN covers rules (a) through (e), exhaustive route derivation, prediction coherence, and frozen vocabulary
+6	.omo/evidence/20260924-jev-w1/task-6-resume-unscorable.txt	qa	Exact resume probe classifies a task_id-only call as unscorable_resume rather than none
+6	.omo/evidence/20260924-jev-w1/task-6-drift-proof.txt	qa	Registry drift test is GREEN, fails naming temporarily removed hephaestus, then returns GREEN with matching before and after SHA256
+6	.omo/evidence/20260924-jev-w1/task-6-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+6	.omo/evidence/20260924-jev-w1/task-6-test-fast.txt	qa	Hard test-fast gate exits 0 with 363 passing tests across 35 files
+6	.omo/evidence/20260924-jev-w1/task-6-adversarial-qa.txt	qa	Malformed-input observables, stale-state proof, dirty-worktree receipt, barrel preservation, RED chronology, scenario rulings, and harness-neutrality guard

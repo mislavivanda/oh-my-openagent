@@ -1,0 +1,3 @@
+IntentRoutingVocabularyError: Invalid intent routing intents vocabulary: must contain at least one entry
+
+exit=0

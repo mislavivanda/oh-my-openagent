@@ -37,3 +37,11 @@ export {
   validateIntentRoutingEntry,
   validateIntentRoutingObservationRecord,
 } from "./intent-routing-record"
+export {
+  INTENT_ROUTING_QUESTION_VERSION,
+  IntentRoutingVocabularyError,
+  buildIntentRoutingQuestions,
+  type IntentRoutingQuestions,
+  type IntentRoutingVocabulary,
+  type IntentRoutingVocabularyEntry,
+} from "./intent-routing"
