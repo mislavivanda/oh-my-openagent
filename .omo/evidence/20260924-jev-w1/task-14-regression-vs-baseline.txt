@@ -1,0 +1,31 @@
+WHAT WAS TESTED
+command=HOME=<fresh-mktemp> env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+comparison=.omo/evidence/20260924-jev-w1/task-1-frozen-baseline.txt
+The fresh HOME is required because the full suite includes intent-routing sink tests that write under ~/.omo/.
+
+WHAT WAS OBSERVED
+exit=1
+pass=12896
+fail=7
+skip=3
+total_ran=12906
+files=1691
+baseline_failures=7
+current_failures=7
+new_failures=0
+missing_baseline_failures=0
+BEGIN_CURRENT_FAILURES
+packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts	dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > accepts channel parameter
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > accepts latest channel
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+packages/omo-opencode/src/shared/module-resolution-failure.test.ts	isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+END_CURRENT_FAILURES
+
+WHY IT IS ENOUGH
+The current failure identifiers were normalized to <relative-path><TAB><full test name>, sorted, and compared as sets against the frozen baseline. Every baseline failure remains and no additional failure exists, so todo 14 introduced zero full-suite regressions.
+
+WHAT WAS OMITTED
+The full runner output and repeated assertion stacks were not copied into this reviewer artifact. They contained no credentials, tokens, auth headers, or environment dumps. The complete normalized failure set and all runner totals are retained above.

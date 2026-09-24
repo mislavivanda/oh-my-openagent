@@ -2,7 +2,7 @@ import {
   normalizeObservedDelegation,
   type IntentRoutingObservedDelegation,
 } from "@oh-my-opencode/jev-core"
-import { isJevIntentRoutingSessionEligible } from "./intent-routing"
+import { isJevIntentRoutingSessionEligible } from "./intent-routing-session-gate"
 
 export const JEV_INTENT_ROUTING_CAPTURE_TOOL_ALLOWLIST = Object.freeze([
   "task",

@@ -1,0 +1,15 @@
+WHAT WAS TESTED
+command=bash .agents/skills/opencode-qa/scripts/sse-hook-probe.sh --self-test
+retry=timeout 75s bash -x .agents/skills/opencode-qa/scripts/sse-hook-probe.sh --self-test
+The script created its own isolated HOME and XDG data, config, cache, and state roots under /tmp.
+
+WHAT WAS OBSERVED
+result=BLOCKED
+The first invocation exceeded 180 seconds. The bounded xtrace retry showed opencode serve starting under the isolated sandbox, followed by repeated /global/health curls that connected but did not return. The outer 75-second timeout fired. The script EXIT trap killed the isolated server and removed /tmp/oqa-xdg.vmFEGm.
+The failure happened before the SSE watcher started, so no server.connected event was observed.
+
+WHY IT IS ENOUGH
+This is evidence of the attempted mandatory real-harness QA, not a passing live-harness claim. The code-level behavior is covered separately by the four-consumer identity test, the bounded dispose-flush test, the non-awaited 3000ms dispatcher test, 589 passing plugin tests, 433 passing test:fast tests, typecheck, and the full-suite baseline comparison with zero new failures.
+
+WHAT WAS OMITTED
+No credentials, generated server password, environment dump, or auth header is retained. Live SSE hook proof was omitted because the isolated server health endpoint never returned before the bounded timeout.

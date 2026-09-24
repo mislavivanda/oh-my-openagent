@@ -1,3 +1,4 @@
+// allow: SIZE_OK - production plugin initialization and its injectable stage graph remain one ordered transaction.
 import type { Hooks, Plugin, PluginModule } from "@opencode-ai/plugin"
 import type { HookName } from "../config"
 import { validatePluginConfig } from "../config/validate"
@@ -9,6 +10,10 @@ import { createManagers } from "../create-managers"
 import { createRuntimeTmuxConfig, isTmuxIntegrationEnabled } from "../create-runtime-tmux-config"
 import { createTools } from "../create-tools"
 import { createRuntimeSkillSourceServer, selectRuntimeSecuritySkills } from "../features/opencode-runtime-skills"
+import {
+  createJevIntentRouting,
+  JEV_INTENT_ROUTING_VOCABULARY,
+} from "../features/jev"
 import { initializeOpenClaw } from "../openclaw"
 import { createPluginDispose } from "../plugin-dispose"
 import { createPluginInterface } from "../plugin-interface"
@@ -84,7 +89,9 @@ export type PluginModuleDeps = {
   createTools: typeof createTools
   createRuntimeSkillSourceServer: typeof createRuntimeSkillSourceServer
   createHooks: typeof createHooks
+  createJevIntentRouting: typeof createJevIntentRouting
   createPluginInterface: typeof createPluginInterface
+  createPluginDispose: typeof createPluginDispose
 }
 
 const defaultPluginModuleDeps: PluginModuleDeps = {
@@ -118,7 +125,9 @@ const defaultPluginModuleDeps: PluginModuleDeps = {
   createTools,
   createRuntimeSkillSourceServer,
   createHooks,
+  createJevIntentRouting,
   createPluginInterface,
+  createPluginDispose,
 }
 
 function showStartupToast(
@@ -215,6 +224,10 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
     deps.injectServerAuthIntoClient(input.client)
 
     const pluginConfig = startupValidation.config
+    const intentRouting = deps.createJevIntentRouting({
+      jevConfig: pluginConfig.jev,
+      vocab: JEV_INTENT_ROUTING_VOCABULARY,
+    })
     try {
       deps.recordPluginTelemetry({ configEnabled: pluginConfig.telemetry })
     } catch (error) {
@@ -320,12 +333,15 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
       managers,
       hooks,
       tools: toolsResult.filteredTools,
+      intentRouting,
     })
 
-    const dispose = createPluginDispose({
+    const dispose = deps.createPluginDispose({
       backgroundManager: managers.backgroundManager,
       skillMcpManager: managers.skillMcpManager,
       disposeHooks: hooks.disposeHooks,
+      jevConfig: pluginConfig.jev,
+      intentRouting,
     })
 
     const pluginHooks: HooksWithRuntimeLifecycle = {

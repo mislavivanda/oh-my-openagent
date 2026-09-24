@@ -70,6 +70,20 @@ const FILLED_RESULT: IntentRoutingDecisionResult = {
   questionVersion: 1,
 }
 
+const TEST_SINK = {
+  processId: "intent-routing-test",
+  filePath: "/tmp/intent-routing-test.jsonl",
+  counterEpoch: 0,
+  write: () => true,
+  dispose: () => {},
+}
+
+function createTestJevIntentRouting(
+  args: Parameters<typeof createJevIntentRouting>[0],
+): ReturnType<typeof createJevIntentRouting> {
+  return createJevIntentRouting({ ...args, sink: TEST_SINK })
+}
+
 type LogEntry = {
   readonly message: string
   readonly data: unknown
@@ -141,7 +155,7 @@ afterEach(() => {
 describe("createJevIntentRouting", () => {
   test("#given disabled config #when a turn arrives #then enabled is false and zero dispatches occur", async () => {
     const dispatcher = mock(async () => FILLED_RESULT)
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: JevConfigSchema.parse({
         enabled: false,
         wires: { intent_routing: { enabled: true } },
@@ -163,7 +177,7 @@ describe("createJevIntentRouting", () => {
   test("#given no known main session #when a turn arrives #then the gate fails closed with a recorded reason", async () => {
     const logs = logCollector()
     const dispatcher = mock(async () => FILLED_RESULT)
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig(),
       vocab: VOCABULARY,
       dispatcher,
@@ -189,7 +203,7 @@ describe("createJevIntentRouting", () => {
     subagentSessions.add(SESSION_ID)
     const logs = logCollector()
     const dispatcher = mock(async () => FILLED_RESULT)
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig(),
       vocab: VOCABULARY,
       dispatcher,
@@ -213,7 +227,7 @@ describe("createJevIntentRouting", () => {
     const logs = logCollector()
     const backend = createMockDecisionBackend(ANSWERS, { model: "jev-intent-test" })
     const decide = mock(backend.decide.bind(backend))
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig(),
       vocab: VOCABULARY,
       backend: { kind: backend.kind, decide },
@@ -251,7 +265,7 @@ describe("createJevIntentRouting", () => {
     const dispatcher = mock(async (): Promise<IntentRoutingDecisionResult> => {
       throw new TypeError("dispatcher rejected")
     })
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig(),
       vocab: VOCABULARY,
       dispatcher,
@@ -286,7 +300,7 @@ describe("createJevIntentRouting", () => {
     setMainSession(SESSION_ID)
     const maxInflight = 4
     const dispatcher = mock(() => new Promise<IntentRoutingDecisionResult>(() => {}))
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig({ maxInflight }),
       vocab: VOCABULARY,
       dispatcher,
@@ -316,7 +330,7 @@ describe("createJevIntentRouting", () => {
         return { status: "unavailable", reason: "unscripted", latencyMs: 0 }
       },
     }
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig(),
       vocab: VOCABULARY,
       backend,
@@ -346,7 +360,7 @@ describe("createJevIntentRouting", () => {
         return { status: "unavailable", reason: "unscripted", latencyMs: 0 }
       },
     }
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig(),
       vocab: VOCABULARY,
       backend,
@@ -372,7 +386,7 @@ describe("createJevIntentRouting", () => {
       requestSeen.resolve(String(url))
       return validRealResponse()
     }
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig({ backend: "real" }),
       vocab: VOCABULARY,
       env,
@@ -389,7 +403,7 @@ describe("createJevIntentRouting", () => {
 
   test("#given a max_prompt_chars prompt #when measuring the synchronous seam #then p99 stays below one millisecond", () => {
     setMainSession(SESSION_ID)
-    const routing = createJevIntentRouting({
+    const routing = createTestJevIntentRouting({
       jevConfig: enabledConfig({ maxInflight: 64 }),
       vocab: VOCABULARY,
       dispatcher: () => new Promise<IntentRoutingDecisionResult>(() => {}),

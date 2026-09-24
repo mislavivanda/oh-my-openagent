@@ -10,6 +10,7 @@ export type {
   JevIntentRoutingDispatchRequest,
   JevIntentRoutingNotDispatchedReason,
 } from "./intent-routing"
+export { JEV_INTENT_ROUTING_VOCABULARY } from "./intent-routing-vocabulary"
 export {
   createIntentRoutingTurnStore,
   normalizeIntentRoutingPrompt,

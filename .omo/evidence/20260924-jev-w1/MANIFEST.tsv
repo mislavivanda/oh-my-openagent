@@ -59,3 +59,9 @@ todo	artifact	kind	description
 12	.omo/evidence/20260924-jev-w1/task-12-seal-red.txt	red	TDD RED proves the intent-routing seal module is absent before implementation.
 12	.omo/evidence/20260924-jev-w1/task-12-seal-green.txt	green	Focused seal suite passes 12 tests, the extended todo-10 store suite passes 20 tests, and bun run typecheck exits zero under a temporary HOME.
 12	.omo/evidence/20260924-jev-w1/task-12-overlap-both-sides.txt	qa	Unit-level sink-corpus drive proves a synthetic message does not seal, a late observation marks both turns overlap_ambiguous, and report exclusion is explicitly deferred to todo 16 because its script does not exist yet.
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-red.txt	red	TDD RED: the shared factory, handler dispatch, and dispose flush were absent, producing 0 pass and 3 fail
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-green.txt	green	Plugin suite passed 589 tests and test:fast passed 433 tests under a temporary HOME
+14	.omo/evidence/20260924-jev-w1/task-14-not-awaited.txt	qa	A 3000ms dispatcher returned through chat.message in 0.883ms, below the 50ms bound
+14	.omo/evidence/20260924-jev-w1/task-14-no-hook-registry.txt	qa	The mandated intentRouting grep returned exit 1 with empty output, proving no hook-registry entry
+14	.omo/evidence/20260924-jev-w1/task-14-regression-vs-baseline.txt	gate	Isolated full suite recorded 12896 pass, 7 baseline failures, 3 skip, and zero new failures
+14	.omo/evidence/20260924-jev-w1/task-14-opencode-qa.txt	qa	Isolated OpenCode SSE QA attempt was blocked before event watch because the health endpoint did not return within bounded time

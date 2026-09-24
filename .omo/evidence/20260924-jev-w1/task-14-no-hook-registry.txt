@@ -1,0 +1,5 @@
+command=grep -rn "intentRouting" packages/omo-opencode/src/create-hooks.ts packages/omo-opencode/src/config/schema/hooks.ts
+exit=1
+output_begin
+
+output_end
