@@ -1,0 +1,70 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:
+63 |   for (const failureShape of INTENT_ROUTING_FAILURE_SHAPES) {
+64 |     test(`#given a backend that ${failureShape} #when the wire is enabled versus disabled #then parts stay byte-identical and hook order stays fixed`, async () => {
+65 |       const disabled = await runChatScenario(false, failureShape)
+66 |       const enabled = await runChatScenario(true, failureShape)
+67 | 
+68 |       expect(enabled.parts).toEqual(disabled.parts)
+                                 ^
+error: expect(received).toEqual(expected)
+
+@@ -5,3 +5,3 @@
+      },
+-     "text": "Route this without changing it.",
++     "text": "Route this without changing it. [task-15 mutation]",
+      "type": "text",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:68:29)
+(fail) chat.message Jev intent-routing inertness > #given a backend that throws_synchronously #when the wire is enabled versus disabled #then parts stay byte-identical and hook order stays fixed [3.91ms]
+63 |   for (const failureShape of INTENT_ROUTING_FAILURE_SHAPES) {
+64 |     test(`#given a backend that ${failureShape} #when the wire is enabled versus disabled #then parts stay byte-identical and hook order stays fixed`, async () => {
+65 |       const disabled = await runChatScenario(false, failureShape)
+66 |       const enabled = await runChatScenario(true, failureShape)
+67 | 
+68 |       expect(enabled.parts).toEqual(disabled.parts)
+                                 ^
+error: expect(received).toEqual(expected)
+
+@@ -5,3 +5,3 @@
+      },
+-     "text": "Route this without changing it.",
++     "text": "Route this without changing it. [task-15 mutation]",
+      "type": "text",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:68:29)
+(fail) chat.message Jev intent-routing inertness > #given a backend that rejects_asynchronously #when the wire is enabled versus disabled #then parts stay byte-identical and hook order stays fixed [2.51ms]
+63 |   for (const failureShape of INTENT_ROUTING_FAILURE_SHAPES) {
+64 |     test(`#given a backend that ${failureShape} #when the wire is enabled versus disabled #then parts stay byte-identical and hook order stays fixed`, async () => {
+65 |       const disabled = await runChatScenario(false, failureShape)
+66 |       const enabled = await runChatScenario(true, failureShape)
+67 | 
+68 |       expect(enabled.parts).toEqual(disabled.parts)
+                                 ^
+error: expect(received).toEqual(expected)
+
+@@ -5,3 +5,3 @@
+      },
+-     "text": "Route this without changing it.",
++     "text": "Route this without changing it. [task-15 mutation]",
+      "type": "text",
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:68:29)
+(fail) chat.message Jev intent-routing inertness > #given a backend that times_out #when the wire is enabled versus disabled #then parts stay byte-identical and hook order stays fixed [2.54ms]
+
+ 3 pass
+ 3 fail
+ 21 expect() calls
+Ran 6 tests across 2 files. [154.00ms]
+
+exit=1

@@ -1,0 +1,44 @@
+phase=timer unref removed
+command=bun test packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts -t child exits cleanly
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-5IBbAS
+107 |       const child = await runChild("exit", home)
+108 |       const receipt = ExitReceiptSchema.parse(JSON.parse(
+109 |         existsSync(receiptPath) ? readFileSync(receiptPath, "utf8") : "null",
+110 |       ))
+111 | 
+112 |       expect(child.timedOut, child.stderr).toBe(false)
+                                                 ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-fffe/packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:112:44)
+(fail) chat.message Jev intent-routing hanging backend runtime effects > #given an enabled wire with a hanging real backend #when the parent does not await it #then the child exits cleanly because timers are unrefed [2015.89ms]
+
+ 0 pass
+ 1 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [2.14s]
+
+without_unref_exit=1
+
+phase=timer unref restored
+command=bun test packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts -t child exits cleanly
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-hanging.test.ts:
+TASK15_UNREF childExitCode=0 childElapsedMs=136.420 timedOut=false wireEnabled=true home=/tmp/task-15-unref-home-ROjfjC
+TASK15_UNREF_CLEANUP removed=/tmp/task-15-unref-home-ROjfjC
+
+ 1 pass
+ 1 filtered out
+ 0 fail
+ 5 expect() calls
+Ran 1 test across 1 file. [284.00ms]
+
+with_unref_exit=0

@@ -59,3 +59,8 @@ todo	artifact	kind	description
 14	.omo/evidence/20260924-jev-w1/task-14-not-awaited.txt	qa	Injected 3000ms dispatcher starts once while chat.message resolves in 1.347ms, under the 50ms ceiling
 14	.omo/evidence/20260924-jev-w1/task-14-opencode-qa-live.txt	qa	Real isolated OpenCode run loads local dist, emits a JEV decision, seals one sink record on session_idle, and leaves host DB count unchanged
 14	.omo/evidence/20260924-jev-w1/task-14-opencode-qa-summary.txt	artifact	Reviewer-readable OpenCode QA scope, observations, sufficiency argument, isolation proof, and omitted sensitive material
+15	.omo/evidence/20260924-jev-w1/task-15-inert-red.txt	red	Mutation-backed RED run: enabled output differs byte-for-byte from disabled output across all three backend failure shapes, exit 1
+15	.omo/evidence/20260924-jev-w1/task-15-inert-green.txt	green	Part A and B proof plus gates: 12 focused tests green, p99 over 200 samples, final typecheck exit 0, plugin 603 pass, Jev 219 pass 1 skip, test:fast 446 pass 1 skip
+15	.omo/evidence/20260924-jev-w1/task-15-hanging-backend-stress.txt	qa	Real dispatcher and sink stress under hanging fetch: 50 turns, bounded wall-clock, max_inflight 4, 46 drops, bounded heap, clean child exit, isolated HOME, and empty W4 scope diff
+15	.omo/evidence/20260924-jev-w1/task-15-mutation-detected.txt	qa	Temporary output mutation produces a readable byte-identity diff for all failure shapes, then the reverted focused suite returns green
+15	.omo/evidence/20260924-jev-w1/task-15-unref-proof.txt	qa	Removing dispatcher timer unref makes the hanging-backend child time out, then restoring unref yields exit 0 within the bound
