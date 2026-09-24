@@ -1,0 +1,17 @@
+++ mktemp -d
++ HOME=/tmp/tmp.unc6Oii6Rk
++ bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './intent-routing-sink' from '/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [137.00ms]

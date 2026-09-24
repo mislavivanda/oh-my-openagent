@@ -25,3 +25,18 @@ export {
   JEV_INTENT_ROUTING_CAPTURE_TOOL_ALLOWLIST,
 } from "./intent-routing-capture"
 export type { JevIntentRoutingCapture } from "./intent-routing-capture"
+export {
+  createIntentRoutingSink,
+  INTENT_ROUTING_SINK_COUNTER_INTERVAL_MS,
+  INTENT_ROUTING_SINK_MAX_LINE_BYTES,
+  INTENT_ROUTING_SINK_SIZE_CAP_BYTES,
+  readIntentRoutingSink,
+} from "./intent-routing-sink"
+export type {
+  IntentRoutingSink,
+  IntentRoutingSinkIdentity,
+  IntentRoutingSinkOptions,
+  IntentRoutingSinkReadOptions,
+  IntentRoutingSinkReadResult,
+  IntentRoutingSinkTruncation,
+} from "./intent-routing-sink"

@@ -51,3 +51,8 @@ todo	artifact	kind	description
 11	.omo/evidence/20260924-jev-w1/task-11-allowlist-drift-proof.txt	qa	Temporary call_omo_agent removal fails its direct capture case and the registered-schema drift guard, then the allowlist is restored.
 11	.omo/evidence/20260924-jev-w1/task-11-resume-regression-proof.txt	qa	Temporary task_id normalization removal regresses the resume route to unknown with none targets, then task_id capture is restored.
 11	.omo/evidence/20260924-jev-w1/task-11-gates.txt	gate	Final focused suite passes 8 tests, bun run typecheck exits zero across all workspaces, and the TypeScript no-excuse audit reports zero violations.
+13	.omo/evidence/20260924-jev-w1/task-13-sink-red.txt	red	TDD RED proves the intent-routing sink module is absent before implementation.
+13	.omo/evidence/20260924-jev-w1/task-13-sink-green.txt	green	Focused temp-HOME sink suite passes 8 tests covering both entry arms, dispose flush, permissions, line rejection, malformed reads, process isolation, and cap epochs.
+13	.omo/evidence/20260924-jev-w1/task-13-malformed-tolerance.txt	qa	Failure QA appends a malformed trailing line and returns 2 valid records plus malformedLines 1 without throwing under a temp HOME.
+13	.omo/evidence/20260924-jev-w1/task-13-gates.txt	gate	Typecheck exits zero, the TypeScript no-excuse audit reports no violations, and source modules remain below the 200 LOC soft limit.
+13	.omo/evidence/20260924-jev-w1/task-13-measurement-home-safety.txt	artifact	Measured 3992960 expected bytes per day, justified the 32 MiB cap, and proved the real ~/.omo/jev remained absent before and after QA.
