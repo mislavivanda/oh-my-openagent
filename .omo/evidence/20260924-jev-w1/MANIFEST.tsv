@@ -24,3 +24,10 @@ todo	artifact	kind	description
 4	.omo/evidence/20260924-jev-w1/task-4-questions-red.txt	red	Targeted question-builder tests fail on missing none options, caller vocabulary labels, and empty-vocabulary error.
 4	.omo/evidence/20260924-jev-w1/task-4-questions-green.txt	green	Targeted question-builder tests pass with four answer-aligned questions and bounded unique choices.
 4	.omo/evidence/20260924-jev-w1/task-4-empty-vocab.txt	qa	Empty vocabulary throws the named IntentRoutingVocabularyError failure path.
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-red.txt	red	Focused normalization suite fails against compile-safe stubs with requested-subagent, category rewrite, resume, totality, and coherence assertion diffs.
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-green.txt	green	Focused normalization suite passes all 17 tests after category vocabulary enforcement.
+6	.omo/evidence/20260924-jev-w1/task-6-resume-unscorable.txt	qa	Exact bun evaluation prints normalizedCategory none, normalizedSubagent none, and routeClass unscorable_resume.
+6	.omo/evidence/20260924-jev-w1/task-6-drift-proof.txt	qa	Temporary atlas removal fails with the missing member named, then the restored vocabulary passes the same drift test.
+6	.omo/evidence/20260924-jev-w1/task-6-category-vocab-red.txt	red	Made-up category is incorrectly scored before category vocabulary enforcement, and the new focused assertion fails.
+6	.omo/evidence/20260924-jev-w1/task-6-category-vocab-green.txt	green	Made-up category normalizes to unknown after the fix, and all 17 focused tests pass.
+6	.omo/evidence/20260924-jev-w1/task-6-category-drift-proof.txt	qa	Temporary writing removal fails naming the missing category, restoration passes both drift tests, and git diff shows writing restored.

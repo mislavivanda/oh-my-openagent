@@ -51,3 +51,15 @@ export {
   type IntentRoutingVocabulary,
   type IntentRoutingVocabularyOption,
 } from "./intent-routing"
+export {
+  INTENT_ROUTING_CATEGORY_VOCABULARY,
+  INTENT_ROUTING_SUBAGENT_VOCABULARY,
+  derivePredictedRoute,
+  deriveRoute,
+  normalizeObservedDelegation,
+  type DerivedRoute,
+  type IntentRoutingRoute,
+  type NormalizedObservedDelegation,
+  type ObservedDelegationArgs,
+  type RouteObservation,
+} from "./intent-routing-normalization"
