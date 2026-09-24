@@ -3,6 +3,17 @@ import type {
   IntentRoutingRouteClass,
 } from "./intent-routing-record"
 
+export const INTENT_ROUTING_CATEGORY_VOCABULARY = Object.freeze([
+  "visual-engineering",
+  "ultrabrain",
+  "deep",
+  "artistry",
+  "quick",
+  "unspecified-low",
+  "unspecified-high",
+  "writing",
+] as const)
+
 // Plain data mirrors BuiltinAgentNameSchema and OverridableAgentNameSchema in
 // packages/omo-opencode/src/config/schema/agent-names.ts. "general" is absent
 // because neither live enum admits it.
@@ -42,6 +53,7 @@ type DerivedRoute =
   | { readonly kind: "scorable"; readonly route: ScorableRoute }
   | { readonly kind: "unscorable"; readonly reason: "resume" | "unknown" }
 
+const categoryNames = new Set<string>(INTENT_ROUTING_CATEGORY_VOCABULARY)
 const subagentNames = new Set<string>(INTENT_ROUTING_SUBAGENT_VOCABULARY)
 
 function readOptionalString(args: ObservedDelegationArgs, key: string): OptionalString {
@@ -71,6 +83,7 @@ export function normalizeObservedDelegation(args: ObservedDelegationArgs): Norma
   ) return unknownDelegation()
 
   if (category.kind === "value") {
+    if (!categoryNames.has(category.value)) return unknownDelegation()
     if (requestedSubagent.kind === "value") return unknownDelegation()
     if (subagent.kind === "value" && subagent.value !== "sisyphus-junior") {
       return unknownDelegation()

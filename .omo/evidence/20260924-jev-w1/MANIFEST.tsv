@@ -87,3 +87,6 @@ todo	artifact	kind	description
 19	.omo/evidence/20260924-jev-w1/task-19-receipts.txt	qa	Every enabled and disabled harness PID and port listed with individual exited or terminated status; no global matcher
 19	.omo/evidence/20260924-jev-w1/task-19-evidence-record.txt	qa	Reviewer-readable tested, observed, sufficiency, and omissions record including unreachable correlation statuses
 19	.omo/evidence/20260924-jev-w1/task-19-gates.txt	green	Shell, JSONL, strict evidence tsgo, no-excuse, full typecheck, 45 focused tests, and 471-test fast suite all exit 0
+R1	.omo/evidence/20260924-jev-w1/R1-jev-core-red.txt	red	Failing-first proof: unknown category normalized as category and fixture intents differed from production, 25 pass 2 fail, exit 1
+R1	.omo/evidence/20260924-jev-w1/R1-jev-core-green.txt	green	Focused fixes green, mock harness zero-network green, jev-core 152 pass 1 skip, final typecheck exit 0, LSP environment limitation recorded
+R1	.omo/evidence/20260924-jev-w1/R1-accuracy-baseline-note.txt	artifact	Paid todo-18 intent baseline marked stale after seven fixture options were replaced by the six production options; paid run not repeated

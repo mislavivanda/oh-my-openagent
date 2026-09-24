@@ -32,10 +32,6 @@ function choiceAnswer(choice: string): IntentRoutingChoiceAnswer {
 }
 
 describe("intent-routing observed delegation normalization", () => {
-  test("#given the normalization contract #when loading its module #then the implementation exists", () => {
-    requireNormalizationModule()
-  })
-
   test.each([
     {
       rule: "requested subagent precedence",
@@ -84,6 +80,15 @@ describe("intent-routing observed delegation normalization", () => {
         normalizedCategory: "none",
         normalizedSubagent: "none",
         routeClass: "unscorable_resume",
+      },
+    },
+    {
+      rule: "unrecognized category",
+      args: { tool: "task", category: "not-a-runtime-category" },
+      expected: {
+        normalizedCategory: "none",
+        normalizedSubagent: "none",
+        routeClass: "unknown",
       },
     },
     {

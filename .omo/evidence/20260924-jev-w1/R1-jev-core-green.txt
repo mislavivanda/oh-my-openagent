@@ -1,0 +1,71 @@
+R1 JEV-CORE GREEN EVIDENCE
+
+WHAT WAS TESTED
+Focused command after the production fixes:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts packages/jev-core/src/intent-routing-fixtures.test.ts
+
+Exit code: 0
+
+WHAT WAS OBSERVED
+bun test v1.4.0 (34cbb9a40)
+
+27 pass
+0 fail
+85 expect() calls
+Ran 27 tests across 2 files. [127.00ms]
+
+The formerly failing unknown-category assertion now returns normalizedCategory "none", normalizedSubagent "none", and routeClass "unknown". The fixture-to-production intent drift assertion now compares equal on research, implementation, investigation, evaluation, fix, and open-ended. The rejected implementation-presence test is absent; the table-driven behavioral suite loads and executes the normalization module across each route class.
+
+WHY IT IS ENOUGH
+The same two files and assertions that produced the failing-first evidence now pass without weakening either expected result. This proves the category guard and vocabulary reconciliation addressed the reproduced defects.
+
+ACCURACY HARNESS MOCK PATH
+Command:
+JEV_W1_REAL_API= bun test packages/jev-core/src/intent-routing-accuracy.test.ts
+
+Exit code: 0
+
+Observed summary:
+7 pass
+1 skip
+0 fail
+35 expect() calls
+Ran 8 tests across 1 file. [127.00ms]
+
+The complete mock artifact covered all 17 fixtures with decisionCallCount 17, networkCallCount 0, requestCount 0, and errorName null. The dry-run built all 17 requests with zero decision calls and zero network calls. The confusion matrix used the aligned production intent classes: research, implementation, investigation, evaluation, fix, and open-ended.
+
+The first mock-path attempt exited 1 because the local real-backend measurement stub still answered with the removed "explain" option and the backend returned unavailable. Updating that test fixture to the corrected "open-ended" option was part of aligning every accuracy-harness path. The second mock-path attempt is the exit-0 run recorded above.
+
+PACKAGE VERIFICATION
+Command:
+JEV_W1_REAL_API= bun test packages/jev-core/
+
+Exit code: 0
+
+Observed summary:
+152 pass
+1 skip
+0 fail
+644 expect() calls
+Ran 153 tests across 12 files. [269.00ms]
+
+The embedded accuracy output again reported networkCallCount 0 and requestCount 0.
+
+TYPECHECK
+Command:
+bun run typecheck
+
+First exit code: 1
+The first run found a test-only tuple-versus-array overload error in the new drift assertion. The assertion was flipped to compare the production string array against a spread copy of the fixture tuple without changing its behavioral expectation.
+
+Second exit code: 0
+The second run completed tsgo --noEmit, typecheck:script, and every workspace package typecheck, including packages/jev-core and packages/omo-opencode.
+
+LSP DIAGNOSTICS
+Requested scope:
+packages/jev-core/src
+
+No process exit code was available. The TypeScript language server could not initialize because workspace TypeScript 7.0.2 provides no tsserver.js and no other valid TypeScript installation was found. This matches F2's recorded environment limitation. The repo-native typecheck completed with exit code 0.
+
+WHAT WAS OMITTED
+No logs, environment dumps, credentials, tokens, network calls, or paid API calls were produced.

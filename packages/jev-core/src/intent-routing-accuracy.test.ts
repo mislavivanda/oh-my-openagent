@@ -432,7 +432,7 @@ describe("intent-routing accuracy harness", () => {
       return Response.json({
         model: "jev-1.13.0",
         answers: {
-          intent: choiceAnswer("explain", 0.99, Object.keys(QUESTIONS.intent.criteria)),
+          intent: choiceAnswer("open-ended", 0.99, Object.keys(QUESTIONS.intent.criteria)),
           category: choiceAnswer(INTENT_ROUTING_NONE_OPTION, 0.99, Object.keys(QUESTIONS.category.criteria)),
           subagent: choiceAnswer(INTENT_ROUTING_NONE_OPTION, 0.99, Object.keys(QUESTIONS.subagent.criteria)),
           ambiguous: { type: "noul", noul: 0.01 },

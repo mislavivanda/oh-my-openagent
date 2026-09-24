@@ -1,0 +1,56 @@
+R1 JEV-CORE FAILING-FIRST EVIDENCE
+
+WHAT WAS TESTED
+Command:
+bun test packages/jev-core/src/intent-routing-normalization.test.ts packages/jev-core/src/intent-routing-fixtures.test.ts
+
+Exit code: 1
+
+The production files had not been changed. The test changes added an unrecognized-category behavior case, replaced the implementation-presence test with that behavioral case, and added a fixture-to-production intent-vocabulary drift assertion.
+
+WHAT WAS OBSERVED
+Defect 1 and defect 6 replacement assertion:
+error: expect(received).toEqual(expected)
+
+  {
+-   "normalizedCategory": "none",
++   "normalizedCategory": "not-a-runtime-category",
+    "normalizedSubagent": "none",
+-   "routeClass": "unknown",
++   "routeClass": "category",
+  }
+
+(fail) intent-routing observed delegation normalization > #given unrecognized category #when normalizing observed args #then the route class is preserved
+
+Defect 3 drift assertion:
+error: fixture intents implement, investigate, explain, acknowledge, continue, review, author differ from production intents research, implementation, investigation, evaluation, fix, open-ended
+
+  [
+-   "research",
+-   "implementation",
+-   "investigation",
+-   "evaluation",
+-   "fix",
+-   "open-ended",
++   "implement",
++   "investigate",
++   "explain",
++   "acknowledge",
++   "continue",
++   "review",
++   "author",
+  ]
+
+(fail) intent-routing fixtures > #given the fixture and production arms #when intent options are compared #then both ask the same choices
+
+Summary:
+25 pass
+2 fail
+85 expect() calls
+Ran 27 tests across 2 files.
+
+WHY IT IS ENOUGH
+The first failure reproduces the category coercion using the exact unknown value from F2 and asserts the required unknown route. It is also the real behavioral assertion replacing the rejected module-existence mirror. The second failure compares the accuracy fixture options to the vocabulary returned by the production adapter, so it fails on the exact seven-choice versus six-choice mismatch reported by F2.
+
+WHAT WAS OMITTED
+No logs, environment dumps, credentials, tokens, network calls, or paid API calls were produced.

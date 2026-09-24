@@ -2,10 +2,12 @@ import { describe, expect, test } from "bun:test"
 import {
   INTENT_ROUTING_FIXTURES,
   INTENT_ROUTING_FIXTURE_CATEGORIES,
+  INTENT_ROUTING_FIXTURE_INTENTS,
   INTENT_ROUTING_FIXTURE_SOURCES,
 } from "./intent-routing-fixtures"
 import { INTENT_ROUTING_NONE_OPTION } from "./intent-routing"
 import { INTENT_ROUTING_SUBAGENT_VOCABULARY } from "./intent-routing-normalization"
+import { createJevIntentRoutingVocabulary } from "../../omo-opencode/src/features/jev/intent-routing-vocabulary"
 
 const categoryOptions = new Set<string>([
   ...INTENT_ROUTING_FIXTURE_CATEGORIES,
@@ -44,6 +46,15 @@ describe("intent-routing fixtures", () => {
         `fixture ${fixture.id} labels subagent "${fixture.label.subagent}" which the question set cannot produce`
       ).toBe(true)
     }
+  })
+
+  test("#given the fixture and production arms #when intent options are compared #then both ask the same choices", () => {
+    const productionIntents = createJevIntentRoutingVocabulary([]).intents.map(({ name }) => name)
+
+    expect(
+      productionIntents,
+      `fixture intents ${INTENT_ROUTING_FIXTURE_INTENTS.join(", ")} differ from production intents ${productionIntents.join(", ")}`,
+    ).toEqual([...INTENT_ROUTING_FIXTURE_INTENTS])
   })
 
   test("#given the corpus #when none-labeled fixtures are counted #then at least 3 carry the none category", () => {
