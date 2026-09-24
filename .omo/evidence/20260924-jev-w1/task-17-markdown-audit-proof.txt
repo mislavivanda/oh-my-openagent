@@ -1,0 +1,15 @@
+WHAT WAS TESTED
+Temporary plain-text insertion of `Negative audit probe: /home/omo/forbidden-local-path` at docs/jev/HANDOFF.md:3, followed by:
+bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+
+WHAT WAS OBSERVED
+Before SHA256: c7e4557f2e8115d2bb3b81bac6a06892ea3f7bd63cb71a64e3bef198d411b57e
+Negative run: exit 1, 15 pass, 1 fail. The failure named `docs/jev/HANDOFF.md:3` in the maintainer-local path audit.
+After reverting the temporary line, the same command exited 0 with 16 pass and 0 fail.
+After SHA256: c7e4557f2e8115d2bb3b81bac6a06892ea3f7bd63cb71a64e3bef198d411b57e
+
+WHY IT IS ENOUGH
+The negative control proves the audit detects a machine-local `/home/...` path in the edited document. Matching hashes prove the temporary mutation was reverted byte-for-byte, and the final green run covers all tracked Markdown.
+
+WHAT WAS OMITTED
+No secrets, environment dump, tokens, or auth headers were captured.

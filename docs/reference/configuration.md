@@ -26,6 +26,7 @@ Complete reference for Oh My OpenCode plugin configuration. Every omo harness re
   - [Git Master](#git-master)
   - [Comment Checker](#comment-checker)
   - [Notification](#notification)
+  - [Jev Intent Routing](#jev-intent-routing)
   - [MCPs](#mcps)
   - [LSP](#lsp)
   - [CodeGraph](#codegraph)
@@ -639,7 +640,7 @@ Run background subagents in separate tmux panes. Requires running inside tmux wi
 | ---------------------- | --------------- | ----------------------------------------------------------------------------------- |
 | `enabled`              | `false`         | Enable tmux pane spawning                                                           |
 | `layout`               | `main-vertical` | `main-vertical` / `main-horizontal` / `tiled` / `even-horizontal` / `even-vertical` |
-| `main_pane_size`       | `60`            | Main pane % (20–80)                                                                 |
+| `main_pane_size`       | `60`            | Main pane % (20-80)                                                                 |
 | `main_pane_min_width`  | `120`           | Min main pane columns                                                               |
 | `agent_pane_min_width` | `40`            | Min agent pane columns                                                              |
 
@@ -672,6 +673,50 @@ Force-enable session notifications:
 ```
 
 `force_enable` (`false`) - force session-notification even if external notification plugins are detected.
+
+### Jev Intent Routing
+
+The W1 intent-routing wire is default-off and observe-only. It predicts intent, category,
+subagent, and ambiguity for eligible main-session turns, then records actual delegation
+attempts without changing prompts or routing behavior. Both `jev.enabled` and
+`jev.wires.intent_routing.enabled` must be `true`.
+
+```jsonc
+{
+  "jev": {
+    "enabled": true,
+    "backend": "real",
+    "model": "jev-latest",
+    "wires": {
+      "intent_routing": {
+        "enabled": true,
+        "observe_only": true,
+        "confidence_threshold": 0.8,
+        "timeout_ms": 2500,
+        "turn_seal_timeout_ms": 120000,
+        "max_prompt_chars": 8000,
+        "max_inflight": 8
+      }
+    }
+  }
+}
+```
+
+| `jev.wires.intent_routing` key | Default | Description |
+|--------------------------------|---------|-------------|
+| `enabled` | `false` | Enable W1 observation for eligible main-session user turns |
+| `observe_only` | `true` | Required to remain `true`; the apply phase is not implemented |
+| `confidence_threshold` | `0.8` | Confidence threshold used to label prediction observations, from `0` to `1` |
+| `timeout_ms` | `2500` | Prediction timeout in milliseconds, from `100` to `30000` |
+| `turn_seal_timeout_ms` | `120000` | Maximum open-turn time in milliseconds, from `1000` to `600000`; must exceed `timeout_ms` |
+| `max_prompt_chars` | `8000` | Maximum user-prompt characters sent to Jev, minimum `256` |
+| `max_inflight` | `8` | Maximum concurrent intent-routing dispatches, from `1` to `64` |
+
+The wire writes process-specific JSONL files under `~/.omo/jev/`. Observation records
+store prompt heads verbatim in `promptHeadChars`, plus a SHA-256 digest of the full prompt.
+Prompt heads are stored in the sink. They are not secret-scrubbed, so protect this directory
+as session data. Set `TYPESAFE_API_KEY` in the environment for the `real` backend; do not put
+the API key in config.
 
 ### MCPs
 
@@ -766,7 +811,7 @@ Auto-switches to backup models on API errors.
 | ----------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `enabled`               | `false`             | Enable runtime fallback                                                                                                        |
 | `retry_on_errors`       | `[429,500,502,503,504]` | HTTP codes that trigger fallback. Also handles classified provider key errors.                                              |
-| `max_fallback_attempts` | `3`                 | Max fallback attempts per session (1–20)                                                                                       |
+| `max_fallback_attempts` | `3`                 | Max fallback attempts per session (1-20)                                                                                       |
 | `cooldown_seconds`      | `60`                | Seconds before retrying a failed model                                                                                         |
 | `timeout_seconds`       | `30`                | Seconds before forcing next fallback. **Set to `0` to disable timeout-based escalation and `message.updated` provider retry signal detection.** Structured `session.status` retry events can still trigger fallback. |
 | `notify_on_fallback`    | `true`              | Toast notification on model switch                                                                                             |
@@ -1072,7 +1117,7 @@ When enabled, OmO registers the hash-anchored `edit` tool and activates the `has
 | `task_system`                            | `false`    | Enable Sisyphus task system                                                          |
 | `dynamic_context_pruning.enabled`        | `false`    | Auto-prune old tool outputs to manage context window                                 |
 | `dynamic_context_pruning.notification`   | `detailed` | Pruning notifications: `off` / `minimal` / `detailed`                                |
-| `turn_protection.turns`                  | `3`        | Recent turns protected from pruning (1–10)                                           |
+| `turn_protection.turns`                  | `3`        | Recent turns protected from pruning (1-10)                                           |
 | `strategies.deduplication`               | `true`     | Remove duplicate tool calls                                                          |
 | `strategies.supersede_writes`            | `true`     | Prune write inputs when file later read                                              |
 | `strategies.supersede_writes.aggressive` | `false`    | Prune any write if ANY subsequent read exists                                        |
@@ -1112,7 +1157,7 @@ When enabled, OmO registers the hash-anchored `edit` tool and activates the `has
 
 ### LSP Install Decisions
 
-When an LSP tool hits a language server that is not installed, it asks once per server and persists the answer to `~/.codex/lsp-install-decisions.json` (override with `LSP_TOOLS_MCP_INSTALL_DECISIONS`). A `declined` entry collapses all future diagnostics for that server to a one-line note. To get prompted again — or to re-enable a server that an agent declined on your behalf — delete the file (or the server's entry in it).
+When an LSP tool hits a language server that is not installed, it asks once per server and persists the answer to `~/.codex/lsp-install-decisions.json` (override with `LSP_TOOLS_MCP_INSTALL_DECISIONS`). A `declined` entry collapses all future diagnostics for that server to a one-line note. To get prompted again, or to re-enable a server that an agent declined on your behalf, delete the file (or the server's entry in it).
 
 ### Codex Light Git Bash MCP
 

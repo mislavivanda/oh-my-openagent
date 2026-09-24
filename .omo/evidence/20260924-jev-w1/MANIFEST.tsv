@@ -120,3 +120,15 @@ todo	artifact	kind	description
 15	.omo/evidence/20260924-jev-w1/task-15-w4-untouched.txt	qa	Exact foundation-to-HEAD W4 stat command emits no paths, proving all five protected W4 files are untouched
 15	.omo/evidence/20260924-jev-w1/task-15-typecheck.txt	qa	Repository tsgo typecheck across root, script, and workspace packages exits 0; TypeScript LSP was unavailable because the workspace TypeScript 7 package has no tsserver.js
 15	.omo/evidence/20260924-jev-w1/task-15-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and no failures
+18	.omo/evidence/20260924-jev-w1/task-18-request-count-facts.txt	artifact	Pre-spend real four-question counting-fetch measurement: one HTTP request, 1008 input tokens, 295 output tokens, 275.436809 ms, resolved jev-1.13.0, with exact official billing quote and URL
+18	.omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt	artifact	Single paid 15-fixture baseline with resolved jev-1.13.0, 15 of 15 requests, 15125 input and 4449 output tokens, 100.919306 to 254.558423 ms latency, per-fixture outcomes, and honest confusion matrices
+18	.omo/evidence/20260924-jev-w1/task-18-missing-key.txt	qa	Real-mode missing-key scenario evaluates all 15 fixtures as missing_api_key, makes zero HTTP requests, and exits with 6 passing tests
+18	.omo/evidence/20260924-jev-w1/task-18-adversarial-qa.txt	qa	Ceiling, duplicate-dispatch, partial retention, missing-key, resolved-model, observe-only accuracy, credential handling, artifact completeness, and forbidden-pattern checks
+17	.omo/evidence/20260924-jev-w1/task-17-testfast-scope.txt	qa	Nonzero intent-routing output count, unique matched file list, and all 22 W1 tests mapped to hardcoded test:fast arguments
+17	.omo/evidence/20260924-jev-w1/task-17-markdown-audit-proof.txt	qa	Machine-local absolute-path negative control fails naming HANDOFF line 3, then byte-identical SHA256 revert and 16-test green audit
+17	.omo/evidence/20260924-jev-w1/task-17-notices-unchanged.txt	qa	Empty unified diff against the Todo 1 third-party notices baseline, proving no new missing notice entry
+17	.omo/evidence/20260924-jev-w1/task-17-schema-clean.txt	qa	Both schema generators exit 0 and the two generated assets have an empty final worktree diff
+17	.omo/evidence/20260924-jev-w1/task-17-typecheck.txt	qa	Repository typecheck across root, script, and configured workspace packages exits 0
+17	.omo/evidence/20260924-jev-w1/task-17-test-fast.txt	qa	Expanded hard test:fast gate exits 0 with 482 passing tests across 51 files and zero paid API calls
+17	.omo/evidence/20260924-jev-w1/task-17-adversarial-qa.txt	qa	Exact four-doc scope, all 22 W1 tests reachable, no README, no banned prose, clean diff check, and concurrent Todo 18 ownership recorded
+18	.omo/evidence/20260924-jev-w1/task-18-no-key-leak.txt	qa	Required recursive secret-assignment pattern scan prints no matches after all task-18 evidence is present
