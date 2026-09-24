@@ -80,3 +80,5 @@ todo	artifact	kind	description
 15	.omo/evidence/20260924-jev-w1/task-15-regression-vs-baseline.txt	gate	Full clean-env suite matches all seven frozen failures with zero new failures
 15	.omo/evidence/20260924-jev-w1/task-15-gates.txt	gate	Typecheck and test-fast pass; no-excuse audit is clean; file sizes recorded
 15	.omo/evidence/20260924-jev-w1/task-15-opencode-qa.txt	qa	Mandatory isolated SSE self-test attempt hit the bounded 180-second environment timeout
+17	.omo/evidence/20260924-jev-w1/task-17-testfast-scope.txt	qa	Run-output proof that all 19 W1 test files execute under test:fast; junit file= attributes cross-checked against git diff jev/foundation..HEAD, 19 of 19 executed, 458 pass 0 fail
+17	.omo/evidence/20260924-jev-w1/task-17-markdown-audit-proof.txt	qa	Failure QA: markdown-link-audit goes red naming docs/jev/HANDOFF.md:345 for an inserted machine-local path, then green after a sha256-verified revert
