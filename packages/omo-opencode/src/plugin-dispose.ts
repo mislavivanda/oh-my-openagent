@@ -58,7 +58,8 @@ export function createPluginDispose(args: {
     signalListeners.clear()
   }
 
-  for (const signal of PLUGIN_SHUTDOWN_SIGNALS) {
+  const shutdownSignals = intentRouting.enabled ? PLUGIN_SHUTDOWN_SIGNALS : []
+  for (const signal of shutdownSignals) {
     const listener = (): void => {
       if (signalFlushStarted) return
       signalFlushStarted = true

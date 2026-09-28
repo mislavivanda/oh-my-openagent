@@ -1,0 +1,29 @@
+bun test v1.3.12 (700fc117)
+
+packages/omo-opencode/src/plugin-dispose.test.ts:
+205 |         {
+206 |           SIGINT: process.listenerCount("SIGINT"),
+207 |           SIGTERM: process.listenerCount("SIGTERM"),
+208 |         },
+209 |         "default disabled jev config must not change shutdown signal listener counts",
+210 |       ).toEqual(listenerCountsBefore)
+              ^
+error: default disabled jev config must not change shutdown signal listener counts
+
+  {
+-   "SIGINT": 0,
+-   "SIGTERM": 0,
++   "SIGINT": 1,
++   "SIGTERM": 1,
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/plugin-dispose.test.ts:210:9)
+(fail) createPluginDispose > #given a default disabled jev config #when createPluginDispose is constructed #then no SIGINT or SIGTERM listener is registered [1.00ms]
+
+ 9 pass
+ 1 fail
+ 22 expect() calls
+Ran 10 tests across 2 files. [245.00ms]

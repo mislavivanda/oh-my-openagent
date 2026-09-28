@@ -1,0 +1,4 @@
+WHAT WAS TESTED: real OpenCode loaded the local plugin with the default disabled Jev config, became healthy, then received SIGTERM directly without POST /global/dispose.
+WHAT WAS OBSERVED: server_exit_code=0; sigkill_used=false; sisyphus_agent_present=true; real_session_count_before=445; real_session_count_after=445.
+WHY IT IS ENOUGH: the real harness proves default plugin startup and direct process shutdown remain functional; focused real process.listenerCount tests prove the exact listener registration contract.
+WHAT WAS OMITTED: sandbox logs and generated auth data were deleted after assertions; no credentials or auth headers were retained.

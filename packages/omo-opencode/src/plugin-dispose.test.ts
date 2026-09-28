@@ -184,4 +184,77 @@ describe("createPluginDispose", () => {
     expect(shutdownSpy).toHaveBeenCalledTimes(1)
     expect(disposeHooksCalls).toHaveLength(1)
   })
+
+  test("#given a default disabled jev config #when createPluginDispose is constructed #then no SIGINT or SIGTERM listener is registered", async () => {
+    // given
+    const listenerCountsBefore = {
+      SIGINT: process.listenerCount("SIGINT"),
+      SIGTERM: process.listenerCount("SIGTERM"),
+    }
+
+    // when
+    const dispose = createPluginDispose({
+      backgroundManager: { shutdown: async (): Promise<void> => {} },
+      skillMcpManager: { disconnectAll: async (): Promise<void> => {} },
+      disposeHooks: (): void => {},
+    })
+
+    // then
+    try {
+      expect(
+        {
+          SIGINT: process.listenerCount("SIGINT"),
+          SIGTERM: process.listenerCount("SIGTERM"),
+        },
+        "default disabled jev config must not change shutdown signal listener counts",
+      ).toEqual(listenerCountsBefore)
+    } finally {
+      await dispose()
+    }
+  })
+
+  test("#given an enabled intent-routing wire #when createPluginDispose is constructed #then exactly one SIGINT and one SIGTERM listener are registered, and awaiting the returned dispose removes both", async () => {
+    // given
+    const listenerCountsBefore = {
+      SIGINT: process.listenerCount("SIGINT"),
+      SIGTERM: process.listenerCount("SIGTERM"),
+    }
+
+    // when
+    const dispose = createPluginDispose({
+      backgroundManager: { shutdown: async (): Promise<void> => {} },
+      skillMcpManager: { disconnectAll: async (): Promise<void> => {} },
+      disposeHooks: (): void => {},
+      intentRouting: {
+        enabled: true,
+        inFlight: 0,
+        dispatchesDropped: 0,
+        dispatch: (): void => {},
+        capture: (): boolean => false,
+        handleSessionIdle: (): void => {},
+        handleSessionDeleted: (): void => {},
+        dispose: async (): Promise<void> => {},
+      },
+    })
+
+    // then
+    try {
+      expect({
+        SIGINT: process.listenerCount("SIGINT"),
+        SIGTERM: process.listenerCount("SIGTERM"),
+      }).toEqual({
+        SIGINT: listenerCountsBefore.SIGINT + 1,
+        SIGTERM: listenerCountsBefore.SIGTERM + 1,
+      })
+
+      await dispose()
+
+      expect({
+        SIGINT: process.listenerCount("SIGINT"),
+        SIGTERM: process.listenerCount("SIGTERM"),
+      }).toEqual(listenerCountsBefore)
+    } finally {
+      await dispose()
+    }
+  })
 })

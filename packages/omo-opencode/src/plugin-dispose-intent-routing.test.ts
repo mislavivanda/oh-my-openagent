@@ -59,6 +59,7 @@ describe("createPluginDispose intent routing", () => {
       skillMcpManager: { disconnectAll: async () => {} },
       disposeHooks: () => {},
       intentRouting: {
+        enabled: true,
         async dispose() {
           flushCalls += 1
           flushed.resolve()

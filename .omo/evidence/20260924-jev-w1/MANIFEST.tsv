@@ -1,4 +1,12 @@
 todo	artifact	kind	description
+C1	.omo/evidence/20260924-jev-w1/fix-C1-plan.txt	artifact	On-disk TDD and verification plan for the shutdown signal listener gate
+C1	.omo/evidence/20260924-jev-w1/fix-C1-signal-gate-red.txt	red	Failing-first real process.listenerCount proof showing SIGINT and SIGTERM each increased by one under default disabled config
+C1	.omo/evidence/20260924-jev-w1/fix-C1-signal-gate-green.txt	green	Focused disposal suites pass 10 tests after gating listener registration
+C1	.omo/evidence/20260924-jev-w1/fix-C1-typecheck.txt	green	Repository typecheck exits zero across root, script, and package projects
+C1	.omo/evidence/20260924-jev-w1/fix-C1-test-fast.txt	green	Fast regression gate passes 470 tests with zero failures
+C1	.omo/evidence/20260924-jev-w1/fix-C1-full-suite.txt	artifact	Bun 1.3.12 clean-room suite reports exactly the six known baseline failures and no additional failure
+C1	.omo/evidence/20260924-jev-w1/fix-C1-opencode-qa-driver.sh	artifact	Isolated real OpenCode driver loads the local plugin and sends direct SIGTERM without global dispose
+C1	.omo/evidence/20260924-jev-w1/fix-C1-opencode-qa.txt	green	Real OpenCode exits on direct SIGTERM without SIGKILL while host session count remains 445
 1	.omo/evidence/20260924-jev-w1/task-1-worktree-verify.txt	artifact	Worktree proof: HEAD branch jev/w1-e90b, jev/foundation is an ancestor (exit 0), pre-install git status EMPTY, bun 1.4.0 / node v22.23.2, plus a post-install addendum recording the 5 generated files that bun install itself regenerated
 1	.omo/evidence/20260924-jev-w1/task-1-bun-install.txt	green	bun install output, exit=0, 544 packages installed
 1	.omo/evidence/20260924-jev-w1/task-1-full-test-baseline.txt	baseline	Full suite baseline: bun test --timeout 20000, exit=1, 12762 pass / 22 fail / 3 skip across 1678 files
