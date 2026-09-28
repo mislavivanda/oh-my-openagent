@@ -1,0 +1,23 @@
+WHAT WAS TESTED
+Command: bun test packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts
+Surface: the real createChatMessageHandler with a synthetic text part and the real Jev intent-routing runtime.
+Behavior: turns_synthetic increments exactly once while prediction dispatch stays zero, no observation record is written, and output parts stay unchanged.
+
+bun test v1.4.0 (34cbb9a40)
+
+ 2 pass
+ 0 fail
+ 6 expect() calls
+Ran 2 tests across 1 file. [125.00ms]
+
+EXIT CODE
+0
+
+WHAT WAS OBSERVED
+The focused plugin-layer suite passes. The synthetic turn reaches existing Jev accounting, the runtime reports one synthetic turn, the prediction dispatcher is not called, no observation entry exists after disposal, and output parts remain unchanged.
+
+WHY IT IS ENOUGH
+The test drives the production chat-message handler and the production synthetic guard in the Jev runtime. It fails if accounting is again placed after the handler early return or if the synthetic guard begins dispatching or creating records.
+
+WHAT WAS OMITTED
+No secrets, credentials, environment dumps, or unrelated logs were captured.

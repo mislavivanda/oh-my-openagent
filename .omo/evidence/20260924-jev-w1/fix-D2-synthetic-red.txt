@@ -1,0 +1,36 @@
+WHAT WAS TESTED
+Command: bun test packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts
+Surface: the real createChatMessageHandler with a synthetic text part and the real Jev intent-routing runtime.
+Behavior: turns_synthetic increments exactly once while prediction dispatch stays zero, no observation record is written, and output parts stay unchanged.
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts:
+74 |       unsafeTestValue(output),
+75 |     )
+76 |     await runtime.dispose()
+77 |
+78 |     // then
+79 |     expect(runtime.turnsSynthetic).toBe(1)
+                                        ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts:79:36)
+(fail) createChatMessageHandler intent routing > #given a synthetic message #when chat.message runs #then it counts once without prediction dispatch, a turn record, or output mutation [2.72ms]
+
+ 1 pass
+ 1 fail
+ 3 expect() calls
+Ran 2 tests across 1 file. [138.00ms]
+
+EXIT CODE
+1
+
+WHY THIS IS THE EXPECTED RED
+The real chat handler returns before intent-routing accounting, so the runtime reports turnsSynthetic 0 instead of 1.
+
+WHAT WAS OMITTED
+No secrets, credentials, environment dumps, or unrelated logs were captured.

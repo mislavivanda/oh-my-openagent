@@ -99,13 +99,13 @@ export function createChatMessageHandler(args: {
     output: ChatMessageHandlerOutput,
   ): Promise<void> => {
     const nativeGoalCommand = consumeNativeGoalCommandMarker(output.parts)
+    intentRouting.dispatch(input, output)
     if (isSyntheticOrInternalOnlyTextParts(output.parts)) {
       log("[chat-message] Skipping synthetic/internal-only message", {
         sessionID: input.sessionID,
       })
       return
     }
-    intentRouting.dispatch(input, output)
 
     if (input.agent) {
       updateSessionAgent(input.sessionID, input.agent)
