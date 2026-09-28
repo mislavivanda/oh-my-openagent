@@ -1,0 +1,22 @@
+WHAT WAS TESTED
+Command: bun test script/jev-w1-report.test.ts
+Behavior: per-question coverage scores each question independently while route agreement and coherence metrics remain separate.
+
+bun test v1.4.0 (34cbb9a40)
+
+ 14 pass
+ 0 fail
+ 129 expect() calls
+Ran 14 tests across 1 file. [141.00ms]
+
+EXIT CODE
+0
+
+WHAT WAS OBSERVED
+The focused report suite passes with category coverage 5/7, including the independently correct incoherent category answer.
+
+WHY IT IS ENOUGH
+The committed synthetic corpus contains the exact incoherent case and the same suite continues to pin route agreement, coherence rate, and the incoherent prediction denominator.
+
+WHAT WAS OMITTED
+No secrets, credentials, environment dumps, or unrelated logs were captured.

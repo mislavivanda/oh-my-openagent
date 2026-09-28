@@ -122,7 +122,7 @@ function questionCoverage(items: readonly AnalyzedRecord[], question: "category"
     const targets = question === "category" ? item.categoryTargets : item.subagentTargets
     const answer = question === "category" ? item.answers?.category : item.answers?.subagent
     distinctTargets += targets.size
-    if (item.coherent && answer?.valid === true && targets.has(answer.choice)) hits += 1
+    if (answer?.valid === true && targets.has(answer.choice)) hits += 1
   }
   return { hits, turns: eligible.length, distinctTargets }
 }

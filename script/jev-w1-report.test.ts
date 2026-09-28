@@ -199,9 +199,13 @@ describe("Jev W1 intent-routing report", () => {
     expect(report).toContain("none_precision: 1/3 = 33.33% (eligible_denominator=3)")
   })
 
+  test("#given an incoherent prediction with a correct category answer #when category coverage is rendered #then the independent category hit is counted", () => {
+    expect(report).toContain("category_coverage: 5/7 = 71.43% (eligible_denominator=7, distinct_target_cardinality=9)")
+  })
+
   test("#given single-target and multi-target turns #when per-question coverage is rendered #then cardinality-weighted coverage differs", () => {
-    expect(report).toContain("category_coverage: 4/7 = 57.14% (eligible_denominator=7, distinct_target_cardinality=9)")
-    expect(report).toContain("category_coverage_cardinality_weighted: 4/9 = 44.44% (eligible_denominator=9, distinct_target_cardinality=9)")
+    expect(report).toContain("category_coverage: 5/7 = 71.43% (eligible_denominator=7, distinct_target_cardinality=9)")
+    expect(report).toContain("category_coverage_cardinality_weighted: 5/9 = 55.56% (eligible_denominator=9, distinct_target_cardinality=9)")
     expect(report).toContain("subagent_coverage: 2/2 = 100.00% (eligible_denominator=2, distinct_target_cardinality=4)")
     expect(report).toContain("subagent_coverage_cardinality_weighted: 2/4 = 50.00% (eligible_denominator=4, distinct_target_cardinality=4)")
   })
