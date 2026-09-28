@@ -1,0 +1,81 @@
+TODO 1 BASELINE TRIAGE - jev/w1 @ 82460563fa1573c49b88d7c70620fac09a971d19 (identical to jev/foundation HEAD, zero local changes)
+
+WHAT WAS TESTED
+  The plan's red-stop gate: `bun test --timeout 20000` at the untouched baseline, plus targeted
+  re-runs isolating each failure cluster by environment variable, bun version, and file scope.
+
+WHAT WAS OBSERVED
+
+  Run A - ambient environment, bun 1.4.0 (the machine default):
+    12762 pass / 3 skip / 22 fail / exit=1
+    Artifact: task-1-full-test-baseline.txt
+
+  Run B - `env -u OPENCODE_SERVER_PASSWORD`, bun 1.3.12 (the version CI pins in .github/workflows/ci.yml:92,140,180):
+    12779 pass / 3 skip / 5 fail / 136.28s
+    Artifact: task-1-baseline-bun-test-cleanenv.txt
+
+  Run C - the 5 residual failures, their own file, in isolation, bun 1.3.12:
+    5 pass / 0 fail
+    Command: env -u OPENCODE_SERVER_PASSWORD bun test packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts
+
+  CLUSTER BREAKDOWN, 22 failures, three independent causes, none in repository code:
+
+  Cluster 1 - 15 failures - ambient OPENCODE_SERVER_PASSWORD
+    Files: packages/omo-opencode/src/shared/tmux/tmux-utils/pane-spawn-runner.test.ts,
+           packages/tmux-core/src/tmux-utils/pane-spawn-runner.test.ts,
+           packages/team-core/src/team-layout-tmux, packages/omo-opencode/src/features/team-mode/team-layout-tmux
+    Cause: the host OpenCode server process exports OPENCODE_SERVER_PASSWORD into every child shell.
+           The tmux command builders forward it as `-e OPENCODE_SERVER_PASSWORD=...`, shifting the argv
+           positions the tests assert on. CI has no such variable.
+    Proof: same 4 paths, same commit. With the variable present: 81 pass / 9 fail.
+           With `env -u OPENCODE_SERVER_PASSWORD`: 90 pass / 0 fail.
+
+  Cluster 2 - 2 failures - Bun 1.4.0 vs the CI-pinned 1.3.12
+    Tests: isModuleResolutionFailure (packages/omo-opencode/src/shared/module-resolution-failure.test.ts:31)
+           and the comment-checker binary-discovery counterpart.
+    Cause: Bun 1.4.0 makes ResolveMessage a real Error instance. Verified directly:
+           `bun -e 'try{require("definitely-not-a-real-pkg-xyz")}catch(e){...}'`
+           prints ctor=ResolveMessage instanceofError=true under 1.4.0.
+           The tests encode the 1.3.12 premise `instanceof Error === false`.
+    Proof: both tests pass under bun 1.3.12 (Run B).
+
+  Cluster 3 - 5 failures - pre-existing cross-file test pollution, order dependent
+    File: packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts
+    Cause: the test assigns globalThis.fetch = mock(...), while
+           packages/omo-opencode/src/hooks/auto-update-checker/checker/latest-version.ts:9 calls the
+           bare global `fetch`. In a full-suite run another file's fetch handling wins and the real
+           npm registry answers, so every case receives the live dist-tag "3.0.1".
+           Network is reachable from this machine (registry.npmjs.org returns HTTP 200), which is why
+           the un-mocked call succeeds instead of erroring.
+    Scope proof: the file passes 5/5 in isolation under bun 1.3.12 (Run C), so this is ordering, not logic.
+    Provenance proof: the test was added in commit 64524483f
+           ("test(auto-update-checker): mock npm registry fetch in getLatestVersion tests"), and
+           `git merge-base --is-ancestor 64524483f dev` exits 0, so it is pre-existing upstream debt on dev.
+           `git log --oneline dev..jev/w1 -- packages/omo-opencode/src/hooks/auto-update-checker/`
+           returns 0 commits, so no jev branch touched it.
+
+WHY IT IS ENOUGH
+  Every one of the 22 failures is attributed to either the ambient harness environment or the local
+  bun version or pre-existing upstream test-ordering debt, each with a reproduction that flips the
+  result by changing only that one factor. The worktree carries zero code changes, so no failure can
+  originate from this branch. None of the failing files is on the intent-routing surface this plan touches.
+
+WHAT WAS OMITTED
+  The literal OPENCODE_SERVER_PASSWORD value appeared in the raw Run A diff output and has been
+  replaced with <REDACTED-OPENCODE_SERVER_PASSWORD> in every retained artifact. No other credential,
+  token, or machine-local absolute path outside this repository appears in these files.
+
+CONSEQUENCE FOR THE PLAN
+  The clean-room gate command for this plan is:
+    env -u OPENCODE_SERVER_PASSWORD /tmp/bun-1312/bin/bun test --timeout 20000
+  Residual known-failing set, to be treated baseline-relative exactly as the plan already treats
+  scripts/check-third-party-notices.mjs: the 5 cases in
+  packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts.
+  Gate assertion becomes "no NEW failure versus this baseline", not "exit 0".
+
+NOTICES BASELINE (unchanged, expected non-zero, artifact task-1-notices-baseline.txt)
+  THIRD-PARTY-NOTICES.md is missing 4 required notice entries:
+  - @opentui/core
+  - @opentui/keymap
+  - @opentui/solid
+  - zod
