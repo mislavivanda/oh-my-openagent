@@ -1,0 +1,17 @@
+WHAT WAS TESTED
+command=bun test packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+surface=the two new handler-level intent-routing inertness suites before their acceptance fixtures were implemented
+
+WHAT WAS OBSERVED
+exit=1
+pass=0
+fail=2
+Expected: "implemented intent-routing inertness proof"
+Received: "missing intent-routing inertness proof"
+failing_files=packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts,packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+
+WHY IT IS ENOUGH
+Both required todo-15 proof files existed first as executable RED tests, and both failed for the named missing-proof reason before the acceptance implementation replaced the RED sentinels.
+
+WHAT WAS OMITTED
+No secrets, credentials, environment dumps, or private values were printed. Repeated Bun stack frames were omitted.

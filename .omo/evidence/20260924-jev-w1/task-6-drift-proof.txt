@@ -1,0 +1,33 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/config/schema/intent-routing-normalization-drift.test.ts:
+13 |         const vocabulary = new Set<string>(INTENT_ROUTING_SUBAGENT_VOCABULARY)
+14 |         const missing = BuiltinAgentNameSchema.options.filter(
+15 |           (agent) => !vocabulary.has(agent) && !DOCUMENTED_EXCLUSIONS.has(agent),
+16 |         )
+17 | 
+18 |         expect(missing, `Missing intent-routing subagent vocabulary members: ${missing.join(", ")}`).toEqual([])
+                                                                                                          ^
+error: Missing intent-routing subagent vocabulary members: atlas
+
+- []
++ [
++   "atlas",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/config/schema/intent-routing-normalization-drift.test.ts:18:102)
+(fail) intent-routing subagent vocabulary drift > #given the live built-in agent registry > #when comparing every schema option with the scoring vocabulary > #then every member is included or has a documented exclusion [0.77ms]
+
+ 0 pass
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [121.00ms]
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [129.00ms]

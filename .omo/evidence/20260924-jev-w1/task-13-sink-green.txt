@@ -1,0 +1,9 @@
+++ mktemp -d
++ HOME=/tmp/tmp.wmN9FJpa0k
++ bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 8 pass
+ 0 fail
+ 27 expect() calls
+Ran 8 tests across 1 file. [214.00ms]

@@ -1,0 +1,14 @@
+WHAT WAS TESTED
+command=flock /tmp/jev-w1-e90b.lock -c 'GIT_MASTER=1 git diff jev/foundation..jev/w1-e90b --stat -- packages/omo-opencode/src/plugin/event-model-fallback.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev/model-error-triage.ts packages/omo-opencode/src/features/jev/model-error-triage.test.ts packages/jev-core/src/model-error-triage.ts'
+surface=the complete W4 production and test path named by todo 15
+
+WHAT WAS OBSERVED
+exit=0
+stdout=<empty>
+changed_w4_files=0
+
+WHY IT IS ENOUGH
+An empty range-diff stat against jev/foundation proves every named W4 file is byte-unchanged on jev/w1-e90b.
+
+WHAT WAS OMITTED
+Nothing. The required output was empty.

@@ -1,0 +1,13 @@
+### GREEN capture - task 7 intent-routing fixtures
+### date: 2026-09-24 (UTC 16:02:12Z)
+### cmd: bun test packages/jev-core/src/intent-routing-fixtures.test.ts
+### what was tested: the 15 hand-labeled fixtures against the vocabulary, id, none-count, multilingual, source-class, ambiguity-range and single-route coverage assertions
+
+bun test v1.4.0 (34cbb9a40)
+
+ 10 pass
+ 0 fail
+ 11 expect() calls
+Ran 10 tests across 1 file. [129.00ms]
+
+real exit code: 0

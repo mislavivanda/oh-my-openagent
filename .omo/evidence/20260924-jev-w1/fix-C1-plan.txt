@@ -1,0 +1,11 @@
+Task C1 plan
+
+1. Extend packages/omo-opencode/src/plugin-dispose.test.ts with real process.listenerCount coverage for disabled and enabled intent-routing wires. Use try/finally cleanup so assertions cannot leak listeners.
+2. Run packages/omo-opencode/src/plugin-dispose.test.ts and packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts before the source fix. Capture the expected disabled-listener failure in fix-C1-signal-gate-red.txt.
+3. Change packages/omo-opencode/src/plugin-dispose.ts so SIGINT and SIGTERM listeners are registered only when intentRouting.enabled is true. Keep removal and disposal order unchanged.
+4. Add enabled: true to the existing injected SIGTERM fixture in packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts so it continues to test enabled-wire flushing without weaker assertions.
+5. Re-run both focused files and capture passing output in fix-C1-signal-gate-green.txt.
+6. Run LSP diagnostics on every changed TypeScript file.
+7. Run typecheck, test:fast, and the Bun 1.3.12 clean-room full suite in that order. Capture each output and compare the full-suite failures with the six-test baseline.
+8. Run isolated OpenCode QA for the affected plugin lifecycle surface and record what was tested, observed, sufficient, and omitted.
+9. Append one C1 manifest row per evidence artifact, stage explicit paths only, verify generated files are absent, commit with the requested message, and confirm a clean worktree.

@@ -1,0 +1,26 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+205 |     expect(report).toContain("subagent_coverage: 2/2 = 100.00% (eligible_denominator=2, distinct_target_cardinality=4)")
+206 |     expect(report).toContain("subagent_coverage_cardinality_weighted: 2/4 = 50.00% (eligible_denominator=4, distinct_target_cardinality=4)")
+207 |   })
+208 |
+209 |   test("#given none-heavy fixture labels #when per-question figures render #then majority-class base rates disclose the constant-none baseline", () => {
+210 |     expect(report).toContain("category_fixture_majority_class_base_rate: none 8/15 = 53.33%")
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "category_fixture_majority_class_base_rate: none 8/15 = 53.33%"
+Received: "DENOMINATORS\nturns_seen: 25\nturns_gated_out: 3\nturns_synthetic: 3\nrecords_created: 22\nrecords_with_prediction: 14\nrecords_sealed_by_next_turn: 7\nrecords_sealed_by_session_idle: 3\nrecords_sealed_by_seal_timeout: 2\nrecords_sealed_by_dispose: 2\nrecords_sealed_by_session_deleted: 3\nrecords_sealed: 17\nrecords_evicted: 2\nrecords_in_flight: 3\norphan_observations: 3\nunscorable_resume_calls: 3\nresume_only_records: 1\nunscorable_unknown_calls: 3\nunknown_only_records: 1\nunrepresentable_route_mismatches: 3\ndispatches_dropped: 4\ninvalid_answers: 1\nincoherent_predictions: 1\nmalformed_lines: 2\nmalformed_write_rejections: 3\nrecords_lost_to_cap: 3\nsink_truncations: 3\nprediction_reused: 1\ntruncated_input: 1\nprediction_status_filled: 14\nprediction_status_failed: 1\nprediction_status_timeout: 1\nprediction_status_not_dispatched: 1\ncorrelation_status_reliable: 15\ncorrelation_status_censored: 1\ncorrelation_status_overlap_ambiguous: 1\nidentity: records_created(22) == sealed(17) + evicted(2) + in_flight(3)\n\nROUTE AGREEMENT\nEligibility: reliable and filled only. Resume-only, censored, overlap_ambiguous, failed, timeout, and not_dispatched records are excluded.\nUnknown routes remain eligible and score as unrepresentable mismatches.\nroute_agreement: 5/9 = 55.56% (eligible_denominator=9)\ncoherence_rate: 8/9 = 88.89% (eligible_denominator=9)\nmulti_route_turns_coverage_only: 2\n\nNONE RECALL AND PRECISION\nnone_recall: 1/1 = 100.00% (eligible_denominator=1)\nnone_precision: 1/3 = 33.33% (eligible_denominator=3)\n\nPER-QUESTION COVERAGE, NOT AGREEMENT\ncategory_coverage: 4/7 = 57.14% (eligible_denominator=7, distinct_target_cardinality=9)\ncategory_coverage_cardinality_weighted: 4/9 = 44.44% (eligible_denominator=9, distinct_target_cardinality=9)\nsubagent_coverage: 2/2 = 100.00% (eligible_denominator=2, distinct_target_cardinality=4)\nsubagent_coverage_cardinality_weighted: 2/4 = 50.00% (eligible_denominator=4, distinct_target_cardinality=4)\n\nFAN-OUT BUCKETS\nfan_out_zero: 1/1 = 100.00% (eligible_denominator=1)\nfan_out_one: 2/6 = 33.33% (eligible_denominator=6)\nfan_out_many: 2/2 = 100.00% (eligible_denominator=2)\n\nSEALED-BY CROSS-TAB\nsealed_by_next_turn: 2/4 = 50.00% (eligible_denominator=4)\nsealed_by_session_idle: 1/2 = 50.00% (eligible_denominator=2)\nsealed_by_seal_timeout: insufficient data (eligible_denominator=0)\nsealed_by_dispose: 0/1 = 0.00% (eligible_denominator=1)\nsealed_by_session_deleted: 2/2 = 100.00% (eligible_denominator=2)\n\nCONTINUATION CANDIDATE COHORT\ncontinuation_candidate_true: 1/1 = 100.00% (eligible_denominator=1)\ncontinuation_candidate_false: 4/8 = 50.00% (eligible_denominator=8)\n\nINTENT AND AMBIGUOUS: FIXTURE-SCORED ONLY, NO LIVE GROUND TRUTH\nintent: not scored from the live sink\nambiguous: not scored from the live sink\n\nLIVE DISAGREEMENT FULL-PROMPT SHA-256 RECURRENCE\n3b7608b68cc9c93dbd35559a9713159d2f1dd163a6007dc451aa4bbf68a9ebf4 count=1\nd1a1c72613a71649f11929ac0d881a0257da69fc25d151139f9798ae8e8be1e4 count=1\nd3fefa5bcfaa1947e5c6103ba1909b3ce91895035ca2e44dd696287106b5a554 count=1\nf1687228e9994312cfd241815e07e9f881273a2bfe0839241dd632401ae98834 count=1\n\nNon-goal: live disagreements are not reproducible because only a 200-char head is retained, so fixture growth is manual. Full-prompt SHA-256 values make recurrence countable.\nGround truth label: observed delegations are attempts captured before execution, not successes.\n"
+
+      at <anonymous> (<worktree>/script/jev-w1-report.test.ts:210:20)
+(fail) Jev W1 intent-routing report > #given none-heavy fixture labels #when per-question figures render #then majority-class base rates disclose the constant-none baseline [0.73ms]
+
+ 0 pass
+ 12 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [148.00ms]
+
+EXIT_CODE=1
+EXPECTED=nonzero

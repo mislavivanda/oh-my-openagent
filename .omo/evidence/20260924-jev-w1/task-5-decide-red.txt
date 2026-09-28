@@ -1,0 +1,14 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+SyntaxError: Export named 'decideIntentRouting' not found in module '/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing.ts'.
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [128.00ms]

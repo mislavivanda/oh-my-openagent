@@ -1,0 +1,25 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+361 |     routing.dispatch(gated.input, gated.output)
+362 |     await settleDeferredDispatch()
+363 |     await routing.dispose()
+364 |
+365 |     const latest = entries.filter((entry) => entry.kind === "counter_delta").at(-1)
+366 |     expect(latest?.counters).toMatchObject({
+                                   ^
+error: expect(received).toMatchObject(expected)
+
+Matcher error: received value must be a non-null object
+
+      at <anonymous> (<worktree>/packages/omo-opencode/src/features/jev/intent-routing.test.ts:366:30)
+(fail) createJevIntentRouting > #given live eligible gated synthetic resume unknown and dropped turns #when final counters flush #then all six measured counters are non-zero [6.63ms]
+
+ 0 pass
+ 12 filtered out
+ 1 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [146.00ms]
+
+EXIT_CODE=1
+EXPECTED=nonzero

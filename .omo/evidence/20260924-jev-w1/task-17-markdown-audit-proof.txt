@@ -1,0 +1,95 @@
+TASK 17 - FAILURE QA: the markdown audit gate catches a machine-local absolute path
+worktree: oh-my-openagent-jev-w1-e90b   branch: jev/w1-e90b
+date: 2026-09-24T17:52:57Z
+
+WHAT WAS TESTED
+  packages/omo-opencode/src/shared/markdown-link-audit.test.ts is the gate that keeps
+  machine-local absolute paths out of committed markdown. This todo writes prose into
+  four markdown files, so a green gate is only meaningful if the gate can actually fail.
+  A machine-local path was inserted into docs/jev/HANDOFF.md on purpose, the gate was
+  run, then the file was reverted and the gate run again.
+
+STEP 0 - baseline sha of docs/jev/HANDOFF.md before the probe
+0854f1457f1170e401d14005d94f2be7ae9a42101d94b93ad839c3fe3beb8116  docs/jev/HANDOFF.md
+
+STEP 1 - insert the probe (appended as the last line, line 345)
+  printf "\\nTemporary audit probe: /home/<redacted-machine-local-path>/docs/jev/HANDOFF.md\\n" >> docs/jev/HANDOFF.md
+  The literal inserted began with /home/ and was the absolute path of this worktree.
+
+STEP 2 - run the gate, EXPECTED TO FAIL
+  bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts   -> exit 1
+  The failure names the offending file AND line:
+    error: expect(received).toEqual(expected)
+    
+    - []
+    + [
+    +   "docs/jev/HANDOFF.md:345",
+    + ]
+    
+    - Expected  - 1
+    (offender reported: docs/jev/HANDOFF.md:345, which is exactly the inserted line)
+  Summary:
+     15 pass
+     1 fail
+    Ran 16 tests across 1 file. [295.00ms]
+
+STEP 3 - revert and prove the revert
+  sha256sum -c against the STEP 0 baseline:  docs/jev/HANDOFF.md: OK
+  grep -c '/home/' docs/jev/HANDOFF.md      -> 0 matches
+  git diff -- docs/jev/HANDOFF.md | grep -c 'Temporary audit probe' -> 0 matches,
+    so the probe appears nowhere in the staged-for-commit diff of that file.
+
+STEP 4 - run the gate again, EXPECTED GREEN
+     16 pass
+     0 fail
+    Ran 16 tests across 1 file. [295.00ms]
+  exit 0
+
+WHY IT IS ENOUGH
+  The gate went red on exactly the line that was inserted and green again after a
+  byte-identical revert (sha256 match), so its green result on the four edited doc
+  files is a real signal and not a vacuous pass.
+
+WHAT WAS OMITTED
+  The full absolute path of this worktree is redacted above so this evidence file does
+  not itself carry a machine-local path. No secrets, tokens, or env dumps involved.
+
+## EM DASH GATE
+appended: 2026-09-24T17:59:30Z
+
+WHAT WAS TESTED
+  A follow-up review found one U+2014 EM DASH on a line this branch ADDS. It sits in the
+  WIRES table row for W1. The row lives in packages/jev-core/AGENTS.md line 94, not in
+  docs/jev/HANDOFF.md as the review note said; the cell text is unique in the repo so the
+  target was unambiguous. Because the branch rewrote that row's status cell, the whole
+  line is authored content and the repo no-em-dash rule applies to it.
+
+THE FIX (one character, one row)
+  before:  | W1 <U+2014> intent gate + routing | ...
+  after:   | W1 - intent gate + routing | ...
+  The W4, W2, W3, and W5 rows in the same table keep their pre-existing em dashes. They
+  are base-commit content this branch did not author, so stripping them would be scope
+  creep. Visual inconsistency inside the table is accepted deliberately.
+
+THE GATE (diff-scoped, must print nothing)
+  git diff jev/foundation..HEAD -- . ':(exclude)assets/*' | grep -P '^\+' | grep -P '[\x{2014}\x{2013}]'
+  output:    (none)
+  grep exit: 1, which for grep means zero matching lines, so the gate PASSES.
+  Scope note: this scans every line the branch ADDS across the whole worktree except
+  assets/*, so it covers all four doc files, package.json, and both evidence artifacts.
+
+RE-RUN OF THE MARKDOWN AUDIT AFTER THE FIX
+  bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts   -> exit 0
+     16 pass
+     0 fail
+    Ran 16 tests across 1 file. [305.00ms]
+
+WHY IT IS ENOUGH
+  The gate reads the branch diff rather than the working tree, so it proves the committed
+  content is clean, not just the files on disk. It is also the reason the em dash literal
+  is written as <U+2014> and as a grep escape in this artifact: pasting the real character
+  here would make this evidence file fail the very gate it records.
+
+WHAT WAS OMITTED
+  The 22 pre-existing em dashes elsewhere in docs/jev/HANDOFF.md are untouched and out of
+  scope. No secrets, tokens, or env dumps involved.

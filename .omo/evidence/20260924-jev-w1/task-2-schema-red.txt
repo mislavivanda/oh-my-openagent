@@ -1,0 +1,113 @@
+WHAT WAS TESTED
+  Command: bun test packages/omo-opencode/src/config/schema/jev.test.ts
+  Surface: the Zod v4 jev config schema at packages/omo-opencode/src/config/schema/jev.ts
+  State:   tests for the new wires.intent_routing block are written, the schema is NOT yet implemented.
+  Intent:  prove the new assertions fail BEFORE the implementation lands (TDD RED).
+
+EXPECTED RED REASON
+  JevWiresConfigSchema has no intent_routing key yet, so parsed output has no wires.intent_routing.
+  Reading .enabled off undefined raises a TypeError, and the exhaustive toEqual on the default shape
+  reports the whole intent_routing object as missing. A failure caused by the symbol not existing yet
+  is the correct RED for this todo. The only new test expected to PASS at RED is the W4 guard, which
+  asserts the SHARED JevWireConfigSchema shape was not mutated: it is a regression guard, not a
+  behavior driver, so it is green in both phases by design.
+
+RAW OUTPUT
+----------------------------------------
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/config/schema/jev.test.ts:
+ 9 | 
+10 |     // when
+11 |     const result = JevConfigSchema.parse(input)
+12 | 
+13 |     // then
+14 |     expect(result).toEqual({
+                        ^
+error: expect(received).toEqual(expected)
+
+@@ -6,11 +6,2 @@
+    "wires": {
+-     "intent_routing": {
+-       "confidence_threshold": 0.8,
+-       "enabled": false,
+-       "max_inflight": 8,
+-       "max_prompt_chars": 8000,
+-       "observe_only": true,
+-       "timeout_ms": 2500,
+-       "turn_seal_timeout_ms": 120000,
+-     },
+      "model_error_triage": {
+
+- Expected  - 9
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/config/schema/jev.test.ts:14:20)
+(fail) JevConfigSchema > #given an empty object #when parsed #then every field falls back to the default-off shape [1.09ms]
+75 | 
+76 |     // when
+77 |     const result = JevConfigSchema.parse(input)
+78 | 
+79 |     // then
+80 |     expect(result.wires.intent_routing.enabled).toBe(false)
+                             ^
+TypeError: undefined is not an object (evaluating 'result.wires.intent_routing.enabled')
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/config/schema/jev.test.ts:80:25)
+(fail) JevConfigSchema intent-routing wire > #given an empty object #when parsed #then the intent-routing wire is off and observe-only [0.19ms]
+87 | 
+88 |     // when
+89 |     const parse = () => JevConfigSchema.parse(input)
+90 | 
+91 |     // then
+92 |     expect(parse).toThrow(/not yet implemented/i)
+                       ^
+error: expect(received).toThrow(expected)
+
+Expected pattern: /not yet implemented/i
+
+Received function did not throw
+Received value: {
+  enabled: false,
+  backend: "real",
+  model: "jev-latest",
+  timeout_ms: 1500,
+  wires: {
+    model_error_triage: {
+      enabled: false,
+      confidence_threshold: 0.8,
+    },
+  },
+}
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/config/schema/jev.test.ts:92:19)
+(fail) JevConfigSchema intent-routing wire > #given observe_only set to false #when parsed #then it throws naming the apply phase as not yet implemented [0.21ms]
+109 | 
+110 |     // when
+111 |     const wire = JevConfigSchema.parse(input).wires.intent_routing
+112 | 
+113 |     // then
+114 |     expect(wire.turn_seal_timeout_ms).toBe(120000)
+                 ^
+TypeError: undefined is not an object (evaluating 'wire.turn_seal_timeout_ms')
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/config/schema/jev.test.ts:114:12)
+(fail) JevConfigSchema intent-routing wire > #given an empty object #when parsed #then the seal timeout defaults to 120000 and strictly exceeds the prediction timeout [0.12ms]
+124 |     // when
+125 |     const equalResult = JevConfigSchema.safeParse(equalTimeouts)
+126 |     const belowResult = JevConfigSchema.safeParse(sealBelowPrediction)
+127 | 
+128 |     // then
+129 |     expect(equalResult.success).toBe(false)
+                                      ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/config/schema/jev.test.ts:129:33)
+(fail) JevConfigSchema intent-routing wire > #given a seal timeout that does not strictly exceed the prediction timeout #when safe-parsed #then it is rejected [0.14ms]
+
+ 6 pass
+ 5 fail
+ 12 expect() calls
+Ran 11 tests across 1 file. [133.00ms]
+exit=1

@@ -1,0 +1,56 @@
+=== task-1 worktree verification ===
+date: 2026-09-24T15:07:53Z
+pwd: /home/opencode/projects/oh-my-openagent-jev-w1-e90b
+
+--- git rev-parse --abbrev-ref HEAD ---
+jev/w1-e90b
+branch_exit=0
+
+--- git rev-parse HEAD ---
+82460563fa1573c49b88d7c70620fac09a971d19
+
+--- git merge-base --is-ancestor jev/foundation jev/w1-e90b ---
+ancestor_exit=0
+
+--- jev/foundation sha ---
+82460563fa1573c49b88d7c70620fac09a971d19
+
+--- git status --porcelain=v1 (expect EMPTY) ---
+status_line_count=0
+
+--- git worktree list ---
+/home/opencode/projects/oh-my-openagent              82460563f [jev/foundation]
+/home/opencode/projects/oh-my-openagent-jev-w1       82460563f [jev/w1]
+/home/opencode/projects/oh-my-openagent-jev-w1-e90b  82460563f [jev/w1-e90b]
+
+--- versions ---
+bun --version: 1.4.0
+node --version: v22.23.2
+
+=== POST-INSTALL ADDENDUM (appended after bun install) ===
+date: 2026-09-24T15:14:41Z
+Pre-install git status was EMPTY (status_line_count=0 above), as required.
+AFTER 'bun install' exited 0, its lifecycle scripts REGENERATED 5 tracked generated files.
+These are byte-drift in build outputs produced by install itself, not hand edits, and not carried over from any other worktree.
+Per the plan they were NOT reverted (no git stash / checkout -- / reset was run).
+
+--- git status --porcelain=v1 (post-install) ---
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+
+--- git diff --stat (post-install) ---
+ .../plugin/components/codegraph/dist/cli.js        | 172 +++++++++-------
+ .../plugin/components/codegraph/dist/serve.js      | 128 ++++++------
+ .../scripts/install-dist/install-local.mjs         |   2 +-
+ packages/omo-senpi/plugin/extensions/omo-member.js |  54 ++---
+ packages/omo-senpi/plugin/extensions/omo.js        | 224 ++++++++++-----------
+ 5 files changed, 306 insertions(+), 274 deletions(-)
+
+--- HEAD (unchanged, no commit made in this todo) ---
+82460563fa1573c49b88d7c70620fac09a971d19
+82460563f docs(jev): warn that runtime_fallback silently disables W4
+
+NOTE: .omo/evidence/ is gitignored, so the artifacts written by this todo do not appear as untracked entries.

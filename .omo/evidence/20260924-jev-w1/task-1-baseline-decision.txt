@@ -1,0 +1,201 @@
+=== task-1 baseline decision record ===
+plan: jev-w1-intent-routing, todo 1 (Commit: N, no source change)
+worktree: oh-my-openagent-jev-w1-e90b
+branch: jev/w1-e90b
+head: 82460563fa1573c49b88d7c70620fac09a971d19 (identical to jev/foundation)
+toolchain: bun 1.4.0, node v22.23.2 (CI pins bun 1.3.12)
+
+
+WHAT WAS TESTED
+---------------
+Worktree provenance, before anything else ran. Confirmed the checked-out branch is
+jev/w1-e90b, that jev/foundation is an ancestor of it, that HEAD equals the planned
+base commit, and that the working tree was clean before install. Recorded in
+task-1-worktree-verify.txt.
+
+Dependency install. Exact command: bun install. Captured in task-1-bun-install.txt.
+
+Four gates, one artifact each, every one carrying its own final exit= line:
+
+  1. bun install
+     -> task-1-bun-install.txt
+  2. bun test --timeout 20000                       (full suite, DEFAULT environment)
+     -> task-1-full-test-baseline.txt
+  3. bun run typecheck
+     -> task-1-typecheck-baseline.txt
+  4. bun run test:fast                              (the plan's mid-loop gate)
+     -> task-1-test-fast.txt
+
+Plus the baseline-relative notices gate, deliberately split across two files so that a
+later byte-for-byte comparison of the heading list is not corrupted by an exit line:
+
+  5. node scripts/check-third-party-notices.mjs
+     -> task-1-notices-baseline.txt   (heading list ONLY, no exit line)
+     -> task-1-notices-exit.txt       (exit code ONLY, exactly one line)
+
+The full suite was then run a SECOND time with one environment variable removed, to
+separate host-environment noise from real failures:
+
+  6. env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+     -> task-1-full-test-baseline-clean-env.txt
+
+Two supporting diagnostic runs, both read-only and neither of them a gate:
+
+  7. an isolation run of only the 9 files that failed in the default-env full suite,
+     used to tell reproducible failures apart from order-dependent ones
+     -> task-1-failure-classification.txt
+  8. a single-file run of the auto-update-checker suite under the clean environment,
+     used to test the cross-file-pollution hypothesis
+     -> appended to task-1-failure-classification.txt under "## CLEAN-ENV RE-MEASURE"
+
+
+WHAT WAS OBSERVED
+-----------------
+Gate results:
+
+  bun install                                  exit 0    544 packages
+  bun test --timeout 20000 (default env)       exit 1    12762 pass / 22 fail / 3 skip
+  bun run typecheck                            exit 0    28 workspace tsconfigs clean
+  bun run test:fast                            exit 0    317 pass / 0 fail, 31 files
+  check-third-party-notices.mjs                exit 1    4 missing entries
+  bun test (clean env)                         exit 1    12777 pass / 7 fail / 3 skip
+
+Delta between the two full-suite runs: 22 failures down to 7, a reduction of 15.
+Pass count rose by exactly the same 15, from 12762 to 12777. Skip count was unchanged
+at 3 and the total tests run was unchanged at 12787 in both runs, which establishes
+that nothing was skipped, filtered, or otherwise hidden to produce the lower number.
+The only difference between the two runs was the environment variable.
+
+The 22 default-env failures fall into three groups, each with a distinct root cause.
+
+Group A, 2 failures, cause: Bun version drift. Files
+packages/omo-opencode/src/shared/module-resolution-failure.test.ts and
+packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts. Both assert that a
+Bun ResolveMessage is NOT an instanceof Error. Under the locally installed Bun 1.4.0 it
+IS an Error, so the assertion inverts. These reproduce in isolation and survive the
+clean-env run. CI pins Bun 1.3.12, where the original assumption still holds, so this
+pair is expected to be green on CI and red only on this machine.
+
+Group B, 15 failures, cause: a host environment variable leaking into the code under
+test. Six tmux-related files across packages/tmux-core, packages/team-core, and
+packages/omo-opencode. The tmux command builders forward OPENCODE_SERVER_PASSWORD into
+the spawned tmux invocation as an additional "-e NAME=value" argument pair. That extra
+pair shifts the argv arrays the tests assert on, and the shifted call index produced the
+secondary "TypeError: Reflect.get requires the first argument be an object". Unsetting
+the variable cleared all 15. This is host contamination, not a defect in the branch.
+
+Group C, 5 failures, cause: cross-file test pollution. All five are in
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts. They pass when that
+file runs alone, under both the default and the clean environment, and fail only inside
+the full suite, so they are order-dependent rather than environment-dependent. The
+polluting source was located by read-only inspection:
+packages/omo-opencode/src/hooks/auto-update-checker/hook.test.ts line 30 registers
+mock.module("./checker/latest-version", ...) with a stub returning the literal "3.0.1"
+at line 20, and never restores it. checker.test.ts imports the real implementation from
+that same module specifier, so once the mock is registered in the shared test process
+every expectation in checker.test.ts receives "3.0.1" no matter what it stubs locally.
+That matches the observed value on all five cases exactly. The value is not this
+repository's version either, since package.json reads 4.19.4, which rules out a genuine
+registry response. This is precisely the failure mode that
+packages/omo-opencode/src/shared/mock-module-lifecycle-audit.test.ts exists to police.
+
+The notices gate failed with exit 1, listing 4 missing entries: @opentui/core,
+@opentui/keymap, @opentui/solid, and zod. This is the known pre-existing repository debt
+called out in the root AGENTS.md and in the plan. It was not touched.
+
+One incidental finding worth recording. The working tree was verifiably clean before
+install, but bun install itself regenerated 5 tracked build outputs
+(packages/omo-codex/plugin/components/codegraph/dist/cli.js and serve.js,
+packages/omo-codex/scripts/install-dist/install-local.mjs, and
+packages/omo-senpi/plugin/extensions/omo.js and omo-member.js). These are the same 5
+files the plan describes as pre-existing modifications to leave alone. They are install
+lifecycle output, not anyone's hand edits, so a fresh worktree does not avoid them. They
+were left exactly as install produced them. No git stash, git checkout --, or git reset
+was run anywhere.
+
+No commit was made. No source file, package.json, or configuration file was modified by
+this todo.
+
+
+WHY IT IS ENOUGH
+----------------
+The purpose of this todo is to give later todos a baseline precise enough that any new
+failure they introduce is unambiguous. The clean-environment run is that baseline, and
+it is recorded in task-1-frozen-baseline.txt.
+
+It is a valid regression detector for four reasons.
+
+First, it is minimal rather than merely accurate. A 22-failure baseline would force a
+later verifier to reason about 22 entries, 15 of which vary with whatever happens to be
+exported in the shell at the time. Those 15 are precisely the entries most likely to
+flip state between runs for reasons unrelated to any code change, which is what makes a
+noisy baseline a weak detector. Removing them by controlling the environment, rather
+than by editing tests, leaves 7 entries that are stable properties of this toolchain and
+this commit.
+
+Second, the reduction is proven rather than asserted. The two runs differ in exactly one
+variable. Total tests run is identical at 12787 in both, skip is identical at 3, and the
+15 lost failures reappear as exactly 15 gained passes. Nothing was excluded to make the
+number smaller.
+
+Third, every one of the 7 survivors has an identified root cause and a demonstrated
+independence from this plan's scope. None of them is in the jev intent-routing surface
+this plan modifies. None was introduced by this branch, whose HEAD is byte-identical to
+jev/foundation with no code change in this todo. Two are a local-toolchain artifact that
+CI's pinned Bun will not reproduce, and five are a pre-existing unrestored module mock in
+a neighbouring file. A later verifier that sees any of these 7 can therefore dismiss them
+by name, and anything outside the 7 is a genuine regression.
+
+Fourth, the artifact is built for mechanical comparison. The failure list is emitted as
+one line per failure in the fixed form <relative-file-path><TAB><full test name>, sorted
+under LC_ALL=C so the ordering is deterministic and locale-independent. The file carries
+no timestamps, no durations, and no absolute paths, which was verified by scanning it for
+each of those three token classes and confirming zero matches. The extraction was run
+twice over the same captured output and produced byte-identical results. A later gate can
+therefore diff its own re-measure against this file and treat any difference as signal.
+
+The supporting gates reinforce the conclusion. typecheck is fully green, so there is no
+type-level debt to disentangle from later work. test:fast, the plan's own mid-loop gate,
+is green at 317 pass and 0 fail, so the fast feedback loop later todos will rely on
+starts from a clean state and any red in it is attributable.
+
+
+WHAT WAS OMITTED
+----------------
+No secret, credential, token, password, or authentication header value is recorded in
+any artifact produced by this todo. The variable OPENCODE_SERVER_PASSWORD is referred to
+by NAME ONLY throughout. Its value was never written to any evidence file, never echoed,
+and never captured. Where the default-env test output happened to contain the value in a
+tmux argument, that output lives only in task-1-full-test-baseline.txt as raw captured
+test output and is not reproduced, quoted, or summarised anywhere else; the clean-env
+run, which is the artifact later gates actually compare against, cannot contain it
+because the variable was unset for that run. No environment dump was taken. The
+environment snapshot in task-1-failure-classification.txt records only whether selected
+variables are set, as a literal yes or no, never their contents.
+
+Not covered by this todo, and deliberately so:
+
+The 7 frozen failures were NOT fixed. This todo measures; repair is out of scope and was
+explicitly forbidden. In particular the unrestored mock.module in
+auto-update-checker/hook.test.ts was diagnosed but left in place.
+
+The notices debt was NOT fixed, per the plan, which requires asserting no NEW missing
+entry rather than requiring green.
+
+The baseline was NOT measured on CI's pinned Bun 1.3.12. Only the locally installed Bun
+1.4.0 was used. The 2 group A failures are predicted to be absent on 1.3.12, but that
+prediction is reasoned from the assertion text and was not empirically confirmed here.
+A later gate comparing against this baseline must run on the same Bun as the baseline,
+or expect those 2 entries to disappear.
+
+The clean-env baseline removes only OPENCODE_SERVER_PASSWORD. No other host variable was
+audited for similar leakage, so an unrelated variable could in principle affect a future
+run. TMUX, CMUX_SOCKET_PATH, and CI were each confirmed unset at measurement time and
+are recorded as such.
+
+No build, no lint, no formatter, and no runtime or live-session QA was run. This todo
+makes no product change, so there is no behavior to exercise; the plan places live
+opencode-qa verification in a later, dedicated todo.
+
+The 5 install-regenerated build outputs were left modified in the working tree. Their
+content was not reviewed for correctness, only noted as install output.

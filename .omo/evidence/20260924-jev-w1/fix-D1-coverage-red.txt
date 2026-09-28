@@ -1,0 +1,35 @@
+WHAT WAS TESTED
+Command: bun test script/jev-w1-report.test.ts
+Behavior: an independently correct category answer counts toward per-question coverage even when the combined route prediction is incoherent.
+
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+198 |     expect(report).toContain("none_recall: 1/1 = 100.00% (eligible_denominator=1)")
+199 |     expect(report).toContain("none_precision: 1/3 = 33.33% (eligible_denominator=3)")
+200 |   })
+201 |
+202 |   test("#given an incoherent prediction with a correct category answer #when category coverage is rendered #then the independent category hit is counted", () => {
+203 |     expect(report).toContain("category_coverage: 5/7 = 71.43% (eligible_denominator=7, distinct_target_cardinality=9)")
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "category_coverage: 5/7 = 71.43% (eligible_denominator=7, distinct_target_cardinality=9)"
+Received: "DENOMINATORS\nturns_seen: 25\nturns_gated_out: 3\nturns_synthetic: 3\nrecords_created: 22\nrecords_with_prediction: 14\nrecords_sealed_by_next_turn: 7\nrecords_sealed_by_session_idle: 3\nrecords_sealed_by_seal_timeout: 2\nrecords_sealed_by_dispose: 2\nrecords_sealed_by_session_deleted: 3\nrecords_sealed: 17\nrecords_evicted: 2\nrecords_in_flight: 3\norphan_observations: 3\nunscorable_resume_calls: 3\nresume_only_records: 1\nunscorable_unknown_calls: 3\nunknown_only_records: 1\nunrepresentable_route_mismatches: 3\ndispatches_dropped: 4\ninvalid_answers: 1\nincoherent_predictions: 1\nmalformed_lines: 2\nmalformed_write_rejections: 3\nrecords_lost_to_cap: 3\nsink_truncations: 3\nprediction_reused: 1\ntruncated_input: 1\nprediction_status_filled: 14\nprediction_status_failed: 1\nprediction_status_timeout: 1\nprediction_status_not_dispatched: 1\ncorrelation_status_reliable: 15\ncorrelation_status_censored: 1\ncorrelation_status_overlap_ambiguous: 1\ncounter_reconciliation: none\nidentity: records_created(22) == sealed(17) + evicted(2) + in_flight(3)\n\nROUTE AGREEMENT\nEligibility: reliable and filled only. Resume-only, censored, overlap_ambiguous, failed, timeout, and not_dispatched records are excluded.\nUnknown routes remain eligible and score as unrepresentable mismatches.\nroute_agreement: 5/9 = 55.56% (eligible_denominator=9)\ncoherence_rate: 8/9 = 88.89% (eligible_denominator=9)\nmulti_route_turns_coverage_only: 2\n\nNONE RECALL AND PRECISION\nnone_recall: 1/1 = 100.00% (eligible_denominator=1)\nnone_precision: 1/3 = 33.33% (eligible_denominator=3)\n\nPER-QUESTION COVERAGE, NOT AGREEMENT\ncategory_coverage: 4/7 = 57.14% (eligible_denominator=7, distinct_target_cardinality=9)\ncategory_coverage_cardinality_weighted: 4/9 = 44.44% (eligible_denominator=9, distinct_target_cardinality=9)\ncategory_fixture_majority_class_base_rate: none 8/15 = 53.33%\nsubagent_coverage: 2/2 = 100.00% (eligible_denominator=2, distinct_target_cardinality=4)\nsubagent_coverage_cardinality_weighted: 2/4 = 50.00% (eligible_denominator=4, distinct_target_cardinality=4)\nsubagent_fixture_majority_class_base_rate: none 13/15 = 86.67%\ncombined_category_subagent_fixture_majority_class_base_rate: none 21/30 = 70.00%\n\nFAN-OUT BUCKETS\nfan_out_zero: 1/1 = 100.00% (eligible_denominator=1)\nfan_out_one: 2/6 = 33.33% (eligible_denominator=6)\nfan_out_many: 2/2 = 100.00% (eligible_denominator=2)\n\nSEALED-BY CROSS-TAB\nsealed_by_next_turn: 2/4 = 50.00% (eligible_denominator=4)\nsealed_by_session_idle: 1/2 = 50.00% (eligible_denominator=2)\nsealed_by_seal_timeout: insufficient data (eligible_denominator=0)\nsealed_by_dispose: 0/1 = 0.00% (eligible_denominator=1)\nsealed_by_session_deleted: 2/2 = 100.00% (eligible_denominator=2)\n\nCONTINUATION CANDIDATE COHORT\ncontinuation_candidate_true: 1/1 = 100.00% (eligible_denominator=1)\ncontinuation_candidate_false: 4/8 = 50.00% (eligible_denominator=8)\n\nINTENT AND AMBIGUOUS: FIXTURE-SCORED ONLY, NO LIVE GROUND TRUTH\nintent: not scored from the live sink\nambiguous: not scored from the live sink\n\nLIVE DISAGREEMENT FULL-PROMPT SHA-256 RECURRENCE\n3b7608b68cc9c93dbd35559a9713159d2f1dd163a6007dc451aa4bbf68a9ebf4 count=1\nd1a1c72613a71649f11929ac0d881a0257da69fc25d151139f9798ae8e8be1e4 count=1\nd3fefa5bcfaa1947e5c6103ba1909b3ce91895035ca2e44dd696287106b5a554 count=1\nf1687228e9994312cfd241815e07e9f881273a2bfe0839241dd632401ae98834 count=1\n\nNon-goal: live disagreements are not reproducible because only a 200-char head is retained, so fixture growth is manual. Full-prompt SHA-256 values make recurrence countable.\nGround truth label: observed delegations are attempts captured before execution, not successes.\n"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/jev-w1-report.test.ts:203:20)
+(fail) Jev W1 intent-routing report > #given an incoherent prediction with a correct category answer #when category coverage is rendered #then the independent category hit is counted [0.27ms]
+
+ 13 pass
+ 1 fail
+ 129 expect() calls
+Ran 14 tests across 1 file. [126.00ms]
+
+EXIT CODE
+1
+
+WHY THIS IS THE EXPECTED RED
+The focused assertion requires category_coverage 5/7 while production still reports 4/7 because it gates the hit on item.coherent.
+
+WHAT WAS OMITTED
+No secrets, credentials, environment dumps, or unrelated logs were captured.

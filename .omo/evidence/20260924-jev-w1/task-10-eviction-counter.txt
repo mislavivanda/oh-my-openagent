@@ -1,0 +1,13 @@
+scenario=maxTurnsPerSession+5
+assertions=evictedCount:5,survivingTurnOrdinals:[6,7,8],latestCounterDelta.recordsEvicted:5
+command=bun test packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts -t maxTurnsPerSession\ plus\ five
+
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 19 filtered out
+ 0 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [126.00ms]
+
+exit=0

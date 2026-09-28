@@ -1,0 +1,53 @@
+BEFORE: harness-neutral source
+$ bun test script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 0 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [203.00ms]
+before_exit_code=0
+
+BREAK: temporary forbidden OpenCode import present
+$ bun test script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+script/shared-core-extraction-guard.test.ts:
+ 95 |         }
+ 96 |       }
+ 97 |     }
+ 98 | 
+ 99 |     // then
+100 |     expect(offenders).toEqual([])
+                            ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "packages/jev-core/src/intent-routing-record.ts matches /@opencode-ai\//",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/script/shared-core-extraction-guard.test.ts:100:23)
+(fail) shared core extraction guardrails > #given core package production sources #when scanned #then they stay harness-neutral [24.65ms]
+
+ 2 pass
+ 1 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [145.00ms]
+break_exit_code=1
+
+AFTER: temporary forbidden import reverted
+$ bun test script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 0 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [145.00ms]
+after_exit_code=0
+
+DIFF CHECK: temporary import absence
+git diff check: no @opencode-ai/ import remains

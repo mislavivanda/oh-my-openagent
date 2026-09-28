@@ -1,0 +1,22 @@
+WHAT WAS TESTED
+temporary_mutation=packages/omo-opencode/src/plugin/chat-message.ts changed enabled intent-routing to write output.parts[0].text="MUTATED BY FAILURE QA"
+command=bun test packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+revert=the temporary production mutation was removed immediately after the failing run
+revert_confirmation_command=flock /tmp/jev-w1-e90b.lock -c 'GIT_MASTER=1 git diff -- packages/omo-opencode/src/plugin/chat-message.ts packages/omo-opencode/src/features/jev/intent-routing-sink.ts'
+revert_confirmation_output=<empty>
+
+WHAT WAS OBSERVED
+exit=1
+pass=0
+fail=3
+assertion=serialized byte-identity expect(enabled.serialized).toBe(disabled.serialized)
+Expected: [{"type":"text","text":"route without changing me","metadata":{"index":0}},{"type":"file","text":"attachment","mime":"text/plain"}]
+Received: [{"type":"text","text":"MUTATED BY FAILURE QA","metadata":{"index":0}},{"type":"file","text":"attachment","mime":"text/plain"}]
+covered_failure_modes=sync_throw,async_reject,timeout
+
+WHY IT IS ENOUGH
+The first failing assertion is the serialized byte-identity check, and its readable expected/received diff names the exact mutated byte-bearing field for all three backend failure modes.
+The empty focused git diff confirms neither temporary production mutation remained.
+
+WHAT WAS OMITTED
+No secrets or environment values were printed. Repeated source frames were omitted.

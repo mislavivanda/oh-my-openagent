@@ -1,0 +1,27 @@
+WHAT WAS TESTED
+
+The opencode-qa CLI and server surfaces were driven through one isolated, authenticated `opencode serve` process. Thirty-three scripted turns used `opencode run --attach <sandbox-url> --format json`; turn 1 created the session and turns 2 through 33 reused its parsed session ID. The harness used separate enabled and disabled HOME/XDG sandboxes, a local OpenAI Responses provider, and a local System One endpoint with `backend: real`, a dummy sandbox key, and pinned model `jev-1.13.0`. No paid API was reachable.
+
+The script also issued one literal `task` call whose argument object contained only `task_id`. OpenCode does not complete that schema-invalid call because the registered `task` schema also requires `prompt`, so the driver bounded that probe at 10 seconds and aborted only its recorded session. A second background continuation call supplied the schema-required prompt and produced the required `unscorable_resume` observation.
+
+WHAT WAS OBSERVED
+
+The enabled run sealed 33 observations under one session ID, wrote one counter delta, and recorded fan-out buckets zero, one, and many. It recorded `predictionReused: true`, `call_omo_agent`, `unscorable_resume`, and continuation candidates. The fake Jev endpoint received 32 dispatches and the plugin emitted exactly 32 `[jev] intent-routing` lines. The disabled control used a separate sandbox and produced zero Jev dispatches, zero intent-routing lines, and zero sink files.
+
+All live observations reached `correlationStatus: reliable`. `censored` is unreachable because no seal timeout or dispose sealed an open turn. `overlap_ambiguous` is unreachable because the driver waits for each attached turn to settle before starting the next. All 33 records sealed by `session_idle`; `next_turn` was not pursued because todo 12 already proves that race and deferred finalization in unit tests.
+
+The report identity is `records_created(33) == sealed(33) + evicted(0) + in_flight(0)`. Its headline eligible denominators are route agreement 18/26, coherence 26/26, none recall 18/18, none precision 18/31, category coverage 0/8, and subagent coverage 0/8. These scores are canned-answer dogfood coverage, not a model quality claim.
+
+The read-only real OpenCode database count was 415 before and 415 after the final enabled and disabled runs. The recursive real `~/.omo` manifest, including path, type, size, mtime, and regular-file SHA-256, has an empty diff. Every spawned PID has an individual exited or terminated receipt, and every bound port has an individual closed receipt. Cleanup used only recorded numeric PIDs and ports. No global process matcher was used.
+
+WHY IT IS ENOUGH
+
+One server and one observation session prove process-memory continuity rather than database-only continuation. The repeated prompt proves prediction reuse, real tool attempts prove capture at the OpenCode wire, and the disabled control isolates the feature gate. The report closes the accounting identity, while the real database and recursive home manifest prove the harness stayed inside its supplied sandbox. PID and port receipts prove scoped teardown even with `--keep`.
+
+WHAT WAS OMITTED
+
+Sandbox roots, local auth passwords, dummy keys, raw provider request bodies, raw prompt heads, environment dumps, and the sink corpus were not copied into committed evidence. The fake provider log and OpenCode server logs remain only in disposable sandboxes. No production credential or external API response was used.
+
+KNOWN RISK
+
+A `task` tool call carrying only `task_id` does not complete on this OpenCode surface because `prompt` is required by the registered schema. The harness records the required literal attempt, bounds it, aborts only that session, and separately proves resume normalization with a schema-valid continuation attempt. Production source was not changed to hide this finding.

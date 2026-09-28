@@ -1,0 +1,78 @@
+### FAILURE QA - task 7 bad-label proof
+### date: 2026-09-24 (UTC 16:02:23Z)
+### what was tested: a fixture label that the question set can never produce must fail the coverage suite and NAME the offending fixture id
+### method: temporarily rewrite obvious-subagent-find-callsites label.subagent from explore to nonexistent-agent, re-run, then revert
+
+=== STEP 1: corrupt the label ===
+101:    label: { intent: "investigate", category: "none", subagent: "nonexistent-agent", ambiguous: 0.1 },
+
+=== STEP 2: bun test packages/jev-core/src/intent-routing-fixtures.test.ts (expect FAIL naming the id) ===
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-fixtures.test.ts:
+40 | 
+41 |   test("#given every fixture subagent label #when checked against the subagent vocabulary #then no fixture names an unproducible subagent", () => {
+42 |     const invalid = INTENT_ROUTING_FIXTURES.filter(
+43 |       (fixture) => !allowedSubagents.has(fixture.label.subagent),
+44 |     ).map((fixture) => `${fixture.id} -> ${fixture.label.subagent}`)
+45 |     expect(invalid).toEqual([])
+                         ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "obvious-subagent-find-callsites -> nonexistent-agent",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (<WORKTREE>/packages/jev-core/src/intent-routing-fixtures.test.ts:45:21)
+(fail) intent-routing fixture coverage > #given every fixture subagent label #when checked against the subagent vocabulary #then no fixture names an unproducible subagent [0.33ms]
+
+ 9 pass
+ 1 fail
+ 11 expect() calls
+Ran 10 tests across 1 file. [134.00ms]
+
+corrupted-run exit code: 1
+
+=== STEP 3: revert the label back to explore ===
+grep for nonexistent-agent found nothing, exit code 1
+      promptText: "Find every call site of promptAsync that bypasses the shared dispatch gate.",
+    },
+    label: { intent: "investigate", category: "none", subagent: "explore", ambiguous: 0.1 },
+    source: "OBVIOUS_SUBAGENT",
+  },
+
+=== STEP 4: git diff of the reverted file against the index (must be empty, the file is untracked so git diff --no-index against a freshly regenerated copy is not needed) ===
+diff --git a/packages/jev-core/src/index.ts b/packages/jev-core/src/index.ts
+index 48d0b17b2..a4230a75a 100644
+--- a/packages/jev-core/src/index.ts
++++ b/packages/jev-core/src/index.ts
+@@ -68,3 +68,11 @@ export {
+   type ObservedDelegationArgs,
+   type RouteObservation,
+ } from "./intent-routing-normalization"
++export {
++  INTENT_ROUTING_FIXTURES,
++  INTENT_ROUTING_FIXTURE_SOURCES,
++  type IntentRoutingFixture,
++  type IntentRoutingFixtureIntent,
++  type IntentRoutingFixtureLabel,
++  type IntentRoutingFixtureSource,
++} from "./intent-routing-fixtures"
+git diff exit: 0
+ M packages/jev-core/src/index.ts
+?? packages/jev-core/src/intent-routing-fixtures.test.ts
+?? packages/jev-core/src/intent-routing-fixtures.ts
+
+=== STEP 5: bun test packages/jev-core/src/intent-routing-fixtures.test.ts (expect GREEN again) ===
+bun test v1.4.0 (34cbb9a40)
+
+ 10 pass
+ 0 fail
+ 11 expect() calls
+Ran 10 tests across 1 file. [138.00ms]
+
+reverted-run exit code: 0

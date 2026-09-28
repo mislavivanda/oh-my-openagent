@@ -1,0 +1,34 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/config/schema/intent-routing-normalization-drift.test.ts:
+31 |         const vocabulary = new Set<string>(INTENT_ROUTING_CATEGORY_VOCABULARY)
+32 |         const missing = Object.keys(DEFAULT_CATEGORIES).filter(
+33 |           (category) => !vocabulary.has(category) && !DOCUMENTED_CATEGORY_EXCLUSIONS.has(category),
+34 |         )
+35 |
+36 |         expect(missing, `Missing intent-routing category vocabulary members: ${missing.join(", ")}`).toEqual([])
+                                                                                                          ^
+error: Missing intent-routing category vocabulary members: writing
+
+- []
++ [
++   "writing",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/config/schema/intent-routing-normalization-drift.test.ts:36:102)
+(fail) intent-routing category vocabulary drift > #given the live built-in category registry > #when comparing every default category with the scoring vocabulary > #then every member is included or has a documented exclusion [0.32ms]
+
+ 1 pass
+ 1 fail
+ 2 expect() calls
+Ran 2 tests across 1 file. [122.00ms]
+bun test v1.4.0 (34cbb9a40)
+
+ 2 pass
+ 0 fail
+ 2 expect() calls
+Ran 2 tests across 1 file. [132.00ms]
++  "writing",

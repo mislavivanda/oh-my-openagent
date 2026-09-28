@@ -1,0 +1,31 @@
+WHAT WAS TESTED
+command=env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+comparison=.omo/evidence/20260924-jev-w1/task-1-frozen-baseline.txt lines between BEGIN_FAILING_TESTS and END_FAILING_TESTS
+
+WHAT WAS OBSERVED
+exit=1
+pass=12918
+fail=7
+skip=3
+total_ran=12928
+files=1696
+baseline_failure_count=7
+current_failure_count=7
+NEW_FAILURE_COUNT=0
+missing_baseline_failure_count=0
+
+CURRENT_FAILING_TESTS_SORTED
+packages/omo-opencode/src/cli/doctor/checks/dependencies.test.ts	dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > accepts channel parameter
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > accepts latest channel
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+packages/omo-opencode/src/hooks/auto-update-checker/checker.test.ts	auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+packages/omo-opencode/src/shared/module-resolution-failure.test.ts	isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+END_CURRENT_FAILING_TESTS_SORTED
+
+WHY IT IS ENOUGH
+The current seven failure identities match the frozen baseline set exactly after path and test-name normalization. All four new todo-15 suites were discovered by the expanded file count and contributed no failure. The gate therefore has zero new failures.
+
+WHAT WAS OMITTED
+Repeated Bun assertion stacks for the seven frozen failures were omitted. No secrets, credentials, auth headers, or environment values were recorded.

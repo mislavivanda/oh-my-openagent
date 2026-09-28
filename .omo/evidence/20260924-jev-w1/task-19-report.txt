@@ -1,0 +1,87 @@
+DENOMINATORS
+turns_seen: 0
+turns_gated_out: 0
+turns_synthetic: 0
+records_created: 33
+records_with_prediction: 33
+records_sealed_by_next_turn: 0
+records_sealed_by_session_idle: 33
+records_sealed_by_seal_timeout: 0
+records_sealed_by_dispose: 0
+records_sealed_by_session_deleted: 0
+records_sealed: 33
+records_evicted: 0
+records_in_flight: 0
+orphan_observations: 0
+unscorable_resume_calls: 0
+resume_only_records: 2
+unscorable_unknown_calls: 0
+unknown_only_records: 0
+unrepresentable_route_mismatches: 0
+dispatches_dropped: 0
+invalid_answers: 0
+incoherent_predictions: 0
+malformed_lines: 0
+malformed_write_rejections: 0
+records_lost_to_cap: 0
+sink_truncations: 0
+prediction_reused: 1
+truncated_input: 0
+prediction_status_filled: 33
+prediction_status_failed: 0
+prediction_status_timeout: 0
+prediction_status_not_dispatched: 0
+correlation_status_reliable: 33
+correlation_status_censored: 0
+correlation_status_overlap_ambiguous: 0
+identity: records_created(33) == sealed(33) + evicted(0) + in_flight(0)
+
+ROUTE AGREEMENT
+Eligibility: reliable and filled only. Resume-only, censored, overlap_ambiguous, failed, timeout, and not_dispatched records are excluded.
+Unknown routes remain eligible and score as unrepresentable mismatches.
+route_agreement: 18/26 = 69.23% (eligible_denominator=26)
+coherence_rate: 26/26 = 100.00% (eligible_denominator=26)
+multi_route_turns_coverage_only: 5
+
+NONE RECALL AND PRECISION
+none_recall: 18/18 = 100.00% (eligible_denominator=18)
+none_precision: 18/31 = 58.06% (eligible_denominator=31)
+
+PER-QUESTION COVERAGE, NOT AGREEMENT
+category_coverage: 0/8 = 0.00% (eligible_denominator=8, distinct_target_cardinality=10)
+category_coverage_cardinality_weighted: 0/10 = 0.00% (eligible_denominator=10, distinct_target_cardinality=10)
+subagent_coverage: 0/8 = 0.00% (eligible_denominator=8, distinct_target_cardinality=9)
+subagent_coverage_cardinality_weighted: 0/9 = 0.00% (eligible_denominator=9, distinct_target_cardinality=9)
+
+FAN-OUT BUCKETS
+fan_out_zero: 18/18 = 100.00% (eligible_denominator=18)
+fan_out_one: 0/7 = 0.00% (eligible_denominator=7)
+fan_out_many: 0/1 = 0.00% (eligible_denominator=1)
+
+SEALED-BY CROSS-TAB
+sealed_by_next_turn: insufficient data (eligible_denominator=0)
+sealed_by_session_idle: 18/26 = 69.23% (eligible_denominator=26)
+sealed_by_seal_timeout: insufficient data (eligible_denominator=0)
+sealed_by_dispose: insufficient data (eligible_denominator=0)
+sealed_by_session_deleted: insufficient data (eligible_denominator=0)
+
+CONTINUATION CANDIDATE COHORT
+continuation_candidate_true: 2/2 = 100.00% (eligible_denominator=2)
+continuation_candidate_false: 16/24 = 66.67% (eligible_denominator=24)
+
+INTENT AND AMBIGUOUS: FIXTURE-SCORED ONLY, NO LIVE GROUND TRUTH
+intent: not scored from the live sink
+ambiguous: not scored from the live sink
+
+LIVE DISAGREEMENT FULL-PROMPT SHA-256 RECURRENCE
+3001f32c5245ce6753cde2de051886603c547f93c246a7288fed76495f74b15a count=1
+43d3c30a09b47ae5300de23c7c7b3071cecd2bb1477f52ce927e379fb716b506 count=1
+8847f6860df7b88a805a8c2659eba3858d05d24861ba4a5f8aaeb701d06b562a count=1
+8c1028411cc0e434ed4b2cb3c7956033822fa1d1fe29d2fb4f9616528d7adc62 count=1
+9ee283b8abba013c6550740874233d040d286b727c4a4fdc0b9bd273d93c7ab8 count=1
+c72affcd211f7f98a888deed3b18b926dbd296be8cdc7cce76e335d05841a48f count=1
+ca6fa1ca8e0f6591413c0b4807cf7e1d85985055f75ebc8d90d9f3977f23a6fb count=1
+e5011f48d560bd4545c7691a491457456756be0ceccee8cf4e0d5c401e541b5d count=1
+
+Non-goal: live disagreements are not reproducible because only a 200-char head is retained, so fixture growth is manual. Full-prompt SHA-256 values make recurrence countable.
+Ground truth label: observed delegations are attempts captured before execution, not successes.

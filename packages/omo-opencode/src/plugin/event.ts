@@ -5,7 +5,13 @@ import type { Managers } from "../create-managers";
 import type { PluginContext } from "./types";
 
 import { getMainSessionID, subagentSessions, syncSubagentSessions } from "../features/claude-code-session-state";
-import { createJevModelErrorTriage, type JevModelErrorTriage } from "../features/jev";
+import {
+  createJevIntentRouting,
+  createJevModelErrorTriage,
+  JEV_INTENT_ROUTING_VOCABULARY,
+  type JevIntentRouting,
+  type JevModelErrorTriage,
+} from "../features/jev";
 import { invalidateContextWindowUsageCache } from "../shared/dynamic-truncator";
 import { resolveSessionEventID } from "../shared/event-session-id";
 import { log } from "../shared/logger";
@@ -34,6 +40,7 @@ export function createEventHandler(args: {
   managers: Managers;
   hooks: CreatedHooks;
   jevTriage?: JevModelErrorTriage;
+  intentRouting?: JevIntentRouting;
 }): (input: EventInput) => Promise<void> {
   const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks } = args;
   const tmuxIntegrationEnabled = pluginConfig.tmux?.enabled ?? false;
@@ -53,6 +60,10 @@ export function createEventHandler(args: {
   const dedupWindowMs = 500;
   const teamHandlers = createEventTeamHandlers({ pluginConfig, pluginContext, managers });
   const jevTriage = args.jevTriage ?? createJevModelErrorTriage({ jevConfig: pluginConfig.jev });
+  const intentRouting = args.intentRouting ?? createJevIntentRouting({
+    jevConfig: pluginConfig.jev,
+    vocab: JEV_INTENT_ROUTING_VOCABULARY,
+  });
 
   const shouldAutoRetrySession = (sessionID: string): boolean => {
     if (syncSubagentSessions.has(sessionID)) return true;
@@ -95,6 +106,7 @@ export function createEventHandler(args: {
     }
     recentSyntheticIdles.set(sessionID, now);
     if (!shouldDispatchIdleEvent(sessionID, now)) return;
+    intentRouting.handleSessionIdle(sessionID);
 
     await dispatchToHooks(syntheticIdle);
     await dispatchOpenClawSessionEvent({
@@ -129,13 +141,17 @@ export function createEventHandler(args: {
         const now = Date.now();
         recentRealIdles.set(sessionID, now);
         if (!shouldDispatchIdleEvent(sessionID, now)) return;
+        intentRouting.handleSessionIdle(sessionID);
       }
     }
 
     let deletedSessionID: string | undefined;
     if (input.event.type === "session.deleted") {
       deletedSessionID = getEventSessionID(input);
-      if (deletedSessionID) modelFallbackHandler.cancelPendingJevTriage(deletedSessionID);
+      if (deletedSessionID) {
+        modelFallbackHandler.cancelPendingJevTriage(deletedSessionID);
+        intentRouting.handleSessionDeleted(deletedSessionID);
+      }
     }
 
     try {

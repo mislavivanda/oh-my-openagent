@@ -1,0 +1,39 @@
+TODO 18 MISSING-CREDENTIAL QA
+
+WHAT WAS TESTED
+The accuracy harness ran with JEV_W1_REAL_API enabled and the credential variable explicitly unset.
+
+WHAT WAS OBSERVED
+status: complete
+mode: real
+questionVersion: 1
+logical call count: 15
+HTTP request count: 0
+input_tokens total: 0
+output_tokens total: 0
+completed fixtures: 15 / 15
+unavailable reason for every fixture: missing_api_key
+The Bun harness reported 6 pass, 0 fail, and did not crash.
+
+FIXTURE IDS
+no-delegation-port-question
+no-delegation-zod-explanation
+no-delegation-acknowledgement
+obvious-category-modal-overflow
+obvious-category-changelog-entry
+obvious-subagent-find-callsites
+obvious-subagent-flaky-race
+ambiguous-make-auth-better
+ambiguous-clean-this-up
+multilingual-ko-profile-slow-function
+multilingual-ja-layout-fix
+continuation-continue
+continuation-go-on
+adversarial-question-shaped-work-order
+adversarial-quick-framed-redesign
+
+WHY IT IS ENOUGH
+All fixtures exercised the production backend's missing-credential short circuit. The counting Fetch remained at zero, proving no paid endpoint request occurred.
+
+WHAT WAS OMITTED
+No credential, authorization header, or private environment value was present or retained.

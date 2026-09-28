@@ -1,0 +1,21 @@
+WHAT WAS TESTED
+- `bun run packages/shared-skills/skills/programming/scripts/typescript/check-no-excuse-rules.ts` against all six changed TypeScript files.
+- `bun run typecheck` from the task worktree.
+- Pure LOC measurement with the programming skill's nonblank, noncomment rule.
+
+WHAT WAS OBSERVED
+- No-excuse audit: `No violations in 6 file(s).`
+- Typecheck: exit 0 for root, script, every package, and `packages/omo-opencode/tsconfig.json`.
+- Pure LOC:
+  - 180 `intent-routing-sink.ts`
+  - 82 `intent-routing-sink-config.ts`
+  - 88 `intent-routing-sink-reader.ts`
+  - 88 `intent-routing-sink-counters.ts`
+  - 211 `intent-routing-sink.test.ts`, covered by its `SIZE_OK` acceptance-matrix declaration
+  - 42 `index.ts`
+
+WHY IT IS ENOUGH
+- The strict type gate covers the adapter and imported jev-core contracts. The source modules remain below the 200 LOC soft limit.
+
+WHAT WAS OMITTED
+- Routine successful per-package tsgo command repetition was summarized. No credentials or environment dumps were captured.

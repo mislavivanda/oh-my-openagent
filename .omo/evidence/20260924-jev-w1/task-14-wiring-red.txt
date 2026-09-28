@@ -1,0 +1,54 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts:
+43 |     const startedAt = performance.now()
+44 |     await dispose()
+45 |     const elapsedMs = performance.now() - startedAt
+46 |
+47 |     // then
+48 |     expect(sinkDisposeCalls).toBe(1)
+                                  ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/plugin-dispose-intent-routing.test.ts:48:30)
+(fail) createPluginDispose intent routing > #given a pending sink write #when plugin dispose runs #then the bounded intent-routing flush completes and disposes the sink [2.12ms]
+
+packages/omo-opencode/src/testing/create-plugin-module-intent-routing.test.ts:
+117 |       event: { type: "session.idle", properties: { sessionID: "ses-wiring" } },
+118 |     }))
+119 |     await unsafeTestValue<(() => Promise<void>) | undefined>(hooks.dispose)?.()
+120 |
+121 |     // then
+122 |     expect(createJevIntentRouting).toHaveBeenCalledTimes(1)
+                                         ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/testing/create-plugin-module-intent-routing.test.ts:122:36)
+(fail) createPluginModule intent-routing wiring > #given one constructed routing instance #when all four consumers run #then each receives the same object identity [3.84ms]
+
+packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts:
+32 |       unsafeTestValue({ message: {}, parts: [{ type: "text", text: "route this" }] }),
+33 |     )
+34 |     const elapsedMs = performance.now() - startedAt
+35 |
+36 |     // then
+37 |     expect(dispatcher).toHaveBeenCalledTimes(1)
+                            ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/omo-opencode/src/plugin/chat-message-intent-routing.test.ts:37:24)
+(fail) createChatMessageHandler intent routing > #given a dispatcher that sleeps for 3000ms #when chat.message runs #then the handler resolves in under 50ms [0.34ms]
+
+ 0 pass
+ 3 fail
+ 3 expect() calls
+Ran 3 tests across 3 files. [346.00ms]

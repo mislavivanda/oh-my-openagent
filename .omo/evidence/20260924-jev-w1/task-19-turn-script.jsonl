@@ -1,0 +1,33 @@
+{"prompt":"Explain what a sealed observation means in one sentence.","calls":[]}
+{"prompt":"Name one benefit of deterministic QA.","calls":[]}
+{"prompt":"What does process memory preserve here?","calls":[]}
+{"prompt":"Why should a control run use a separate sandbox?","calls":[]}
+{"prompt":"State the purpose of a recursive manifest.","calls":[]}
+{"prompt":"Give a short definition of fan-out.","calls":[]}
+{"prompt":"Why is a pinned model useful?","calls":[]}
+{"prompt":"Repeatable prompt for completed prediction reuse.","calls":[]}
+{"prompt":"Repeatable prompt for completed prediction reuse.","calls":[]}
+{"prompt":"Answer with the word isolated.","calls":[]}
+{"prompt":"Delegate one quick classification attempt.","calls":[{"tool":"task","args":{"description":"quick classification attempt","prompt":"Return DONE.","category":"quick","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Delegate one explore attempt.","calls":[{"tool":"task","args":{"description":"explore delegation attempt","prompt":"Return DONE.","subagent_type":"explore","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Delegate one writing attempt.","calls":[{"tool":"task","args":{"description":"writing delegation attempt","prompt":"Return DONE.","category":"writing","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Delegate one librarian attempt.","calls":[{"tool":"task","args":{"description":"librarian delegation attempt","prompt":"Return DONE.","subagent_type":"librarian","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Use the direct agent tool once.","calls":[{"tool":"call_omo_agent","args":{"description":"direct explore attempt","prompt":"Return DONE.","subagent_type":"explore","run_in_background":true}}]}
+{"prompt":"Fan out to two categories.","calls":[{"tool":"task","args":{"description":"quick fanout attempt","prompt":"Return DONE.","category":"quick","run_in_background":true,"load_skills":[]}},{"tool":"task","args":{"description":"writing fanout attempt","prompt":"Return DONE.","category":"writing","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Fan out to two named subagents.","calls":[{"tool":"task","args":{"description":"explore fanout attempt","prompt":"Return DONE.","subagent_type":"explore","run_in_background":true,"load_skills":[]}},{"tool":"task","args":{"description":"librarian fanout attempt","prompt":"Return DONE.","subagent_type":"librarian","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Use a mixed category and named-subagent fan-out.","calls":[{"tool":"task","args":{"description":"mixed category attempt","prompt":"Return DONE.","category":"quick","run_in_background":true,"load_skills":[]}},{"tool":"task","args":{"description":"mixed subagent attempt","prompt":"Return DONE.","subagent_type":"explore","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Use a duplicate-target fan-out.","calls":[{"tool":"task","args":{"description":"duplicate target first","prompt":"Return DONE.","category":"quick","run_in_background":true,"load_skills":[]}},{"tool":"task","args":{"description":"duplicate target second","prompt":"Return DONE.","category":"quick","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Fan out across three attempts.","calls":[{"tool":"task","args":{"description":"three way quick","prompt":"Return DONE.","category":"quick","run_in_background":true,"load_skills":[]}},{"tool":"task","args":{"description":"three way writing","prompt":"Return DONE.","category":"writing","run_in_background":true,"load_skills":[]}},{"tool":"call_omo_agent","args":{"description":"three way explore","prompt":"Return DONE.","subagent_type":"explore","run_in_background":true}}]}
+{"prompt":"Probe a task call carrying only task_id.","calls":[{"tool":"task","args":{"task_id":"ses_task19_only"}}]}
+{"prompt":"Exercise a resume-only delegation attempt.","calls":[{"tool":"task","args":{"task_id":"ses_task19_missing","prompt":"Resume existing task.","run_in_background":true}}]}
+{"prompt":"continue","calls":[]}
+{"prompt":"resume","calls":[]}
+{"prompt":"go on","calls":[]}
+{"prompt":"Ask one more quick worker.","calls":[{"tool":"task","args":{"description":"another quick attempt","prompt":"Return DONE.","category":"quick","run_in_background":true,"load_skills":[]}}]}
+{"prompt":"Ask one more direct librarian worker.","calls":[{"tool":"call_omo_agent","args":{"description":"direct librarian attempt","prompt":"Return DONE.","subagent_type":"librarian","run_in_background":true}}]}
+{"prompt":"What proves that all observations share one session?","calls":[]}
+{"prompt":"What should be zero when the wire is disabled?","calls":[]}
+{"prompt":"Fan out one final mixed pair.","calls":[{"tool":"task","args":{"description":"final category attempt","prompt":"Return DONE.","category":"writing","run_in_background":true,"load_skills":[]}},{"tool":"call_omo_agent","args":{"description":"final direct attempt","prompt":"Return DONE.","subagent_type":"explore","run_in_background":true}}]}
+{"prompt":"Why are counter deltas excluded from the sessionID assertion?","calls":[]}
+{"prompt":"State why next_turn is not required by this live run.","calls":[]}
+{"prompt":"Finish with a pure question and no tool call.","calls":[]}

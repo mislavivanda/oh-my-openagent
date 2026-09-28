@@ -1,0 +1,16 @@
+NOTE: Report-side headline exclusion assertion is DEFERRED TO TODO 16 because script/jev-w1-report.ts does not exist at this point in the dependency order. No report run was fabricated.
+WHAT WAS TESTED: Unit-level drive of turn 1, a synthetic message, real turn 2, then a late delegation, using the real append-only JSONL sink under a temporary HOME.
+COMMAND: HOME=<temporary> bun test packages/omo-opencode/src/features/jev/intent-routing-seal.test.ts -t both sides are amended
+EXPECTED: synthetic input creates no successor; turn 2 seals turn 1; the late delegation marks both records overlap_ambiguous before deferred finalization; the sink corpus contains each record once.
+--- COMMAND OUTPUT ---
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 11 filtered out
+ 0 fail
+ 9 expect() calls
+Ran 1 test across 1 file. [146.00ms]
+--- OBSERVED ---
+PASS: the focused unit read the sink corpus directly and asserted exactly 2 observation lines, 2 unique turn ordinals, and correlationStatus=overlap_ambiguous on both records.
+WHY IT IS ENOUGH: This exercises the amendment window before turn-1 finalization and verifies append-only persistence after turn 2 seals.
+WHAT WAS OMITTED: The todo-16 report command is unavailable by dependency order, as noted above; no credentials or host paths were captured.

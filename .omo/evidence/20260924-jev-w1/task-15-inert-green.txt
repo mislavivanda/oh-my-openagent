@@ -1,0 +1,23 @@
+WHAT WAS TESTED
+command=JEV_WIRING_EVIDENCE=1 bun test packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-budget.test.ts packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts
+surface=chat.message and tool.execute.before output inertness, three separate budget clauses, and hanging-backend runtime effects
+
+WHAT WAS OBSERVED
+exit=0
+pass=11
+fail=0
+expect_calls=63
+part_a_failure_modes=sync_throw,async_reject,timeout
+part_a_outputs=deep-equal plus JSON-serialized byte identity for output.parts and output.args
+part_a_other_hooks=enabled and disabled invocation sets and exact order matched
+part_b_no_await=resolved with fetch_in_flight=1 routing_in_flight=1 handler_elapsed_ms=1.442 bound_ms=100
+part_b_sync=samples=200 prompt_chars=8000 p99_ms=0.005678 bound_ms=1
+part_b_ordering=caller-continuation->state-building
+part_c_stress=turns=50 max_handler_ms=0.054 added_total_ms=0.000 max_fetch_inflight=2 dispatches_dropped=48 heap_growth_bytes=0
+part_c_child=exit_code=0 elapsed_ms=214.133 bound_ms=1500 timed_out=0
+
+WHY IT IS ENOUGH
+The enabled/disabled comparisons exercise both live handler seams under all three backend failure shapes. The budget clauses are independent assertions: resolution while real fetch is in flight, seam-only p99, and caller continuation ordering. The real dispatcher/sink stress and spawned child cover bounded growth and process liveness beyond output equality.
+
+WHAT WAS OMITTED
+No secrets, credentials, auth headers, private paths, or environment dumps were captured.

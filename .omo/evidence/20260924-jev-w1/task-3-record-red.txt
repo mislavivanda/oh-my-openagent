@@ -1,0 +1,82 @@
+$ bun test packages/jev-core/src/intent-routing-record.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-record.test.ts:
+ 96 | 
+ 97 | describe("intent-routing JSONL entry validation", () => {
+ 98 |   describe("#given a fully populated observation entry", () => {
+ 99 |     describe("#when validating either the observation arm or the union", () => {
+100 |       test("#then both validators accept it", () => {
+101 |         expect(validateIntentRoutingObservationRecord(validObservation)).toBe(true)
+                                                                               ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-record.test.ts:101:74)
+(fail) intent-routing JSONL entry validation > #given a fully populated observation entry > #when validating either the observation arm or the union > #then both validators accept it [1.68ms]
+105 |   })
+106 | 
+107 |   describe("#given a counter-delta entry", () => {
+108 |     describe("#when validating either the counter arm or the union", () => {
+109 |       test("#then both validators accept it", () => {
+110 |         expect(validateIntentRoutingCounterDelta(validCounterDelta)).toBe(true)
+                                                                           ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-record.test.ts:110:70)
+(fail) intent-routing JSONL entry validation > #given a counter-delta entry > #when validating either the counter arm or the union > #then both validators accept it [0.16ms]
+170 |           counters: { ...validCounterDelta.counters, turnsSeen: 7 },
+171 |         }
+172 | 
+173 |         const selected = selectLatestCounterDeltasByProcess([validCounterDelta, latest])
+174 | 
+175 |         expect(selected.size).toBe(1)
+                                    ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-record.test.ts:175:31)
+(fail) counter-delta snapshot selection > #given two cumulative snapshots from one process > #when selecting the latest snapshot per process > #then the highest sequence wins instead of summing both lines [0.16ms]
+182 | 
+183 | describe("continuation cohort lexicon", () => {
+184 |   describe("#given the exported continuation phrases", () => {
+185 |     describe("#when inspecting the runtime contract", () => {
+186 |       test("#then the exact cohort lexicon is frozen", () => {
+187 |         expect(INTENT_ROUTING_CONTINUATION_LEXICON).toEqual([
+                                                          ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "continue",
+-   "go on",
+-   "go ahead",
+-   "keep going",
+-   "next",
+-   "proceed",
+-   "resume",
+-   "yes",
+-   "ok",
+-   "do it",
+-   "carry on",
+-   "more",
+- ]
++ []
+
+- Expected  - 14
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-e90b/packages/jev-core/src/intent-routing-record.test.ts:187:53)
+(fail) continuation cohort lexicon > #given the exported continuation phrases > #when inspecting the runtime contract > #then the exact cohort lexicon is frozen [0.25ms]
+
+ 5 pass
+ 4 fail
+ 9 expect() calls
+Ran 9 tests across 1 file. [141.00ms]
+exit_code=1

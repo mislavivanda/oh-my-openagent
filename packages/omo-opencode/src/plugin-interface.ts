@@ -1,5 +1,6 @@
 import type { PluginContext, PluginInterface, ToolsRecord } from "./plugin/types"
 import type { OhMyOpenCodeConfig } from "./config"
+import type { JevIntentRouting } from "./features/jev"
 
 import { applyAgentVariant } from "./shared/agent-variant"
 import { createChatParamsHandler } from "./plugin/chat-params"
@@ -29,9 +30,11 @@ export function createPluginInterface(args: {
   managers: Managers
   hooks: CreatedHooks
   tools: ToolsRecord
+  intentRouting?: JevIntentRouting
 }): PluginInterface {
-  const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks, tools } =
+  const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks, tools, intentRouting } =
     args
+  const intentRoutingOverride = intentRouting === undefined ? {} : { intentRouting }
 
   return {
     tool: tools,
@@ -70,6 +73,7 @@ export function createPluginInterface(args: {
       pluginConfig,
       firstMessageVariantGate,
       hooks,
+      ...intentRoutingOverride,
     }),
 
     "experimental.chat.messages.transform": createMessagesTransformHandler({
@@ -89,6 +93,7 @@ export function createPluginInterface(args: {
       firstMessageVariantGate,
       managers,
       hooks,
+      ...intentRoutingOverride,
     }),
 
     "tool.definition": createToolDefinitionHandler({
@@ -98,6 +103,8 @@ export function createPluginInterface(args: {
     "tool.execute.before": createToolExecuteBeforeHandler({
       ctx,
       hooks,
+      pluginConfig,
+      ...intentRoutingOverride,
       backgroundManager: managers.backgroundManager,
     }),
 

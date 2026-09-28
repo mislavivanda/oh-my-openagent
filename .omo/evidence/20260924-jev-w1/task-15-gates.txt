@@ -1,0 +1,22 @@
+WHAT WAS TESTED
+typecheck_command=bun run typecheck
+fast_command=bun run test:fast
+style_command=bun run packages/shared-skills/skills/programming/scripts/typescript/check-no-excuse-rules.ts packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-budget.test.ts packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts
+loc_command=wc -l packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-budget.test.ts packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts
+
+WHAT WAS OBSERVED
+typecheck_exit=0
+typecheck_workspaces=all root, script, and package tsconfigs clean
+test_fast_exit=0
+test_fast_pass=434
+test_fast_fail=0
+test_fast_files=41
+no_excuse_violations=0
+line_counts=chat-message:155,tool-execute-before:140,budget:179,runtime-effects:206
+lsp_diagnostics=skipped per todo instruction because it is known broken in this worktree
+
+WHY IT IS ENOUGH
+The project typechecker proves the new tests and their production imports are type-correct. The Jev fast gate covers the affected package graph. The focused audit finds no banned TypeScript escape hatches, and all files remain within the accepted test-module size policy.
+
+WHAT WAS OMITTED
+No secrets, credentials, environment dumps, or private values were captured.

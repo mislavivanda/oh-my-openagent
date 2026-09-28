@@ -38,10 +38,19 @@ Fork-with-receipts is the fallback. Personal project; published free/non-commerc
 - `test:fast` did not exist upstream at `v4.19.4`; Phase A added it to the root
   `package.json`. It runs the jev loop only: `packages/jev-core`, the `model-core`
   error-classifier tests, the four `event.model-fallback*` suites including the jev one,
-  `packages/omo-opencode/src/features/jev`, `packages/omo-opencode/src/config/schema`, and
-  the two repo audits (`script/package-registration-audit.test.ts`,
+  `packages/omo-opencode/src/features/jev`, `packages/omo-opencode/src/config/schema`, the
+  seven W1 plugin-wiring suites under `packages/omo-opencode/src/plugin*` plus
+  `packages/omo-opencode/src/testing/create-plugin-module-intent-routing.test.ts`, the report
+  test `script/jev-w1-report.test.ts`, and the two repo audits
+  (`script/package-registration-audit.test.ts`,
   `script/shared-core-extraction-guard.test.ts`). It is the mid-loop check, NOT a
   substitute for the full suite in final verification.
+- **`test:fast` is a HARDCODED file list, not a glob.** A new test file outside those paths
+  silently never runs in the fast gate, and you will not notice, because the gate stays green.
+  Whenever you add a test outside the directory entries, append its path explicitly, then
+  verify against the RUN OUTPUT rather than the config: run it with
+  `--reporter=junit --reporter-outfile=<file>` and confirm the new file appears as a `file=`
+  attribute. Eight of the nineteen W1 test files needed that explicit append.
 - Known upstream debt at `v4.19.4`: `THIRD-PARTY-NOTICES.md` lacks headings for
   `@opentui/core`, `@opentui/keymap`, `@opentui/solid`, and `zod`, so
   `node scripts/check-third-party-notices.mjs` is red at baseline; our gates are
@@ -97,14 +106,44 @@ Fork-with-receipts is the fallback. Personal project; published free/non-commerc
   Existing pattern lists become test fixtures/labels. Low confidence → current heuristic.
 
 **W1 — intent gate + routing** (token headline)
-- Now: "Phase 0 Intent Gate" prose every main turn (`agents/sisyphus/default.ts:189-258`);
-  category prose (`tools/delegate-task/tool-description.ts:48-87`); subagent tables
-  (`agents/dynamic-agent-core-sections.ts:118-128`). Stage 2 category→model is already
-  deterministic (`category-resolver.ts`, `delegate-core/model-selection.ts`) — DO NOT TOUCH.
-- Jev: pre-turn call: `intent: Choice(6)`, `category: Choice(~8)`, `subagent: Choice(N)`,
-  `ambiguous: Noul`. Targets already machine-readable (`AvailableCategory`,
-  `AvailableAgent.metadata.triggers/useWhen/avoidWhen`). Inject as directive; shrink
-  Phase 0 prompt when enabled.
+**Status: IMPLEMENTED, OBSERVE-ONLY, DEFAULT OFF.** The wire predicts the delegation shape of
+a turn and writes the prediction next to the delegations that actually happened. It changes
+nothing at runtime. `observe_only` is schema-only and rejects `false`, so there is no config
+path that turns the prediction into an action; the apply phase is a later change.
+- Now, the prose being measured. There is NOT one Phase 0 block, there are SEVEN, and the
+  single `default.ts:189-258` reference this file used to carry was both stale and incomplete.
+  The real blocks, re-derived 2026-09-24:
+  - `packages/omo-opencode/src/agents/sisyphus-dynamic-prompt-role.ts:25-112`
+  - `packages/omo-opencode/src/agents/sisyphus/claude-opus-5.ts:192-276`
+  - `packages/omo-opencode/src/agents/sisyphus/claude-opus-4-8.ts:178-262`
+  - `packages/omo-opencode/src/agents/sisyphus/claude-fable-5.ts:178-262`
+  - `packages/omo-opencode/src/agents/sisyphus/claude-opus-4-7.ts:178-262`
+  - `packages/omo-opencode/src/agents/sisyphus/default.ts:189-261`
+  - `packages/omo-opencode/src/agents/hephaestus/gpt.ts:126-169`
+  Anchor on the heading text `## Phase 0 - Intent Gate`, not on these numbers. Six variants
+  are Sisyphus, one is Hephaestus. Category prose
+  (`tools/delegate-task/tool-description.ts:48-87`) and subagent tables
+  (`agents/dynamic-agent-core-sections.ts:118-128`) are unchanged. Stage 2 category to model
+  is already deterministic (`category-resolver.ts`, `delegate-core/model-selection.ts`) and
+  was NOT touched by W1.
+- Jev, as built: one pre-turn call with four questions, `intent: Choice`, `category: Choice`,
+  `subagent: Choice`, `ambiguous: Noul`, each Choice carrying an explicit `none` option so the
+  model can decline. Vocabularies come from the machine-readable targets already in the repo
+  (`AvailableCategory`, `AvailableAgent.metadata.triggers/useWhen/avoidWhen`).
+- Ground truth: every delegation ATTEMPT on the turn is captured before execution, across both
+  the `task` tool and resume calls. Attempts, not successes.
+- Sink: append-only JSONL under `~/.omo/jev/`, one file per process per UTC day
+  (`w1-<YYYYMMDD>-<processId>.jsonl`), directory mode `0700`, file mode `0600`, 32 MiB per-file
+  cap. Two entry kinds, `observation` and `counter_delta`.
+- **The sink stores PROMPT HEADS: the first 200 characters of your user messages, verbatim, on
+  disk, in plain text. NO SECRET SCRUBBING IS PERFORMED.** If you paste a key, a token, or a
+  customer name into the first 200 characters of a prompt while this wire is enabled, it lands
+  in `~/.omo/jev/` unredacted. A SHA-256 of the full prompt is stored alongside it so repeated
+  disagreements are countable without retaining the full text. Do not enable this wire on a
+  machine where that is unacceptable, and do not attach the raw JSONL to a public PR.
+- Agreement report: `bun run script/jev-w1-report.ts` reads `~/.omo/jev/` and prints the
+  agreement metrics with their denominators. `--root <dir>` points it at another directory.
+  It is a script, not a CLI subcommand, on purpose.
 
 **W2 — completion/continuation gauntlet** (overnight-loop story)
 - Now: `<promise>DONE</promise>` regex (`hooks/ralph-loop/constants.ts:3`,
@@ -160,8 +199,9 @@ multilingual + adversarial cases. Lives in `bench/`. Powers the PR pitch + write
   `packages/jev-core/` + W4. After its `--no-ff` merge into `jev/foundation`, next is W1.
 
 ## Dogfood config
-Turn W4 on for your own sessions. Everything is default-off, so this is the only switch.
-Put this in `~/.omo/omo.jsonc` (the unified config; the `[opencode]` block is the plugin's):
+Turn the wires on for your own sessions. Everything is default-off, so these are the only
+switches. Put this in `~/.omo/omo.jsonc` (the unified config; the `[opencode]` block is the
+plugin's):
 
 ```jsonc
 {
@@ -205,7 +245,73 @@ three seam sites go inert with zero `[jev]` lines and no error or log saying why
 defaults to `false`, so W4 is active out of the box; this only bites if you turn runtime-fallback
 on deliberately. If you enable W4 and see zero `[jev]` lines, check this first.
 
+### W1 intent routing, observe-only
+
+W1 is a second, independent switch under the same `jev` block. Adding it to the config above:
+
+```jsonc
+{
+  "[opencode]": {
+    "jev": {
+      "enabled": true,
+      "backend": "real",
+      "wires": {
+        "intent_routing": {
+          "enabled": true,
+          "observe_only": true,
+          "confidence_threshold": 0.8,
+          "timeout_ms": 2500,
+          "turn_seal_timeout_ms": 120000,
+          "max_prompt_chars": 8000,
+          "max_inflight": 8
+        }
+      }
+    }
+  }
+}
+```
+
+Two config rules the schema enforces, both of which reject the whole config on violation:
+
+- `observe_only` must stay `true`. Setting it to `false` is a validation error, not a feature
+  flag. The apply phase does not exist yet.
+- `turn_seal_timeout_ms` must be strictly greater than `timeout_ms`. `timeout_ms` bounds how
+  long we wait for a Jev answer; `turn_seal_timeout_ms` bounds how long a turn may still
+  collect delegations. Sealing a turn on the prediction timeout would close nearly every
+  record before its first tool call and destroy the dataset.
+
+`timeout_ms` is a per-wire override of the global `jev.timeout_ms` because this wire sends
+four questions where W4 sends one. Raising the global value to fit W1 would silently change
+W4 too.
+
+**Before you enable this, read the prompt-head warning in the W1 section above.** The first
+200 characters of every user message are written verbatim to `~/.omo/jev/`, with no secret
+scrubbing. Unlike W4, W1 has no prerequisite flag beyond `jev.enabled`, so it starts recording
+as soon as you restart opencode. Check what it captured with:
+
+```bash
+bun run script/jev-w1-report.ts
+```
+
 ## Revision log
+- 2026-09-24 W1 implemented on `jev/w1` (plan `.omo/plans/jev-w1-intent-routing.md`):
+  - W1 section rewritten from a proposal into a status record: implemented, observe-only,
+    default off, with the sink layout, the ground-truth definition, and the report command.
+  - The stale single Phase 0 reference `agents/sisyphus/default.ts:189-258` replaced with the
+    seven real blocks (six Sisyphus variants plus the Hephaestus one), re-derived 2026-09-24,
+    with the instruction to anchor on the `## Phase 0 - Intent Gate` heading rather than the
+    numbers. None of those blocks was edited by W1; the prompt shrink lands with the apply
+    phase.
+  - Prompt-head disclosure added in two places: the first 200 characters of every user message
+    are stored verbatim under `~/.omo/jev/` with NO secret scrubbing.
+  - Dogfood-config section extended with the W1 block and with the two schema-enforced rules,
+    `observe_only` rejects `false` and `turn_seal_timeout_ms` must exceed `timeout_ms`.
+  - Dogfood-config intro corrected: it claimed W4 was "the only switch", which stopped being
+    true the moment W1 landed.
+  - `test:fast` scope corrected under Repo state & git rules. Eight W1 test files sat outside
+    its hardcoded paths and were appended explicitly; the eleven others were already covered by
+    its directory paths. A standing warning was added that the list is hardcoded, so a test
+    outside it never runs while the gate still reports green.
 - 2026-09-19 Phase A audit against `v4.19.4` (line numbers re-verified 2026-09-22):
   - API shape corrected to `new TypeSafeClient(...).systemOne({ state, questions, model? })`;
     alias `jev-latest` confirmed by live probe to resolve to `jev-1.13.0`.

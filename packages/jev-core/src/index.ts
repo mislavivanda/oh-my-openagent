@@ -28,3 +28,51 @@ export {
   type ModelErrorTriageFixture,
   type ModelErrorTriageFixtureSource,
 } from "./model-error-triage-fixtures"
+export {
+  INTENT_ROUTING_CONTINUATION_LEXICON,
+  selectLatestCounterDeltasByProcess,
+  validateIntentRoutingCounterDelta,
+  validateIntentRoutingEntry,
+  validateIntentRoutingObservationRecord,
+  type IntentRoutingAnswers,
+  type IntentRoutingChoiceAnswer,
+  type IntentRoutingCounterDelta,
+  type IntentRoutingCounters,
+  type IntentRoutingEntry,
+  type IntentRoutingNoulAnswer,
+  type IntentRoutingObservationRecord,
+  type IntentRoutingObservedDelegation,
+} from "./intent-routing-record"
+
+export {
+  INTENT_ROUTING_QUESTION_VERSION,
+  IntentRoutingVocabularyError,
+  buildIntentRoutingQuestions,
+  decideIntentRouting,
+  type IntentRoutingDecisionResult,
+  type IntentRoutingInput,
+  type IntentRoutingLabels,
+  type IntentRoutingThresholdLabel,
+  type IntentRoutingVocabulary,
+  type IntentRoutingVocabularyOption,
+} from "./intent-routing"
+export {
+  INTENT_ROUTING_CATEGORY_VOCABULARY,
+  INTENT_ROUTING_SUBAGENT_VOCABULARY,
+  derivePredictedRoute,
+  deriveRoute,
+  normalizeObservedDelegation,
+  type DerivedRoute,
+  type IntentRoutingRoute,
+  type NormalizedObservedDelegation,
+  type ObservedDelegationArgs,
+  type RouteObservation,
+} from "./intent-routing-normalization"
+export {
+  INTENT_ROUTING_FIXTURES,
+  INTENT_ROUTING_FIXTURE_SOURCES,
+  type IntentRoutingFixture,
+  type IntentRoutingFixtureIntent,
+  type IntentRoutingFixtureLabel,
+  type IntentRoutingFixtureSource,
+} from "./intent-routing-fixtures"

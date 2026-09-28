@@ -1,0 +1,23 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w1-report.test.ts:
+172 |   const sealedBy = observations.map((record) => record.sealedBy)
+173 |   const statuses = observations.map((record) => record.predictionStatus)
+174 |   const correlations = observations.map((record) => record.correlationStatus)
+175 |   const sealed = observations.length
+176 |   const inFlight = counters.recordsCreated - sealed - counters.recordsEvicted
+177 |   if (inFlight < 0) throw new ReportIdentityError(counters.recordsCreated, sealed, counters.recordsEvicted)
+                                                                                                                ^
+ReportIdentityError: records_created 0 is less than sealed 1 plus evicted 0
+      at denominatorLines (<worktree>/script/jev-w1-report.ts:177:107)
+      at generateJevW1Report (<worktree>/script/jev-w1-report.ts:230:8)
+      at <anonymous> (<worktree>/script/jev-w1-report.test.ts:157:30)
+(fail) Jev W1 intent-routing report > #given a counter snapshot that overstates creation #when identity is checked #then independent in-flight stays zero and the discrepancy is reported [1.14ms]
+
+ 0 pass
+ 11 filtered out
+ 1 fail
+Ran 1 test across 1 file. [172.00ms]
+
+EXIT_CODE=1
+EXPECTED=nonzero

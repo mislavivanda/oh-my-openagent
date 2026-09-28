@@ -1,0 +1,21 @@
+WHAT WAS TESTED
+- Serialized a representative observation with a 200-character prompt head and one observed delegation.
+- Serialized a representative cumulative counter delta.
+- Projected 2,000 observations per day plus one counter delta per minute.
+- Listed the operator's real `/home/opencode/.omo/jev` recursively before and after every test and manual QA run.
+
+WHAT WAS OBSERVED
+- Observation JSONL line: 1,666 bytes.
+- Counter JSONL line: 459 bytes.
+- Daily projection: `(1,666 * 2,000) + (459 * 1,440) = 3,992,960 bytes/day`, or 3.808 MiB/day.
+- Selected cap: 33,554,432 bytes, or 32 MiB, which is 8.40 projected high-volume days per process.
+- Before: `ABSENT: /home/opencode/.omo/jev`.
+- After: `ABSENT: /home/opencode/.omo/jev`.
+- Comparison: unchanged. The focused RED, focused GREEN, and malformed-line QA artifacts each show `HOME=/tmp/tmp.*`.
+
+WHY IT IS ENOUGH
+- The cap is derived from the actual entry contract and the configured one-minute counter interval rather than copied from the logger.
+- Matching recursive-listing results prove no sink file or directory was created in the operator's real home.
+
+WHAT WAS OMITTED
+- No prompt content, credentials, tokens, auth headers, or private environment values were captured.

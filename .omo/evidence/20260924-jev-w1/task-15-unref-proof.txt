@@ -1,0 +1,25 @@
+WHAT WAS TESTED
+temporary_mutation=removed timer.unref() from the real intent-routing sink interval in packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+command=bun test packages/omo-opencode/src/plugin/intent-routing-runtime-effects.test.ts -t "child finishes"
+revert=timer.unref() was restored immediately after the failing run
+revert_confirmation_command=flock /tmp/jev-w1-e90b.lock -c 'GIT_MASTER=1 git diff -- packages/omo-opencode/src/plugin/chat-message.ts packages/omo-opencode/src/features/jev/intent-routing-sink.ts'
+revert_confirmation_output=<empty>
+
+WHAT WAS OBSERVED
+exit=1
+pass=0
+fail=1
+filtered_out=1
+child_exit_bound_ms=1500
+observed_child_timed_out=true
+elapsed_ms=1506.99
+failure=child clean-exit timed out after 1500ms
+Expected: false
+Received: true
+
+WHY IT IS ENOUGH
+The spawned child uses the enabled plugin handler, real dispatcher, real sink under a temp root, and a hanging real-backend fetch. Removing the sink interval unref keeps the descriptor live until the parent kills the child at the numeric bound, so the clean-exit assertion directly detects the timer regression.
+The empty focused git diff confirms neither temporary production mutation remained.
+
+WHAT WAS OMITTED
+No secrets or environment values were printed. The child produced no stderr.
