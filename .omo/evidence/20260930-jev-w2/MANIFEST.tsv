@@ -166,3 +166,26 @@ todo	artifact	kind	description
 6	.omo/evidence/20260930-jev-w2/task-6-qa-summary.txt	summary	Reviewer-readable test scope observations and sufficiency
 6	.omo/evidence/20260930-jev-w2/task-6-cleanup.txt	cleanup	No process port container or temporary residue
 6	.omo/evidence/20260930-jev-w2/task-6-staged-paths.txt	git	Cached paths after staging contain only todo-6 files
+10	.omo/evidence/20260930-jev-w2/task-10-input-red.txt	tdd-red	Focused input snapshot test fails before implementation
+10	.omo/evidence/20260930-jev-w2/task-10-input-green.txt	test	Focused bounded snapshot suite passes
+10	.omo/evidence/20260930-jev-w2/task-10-no-diff-content.txt	manual-qa	Exact sentinel retention test matches one test and passes
+10	.omo/evidence/20260930-jev-w2/task-10-forbidden-call-grep.txt	static-audit	Empty forbidden shell and client diff call audit
+10	.omo/evidence/20260930-jev-w2/task-10-malformed-stale.txt	adversarial	Malformed and stale availability probe
+10	.omo/evidence/20260930-jev-w2/task-10-boulder-unavailable.txt	adversarial	Unavailable boulder plan variants probe
+10	.omo/evidence/20260930-jev-w2/task-10-lru.txt	adversarial	LRU 256-session eviction probe
+10	.omo/evidence/20260930-jev-w2/task-10-flaky-run-1.txt	stability	Focused suite stability run 1
+10	.omo/evidence/20260930-jev-w2/task-10-flaky-run-2.txt	stability	Focused suite stability run 2
+10	.omo/evidence/20260930-jev-w2/task-10-flaky-run-3.txt	stability	Focused suite stability run 3
+10	.omo/evidence/20260930-jev-w2/task-10-dirty-worktree-before-staging.txt	git-state	Dirty worktree receipt before staging
+10	.omo/evidence/20260930-jev-w2/task-10-real-home-before.txt	isolation	Real home omo digest before final QA
+10	.omo/evidence/20260930-jev-w2/task-10-real-home-after.txt	isolation	Real home omo digest after final QA
+10	.omo/evidence/20260930-jev-w2/task-10-home-reference-grep.txt	static-audit	Empty HOME mutation audit for boulder tests
+10	.omo/evidence/20260930-jev-w2/task-10-adversarial-qa.txt	adversarial-summary	Applicable and ruled-out adversarial classes
+10	.omo/evidence/20260930-jev-w2/task-10-qa-summary.txt	qa-summary	Reviewer-readable test observations and sufficiency
+10	.omo/evidence/20260930-jev-w2/task-10-line-counts.txt	line-count	Per-file physical line count gate
+10	.omo/evidence/20260930-jev-w2/task-10-no-excuse.txt	static-audit	TypeScript no-excuse rules pass
+10	.omo/evidence/20260930-jev-w2/task-10-typecheck.txt	typecheck	omo-opencode package typecheck passes
+10	.omo/evidence/20260930-jev-w2/task-10-build.txt	build	Repository build passes
+10	.omo/evidence/20260930-jev-w2/task-10-lsp-diagnostics.txt	lsp	Changed files report no diagnostics
+10	.omo/evidence/20260930-jev-w2/task-10-cleanup.txt	cleanup	Temp roots, home isolation, process and port receipt
+10	.omo/evidence/20260930-jev-w2/task-10-staged-paths.txt	git	Cached paths after staging contain only todo 10 files

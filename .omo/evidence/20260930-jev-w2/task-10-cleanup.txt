@@ -1,0 +1,8 @@
+mkdtemp_roots_found_before_cleanup=0
+mkdtemp_roots_left_after_cleanup=0
+real_home_omo=unchanged
+real_home_omo_created_by_task=no
+processes_started=0
+ports_opened=0
+process_cleanup=not_needed
+port_cleanup=not_needed

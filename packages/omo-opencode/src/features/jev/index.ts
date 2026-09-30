@@ -74,3 +74,35 @@ export type {
 } from "./completion-continuation-sink"
 export { readCompletionContinuationSink } from "./completion-continuation-reader"
 export type { CompletionContinuationSinkReadResult } from "./completion-continuation-reader"
+export {
+  captureCompletionContinuationInput,
+  finalizeCompletionContinuationInput,
+} from "./completion-continuation-input"
+export type {
+  CaptureCompletionContinuationInputOptions,
+  CompletionContinuationInputAvailability,
+  CompletionContinuationInputCaptureTimes,
+  CompletionContinuationInputSnapshot,
+  CompletionContinuationSourceAvailability,
+  CompletionContinuationTodoSource,
+  CompletionContinuationTranscriptSource,
+} from "./completion-continuation-input"
+export {
+  DEFAULT_COMPLETION_CONTINUATION_DIFF_MAX_SESSIONS,
+  createCompletionContinuationDiffCache,
+} from "./completion-continuation-diff-cache"
+export type {
+  CompletionContinuationDiffAvailability,
+  CompletionContinuationDiffCache,
+  CompletionContinuationDiffCacheInspection,
+  CompletionContinuationDiffCacheOptions,
+  CompletionContinuationDiffSnapshot,
+  CompletionContinuationObservedEvent,
+} from "./completion-continuation-diff-cache"
+export { scheduleCompletionContinuationBoulderSnapshot } from "./completion-continuation-boulder-snapshot"
+export type {
+  CompletionContinuationBoulderAvailability,
+  CompletionContinuationBoulderSnapshot,
+  CompletionContinuationBoulderSnapshotTask,
+  ScheduleCompletionContinuationBoulderSnapshotInput,
+} from "./completion-continuation-boulder-snapshot"

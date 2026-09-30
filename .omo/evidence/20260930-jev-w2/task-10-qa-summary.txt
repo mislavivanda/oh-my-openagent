@@ -1,0 +1,20 @@
+WHAT WAS TESTED
+- Exact focused command: bun test packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts
+- Exact retention command: bun test packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts -t 'does not retain FileDiff before or after content'
+- Static source audit for Bun.spawn, child_process, and session.diff( across the three production modules.
+- Deferred boulder parsing against test-owned mkdtemp plans, LRU overflow at 257 sessions, malformed inputs, stale event state, and three repeated focused runs.
+
+WHAT WAS OBSERVED
+- Focused suite: 7 pass, 0 fail, 46 assertions.
+- Retention test: Ran 1 test, 1 pass, sentinel absent from the full JSON serialization.
+- Diff cache: 256 sessions after overflow, one eviction, recently touched session retained, least-recently-used session absent.
+- Boulder callback did not run synchronously and parsed 1 completed of 2 total tasks with a capped next-task title.
+- Static forbidden-call output is empty.
+
+WHY IT IS ENOUGH
+- The tests cross each source boundary with above-cap and malformed values, then assert the core state-builder contract rather than adapter internals alone.
+- The exact sentinel test proves file contents are not retained anywhere in the serialized cache or input snapshot.
+- Deferred-only callback observation proves boulder filesystem work is outside synchronous input capture.
+
+WHAT WAS OMITTED
+- No secret-bearing logs, environment dump, auth data, real session database, OpenCode process, or user boulder state was read into evidence.
