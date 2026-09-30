@@ -6,13 +6,19 @@ import {
   COMPLETION_CONTINUATION_PRE_INPUT_SKIP_REASONS,
   type CompletionContinuationCounters,
 } from "../packages/jev-core/src"
+import { JevCompletionContinuationWireConfigSchema } from "../packages/omo-opencode/src/config/schema/jev"
 import type { CompletionContinuationSinkReadResult } from "../packages/omo-opencode/src/features/jev/completion-continuation-reader"
 import {
   HEURISTIC_AGREEMENT_SPECS,
   OUTCOME_AGREEMENT_SPECS,
   scoreCompletionContinuationAgreement,
 } from "./jev-w2-report-scoring"
-import type { CompletionContinuationReportAnalysis } from "./jev-w2-report-types"
+import type { CompletionContinuationReportAnalysis, OutcomeWindow } from "./jev-w2-report-types"
+
+const SCHEMA_DEFAULT_OUTCOME_WINDOW: OutcomeWindow = {
+  milliseconds: JevCompletionContinuationWireConfigSchema.parse({}).outcome_window_ms,
+  source: "config_schema_default",
+}
 
 function emptyCounters(): CompletionContinuationCounters {
   return {
@@ -136,6 +142,7 @@ export function analyzeCompletionContinuationSink(
   const inFlight = Math.max(0, counters.starts - records.length)
   denominators.in_flight = inFlight
   return {
+    outcomeWindow: SCHEMA_DEFAULT_OUTCOME_WINDOW,
     denominators,
     identity: {
       starts: counters.starts,

@@ -64,7 +64,15 @@ export type AgreementBlock = {
   readonly crossTabs: readonly AgreementCrossTab[]
 }
 
+export type OutcomeWindowSource = "config_schema_default"
+
+export type OutcomeWindow = {
+  readonly milliseconds: number
+  readonly source: OutcomeWindowSource
+}
+
 export type CompletionContinuationReportAnalysis = {
+  readonly outcomeWindow: OutcomeWindow
   readonly denominators: Readonly<Record<string, number>>
   readonly identity: {
     readonly starts: number

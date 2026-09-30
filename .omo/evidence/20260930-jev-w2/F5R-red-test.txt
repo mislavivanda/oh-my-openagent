@@ -1,0 +1,12 @@
+Expected: >= 0
+Received: -1
+(fail) #given an exhaustive completion-continuation corpus > #when rendered #then the outcome observation window precedes every denominator and rate [1.43ms]
+Expected to contain: "outcome_window_ms: 120000 (config schema default)"
+(fail) #given an empty completion-continuation corpus > #when rendered #then zero denominators produce insufficient data [1.06ms]
+ 6 pass
+ 2 fail
+Ran 8 tests across 1 file. [135.00ms]
+
+COMMAND: bun test script/jev-w2-report.test.ts
+EXIT: 1 (RED, before the render change)
+RED REASON: the report contains no outcome_window_ms line, so windowIndex is -1 and the empty-corpus assertion finds no window.

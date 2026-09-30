@@ -1,0 +1,96 @@
+F5R QA SUMMARY - render the outcome window in the W2 agreement report
+=====================================================================
+
+REMEDIATION OF: verifier F5 (measurement-integrity audit), plan line
+.omo/plans/jev-w2-completion-continuation.md:335, which requires that "the 120000 ms window
+and closure reason are present" in the rendered report. Closure reasons were present. The
+outcome window was not.
+
+WHAT WAS TESTED
+---------------
+1. bun test script/jev-w2-report.test.ts
+   Surface: the report analysis and render path over the synthetic W2 corpus and over an
+   empty corpus. Behavior proven: the rendered report carries the outcome observation
+   window, its number equals the config schema default, and the line precedes DENOMINATORS,
+   HEURISTIC PROXY AGREEMENT and OUTCOME AGREEMENT.
+   Artifacts: F5R-red-test.txt (failing first), F5R-green-test.txt (passing after).
+2. Verifier F5's exact invocation, byte for byte from the plan.
+   Surface: script/jev-w2-report.ts driven end to end against a freshly generated synthetic
+   corpus in a mktemp directory. Behavior proven: exit 0 and the window rendered.
+   Artifact: F5R-f5-command.txt.
+3. Empty-corpus run of the same CLI.
+   Surface: the zero-denominator path. Behavior proven: still exit 0, still renders
+   "insufficient data", and now also renders the window.
+   Artifact: F5R-empty-corpus.txt.
+4. bun run typecheck:script plus lsp_diagnostics on each changed file.
+   Artifact: F5R-typecheck.txt.
+5. Re-confirmation of all nine properties F5 had already passed, read back off the NEW
+   rendered output rather than assumed.
+   Artifact: F5R-preserved-properties.txt.
+6. Static discipline: per-file line counts in a loop, banned patterns, absence of a
+   hardcoded 120000 in the report source, byte-identity of the untouched owned files.
+   Artifact: F5R-static.txt.
+
+WHAT WAS OBSERVED
+-----------------
+BEFORE: the F5 corpus report contained 0 lines matching 120000.
+AFTER : exit 0, exactly 1 matching line, rendered verbatim as
+
+    outcome_window_ms: 120000 (config schema default)
+
+sitting in a MEASUREMENT WINDOW block at character offset 68, ahead of DENOMINATORS (332),
+HEURISTIC PROXY AGREEMENT (2657), OUTCOME AGREEMENT (8636) and the first outcome rate
+actually_complete overall (8771). The block reads:
+
+    MEASUREMENT WINDOW
+    outcome_window_ms: 120000 (config schema default)
+    every censored count and outcome rate below is conditioned on this finite observation window
+    observation records carry no window value, so a run configured with a different outcome_window_ms is not reflected here
+
+Test suite: 8 pass, 0 fail, 103 expect() calls, exit 0. Before the render change the same
+file was 6 pass, 2 fail, and both failures were the new window assertions.
+typecheck:script exit 0, zero error lines. lsp_diagnostics: No diagnostics found on all four
+changed files.
+All nine preserved properties re-confirmed. The two named denominators remain distinct
+("confident prediction + known heuristic proxy" versus "confident prediction + observed
+non-censored outcome label"). The stuck denominator is 1 and decomposes as
+unchanged_next_idle 1 plus zero from every one of pending, tracked_work_complete,
+tracked_work_progressed, timeout, dispose, session_deleted, human_intervention and evicted,
+so all four censored kinds plus eviction stay out of the numerator and the denominator even
+though censor_reason_timeout, censor_reason_dispose, censor_reason_session_deleted,
+censor_reason_human_intervention and censor_reason_evicted each count 1 record.
+
+WHY IT IS ENOUGH
+----------------
+The number is not a literal. jev-w2-report-analysis.ts derives it once from
+JevCompletionContinuationWireConfigSchema.parse({}).outcome_window_ms, whose single source is
+packages/omo-opencode/src/config/schema/jev.ts:54. Changing the schema default changes the
+rendered number with no edit to the report. The report source contains zero occurrences of
+120000; the only literal is the test assertion that pins the schema default, so a silent
+schema drift fails the suite instead of silently rewriting the report.
+The observation record type carries no window field (verified against
+packages/jev-core/src/completion-continuation-record-types.ts), so the corpus genuinely
+cannot supply a per-run value. The rendered label therefore states the provenance
+explicitly and warns that a differently configured run is not reflected. That caveat is
+load-bearing: the F3 live driver configures outcome_window_ms to 180000.
+The scoring module that decides every numerator and denominator
+(script/jev-w2-report-scoring.ts) is byte-unchanged, as are script/jev-w2-report.ts and
+script/jev-w2-report.fixtures.ts, so no agreement number moved. The diff is 55 insertions
+and 2 deletions across four files, all additive rendering plus one new analysis field.
+
+REMAINING RISK
+--------------
+A run whose outcome_window_ms differs from the schema default still renders the schema
+default, labelled as such. Closing that gap requires stamping the window onto each JSONL
+observation record, which means editing packages/jev-core and the sink writer. Those files
+are outside this task's ownership and a peer is actively changing that tree, so the fix is
+deliberately deferred rather than attempted here.
+
+WHAT WAS OMITTED
+----------------
+No real API call was made; JEV_W2_REAL_API was left unset, so no provider credential,
+token or auth header appears in any artifact. No global process matcher was used. The real
+~/.omo was never read or written: every run used its own mktemp corpus directory, removed
+afterwards. No file under packages/ and no peer-owned file was edited or staged; the
+packages/ and task-19-drive.sh modifications visible in git status belong to concurrent
+peers and are recorded in F5R-static.txt for transparency only.

@@ -1,0 +1,69 @@
+F5R - static discipline checks
+
+PER-FILE PHYSICAL LINE COUNTS (loop, one wc -l per file, no total row)
+COMMAND: for f in <7 owned files>; do wc -l < "$f"; done
+  script/jev-w2-report.ts                29  OK (<=250)
+  script/jev-w2-report-types.ts          90  OK (<=250)
+  script/jev-w2-report-analysis.ts      165  OK (<=250)
+  script/jev-w2-report-scoring.ts       147  OK (<=250)
+  script/jev-w2-report-render.ts        139  OK (<=250)
+  script/jev-w2-report.fixtures.ts      207  OK (<=250)
+  script/jev-w2-report.test.ts          156  OK (<=250)
+
+BANNED PATTERNS IN CHANGED FILES
+COMMAND: grep -cE 'em dash|en dash|as any|@ts-ignore|@ts-expect-error|^export \*|simply|obviously|clearly|moreover|furthermore' <file>
+  script/jev-w2-report-types.ts        EXIT=1 MATCHING_LINES=0
+  script/jev-w2-report-analysis.ts     EXIT=1 MATCHING_LINES=0
+  script/jev-w2-report-render.ts       EXIT=1 MATCHING_LINES=0
+  script/jev-w2-report.test.ts         EXIT=1 MATCHING_LINES=0
+
+HARDCODED 120000 LITERAL IN REPORT SOURCE (must be absent, the value comes from the config schema)
+COMMAND: grep -n '120000\|120_000' script/jev-w2-report.ts script/jev-w2-report-types.ts script/jev-w2-report-analysis.ts script/jev-w2-report-scoring.ts script/jev-w2-report-render.ts
+EXIT: 1  MATCHING LINES: 0
+  The only 120000 literal in this change lives in script/jev-w2-report.test.ts, where it pins the
+  config schema default so a silent schema drift fails the test rather than silently changing the report:
+81:    expect(SCHEMA_OUTCOME_WINDOW_MS).toBe(120000)
+
+VALUE PROVENANCE
+script/jev-w2-report-analysis.ts:9:import { JevCompletionContinuationWireConfigSchema } from "../packages/omo-opencode/src/config/schema/jev"
+script/jev-w2-report-analysis.ts:19:  milliseconds: JevCompletionContinuationWireConfigSchema.parse({}).outcome_window_ms,
+script/jev-w2-report.test.ts:11:import { JevCompletionContinuationWireConfigSchema } from "../packages/omo-opencode/src/config/schema/jev"
+script/jev-w2-report.test.ts:18:  JevCompletionContinuationWireConfigSchema.parse({}).outcome_window_ms
+  packages/omo-opencode/src/config/schema/jev.ts:54 is the single source:
+    outcome_window_ms: z.number().int().min(1000).max(3600000).default(120000),
+
+FILES LEFT BYTE-UNCHANGED BY THIS COMMIT
+  UNCHANGED  script/jev-w2-report.ts
+  UNCHANGED  script/jev-w2-report-scoring.ts
+  UNCHANGED  script/jev-w2-report.fixtures.ts
+
+DIFFSTAT
+ script/jev-w2-report-analysis.ts |  9 ++++++++-
+ script/jev-w2-report-render.ts   | 23 ++++++++++++++++++++++-
+ script/jev-w2-report-types.ts    |  8 ++++++++
+ script/jev-w2-report.test.ts     | 17 +++++++++++++++++
+ 4 files changed, 55 insertions(+), 2 deletions(-)
+
+NO PACKAGES/ EDIT AND NO PEER-OWNED FILE EDIT
+COMMAND: git status --porcelain -- packages .omo/evidence/20260930-jev-w2/task-19-drive.sh
+ M .omo/evidence/20260930-jev-w2/task-19-drive.sh
+  task-19-drive.sh matching porcelain lines: 1
+  packages/ porcelain lines (pre-existing generated-bundle dirt owned by a peer, NOT staged by this commit):
+     M packages/jev-core/src/completion-continuation-accuracy-real-run.ts
+     M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+     M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+     M packages/omo-codex/scripts/install-dist/install-local.mjs
+     M packages/omo-opencode/src/features/jev/completion-continuation-runtime-audit.ts
+     M packages/omo-opencode/src/features/jev/completion-continuation-runtime-fixture.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert-fixture.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/countdown.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-preflight.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-types.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/pending-question-detection.ts
+     M packages/omo-opencode/src/hooks/todo-continuation-enforcer/stagnation-detection.ts
+     M packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+     M packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.ts
+     M packages/omo-senpi/plugin/extensions/omo-member.js
+     M packages/omo-senpi/plugin/extensions/omo.js

@@ -8,10 +8,14 @@ import {
   COMPLETION_CONTINUATION_OBSERVED_CLOSURES,
   COMPLETION_CONTINUATION_PREDICTION_STATUSES,
 } from "../packages/jev-core/src"
+import { JevCompletionContinuationWireConfigSchema } from "../packages/omo-opencode/src/config/schema/jev"
 import { readCompletionContinuationSink } from "../packages/omo-opencode/src/features/jev/completion-continuation-reader"
 import { analyzeCompletionContinuationSink } from "./jev-w2-report-analysis"
 import { writeJevW2SyntheticCorpus } from "./jev-w2-report.fixtures"
 import { generateCompletionContinuationReport } from "./jev-w2-report"
+
+const SCHEMA_OUTCOME_WINDOW_MS =
+  JevCompletionContinuationWireConfigSchema.parse({}).outcome_window_ms
 
 let corpusDir = ""
 
@@ -68,6 +72,18 @@ describe("#given an exhaustive completion-continuation corpus", () => {
     for (const reason of COMPLETION_CONTINUATION_CENSORED_CLOSURES) {
       expect(report).toContain(`censor_reason_${reason}: 1`)
     }
+  })
+
+  test("#when rendered #then the outcome observation window precedes every denominator and rate", () => {
+    const report = generateCompletionContinuationReport(corpusDir)
+    const windowIndex = report.indexOf(`outcome_window_ms: ${SCHEMA_OUTCOME_WINDOW_MS} (config schema default)`)
+
+    expect(SCHEMA_OUTCOME_WINDOW_MS).toBe(120000)
+    expect(windowIndex).toBeGreaterThanOrEqual(0)
+    expect(windowIndex).toBeLessThan(report.indexOf("DENOMINATORS"))
+    expect(windowIndex).toBeLessThan(report.indexOf("HEURISTIC PROXY AGREEMENT"))
+    expect(windowIndex).toBeLessThan(report.indexOf("OUTCOME AGREEMENT"))
+    expect(report).toContain("observation records carry no window value")
   })
 
   test("#when heuristic proxies and later outcomes diverge #then their rates remain separate", () => {
@@ -131,6 +147,7 @@ describe("#given an empty completion-continuation corpus", () => {
       const report = generateCompletionContinuationReport(emptyDir)
       expect(report).toContain("starts: 0")
       expect(report).toContain("records: 0")
+      expect(report).toContain(`outcome_window_ms: ${SCHEMA_OUTCOME_WINDOW_MS} (config schema default)`)
       expect(report).toContain("insufficient data (eligible denominator=0); coverage=0/0")
     } finally {
       rmSync(emptyDir, { recursive: true, force: true })

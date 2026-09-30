@@ -1,0 +1,38 @@
+F5R - verifier F5's EXACT command, before and after
+
+== BEFORE (HEAD~ behavior, reproduced by the orchestrator and again here) ==
+COMMAND: D=$(mktemp -d); D="$D" bun -e 'import{writeJevW2SyntheticCorpus}from"./script/jev-w2-report.fixtures";writeJevW2SyntheticCorpus(process.env.D!)'; bun run script/jev-w2-report.ts --root "$D" | grep -c '120000'
+EXIT: 0
+MATCHING LINES FOR 120000: 0
+
+== AFTER (F5's exact invocation, verbatim) ==
+COMMAND:
+bash -lc 'F5_CORPUS=$(mktemp -d); F5_CORPUS="$F5_CORPUS" bun -e "import{writeJevW2SyntheticCorpus}from\"./script/jev-w2-report.fixtures\";writeJevW2SyntheticCorpus(process.env.F5_CORPUS!)"; bun run script/jev-w2-report.ts --root "$F5_CORPUS"'
+EXIT: 0
+MATCHING LINES FOR 120000: 1
+MATCHING LINE, VERBATIM:
+4:outcome_window_ms: 120000 (config schema default)
+
+PRINT ORDER (character offsets in the rendered report):
+     49  MEASUREMENT WINDOW
+     68  outcome_window_ms: 120000 (config schema default)
+    332  DENOMINATORS
+    345  starts:
+   2590  in_flight_identity:
+   2657  HEURISTIC PROXY AGREEMENT
+   8636  OUTCOME AGREEMENT (observed non-censored labels only)
+   8771  actually_complete overall:
+
+FIRST 12 RENDERED LINES:
+JEV W2 COMPLETION-CONTINUATION AGREEMENT REPORT
+
+MEASUREMENT WINDOW
+outcome_window_ms: 120000 (config schema default)
+every censored count and outcome rate below is conditioned on this finite observation window
+observation records carry no window value, so a run configured with a different outcome_window_ms is not reflected here
+
+DENOMINATORS
+starts: 15
+records: 13
+prediction_status_filled: 10
+prediction_status_failed: 1

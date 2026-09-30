@@ -1,0 +1,29 @@
+F5R - empty-corpus regression check
+COMMAND: E=$(mktemp -d); bun run script/jev-w2-report.ts --root "$E"
+EXIT: 0
+MATCHING LINES FOR 'insufficient data': 126
+MATCHING LINES FOR 'insufficient data (eligible denominator=0); coverage=0/0': 126
+MATCHING LINES FOR '120000': 1
+
+FIRST 12 RENDERED LINES:
+JEV W2 COMPLETION-CONTINUATION AGREEMENT REPORT
+
+MEASUREMENT WINDOW
+outcome_window_ms: 120000 (config schema default)
+every censored count and outcome rate below is conditioned on this finite observation window
+observation records carry no window value, so a run configured with a different outcome_window_ms is not reflected here
+
+DENOMINATORS
+starts: 0
+records: 0
+prediction_status_filled: 0
+prediction_status_failed: 0
+
+REPRESENTATIVE ZERO-DENOMINATOR RATES:
+87:todo_complete overall: insufficient data (eligible denominator=0); coverage=0/0
+111:promise_complete overall: insufficient data (eligible denominator=0); coverage=0/0
+135:todo_progress overall: insufficient data (eligible denominator=0); coverage=0/0
+159:stagnation_stop overall: insufficient data (eligible denominator=0); coverage=0/0
+185:actually_complete overall: insufficient data (eligible denominator=0); coverage=0/0
+209:progressing overall: insufficient data (eligible denominator=0); coverage=0/0
+233:stuck overall: insufficient data (eligible denominator=0); coverage=0/0

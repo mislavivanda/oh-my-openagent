@@ -346,3 +346,13 @@ todo	artifact	kind	description
 19	.omo/evidence/20260930-jev-w2/task-19-remediation-static.txt	static	Line limits shell syntax and zero forbidden process matcher bytes
 19	.omo/evidence/20260930-jev-w2/task-19-remediation-dirty-worktree.txt	git-state	Remediation pre-staging status excludes ownership of ambient generated bundles
 19	.omo/evidence/20260930-jev-w2/task-19-remediation-staged-paths.txt	git-state	Exact remediation cached path allowlist
+F5R	.omo/evidence/20260930-jev-w2/F5R-plan.txt	plan	F5 remediation plan: reproduced finding, window value provenance survey, file-by-file steps, preserved-property list
+F5R	.omo/evidence/20260930-jev-w2/F5R-red-test.txt	red	script/jev-w2-report.test.ts fails 2 of 8 before the change because the report renders no outcome_window_ms line
+F5R	.omo/evidence/20260930-jev-w2/F5R-green-test.txt	green	script/jev-w2-report.test.ts 8 pass 0 fail 103 expect calls exit 0 after the change
+F5R	.omo/evidence/20260930-jev-w2/F5R-f5-command.txt	acceptance	Verifier F5 exact invocation exit 0, 1 matching line for 120000, verbatim window line and full print order
+F5R	.omo/evidence/20260930-jev-w2/F5R-empty-corpus.txt	regression	Empty-corpus report exit 0, 126 insufficient-data rows preserved, window still rendered
+F5R	.omo/evidence/20260930-jev-w2/F5R-typecheck.txt	verification	bun run typecheck:script exit 0, 0 error lines, lsp_diagnostics clean on all four changed files
+F5R	.omo/evidence/20260930-jev-w2/F5R-preserved-properties.txt	verification	All nine F5-passing properties re-confirmed on the new output incl. both denominator names and the stuck denominator composition
+F5R	.omo/evidence/20260930-jev-w2/F5R-static.txt	static	Per-file line counts under 250 via loop, zero banned patterns, zero hardcoded 120000 in report source, three owned files byte-unchanged
+F5R	.omo/evidence/20260930-jev-w2/F5R-qa-summary.txt	qa-summary	What was tested, observed, why it is enough, remaining risk, what was omitted
+F5R	.omo/evidence/20260930-jev-w2/F5R-dirty-worktree.txt	git-state	Pre-staging status disclaiming peer-owned packages and task-19-drive.sh changes

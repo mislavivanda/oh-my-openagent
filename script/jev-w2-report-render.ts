@@ -9,6 +9,8 @@ import type {
   AgreementBlock,
   AgreementRate,
   CompletionContinuationReportAnalysis,
+  OutcomeWindow,
+  OutcomeWindowSource,
 } from "./jev-w2-report-types"
 
 const DENOMINATOR_ORDER: readonly string[] = [
@@ -65,6 +67,20 @@ const OUTCOME_LABELS = {
   stuck: "stuck",
 } as const
 
+const OUTCOME_WINDOW_SOURCE_LABELS: Readonly<Record<OutcomeWindowSource, string>> = {
+  config_schema_default: "config schema default",
+}
+
+function windowLines(window: OutcomeWindow): readonly string[] {
+  return [
+    "MEASUREMENT WINDOW",
+    `outcome_window_ms: ${window.milliseconds} (${OUTCOME_WINDOW_SOURCE_LABELS[window.source]})`,
+    "every censored count and outcome rate below is conditioned on this finite observation window",
+    "observation records carry no window value, so a run configured with a different outcome_window_ms is not reflected here",
+    "",
+  ]
+}
+
 function percent(rate: AgreementRate): string {
   return `${((rate.numerator / rate.denominator) * 100).toFixed(2)}%`
 }
@@ -93,7 +109,12 @@ function renderBlock(label: string, block: AgreementBlock): readonly string[] {
 export function renderCompletionContinuationReport(
   analysis: CompletionContinuationReportAnalysis,
 ): string {
-  const lines = ["JEV W2 COMPLETION-CONTINUATION AGREEMENT REPORT", "", "DENOMINATORS"]
+  const lines = [
+    "JEV W2 COMPLETION-CONTINUATION AGREEMENT REPORT",
+    "",
+    ...windowLines(analysis.outcomeWindow),
+    "DENOMINATORS",
+  ]
   for (const name of DENOMINATOR_ORDER) {
     lines.push(`${name}: ${analysis.denominators[name] ?? 0}`)
   }

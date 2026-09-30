@@ -1,0 +1,10 @@
+F5R GREEN - script/jev-w2-report.test.ts after the render change
+COMMAND: bun test script/jev-w2-report.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 8 pass
+ 0 fail
+ 103 expect() calls
+Ran 8 tests across 1 file. [174.00ms]
+EXIT: 0
+RECORDED_EXIT: 0
