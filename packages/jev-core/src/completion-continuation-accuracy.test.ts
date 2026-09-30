@@ -1,174 +1,24 @@
 import { describe, expect, test } from "bun:test"
-import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises"
-import { tmpdir } from "node:os"
-import { dirname, join } from "node:path"
-import { COMPLETION_CONTINUATION_FIXTURES, type CompletionContinuationFixture } from "./completion-continuation-fixtures"
-import { COMPLETION_CONTINUATION_QUESTION_KEYS, COMPLETION_CONTINUATION_QUESTION_VERSION, type CompletionContinuationQuestionKey } from "./completion-continuation-questions"
-import { COMPLETION_CONTINUATION_DIFF_PATHS_MAX_BYTES, COMPLETION_CONTINUATION_MAX_STATE_BYTES,
-  COMPLETION_CONTINUATION_TODO_CONTENT_MAX_BYTES, COMPLETION_CONTINUATION_TRANSCRIPT_MAX_BYTES, buildCompletionContinuationState } from "./completion-continuation-state"
-import { decideCompletionContinuation, type CompletionContinuationDecisionResult } from "./completion-continuation"
+import { readFile, writeFile } from "node:fs/promises"
+import { join } from "node:path"
+import { COMPLETION_CONTINUATION_FIXTURES } from "./completion-continuation-fixtures"
+import { COMPLETION_CONTINUATION_QUESTION_KEYS, COMPLETION_CONTINUATION_QUESTION_VERSION } from "./completion-continuation-questions"
+import { buildCompletionContinuationState } from "./completion-continuation-state"
+import { PAID_CALL_CEILING, PaidCallCeilingError, RequestBudget, UnexpectedNetworkCallError, createCountingFetch,
+  matrixTotal, mockBackend, runAccuracy, runDryRun, withTempArtifact, type HarnessArtifact } from "./completion-continuation-accuracy-harness"
+import { readRetainedRealBaseline, runMissingKeyProbe, runRealCompletionContinuationBaseline } from "./completion-continuation-accuracy-real-run"
 import { createMockDecisionBackend } from "./mock-backend"
-import { selectDecisionBackend } from "./backend-selector"
-import type { DecisionBackend, RealDecisionBackendDeps } from "./index"
-const PAID_CALL_CEILING = 18
-const CONFIDENCE_THRESHOLD = 0.8
-const TIMEOUT_MS = 2_500
-const REQUESTED_MODEL = "jev-latest"
 const ARTIFACT_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-7-accuracy-result.json")
-const BYTE_CAPS = {
-  state: COMPLETION_CONTINUATION_MAX_STATE_BYTES,
-  todoContent: COMPLETION_CONTINUATION_TODO_CONTENT_MAX_BYTES,
-  transcript: COMPLETION_CONTINUATION_TRANSCRIPT_MAX_BYTES,
-  diffPaths: COMPLETION_CONTINUATION_DIFF_PATHS_MAX_BYTES,
-} as const
-type MutableCounter = { value: number }
-type BackendFetch = NonNullable<RealDecisionBackendDeps["fetch"]>
-type Matrix = Record<string, Record<string, number>>
-type Matrices = Record<CompletionContinuationQuestionKey, Matrix>
-type HarnessArtifact = {
-  readonly status: "complete" | "partial"
-  readonly mode: "mock" | "dry-run"
-  readonly fixtureCount: number
-  readonly builtStateCount: number
-  readonly completedFixtureIds: readonly string[]
-  readonly failedFixtureId: string | null
-  readonly failureReason: string | null
-  readonly callCeiling: number
-  readonly callCount: number
-  readonly networkCallCount: number
-  readonly requestedModel: string
-  readonly resolvedModel: string | null
-  readonly questionVersion: number
-  readonly byteCaps: typeof BYTE_CAPS
-  readonly confusionMatrices: Matrices
-}
-type RunOptions = {
-  readonly fixtures: readonly CompletionContinuationFixture[]
-  readonly artifactPath: string
-  readonly budget: RequestBudget
-  readonly networkCounter: MutableCounter
-  readonly backendFor: (fixture: CompletionContinuationFixture) => DecisionBackend
-}
-class PaidCallCeilingError extends Error {
-  readonly name = "PaidCallCeilingError"
-  constructor(readonly ceiling: number, readonly nextOrdinal: number) {
-    super(`Paid call ceiling ${ceiling} reached before call ${nextOrdinal}`)
-  }
-}
-class UnexpectedNetworkCallError extends Error {
-  readonly name = "UnexpectedNetworkCallError"
-  constructor() { super("Mock completion-continuation harness attempted fetch") }
-}
-/** Mutable request budget whose purpose is to reserve paid calls before dispatch. */
-class RequestBudget {
-  constructor(readonly ceiling: number, private used = 0) {}
-  reserve(): void {
-    if (this.used >= this.ceiling) throw new PaidCallCeilingError(this.ceiling, this.used + 1)
-    this.used += 1
-  }
-  get count(): number { return this.used }
-}
-function createCountingFetch(counter: MutableCounter): BackendFetch {
-  return async () => {
-    counter.value += 1
-    throw new UnexpectedNetworkCallError()
-  }
-}
-function createMatrices(): Matrices { return { actually_complete: {}, progressing: {}, stuck: {} } }
-
-function mockBackend(fixture: CompletionContinuationFixture, countingFetch: BackendFetch): DecisionBackend {
-  const probability = (truth: boolean | "unknown") => truth === true ? 0.95 : truth === false ? 0.05 : 0.5
-  return selectDecisionBackend(
-    { enabled: true, backend: "mock", model: REQUESTED_MODEL, timeoutMs: TIMEOUT_MS },
-    { fetch: countingFetch, mockScript: {
-      actually_complete: { type: "noul", noul: probability(fixture.label.actuallyComplete) },
-      progressing: { type: "noul", noul: probability(fixture.label.progressing) },
-      stuck: { type: "noul", noul: probability(fixture.label.stuck) },
-    } },
-  )
-}
-function recordPredictions(matrices: Matrices, fixture: CompletionContinuationFixture, result: CompletionContinuationDecisionResult): void {
-  const actual = {
-    actually_complete: String(fixture.label.actuallyComplete),
-    progressing: String(fixture.label.progressing),
-    stuck: String(fixture.label.stuck),
-  } satisfies Record<CompletionContinuationQuestionKey, string>
-  const predicted = {
-    actually_complete: result.thresholdLabels.actuallyComplete,
-    progressing: result.thresholdLabels.progressing,
-    stuck: result.thresholdLabels.stuck,
-  } satisfies Record<CompletionContinuationQuestionKey, string>
-  for (const question of COMPLETION_CONTINUATION_QUESTION_KEYS) {
-    const row = matrices[question][actual[question]] ?? {}
-    row[predicted[question]] = (row[predicted[question]] ?? 0) + 1
-    matrices[question][actual[question]] = row
-  }
-}
-async function emitArtifact(path: string, artifact: HarnessArtifact): Promise<void> {
-  await mkdir(dirname(path), { recursive: true })
-  const pending = `${path}.${process.pid}.tmp`
-  await writeFile(pending, `${JSON.stringify(artifact, null, 2)}\n`, "utf8")
-  await rename(pending, path)
-}
-function artifact(args: Omit<HarnessArtifact, "fixtureCount" | "callCeiling" | "questionVersion" | "byteCaps"> & { readonly fixtureCount: number }): HarnessArtifact {
-  return { ...args, callCeiling: PAID_CALL_CEILING, questionVersion: COMPLETION_CONTINUATION_QUESTION_VERSION, byteCaps: BYTE_CAPS }
-}
-async function runDryRun(fixtures: readonly CompletionContinuationFixture[], path: string): Promise<HarnessArtifact> {
-  const states = fixtures.map((fixture) => buildCompletionContinuationState(fixture.input))
-  const result = artifact({
-    status: "complete", mode: "dry-run", fixtureCount: fixtures.length, builtStateCount: states.length,
-    completedFixtureIds: fixtures.map(({ id }) => id), failedFixtureId: null, failureReason: null,
-    callCount: 0, networkCallCount: 0, requestedModel: REQUESTED_MODEL, resolvedModel: null,
-    confusionMatrices: createMatrices(),
-  })
-  await emitArtifact(path, result)
-  return result
-}
-async function runAccuracy(options: RunOptions): Promise<HarnessArtifact> {
-  const completedFixtureIds: string[] = []
-  const matrices = createMatrices()
-  let resolvedModel: string | null = null
-  let current = artifact({
-    status: "partial", mode: "mock", fixtureCount: options.fixtures.length, builtStateCount: 0,
-    completedFixtureIds, failedFixtureId: null, failureReason: null, callCount: options.budget.count,
-    networkCallCount: options.networkCounter.value, requestedModel: REQUESTED_MODEL, resolvedModel,
-    confusionMatrices: matrices,
-  })
-  await emitArtifact(options.artifactPath, current)
-  for (const fixture of options.fixtures) {
-    options.budget.reserve()
-    const built = buildCompletionContinuationState(fixture.input)
-    const decision = await decideCompletionContinuation({
-      backend: options.backendFor(fixture), state: built.state, confidenceThreshold: CONFIDENCE_THRESHOLD,
-      timeoutMs: TIMEOUT_MS, model: REQUESTED_MODEL,
-    })
-    if (decision.predictionStatus !== "filled" || decision.invalidAnswerCount !== 0) {
-      current = artifact({ ...current, builtStateCount: options.budget.count, failedFixtureId: fixture.id,
-        failureReason: decision.unavailableReason ?? "invalid_answer", callCount: options.budget.count,
-        networkCallCount: options.networkCounter.value })
-      await emitArtifact(options.artifactPath, current)
-      return current
-    }
-    resolvedModel = decision.resolvedModel
-    recordPredictions(matrices, fixture, decision)
-    completedFixtureIds.push(fixture.id)
-    current = artifact({ ...current, builtStateCount: options.budget.count, completedFixtureIds: [...completedFixtureIds],
-      callCount: options.budget.count, networkCallCount: options.networkCounter.value, resolvedModel })
-    await emitArtifact(options.artifactPath, current)
-  }
-  current = { ...current, status: "complete" }
-  await emitArtifact(options.artifactPath, current)
-  return current
-}
-async function withTempArtifact(action: (path: string) => Promise<void>): Promise<void> {
-  const root = await mkdtemp(join(tmpdir(), "jev-w2-accuracy-"))
-  try { await action(join(root, "artifact.json")) } finally { await rm(root, { recursive: true, force: true }) }
-}
-function matrixTotal(matrix: Matrix): number { return Object.values(matrix).flatMap((row) => Object.values(row)).reduce((sum, count) => sum + count, 0) }
+const REAL_ARTIFACT_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-18-real-api-result.json")
+const REAL_API_REQUESTED = process.env.JEV_W2_REAL_API === "1"
+const REAL_API_KEY = process.env.TYPESAFE_API_KEY?.trim() ?? ""
+const REAL_TIMEOUT_MS = 15_000
+const REAL_TEST_TIMEOUT_MS = 420_000
+const TRANSCRIPT_TAIL_IDS = ["continue-after-red-test", "go-on-after-source-review"] as const
 describe("completion-continuation accuracy harness", () => {
   test("#given the selected default mode #when fixtures run #then a bounded mock artifact is emitted without network calls", async () => {
-    if (process.env.JEV_W2_REAL_API === "1") {
-      console.log("real-api opt-in acknowledged; implementation belongs to todo 18")
+    if (REAL_API_REQUESTED) {
+      console.log("real-api opt-in acknowledged; the paid baseline runs in the real-api measurement test below")
       return
     }
     const networkCounter = { value: 0 }
@@ -247,4 +97,73 @@ describe("completion-continuation accuracy harness", () => {
     expect(observed).toBeInstanceOf(UnexpectedNetworkCallError)
     expect(counter.value).toBe(1)
   })
+  test("#given an interrupted run #when the artifact is inspected #then partial progress survives on disk", async () => {
+    await withTempArtifact(async (path) => {
+      await writeFile(path, "stale-bytes-that-must-not-survive", "utf8")
+      const countingFetch = createCountingFetch({ value: 0 })
+      let backendCalls = 0
+      const partial = await runAccuracy({ fixtures: COMPLETION_CONTINUATION_FIXTURES.slice(0, 3), artifactPath: path,
+        budget: new RequestBudget(PAID_CALL_CEILING), networkCounter: { value: 0 },
+        backendFor: (fixture) => { backendCalls += 1; return backendCalls === 2 ? createMockDecisionBackend({}) : mockBackend(fixture, countingFetch) } })
+      expect(partial.status).toBe("partial")
+      expect(partial.completedFixtureIds).toHaveLength(1)
+      const retained = JSON.parse(await readFile(path, "utf8")) as HarnessArtifact
+      expect(retained.status).toBe("partial")
+      console.log(`interrupted status=${retained.status} completed=${retained.completedFixtureIds.length} failedFixtureId=${retained.failedFixtureId}`)
+    })
+  })
+  test("#given the real-api opt-in without a key #when every fixture runs #then missing_api_key is reported and no request leaves", async () => {
+    if (!REAL_API_REQUESTED || REAL_API_KEY !== "") {
+      console.log(`missing-key probe skipped realApiRequested=${REAL_API_REQUESTED} keyPresent=${REAL_API_KEY !== ""}`)
+      return
+    }
+    const probe = await runMissingKeyProbe(COMPLETION_CONTINUATION_FIXTURES, REAL_TIMEOUT_MS)
+    expect(probe.reasons).toHaveLength(COMPLETION_CONTINUATION_FIXTURES.length)
+    expect(probe.reasons.every((reason) => reason === "missing_api_key")).toBeTrue()
+    expect(probe.networkCallCount).toBe(0)
+    console.log(`missing-key fixtures=${probe.reasons.length} reason=missing_api_key requests=${probe.networkCallCount} ceiling=${PAID_CALL_CEILING}`)
+  })
+  test("#given the real-api opt-in and a key #when each fixture runs once #then the measurement baseline is recorded without any score gate", async () => {
+    if (!REAL_API_REQUESTED || REAL_API_KEY === "") {
+      console.log(`real-api baseline skipped realApiRequested=${REAL_API_REQUESTED} keyPresent=${REAL_API_KEY !== ""}`)
+      return
+    }
+    const retained = await readRetainedRealBaseline(REAL_ARTIFACT_PATH)
+    if (retained !== null && retained.mode === "real" && process.env.JEV_W2_REAL_API_REARM !== "1") {
+      expect(["complete", "partial"]).toContain(retained.status)
+      expect(retained.callCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+      expect(retained.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+      expect(retained.resolvedModel).not.toBe("jev-latest")
+      console.log(`real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1 artifact=${REAL_ARTIFACT_PATH}`)
+      console.log(`real-api status=${retained.status} callCount=${retained.callCount} httpRequests=${retained.networkCallCount} ceiling=${retained.callCeiling} resolvedModel=${retained.resolvedModel} questionVersion=${retained.questionVersion} completed=${retained.completedCount}`)
+      console.log(retained.raw)
+      return
+    }
+    const run = await runRealCompletionContinuationBaseline({
+      apiKey: REAL_API_KEY, fixtures: COMPLETION_CONTINUATION_FIXTURES, artifactPath: REAL_ARTIFACT_PATH,
+      ceiling: PAID_CALL_CEILING, timeoutMs: REAL_TIMEOUT_MS,
+    })
+    expect(["complete", "partial"]).toContain(run.artifact.status)
+    expect(run.reservedCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+    expect(run.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+    const perCallRequestCounts = run.detail.fixtures.map((entry) => entry.requestCount)
+    console.log(`real-api status=${run.artifact.status} reservedCalls=${run.reservedCallCount} httpRequests=${run.networkCallCount} ceiling=${PAID_CALL_CEILING} timeoutMs=${REAL_TIMEOUT_MS} wallClockMs=${Math.round(run.wallClockMs)}`)
+    console.log(`real-api requestedModel=${run.artifact.requestedModel} resolvedModel=${run.artifact.resolvedModel} questionVersion=${run.artifact.questionVersion} perCallRequestCounts=${JSON.stringify(perCallRequestCounts)}`)
+    console.log(`real-api tokens input=${run.detail.inputTokens} output=${run.detail.outputTokens} uncertainCounts=${JSON.stringify(run.detail.uncertainCounts)}`)
+    console.log(`real-api confusionMatrices=${JSON.stringify(run.artifact.confusionMatrices)}`)
+    for (const entry of run.detail.fixtures) {
+      console.log(`real-api fixture id=${entry.id} requests=${entry.requestCount} latencyMs=${Math.round(entry.latencyMs)} stateBytes=${entry.stateBytes} preReductionBytes=${entry.preReductionBytes} expected=${JSON.stringify(entry.expected)} predicted=${JSON.stringify(entry.thresholdLabels)} probabilities=${JSON.stringify(entry.probabilities)}`)
+    }
+    for (const id of TRANSCRIPT_TAIL_IDS) {
+      const entry = run.detail.fixtures.find((candidate) => candidate.id === id)
+      console.log(`real-api transcript-tail id=${id} present=${entry !== undefined} predicted=${JSON.stringify(entry?.thresholdLabels ?? null)} expected=${JSON.stringify(entry?.expected ?? null)}`)
+    }
+    if (run.artifact.status === "complete") {
+      expect(run.artifact.resolvedModel).not.toBeNull()
+      expect(run.detail.fixtures).toHaveLength(COMPLETION_CONTINUATION_FIXTURES.length)
+      expect(run.detail.calls).toHaveLength(COMPLETION_CONTINUATION_FIXTURES.length)
+    } else {
+      console.log(`real-api partial failedFixtureId=${run.artifact.failedFixtureId} failureReason=${run.artifact.failureReason}`)
+    }
+  }, REAL_TEST_TIMEOUT_MS)
 })

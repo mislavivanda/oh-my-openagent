@@ -1,0 +1,20 @@
+COMMAND: bun test packages/jev-core/src/completion-continuation-real-run.test.ts
+PURPOSE: zero-cost adversarial proof of the paid orchestration against a LOCAL fake systemOne
+endpoint on 127.0.0.1. No real endpoint is contacted; the credential is a literal placeholder.
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-real-run.test.ts:
+A orchestrated status=complete reserved=3 clientCount=3 serverCount=3 perCallRequests=[1,1,1] tokensIn=33 tokensOut=9 resolvedModel=fake-jev-9.9.9
+A verdict clientEqualsServer=true oneRequestPerThreeQuestionCall=true
+B forcedExtraCall counter=1 serverCount=1 rose=true
+B secondForcedCall counter=2 serverCount=2 rose=true
+C ceilingAbort error=PaidCallCeilingError nextOrdinal=3 serverCount=2 retainedStatus=partial retainedCallCount=2
+D hardTimeout status=partial failureReason=timeout elapsedMs=301 timeoutMs=300 serverCount=1
+E malformedResponse status=partial failureReason=malformed_response completed=[] serverCount=1
+
+ 5 pass
+ 0 fail
+ 20 expect() calls
+Ran 5 tests across 1 file. [443.00ms]
+exit=0

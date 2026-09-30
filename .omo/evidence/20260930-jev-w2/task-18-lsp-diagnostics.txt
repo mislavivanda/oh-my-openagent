@@ -1,0 +1,11 @@
+LSP DIAGNOSTICS for every file todo 18 created or modified
+Tool: lsp_diagnostics(severity=all), run once per file by the executing agent.
+
+  packages/jev-core/src/completion-continuation-accuracy-harness.ts   -> No diagnostics found
+  packages/jev-core/src/completion-continuation-accuracy-real-run.ts  -> No diagnostics found
+  packages/jev-core/src/completion-continuation-accuracy.test.ts      -> No diagnostics found
+  packages/jev-core/src/completion-continuation-real-run.test.ts      -> No diagnostics found
+
+Compiler backstop, independent of the language server:
+COMMAND: bunx tsgo --noEmit -p packages/jev-core/tsconfig.json
+exit=0

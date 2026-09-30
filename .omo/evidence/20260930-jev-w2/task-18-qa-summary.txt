@@ -1,0 +1,80 @@
+TODO 18 QA SUMMARY - one budgeted real-API W2 fixture baseline, hard ceiling, no accuracy gate
+
+WHAT WAS TESTED
+  Surface: the W2 completion-continuation decision path end to end against the live TypeSafe
+  systemOne endpoint, driven through todo 7's committed accuracy harness. The harness was
+  EXTENDED, not rewritten: its five tests are byte-for-byte the same assertions, the machinery
+  they share moved into completion-continuation-accuracy-harness.ts so the test file could grow
+  a real-API channel while staying under 250 physical lines, and the mock artifact it produces
+  is proven byte identical afterwards.
+  Files created or modified by this todo:
+    packages/jev-core/src/completion-continuation-accuracy-harness.ts   (new, extracted)
+    packages/jev-core/src/completion-continuation-accuracy-real-run.ts  (new, real orchestration)
+    packages/jev-core/src/completion-continuation-accuracy.test.ts      (modified, +3 tests)
+    packages/jev-core/src/completion-continuation-real-run.test.ts     (new, zero-cost sandbox test)
+  Order of execution, as the plan requires: dry-run and mock first, then the zero-cost sandbox
+  probes, then the credential check, then the single paid run.
+
+WHAT WAS OBSERVED
+  Pre-spend gates
+    task-18-dry-run.txt   1 pass, exit 0, all 18 fixture states built, 0 reserved calls, 0 requests.
+    task-18-mock-path.txt 8 pass, exit 0, 0 network calls, task-7-accuracy-result.json sha256
+                          unchanged at 9f00d4e8...92b6, which is the proof the extraction was
+                          behaviour preserving.
+  Request-count measurement, done BEFORE trusting the budget
+    Against a local fake endpoint the orchestration issued exactly 1 HTTP request per
+    three-question call, and the client-side counter matched an independent server-side counter
+    (task-18-sandbox-probe.txt, item A). The paid run then confirmed it empirically against the
+    real endpoint: perCallRequestCounts = [1] x18, 18 requests for 18 fixtures.
+  The paid baseline (task-18-real-api-result.json, label "complete")
+    requestedModel jev-latest, resolvedModel jev-1.13.0 on all 18 calls, questionVersion 1.
+    Ceiling 18, reserved 18, HTTP requests 18. Total real API calls for this todo: 18 of 18.
+    Latency min 130 ms, median 157 ms, max 215 ms, total 2889 ms; wall clock 2911 ms; per-call
+    hard timeout 15000 ms, so the slowest call used 1.4 percent of it.
+    Tokens: 25029 in, 1008 out, 26037 total; mean 1390.5 in and 56.0 out per call.
+    State bytes actually sent: 701 min, 24364 max, 41020 total; the single oversized fixture
+    was reduced 27473 -> 24364, under the 24576 cap; caps recorded in the artifact.
+    Confusion matrices, uncertain counts and the two transcript-tail cases are broken out in
+    task-18-measurement-analysis.txt. Headline, reported and NOT gated: actually_complete 15 of
+    16 known-label fixtures correct; progressing 2 of 15 with 14 of 18 uncertain; stuck 8 of 15
+    with 10 of 18 uncertain.
+  Failure channel
+    The plan's literal keyless command does not work under Bun. See task-18-budget-incident.txt
+    for the root cause and the accounting. The corrected command
+    (env -u <KEYVAR> ... bun --env-file=/dev/null test ...) gives 18 fixtures, every one
+    missing_api_key, requests=0, exit 0 (task-18-missing-key.txt).
+  Happy channel re-run
+    The plan's happy command runs verbatim, exits 0, reports the retained artifact labelled
+    "complete", and spends zero additional calls. Zero-spend proof: artifact sha256 and mtime
+    identical before and after, and 154 ms versus 3.07 s for the paid run (task-18-real-api.txt).
+  Regression and static gates
+    bun test packages/jev-core + the core-extraction guard + the package-registration audit:
+    227 pass, 0 fail, exit 0 (task-18-regression.txt).
+    Line counts 169 / 227 / 153 / 134, all at or under 250; no export *, no as any, no ts
+    suppression, no empty catch, no em or en dash, no AI filler, no global process matcher, and
+    the core Stop-word guard is clean (task-18-static-gates.txt).
+    LSP diagnostics clean on all four files plus a tsgo backstop (task-18-lsp-diagnostics.txt).
+
+WHY IT IS ENOUGH
+  The three claims the plan actually cares about are each backed by a measurement rather than an
+  assumption. The one-request-per-call claim is measured twice, once against a server whose own
+  counter is independent of the client counter. The ceiling is shown to ABORT with a named error
+  before the next call reaches the wire, at the real 18/19 boundary in a committed test and again
+  in the sandbox at a 2/3 boundary. The resolved model is captured per call, not once, so a mid
+  run alias float would have been visible. The score is reported with no floor asserted anywhere,
+  proven by a complete inventory of every expect() in the owned files (task-18-no-minimum-score.txt).
+  The budget is now bounded across processes, not just within one, which is strictly stronger
+  than what the plan asked for and is the direct remedy for how the spend happened.
+
+WHAT WAS OMITTED
+  No credential value, no environment dump, no auth header and no SDK debug log appears in any
+  evidence file. Credential presence is recorded only as a boolean and a length. The SDK logger
+  is the silent logger and logLevel is "error", so no request or response bodies were captured.
+  The assignment form of the empty-variable invocation is deliberately not written out in
+  task-18-missing-key.txt so the evidence directory stays clean under the secret grep gate; the
+  same proof is given in the --env-file=/dev/null form instead.
+  Billing units are NOT claimed. Request count and token counts are measured; no pricing source
+  was consulted, so the recorded claim is narrowed to "1 HTTP request and the recorded token
+  counts per three-question call, billing units unverified".
+  The paid run was NOT repeated, so there is no variance estimate for the probabilities. That is
+  a deliberate consequence of the budget, not an oversight.

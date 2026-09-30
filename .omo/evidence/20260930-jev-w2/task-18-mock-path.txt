@@ -1,0 +1,17 @@
+COMMAND: bun test packages/jev-core/src/completion-continuation-accuracy.test.ts
+PURPOSE: default mock path, must stay green and must not touch the network
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+interrupted status=partial completed=1 failedFixtureId=complete-boulder-without-todos
+missing-key probe skipped realApiRequested=false keyPresent=true
+real-api baseline skipped realApiRequested=false keyPresent=true
+
+ 8 pass
+ 0 fail
+ 28 expect() calls
+Ran 8 tests across 1 file. [162.00ms]
+exit=0

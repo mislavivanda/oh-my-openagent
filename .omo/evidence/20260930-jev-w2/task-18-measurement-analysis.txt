@@ -1,0 +1,84 @@
+W2 REAL-API MEASUREMENT BASELINE - derived analysis of task-18-real-api-result.json
+
+IDENTITY
+  requestedModel (floating alias)  : jev-latest
+  resolvedModel  (concrete id)     : jev-1.13.0
+  every per-call resolvedModel     : ['jev-1.13.0']
+  questionVersion                  : 1
+  artifact label                   : complete
+
+BUDGET
+  fixtures                         : 18
+  hard call ceiling                : 18
+  reserved calls                   : 18
+  observed HTTP requests           : 18
+  HTTP requests per 3-question call: [1] (distinct values observed)
+  total real API calls for todo 18 : 18 of 18 allowed
+
+LATENCY (ms, measured by the harness around each decide call)
+  min=130  median=157  max=215  sum=2889
+  configured per-call hard timeout : 15000
+  slowest call used 1.4% of the timeout budget
+
+TOKENS (reported by the endpoint, summed over the 18 calls)
+  input=25029  output=1008  total=26037
+  mean input per call=1390.5  mean output per call=56.0
+  BILLING UNITS ARE NOT DERIVABLE FROM THIS. No pricing statement is made here; the
+  recorded claim is narrowed to '1 HTTP request and the token counts above per
+  3-question call, billing units unverified'.
+
+COMPONENT BYTE SIZES (bounded decision state actually sent)
+  serialized state bytes: min=701  max=24364  sum=41020
+  pre-reduction bytes   : min=701  max=27473
+  caps in force         : {"state": 24576, "todoContent": 256, "transcript": 12000, "diffPaths": 4096}
+  only oversized-content-reduced was reduced: 27473 -> 24364 bytes, under the 24576 cap
+
+PER-QUESTION CONFUSION MATRICES (rows are hand-assigned truth, columns are threshold labels at 0.8)
+NO MINIMUM SCORE IS ASSERTED ANYWHERE. The numbers below are reported, not gated.
+  actually_complete  total=18  rows={"true": {"would_true": 4, "uncertain": 1}, "false": {"would_false": 11}, "unknown": {"would_false": 2}}
+                     on the 16 fixtures with a known true/false label: 15 decided correctly (94%), 1 fell to uncertain overall
+  progressing        total=18  rows={"false": {"uncertain": 5, "would_false": 2}, "true": {"uncertain": 8}, "unknown": {"would_false": 2, "uncertain": 1}}
+                     on the 15 fixtures with a known true/false label: 2 decided correctly (13%), 14 fell to uncertain overall
+  stuck              total=18  rows={"false": {"would_false": 7, "uncertain": 6}, "true": {"would_true": 1, "uncertain": 1}, "unknown": {"uncertain": 3}}
+                     on the 15 fixtures with a known true/false label: 8 decided correctly (53%), 10 fell to uncertain overall
+
+UNCERTAIN COUNTS (probability strictly between 0.2 and 0.8 at threshold 0.8)
+  {"actually_complete": 1, "progressing": 14, "stuck": 10}  of 18 fixtures each
+
+THE TWO TRANSCRIPT-TAIL CONTINUATION CASES (W1's worst class)
+  continue-after-red-test
+    cohorts      : ["continue", "transcript-tail", "progressing"]
+    expected     : {"actually_complete": "false", "progressing": "true", "stuck": "false"}
+    predicted    : {"actuallyComplete": "would_false", "progressing": "uncertain", "stuck": "uncertain"}
+    probabilities: {"actuallyComplete": 0.06, "progressing": 0.38, "stuck": 0.26}
+    stateBytes=1077  latencyMs=141  httpRequests=1
+  go-on-after-source-review
+    cohorts      : ["go-on", "transcript-tail", "progressing"]
+    expected     : {"actually_complete": "false", "progressing": "true", "stuck": "false"}
+    predicted    : {"actuallyComplete": "would_false", "progressing": "uncertain", "stuck": "uncertain"}
+    probabilities: {"actuallyComplete": 0.06, "progressing": 0.42, "stuck": 0.28}
+    stateBytes=910  latencyMs=162  httpRequests=1
+
+PLAIN READING OF THOSE TWO CASES
+  Both are labelled actually_complete=false, progressing=true, stuck=false.
+  The model got actually_complete right on both, with high confidence (0.06 and 0.06).
+  It did NOT get progressing right on either: 0.38 and 0.42, both inside the uncertain
+  band, so neither would fire a would_true progressing label at threshold 0.8.
+  It did NOT get stuck right on either: 0.26 and 0.28, also uncertain rather than
+  would_false.
+  So the bounded transcript tail HELPED on exactly one of the three questions. It is
+  enough to stop these two continuation prompts from being read as completion, which is
+  the W1 failure mode this class was added for, but it is NOT enough to positively
+  recognise progress. Under the current 0.8 threshold both fixtures land in the
+  heuristic fallthrough for progressing and stuck, so the observe-only wire would
+  change nothing for them today.
+
+HONEST OVERALL READING
+  actually_complete is strong: 15 of 16 known-label fixtures decided correctly, only 1
+  uncertain. progressing is weak: 14 of 18 fixtures uncertain and only 2 of 15
+  known-label fixtures decided correctly; every true-progressing fixture landed in the
+  uncertain band. stuck is middling: 8 of 15 correct on known labels, 10 uncertain.
+  The two 'unknown' censored fixtures were answered would_false on actually_complete
+  rather than being left uncertain, which is a confident answer on a question whose
+  ground truth is deliberately unknowable from the state. This is a finding to carry
+  into the question-design work, not a gate.

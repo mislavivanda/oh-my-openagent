@@ -1,0 +1,51 @@
+TODO 18 CLEANUP RECEIPT
+
+PROCESSES STARTED BY ME (only these were ever candidates for termination)
+  2030106  scratch probe run from /tmp/jev-w2-t18/probe.ts, one Bun.serve on an ephemeral port
+  2031172  second scratch probe run, one Bun.serve on port 44363
+  plus the short-lived foreground bun test processes for each recorded QA command
+  Every one was a foreground bun process that exited on its own. The sandbox server is
+  stopped in an afterAll hook (server.stop(true)) now that the probe is a permanent test.
+  I killed nothing. No global process matcher (pkill, pgrep, killall) was ever used.
+  PID 2030106 confirmed gone (kill -0 exit 1)
+  PID 2031172 confirmed gone (kill -0 exit 1)
+
+PORTS BOUND BY ME
+  The sandbox server always binds port 0, so the kernel picks an ephemeral port per run.
+  Nothing was bound to a fixed port. Liveness check on the last recorded scratch port:
+  port 44363 confirmed closed (connect refused)
+
+TEMPORARY ROOTS
+  mkdtemp roots are removed by the owning finally or afterAll block.
+  leftover /tmp/jev-w2-real-run-* : 0
+  leftover /tmp/jev-w2-t18-probe-*: 0
+  leftover /tmp/jev-w2-accuracy-* : 0
+  leftover /tmp/jev-w2-t18*       : 0  (scratch dir and three checksum files removed)
+  the throwaway probe source .omo/evidence/20260930-jev-w2/task-18-sandbox-probe.ts was
+  deleted after being promoted to a permanent test; it is not committed:
+    test -e task-18-sandbox-probe.ts -> does not exist
+
+CREDENTIAL FILES
+  .env and .env.local were READ ONLY, through Bun's automatic .env loading and the plan's
+  set -a sourcing. Neither was written, moved, renamed, or staged.
+  git check-ignore proof:
+    .gitignore:42:.env	.env
+    .gitignore:43:.env.local	.env.local
+  byte sizes, unchanged from the start of the task (contents never printed):
+    125 bytes  .env
+    125 bytes  .env.local
+  staged? the next line must be empty:
+    grep_exit=1 (1 means not staged, the pass condition)
+
+REAL USER STATE
+  HOME was never set or overridden. The Jev sink under the real home does not exist and
+  was not created:  test -e $HOME/.omo/jev -> does not exist
+  grep for HOME mutation in the owned files (must be empty):
+    grep_exit=1 (1 means no match)
+
+PEER WORK
+  Nothing belonging to a peer was reverted, stashed, checked out, reset, or cleaned.
+  The five permanently dirty tracked generated bundles are untouched and unstaged.
+
+CONTAINERS, DAEMONS, BACKGROUND JOBS
+  none started.

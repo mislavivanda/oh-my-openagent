@@ -1,0 +1,86 @@
+PURPOSE: prove no assertion checks a minimum score anywhere in the todo-18 owned files.
+FILES:
+  packages/jev-core/src/completion-continuation-accuracy.test.ts
+  packages/jev-core/src/completion-continuation-accuracy-harness.ts
+  packages/jev-core/src/completion-continuation-accuracy-real-run.ts
+  packages/jev-core/src/completion-continuation-real-run.test.ts
+
+GATE 1 - lower-bound and closeness matchers must not appear at all.
+COMMAND: grep -nHE 'toBeGreaterThan|toBeGreaterThanOrEqual|toBeCloseTo|toBeWithin' <files>
+  grep_exit=1 (1 means no match, which is the pass condition)
+  matching-line count = 0
+
+GATE 2 - every numeric comparison in the owned files, in full.
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:134:      expect(retained.callCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:135:      expect(retained.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:147:    expect(run.reservedCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:148:    expect(run.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  These are the ONLY inequality assertions and both are UPPER bounds on the 18 call ceiling.
+
+GATE 3 - the complete inventory of every expect() call in the owned files.
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:31:    expect(result.status).toBe("complete")
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:32:    expect(result.completedFixtureIds).toHaveLength(COMPLETION_CONTINUATION_FIXTURES.length)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:33:    expect(result.networkCallCount).toBe(0)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:34:    expect(networkCounter.value).toBe(0)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:35:    expect(result.questionVersion).toBe(COMPLETION_CONTINUATION_QUESTION_VERSION)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:36:    expect(result.byteCaps.state).toBe(24_576)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:38:      expect(result.resolvedModel).toBe("mock")
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:39:      for (const question of COMPLETION_CONTINUATION_QUESTION_KEYS) expect(matrixTotal(result.confusionMatrices[question])).toBe(COMPLETION_CONTINUATION_FIXTURES.length)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:46:      expect(result.builtStateCount).toBe(COMPLETION_CONTINUATION_FIXTURES.length)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:47:      expect(result.callCount).toBe(0)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:48:      expect(result.networkCallCount).toBe(0)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:49:      expect(COMPLETION_CONTINUATION_FIXTURES.every((fixture) => buildCompletionContinuationState(fixture.input).serializedBytes <= 24_576)).toBeTrue()
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:66:      expect(observed).toMatchObject({ ceiling: 18, nextOrdinal: 19 })
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:67:      expect(budget.count).toBe(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:68:      expect(backendCalls).toBe(1)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:69:      expect(networkCounter.value).toBe(0)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:71:      expect(retained).toMatchObject({ status: "partial", callCount: 18 })
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:72:      expect(retained.completedFixtureIds).toHaveLength(1)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:83:      expect(result).toMatchObject({ status: "partial", failureReason: "unscripted" })
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:84:      expect(result.completedFixtureIds).toEqual([])
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:85:      expect(await readFile(path, "utf8")).toBe(`${JSON.stringify(result, null, 2)}\n`)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:97:    expect(observed).toBeInstanceOf(UnexpectedNetworkCallError)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:98:    expect(counter.value).toBe(1)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:108:      expect(partial.status).toBe("partial")
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:109:      expect(partial.completedFixtureIds).toHaveLength(1)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:111:      expect(retained.status).toBe("partial")
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:121:    expect(probe.reasons).toHaveLength(COMPLETION_CONTINUATION_FIXTURES.length)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:122:    expect(probe.reasons.every((reason) => reason === "missing_api_key")).toBeTrue()
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:123:    expect(probe.networkCallCount).toBe(0)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:133:      expect(["complete", "partial"]).toContain(retained.status)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:134:      expect(retained.callCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:135:      expect(retained.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:136:      expect(retained.resolvedModel).not.toBe("jev-latest")
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:146:    expect(["complete", "partial"]).toContain(run.artifact.status)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:147:    expect(run.reservedCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:148:    expect(run.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:162:      expect(run.artifact.resolvedModel).not.toBeNull()
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:163:      expect(run.detail.fixtures).toHaveLength(COMPLETION_CONTINUATION_FIXTURES.length)
+  packages/jev-core/src/completion-continuation-accuracy.test.ts:164:      expect(run.detail.calls).toHaveLength(COMPLETION_CONTINUATION_FIXTURES.length)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:72:    expect(run.artifact.status).toBe("complete")
+  packages/jev-core/src/completion-continuation-real-run.test.ts:73:    expect(run.reservedCallCount).toBe(3)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:74:    expect(run.networkCallCount).toBe(3)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:75:    expect(serverRequests).toBe(run.networkCallCount)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:76:    expect(run.detail.fixtures.map((entry) => entry.requestCount)).toEqual([1, 1, 1])
+  packages/jev-core/src/completion-continuation-real-run.test.ts:77:    expect(run.artifact.resolvedModel).toBe("fake-jev-9.9.9")
+  packages/jev-core/src/completion-continuation-real-run.test.ts:78:    expect(run.detail.inputTokens).toBe(33)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:79:    expect(run.detail.outputTokens).toBe(9)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:90:    expect(counter.value).toBe(1)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:91:    expect(serverRequests).toBe(1)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:94:    expect(counter.value).toBe(2)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:95:    expect(serverRequests).toBe(2)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:112:    expect(observed).toMatchObject({ name: "PaidCallCeilingError", ceiling: 2, nextOrdinal: 3 })
+  packages/jev-core/src/completion-continuation-real-run.test.ts:113:    expect(serverRequests).toBe(2)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:115:    expect(retained).toMatchObject({ status: "partial", mode: "real", callCount: 2 })
+  packages/jev-core/src/completion-continuation-real-run.test.ts:127:    expect(run.artifact).toMatchObject({ status: "partial", failureReason: "timeout" })
+  packages/jev-core/src/completion-continuation-real-run.test.ts:128:    expect(serverRequests).toBe(1)
+  packages/jev-core/src/completion-continuation-real-run.test.ts:138:    expect(run.artifact).toMatchObject({ status: "partial", failureReason: "malformed_response" })
+  packages/jev-core/src/completion-continuation-real-run.test.ts:139:    expect(run.artifact.completedFixtureIds).toEqual([])
+  packages/jev-core/src/completion-continuation-real-run.test.ts:140:    expect(serverRequests).toBe(1)
+
+READING: nothing asserts a floor on a probability, a correct-count, an accuracy ratio, or
+a confusion-matrix cell. matrixTotal is asserted with toBe on the MOCK path only, where it
+counts fixtures rather than correctness. The paid path asserts only status membership, the
+two ceiling upper bounds, that a resolved model id is present, and that it is not the
+floating alias. The sandbox test asserts request counts and failure classifications against
+a fake endpoint whose answers are fixed, so it cannot encode a score either.

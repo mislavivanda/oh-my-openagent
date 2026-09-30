@@ -287,3 +287,22 @@ todo	artifact	kind	description
 15	.omo/evidence/20260930-jev-w2/task-15-opencode-qa.txt	qa-summary	Reviewer-readable real-harness QA scope observations sufficiency and omissions
 15	.omo/evidence/20260930-jev-w2/task-15-cleanup.txt	cleanup	All recorded PIDs and port gone owned temp roots zero and real omo hash unchanged
 15	.omo/evidence/20260930-jev-w2/task-15-staged-paths.txt	staged-paths	Final cached allowlist contains only todo 15 source evidence and shared manifest paths
+18	.omo/evidence/20260930-jev-w2/task-18-dry-run.txt	dry-run	Dry-run channel before any spend, 1 pass exit 0, all 18 fixture states built with 0 reserved calls and 0 requests
+18	.omo/evidence/20260930-jev-w2/task-18-mock-path.txt	verification	Default mock channel before any spend, 8 pass exit 0, 0 network calls, todo-7 artifact sha256 unchanged
+18	.omo/evidence/20260930-jev-w2/task-18-sandbox-probe.txt	adversarial	Zero-cost paid-path proof against a local fake systemOne endpoint: 1 request per 3-question call, counter rises on forced calls, ceiling aborts, hard timeout fires, malformed classified
+18	.omo/evidence/20260930-jev-w2/task-18-real-api-first-run.txt	benchmark	Raw log of the one and only paid run, 18 real calls, resolvedModel jev-1.13.0, full per-fixture matrix and probability dump
+18	.omo/evidence/20260930-jev-w2/task-18-real-api-result.json	benchmark	Retained real baseline labelled complete: resolved model, question version, ceiling, request count, tokens, latency, byte caps, per-question confusion matrices, uncertain counts
+18	.omo/evidence/20260930-jev-w2/task-18-real-api.txt	manual-qa	Plan happy command verbatim, exit 0, reports the retained complete artifact with zero additional spend
+18	.omo/evidence/20260930-jev-w2/task-18-missing-key.txt	failure-qa	Missing-key channel: the plan command cannot unset the key under Bun, the corrected keyless command gives 18 missing_api_key results with 0 requests, exit 0
+18	.omo/evidence/20260930-jev-w2/task-18-budget-incident.txt	incident	Why the paid run executed under the failure command, the 18 of 18 ceiling accounting, and the persistent cross-process budget guard added as the remedy
+18	.omo/evidence/20260930-jev-w2/task-18-measurement-analysis.txt	benchmark	Derived measurement report: model identity, budget, latency, tokens, component byte sizes, per-question matrices, uncertain counts, and the two transcript-tail cases read plainly
+18	.omo/evidence/20260930-jev-w2/task-18-no-minimum-score.txt	static	Complete expect() inventory proving no assertion checks a minimum score, only upper bounds on the call ceiling
+18	.omo/evidence/20260930-jev-w2/task-18-regression.txt	verification	jev-core package suite plus the core-extraction guard and package-registration audit, 232 pass 0 fail exit 0
+18	.omo/evidence/20260930-jev-w2/task-18-static-gates.txt	static	Per-file line counts at or under 250, no export star, no suppression, no empty catch, no dash or filler, no global process matcher, Stop-word guard clean, tsgo exit 0
+18	.omo/evidence/20260930-jev-w2/task-18-lsp-diagnostics.txt	diagnostics	No diagnostics found on all four owned files plus an independent tsgo backstop
+18	.omo/evidence/20260930-jev-w2/task-18-adversarial-qa.txt	adversarial	Probes for misleading success output, long commands, cancel resume, malformed input, stale state and dirty worktree, plus one-line rule-outs for the other three classes
+18	.omo/evidence/20260930-jev-w2/task-18-dirty-worktree.txt	git-state	Porcelain status immediately before staging, separating owned paths from peer work and the five permanently dirty generated bundles
+18	.omo/evidence/20260930-jev-w2/task-18-secret-grep.txt	security	Plan acceptance secret grep prints nothing (exit 1, 0 matching lines), plus a literal-value search and a credential-shape search that both find nothing
+18	.omo/evidence/20260930-jev-w2/task-18-qa-summary.txt	summary	Reviewer-readable what was tested, what was observed, why it is enough, and what was omitted
+18	.omo/evidence/20260930-jev-w2/task-18-cleanup.txt	cleanup	Recorded PIDs confirmed gone, recorded port closed, zero leftover temp roots, credential files unmodified and unstaged, real home untouched
+18	.omo/evidence/20260930-jev-w2/task-18-staged-paths.txt	git-state	Exact cached path list after staging, proving no peer path, no generated bundle, and no credential file was staged
