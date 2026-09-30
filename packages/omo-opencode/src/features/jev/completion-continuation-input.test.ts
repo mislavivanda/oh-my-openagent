@@ -123,6 +123,8 @@ describe("completion-continuation OpenCode input", () => {
     const cache = createCompletionContinuationDiffCache({ now: () => FIXED_NOW })
     expect(cache.getSnapshot("ses_stale").availability).toEqual({ status: "unavailable", reason: "no_event" })
     cache.observeEvent({ type: "session.diff", properties: { sessionID: "ses_stale", diff: [] } })
+    expect(cache.getSnapshot("ses_stale").availability).toEqual({ status: "unavailable", reason: "no_event" })
+    cache.observeEvent({ type: "session.diff", properties: { sessionID: "ses_stale", diff: [] } })
     expect(cache.getSnapshot("ses_stale").availability).toEqual({ status: "available", reason: null })
     cache.observeEvent({ type: "session.diff", properties: { sessionID: "ses_negative", diff: [
       { file: "bad.ts", before: "ignored", after: "ignored", additions: -1, deletions: 0 },
@@ -141,6 +143,18 @@ describe("completion-continuation OpenCode input", () => {
     expect(cache.inspect().malformedEvents).toBe(3)
     expect(captured.availability.todos).toMatchObject({ status: "available", sourceCount: 0, malformedCount: 0 })
     expect(captured.availability.transcript).toMatchObject({ status: "partial", sourceCount: 2, malformedCount: 2 })
+  })
+
+  test("#given OpenCode todos without ids #when captured #then stable position ids preserve their state", () => {
+    const captured = captureCompletionContinuationInput({
+      todos: [{ content: "live todo", status: "in_progress" }],
+      transcript: [],
+      diff: null,
+      now: () => FIXED_NOW,
+    })
+
+    expect(captured.input.todos).toEqual([{ id: "position-0", content: "live todo", status: "in_progress" }])
+    expect(captured.availability.todos).toMatchObject({ status: "available", retainedCount: 1, malformedCount: 0 })
   })
 
   test("#given 257 sessions #when the oldest untouched session exceeds capacity #then LRU stays at 256 and counts eviction", () => {

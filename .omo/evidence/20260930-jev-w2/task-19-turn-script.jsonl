@@ -1,0 +1,28 @@
+{"turn":1,"prompt":"[W2-01] Create one tracked implementation todo and begin work.","action":"boulder_on","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Tracked implementation work","status":"in_progress","priority":"high"}]}}],"response":"Work started."}
+{"turn":2,"prompt":"[W2-02] Continue the tracked work without changing its status.","tools":[],"response":"Continuing."}
+{"turn":3,"prompt":"[W2-03] Make concrete progress on the tracked work.","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Tracked implementation work progressed","status":"in_progress","priority":"high"}]}}],"response":"Progress recorded."}
+{"turn":4,"prompt":"[W2-04] Continue after progress without changing tracked state.","tools":[],"response":"Continuing after progress."}
+{"turn":5,"prompt":"[W2-05] Finish the tracked implementation todo.","action":"boulder_complete","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Tracked implementation work progressed","status":"completed","priority":"high"}]}}],"response":"<promise>DONE</promise>"}
+{"turn":6,"prompt":"[W2-06] Start a second tracked todo for continuation coverage.","action":"boulder_reset","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Second tracked work","status":"in_progress","priority":"high"}]}}],"response":"Second task started."}
+{"turn":7,"prompt":"[W2-07] Continue the second todo unchanged.","tools":[],"response":"Still working."}
+{"turn":8,"prompt":"[W2-08] Continue the second todo unchanged again.","action":"wait_continuation","tools":[],"response":"Still working."}
+{"turn":9,"prompt":"[W2-09] Record filesystem progress for diff availability.","tools":[{"name":"bash","args":{"command":"printf 'w2 diff proof\\n' > diff-proof.txt","description":"Update tracked fixture"}}],"response":"Diff written."}
+{"turn":10,"prompt":"[W2-10] Keep working after the diff event.","tools":[],"response":"Continuing with diff context."}
+{"turn":11,"prompt":"[W2-11] 更新任务并继续处理。","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"第二个跟踪任务","status":"in_progress","priority":"high"}]}}],"response":"继续处理中。"}
+{"turn":12,"prompt":"[W2-12] 작업을 계속하고 상태를 유지하세요.","tools":[],"response":"작업을 계속합니다."}
+{"turn":13,"prompt":"[W2-13] State a completion promise while work remains.","tools":[],"response":"<promise>DONE</promise>"}
+{"turn":14,"prompt":"[W2-14] Resume after the premature promise.","tools":[],"response":"Resuming unfinished work."}
+{"turn":15,"prompt":"[W2-15] Complete the multilingual tracked todo.","action":"boulder_complete","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"第二个跟踪任务","status":"completed","priority":"high"}]}}],"response":"<promise>DONE</promise>"}
+{"turn":16,"prompt":"[W2-16] Start boulder-backed work.","action":"boulder_on","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Boulder-backed work","status":"in_progress","priority":"high"}]}}],"response":"Boulder work started."}
+{"turn":17,"prompt":"[W2-17] Continue boulder-backed work unchanged.","action":"boulder_progress_wait","tools":[],"response":"Boulder work continues."}
+{"turn":18,"prompt":"[W2-18] Advance boulder-backed work.","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Boulder-backed work advanced","status":"in_progress","priority":"high"}]}}],"response":"Boulder progress recorded."}
+{"turn":19,"prompt":"[W2-19] Continue after boulder progress.","tools":[],"response":"Continuing boulder work."}
+{"turn":20,"prompt":"[W2-20] Remove boulder context and continue.","action":"boulder_off","tools":[],"response":"Continuing without boulder context."}
+{"turn":21,"prompt":"[W2-21] Exercise a malformed Jev response without stopping.","malformedJev":true,"tools":[],"response":"Continuing after malformed measurement."}
+{"turn":22,"prompt":"[W2-22] Continue tracked work after malformed measurement.","tools":[],"response":"Still active."}
+{"turn":23,"prompt":"[W2-23] Finish boulder-backed work.","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Boulder-backed work advanced","status":"completed","priority":"high"}]}}],"response":"<promise>DONE</promise>"}
+{"turn":24,"prompt":"[W2-24] Start timeout-censor work.","action":"boulder_reset_wait_timeout","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Timeout censor work","status":"in_progress","priority":"high"}]}}],"response":"Timeout window started."}
+{"turn":25,"prompt":"[W2-25] Continue after the timeout window.","tools":[],"response":"Continuing after timeout."}
+{"turn":26,"prompt":"[W2-26] Keep timeout work unchanged for stuck observation.","tools":[],"response":"No tracked change."}
+{"turn":27,"prompt":"[W2-27] Progress timeout work before final censorship cases.","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Timeout censor work progressed","status":"in_progress","priority":"high"}]}}],"response":"Progress before closure."}
+{"turn":28,"prompt":"[W2-28] Leave tracked work pending for deletion and disposal.","tools":[],"response":"Pending at final turn."}

@@ -95,8 +95,8 @@ function captureTodos(sources: readonly CompletionContinuationTodoSource[]): {
   const valid: CompletionContinuationTodoInputItem[] = []
   let malformedCount = 0
   let contentTruncated = false
-  for (const source of sources) {
-    if (typeof source.id !== "string" || !isTodoStatus(source.status) || typeof source.content !== "string") {
+  for (const [index, source] of sources.entries()) {
+    if ((source.id !== undefined && typeof source.id !== "string") || !isTodoStatus(source.status) || typeof source.content !== "string") {
       malformedCount += 1
       continue
     }
@@ -105,7 +105,7 @@ function captureTodos(sources: readonly CompletionContinuationTodoSource[]): {
       ? truncateUtf8(source.content, COMPLETION_CONTINUATION_TODO_CONTENT_MAX_BYTES)
       : { value: "", truncated: source.content.length > 0 }
     contentTruncated ||= bounded.truncated
-    valid.push({ id: source.id, status: source.status, content: bounded.value })
+    valid.push({ id: source.id ?? `position-${index}`, status: source.status, content: bounded.value })
   }
   return {
     items: valid,

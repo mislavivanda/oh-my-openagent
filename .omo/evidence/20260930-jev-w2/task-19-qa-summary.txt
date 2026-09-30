@@ -1,0 +1,15 @@
+WHAT WAS TESTED
+
+The exact enabled command drove 28 scripted turns through one long-lived isolated OpenCode server, preserving session ses_f0d489bb9ffeQsNS2pdZmg7hUb after turn one. The driver also exercised real server events, a local OpenAI-compatible provider, a local System One endpoint, bounded outcome timeout, human intervention, session deletion, 257 eviction-pressure sessions, and global disposal. The exact disabled command repeated the 28 turns in a separate sandbox with the W2 wire false.
+
+WHAT WAS OBSERVED
+
+The enabled sink reported 31 main-session observations and 544 total records. It contained 541 records with all three prediction probabilities, three intentionally malformed-response failures, observed complete/progressed/unchanged outcomes, and every censor reason: timeout 2, dispose 511, session_deleted 1, human_intervention 23, and evicted 2. Boulder availability varied 21/523. Diff source events were retained as available in all 544 records after the baseline event sequence; this live OpenCode version emitted empty session.diff arrays even around the tracked-file mutation, so the requested diff availability variation was not observed. The report identity was balanced. Enabled readiness took 2 model attempts/112 ms, 1 Jev attempt/6 ms, and 9 OpenCode attempts/1857 ms. The disabled control produced zero W2 files. Both exact runs observed real DB count 481 before and after and zero real ~/.omo manifest diff lines.
+
+WHY IT IS ENOUGH
+
+The run proves the production plugin loads in real OpenCode, retains process-memory state across turns, dispatches all three Jev questions to a zero-cost local endpoint, preserves the heuristic, correlates every observed and censored closure, flushes in-flight records on disposal, enforces the disabled gate, and isolates HOME plus all four XDG roots. The retained report prints counts before rates and passes its starts/records/in-flight identity.
+
+WHAT WAS OMITTED
+
+Raw environment dumps, authentication headers, dummy key values, full provider request bodies, sandbox databases, and verbose server logs were omitted. No real Typesafe credential was read and no paid request was made. Residual nondeterminism is limited to local process scheduling, ephemeral ports/session ids, and concurrent activity in the real host DB or ~/.omo; the retained exact runs observed neither host surface changing.

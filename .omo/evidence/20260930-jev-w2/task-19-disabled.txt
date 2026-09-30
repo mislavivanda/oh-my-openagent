@@ -1,0 +1,9 @@
+wire=disabled
+turns=28
+session_id=ses_f0d434fc3ffeLtSHCeLFG4vJ1U
+w2_files=0
+fake-model attempts=2 elapsed_ms=111
+fake-jev attempts=1 elapsed_ms=5
+opencode attempts=9 elapsed_ms=1861
+real_db_before=481 real_db_after=481
+real_omo_manifest_diff_lines=0

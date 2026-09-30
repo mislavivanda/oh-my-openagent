@@ -120,6 +120,7 @@ export function createCompletionContinuationDiffCache(
   const maxSessions = positiveSessionLimit(options.maxSessions)
   const now = options.now ?? Date.now
   const entries = new Map<string, DiffCacheEntry>()
+  const emptyEvents = new Set<string>()
   let accessClock = 0
   let evictions = 0
   let malformedEvents = 0
@@ -175,6 +176,13 @@ export function createCompletionContinuationDiffCache(
       if (sessionID !== "") storeMalformed(sessionID)
       return
     }
+    if (parsed.files.length === 0) {
+      if (!emptyEvents.has(sessionID)) {
+        emptyEvents.add(sessionID)
+        entries.delete(sessionID)
+        return
+      }
+    }
     store(sessionID, {
       input: { files: parsed.files },
       availability: { status: "available", reason: null },
@@ -208,7 +216,7 @@ export function createCompletionContinuationDiffCache(
   return {
     observeEvent,
     getSnapshot,
-    deleteSession: (sessionID) => { entries.delete(sessionID) },
+    deleteSession: (sessionID) => { entries.delete(sessionID); emptyEvents.delete(sessionID) },
     inspect: () => ({ sessionCount: entries.size, evictions, malformedEvents }),
   }
 }

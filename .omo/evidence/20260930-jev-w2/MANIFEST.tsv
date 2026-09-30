@@ -322,3 +322,18 @@ todo	artifact	kind	description
 17	.omo/evidence/20260930-jev-w2/task-17-dirty-worktree-before-staging.txt	git-state	git status --porcelain immediately before staging, showing the 5 ambient generated bundles, zero credential files, zero dirty assets, and zero dirty TypeScript
 17	.omo/evidence/20260930-jev-w2/task-17-qa-summary.txt	summary	Reviewer-readable what was tested, what was observed, why it is enough, and what was omitted
 17	.omo/evidence/20260930-jev-w2/task-17-cleanup.txt	cleanup	Cleanup receipt: 16 temp files removed and verified gone, 3 shared locks preserved, real ~/.omo manifest unchanged at 1013 entries, no process or port, credentials untouched, markdown probe reverted
+19	.omo/evidence/20260930-jev-w2/task-19-drive.sh	driver	Bounded isolated long-lived OpenCode W2 live-proof driver
+19	.omo/evidence/20260930-jev-w2/task-19-turn-script.jsonl	fixture	Deterministic 28-turn complete progress promise multilingual boulder diff and censor corpus
+19	.omo/evidence/20260930-jev-w2/task-19-fake-jev-server.ts	driver	Local zero-cost Jev endpoint with filled and malformed responses
+19	.omo/evidence/20260930-jev-w2/task-19-fake-model-provider.ts	driver	Local scripted OpenAI Responses provider
+19	.omo/evidence/20260930-jev-w2/task-19-enabled.txt	manual-qa	Exact enabled command output with 31 one-session and 544 total W2 records
+19	.omo/evidence/20260930-jev-w2/task-19-disabled.txt	failure-qa	Exact disabled command output with zero W2 files
+19	.omo/evidence/20260930-jev-w2/task-19-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted sections
+19	.omo/evidence/20260930-jev-w2/task-19-adversarial-qa.txt	adversarial	Applicable probes and prompt-injection ruleout
+19	.omo/evidence/20260930-jev-w2/task-19-cleanup.txt	cleanup	PID port DB and recursive home cleanup receipt
+19	.omo/evidence/20260930-jev-w2/task-19-focused-tests.txt	verification	Focused W2 input adapter and continuation tests pass
+19	.omo/evidence/20260930-jev-w2/task-19-build.txt	build	Repository build exits zero
+19	.omo/evidence/20260930-jev-w2/task-19-static.txt	static	Line caps shell syntax and zero forbidden process matcher bytes
+19	.omo/evidence/20260930-jev-w2/task-19-no-excuse.txt	static	Strict TypeScript no-excuse audit exits zero
+19	.omo/evidence/20260930-jev-w2/task-19-dirty-worktree.txt	git-state	Porcelain status before exact staging
+19	.omo/evidence/20260930-jev-w2/task-19-staged-paths.txt	git-state	Exact cached path allowlist excludes generated bundles and credentials
