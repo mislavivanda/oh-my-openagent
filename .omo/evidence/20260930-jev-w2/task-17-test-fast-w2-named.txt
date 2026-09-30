@@ -1,0 +1,218 @@
+TODO 17 - THE NEWLY COVERED W2 TESTS, BY NAME
+=============================================
+command: bun test --timeout 20000 --reporter=junit --reporter-outfile=/tmp/jev-w2-junit.xml \
+           packages/omo-opencode/src/hooks/todo-continuation-enforcer \
+           packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts \
+           packages/omo-opencode/src/shared/completion-promise-pattern.test.ts \
+           script/jev-w2-report.test.ts
+exit=0
+
+bun 1.4.0 prints no per-test pass lines, so the exact test names are read out of the
+junit report here. Every one of these ran for the first time under test:fast after this
+change; all 157 were outside the pre-change target list.
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/compaction-guard.regression.test.ts  (3 tests)
+    #then the guard re-arms for the newer epoch
+    #then it does not clear the newer epoch
+    #then continuation can proceed again without waiting for the window to expire
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts  (2 tests)
+    keeps nonempty pre-existing bytes identical under all four backend modes
+    fails on prompt bytes, countdown delay, side-effect order, or W2 ownership leakage
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts  (3 tests)
+    shares one observer across diff, idle, activity, intervention, delete, and dispose
+    keeps continuation behavior when the W2 observer throws
+    filters only owned W2 effects and detects a pre-existing trace perturbation
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts  (2 tests)
+    begins after fetched input and reports every exact post-input outcome
+    absorbs an idle without messages or todos before creating an observation
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/continuation-injection-agent-name.test.ts  (2 tests)
+    #given resolved agent is a lowercase built-in config key #when continuation is injected #then promptAsync receives the registered display name
+    #given resolved agent is an invisible-prefixed config key #when continuation is injected #then promptAsync receives the display name
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/continuation-injection-agent-resolution.test.ts  (2 tests)
+    #given OpenCode registered Atlas under legacy display name #when continuation inherits config key #then prompt uses registered name
+    #given OpenCode registered Atlas with a zero-width sort prefix #when continuation inherits config key #then prompt keeps the registered name
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/continuation-injection.test.ts  (7 tests)
+    preserves the registered built-in agent name before promptAsync
+    #given resolved agent name still carries a ZWSP sort prefix #when continuation is injected #then promptAsync receives the agent name without the ZWSP prefix
+    inherits tools from resolved message info when reinjecting
+    skips injection when agent is plan (prevents Plan Mode infinite loop)
+    #given resolved model info includes variant #when reinjecting continuation #then promptAsync receives variant as a top-level field
+    #given a peer-message hold survives an unrelated release #when todo continuation injects #then it does not record a queued prompt as injected
+    #given promptAsync may have accepted before EOF #when continuation injection observes the failure #then it records an optimistic injection
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/dispose.test.ts  (2 tests)
+    #given todo-continuation-enforcer created #when dispose exists on return value #then it is a function
+    #given enforcer with active session states #when dispose is called #then internal session state store is shut down
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/handler.test.ts  (2 tests)
+    #given an active continuation countdown #when the session compacts #then it arms the compaction guard without cancelling the countdown
+    #given an active continuation countdown #when an abort session error arrives #then it still cancels the countdown
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts  (3 tests)
+    matches the no-clobber pre-extraction golden bytes
+    records a nonempty ordered trace for every guard branch
+    detects reordered cooldown and failure guards
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.test.ts  (5 tests)
+    resets continuation progress once when todos are empty
+    resets continuation progress once when every todo is complete
+    does not re-enter the injection path on subsequent idle events once all todos are complete (#4013 P0.1)
+    skips todo continuation when the previous internal continuation has only an empty unknown assistant turn
+    skips todo continuation when session messages cannot be inspected
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/non-idle-events.test.ts  (7 tests)
+    given synthetic user message update, keeps continuation countdown state intact
+    given internally marked user message update, keeps continuation countdown state intact
+    given ultrawork loop continuation user message update, cancels stale todo continuation countdown
+    given a real user message after accepted continuation, records an interruption boundary
+    given a synthetic message after accepted continuation, does not record a user interruption
+    given OpenCode splits an internal user message across events, waits for synthetic part provenance
+    given OpenCode splits a genuine user message across events, records interruption from its part
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/opencode-overload-continuation.test.ts  (1 tests)
+    #given countdown is armed #when OpenCode reports server_is_overloaded #then continuation still injects
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/parent-wake-race.test.ts  (3 tests)
+    #given no active child tasks but a parent wake is pending #when parent session idles with incomplete todos #then continuation is not injected
+    #given parent wake becomes pending during countdown #when injection rechecks child work #then continuation is not injected
+    #given parent wake becomes pending after todos are refreshed #when injection reaches dispatch #then continuation is not injected
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/pending-question-detection.test.ts  (14 tests)
+    given empty messages, returns false
+    given null-ish input, returns false
+    given last assistant message with question tool_use, returns true
+    given last assistant message with question tool-invocation, returns true
+    #given last assistant message with OpenCode question tool field #when checking pending question #then returns true
+    #given last assistant message with OpenCode ask_user_question tool field #when checking pending question #then returns true
+    #given completed OpenCode question tool #when checking pending question #then returns false
+    given user message after question (answered), returns false
+    given synthetic user message after question, still treats question as unanswered
+    given internally marked user message after question, still treats question as unanswered
+    given assistant message with non-question tool, returns false
+    given assistant message with no parts, returns false
+    given role on message directly (not in info), returns true for question
+    given mixed tools including question, returns true
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/resolve-message-info.test.ts  (2 tests)
+    given synthetic latest user info, skips it and resolves the prior real user info
+    given internally marked latest user info, skips it and resolves the prior real user info
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/session-state.regression.test.ts  (3 tests)
+    #then it keeps counting stagnation
+    #then it keeps the snapshot stable and counts stagnation
+    #then it does not reset the stop condition
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/session-state.test.ts  (11 tests)
+    given repeated incomplete counts after a continuation, tracks stagnation
+    given injection did not succeed, repeated incomplete counts do not track stagnation
+    given incomplete count decreases, resets stagnation tracking
+    given one todo completes while another is added, resets stagnation even when incomplete count stays the same
+    given todo status changes without count changes, treats it as progress
+    given progress resumes after stagnation, restarts the stagnation count from zero
+    given only content or priority changes while id→status mapping stays the same, does not treat it as progress (#4013 P0.2)
+    given no todo changes after a successful continuation, keeps counting stagnation
+    given an observed continuation response without progress, blocks directive re-arming
+    given a user interruption, preserves it over directive-response provenance
+    given todo progress after an interruption, clears the continuation block
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/stagnation-detection.test.ts  (3 tests)
+    #then it stops continuation
+    #then it clears the stop condition
+    #then stagnation count reaches three
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/todo-continuation-enforcer.test.ts  (67 tests)
+    given the first idle event, starts the prune interval lazily
+    should inject continuation when idle with incomplete todos
+    should inject continuation when idle event carries session id in info
+    should not inject when all todos are complete
+    should not inject when remaining todos are blocked or deleted
+    should not inject when background tasks are running
+    should inject for any session with incomplete todos
+    should inject for background task session (subagent)
+    should cancel countdown on user message after grace period
+    should ignore user message within grace period
+    should cancel countdown on assistant activity
+    should cancel countdown on assistant activity with real message.part.updated payload shape
+    should cancel countdown on assistant activity when message.part.updated only has part session id
+    should cancel countdown on assistant activity with message.part.delta payload
+    should fetch session messages only once during a single idle evaluation
+    should cancel countdown on tool execution
+    should skip injection during recovery mode
+    should inject after recovery complete
+    should cleanup on session deleted
+    should not inject again when cooldown is active
+    should inject again when cooldown expires
+    should apply cooldown even after injection failure
+    should stop retries after max consecutive failures
+    should not stop retries early for unchanged todos when injections keep failing
+    should resume retries after reset window when max failures reached
+    should increase cooldown exponentially after consecutive failures
+    should reset consecutive failure count after successful injection
+    should stop injecting after max stagnation cycles when todos remain unchanged across cycles
+    given a continuation response without todo progress, does not re-arm the directive
+    given a real user interruption after continuation, does not re-arm after the user turn
+    given todo progress after a continuation response, permits the next continuation
+    should skip idle handling while injection is in flight
+    should clear max failure state on session deleted
+    should accept skipAgents option without error
+    should show countdown toast updates
+    should not have 10s throttle between injections
+    should NOT skip for non-abort errors even if immediately before idle
+    should skip injection when last assistant message has MessageAbortedError
+    should inject when last assistant message has no error
+    should inject when last message is from user (not assistant)
+    should skip when last assistant message has any abort-like error
+    should skip injection when abort detected via session.error event (event-based, primary)
+    should skip injection when AbortError detected via session.error event
+    should keep skipping after cancel even when the abort window is stale
+    should clear abort flag on user message activity
+    should reset failure state and keep skipping after a cancelled run
+    should clear abort flag on assistant message activity
+    should clear abort flag on tool execution
+    should use event-based detection even when API indicates no abort (event wins)
+    should use API fallback when event is missed but API shows abort
+    should pass model property in prompt call (undefined when no message context)
+    should extract model from assistant message with flat modelID/providerID
+    should skip injection while the latest message is from the compaction agent
+    should skip injection when only compaction agent messages exist
+    should skip compaction marker user messages when resolving agent info
+    should skip injection when prometheus agent is after compaction
+    should inject when agent info is undefined but skipAgents is empty
+    should not inject when isContinuationStopped returns true
+    should not inject when isContinuationStopped becomes true during countdown
+    should inject when isContinuationStopped returns false
+    should cancel all countdowns via cancelAllCountdowns
+    should reset consecutiveFailures after user-initiated abort and resume after fresh activity [regression #2984]
+    should stop continuation when session.error carries a ContextLengthError
+    should stop continuation when session.error message contains token limit keywords
+    should stop continuation when promptAsync throws a token-limit error
+    should still allow retries for non-token-limit errors (existing behavior)
+    should clear token limit flag when user sends new message after recovery
+
+packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts  (3 tests)
+    records pre-input skips only in W2 counters
+    keeps disabled W2 inert without timers, files, backend calls, or observer state
+    falls back to a no-op observer when W2 construction throws without disabling todo continuation
+
+packages/omo-opencode/src/shared/completion-promise-pattern.test.ts  (3 tests)
+    matches the pre-extraction text golden table
+    escapes a custom promise containing regex metacharacters
+    handles malformed inputs without throwing
+
+script/jev-w2-report.test.ts  (7 tests)
+    #when rendered #then denominators precede every agreement rate
+    #when heuristic proxies and later outcomes diverge #then their rates remain separate
+    #when censored records predict stuck #then they never enter the stuck denominator
+    #when every availability and truncation bucket is present #then each count is explicit
+    #when malformed and truncated lines are read #then they are counted without stopping the report
+    #when counter epochs and sequences regress #then only the highest tuple contributes
+    #when rendered #then zero denominators produce insufficient data
+
+total newly covered tests: 157
+total newly covered files: 23

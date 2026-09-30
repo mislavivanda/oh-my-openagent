@@ -1,0 +1,43 @@
+TODO 17 - THIRD-PARTY NOTICES COMPARISON AGAINST THE TODO-1 BASELINE
+===================================================================
+
+WHAT WAS TESTED
+  That this todo added no NEW missing notice entry. The gate is baseline-relative: the
+  missing-entry output must match todo 1 byte-for-byte, and the nonzero exit is expected
+  upstream debt, not a regression.
+
+command: node scripts/check-third-party-notices.mjs   (plain mode, NOT --ship)
+exit=1
+
+--- todo-17 output ---
+THIRD-PARTY-NOTICES.md is missing 4 required notice entries:
+- @opentui/core
+- @opentui/keymap
+- @opentui/solid
+- zod
+
+--- todo-1 baseline (.omo/evidence/20260930-jev-w2/task-1-third-party-notices.txt) ---
+THIRD-PARTY-NOTICES.md is missing 4 required notice entries:
+- @opentui/core
+- @opentui/keymap
+- @opentui/solid
+- zod
+
+--- COMMAND: diff -u baseline now ---
+diff_exit=0 (0 means byte-identical)
+--- COMMAND: cmp baseline now ---
+cmp_exit=0
+baseline_bytes=118 todo17_bytes=118
+todo-1 recorded exit: exit=1
+
+WHAT WAS OBSERVED
+  Identical four missing entries (@opentui/core, @opentui/keymap, @opentui/solid, zod) and
+  the same exit 1 as todo 1. Zero new missing entries.
+
+WHY IT IS ENOUGH
+  cmp is a byte comparison against the committed todo-1 artifact, so any added, removed, or
+  reordered entry fails it.
+
+WHAT WAS OMITTED
+  --ship mode was not run; todo 1 established the baseline in plain mode and the gate is a
+  like-for-like comparison.

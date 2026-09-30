@@ -1,0 +1,61 @@
+TODO 17 - ADVERSARIAL QA
+========================
+
+1. misleading_success_output  APPLIES, dominant. PROBED.
+   Claim under suspicion: "I added targets to test:fast" could be cosmetic.
+   Probe a, the count actually rose: before 621 tests across 66 files, after 778 across 89.
+     before: Ran 621 tests across 66 files. [7.95s]
+     after:  Ran 778 tests across 89 files. [8.44s]
+   Probe b, the delta is exactly the newly covered targets run alone: Ran 157 tests across 23 files. [696.00ms]
+     621 + 157 = 778 and 66 + 23 = 89, so nothing else moved.
+   Probe c, the new tests are named: task-17-test-fast-w2-named.txt lists all 157 by name,
+     read out of a junit report because bun 1.4.0 prints no per-test pass lines. Newly
+     covered file count in that artifact = 23.
+   Probe d, the change is append-only: task-17-test-fast-target-delta.txt shows 4 added
+     lines, 0 removed, and cmp proves the 17 old targets are a byte-exact leading prefix.
+   Probe e, the markdown audit really can fail: task-17-markdown-audit-red.txt captures the
+     injected machine-local path being caught at docs/jev/dogfood-log.md:20 with exit 1,
+     then the byte-identical revert, then exit 0. The PASS is not vacuous.
+   VERDICT: the success output is backed by a counted delta, a named test list, an
+   append-only diff proof, and a live failure of the gate that later passes.
+
+2. stale_state  APPLIES. PROBED.
+   Both schema generators were run, then run a second consecutive time, and the mandated cmp
+   pair exits 0. Byte hashes are identical before and after, which also proves todo 2 already
+   committed the current schema bytes. See task-17-schema-idempotence.txt.
+   Second probe: the coverage script re-reads package.json from disk on every invocation, so
+   the before and after target lists came from two separate reads, not a cached value.
+
+3. dirty_worktree  APPLIES. PROBED.
+   git status --porcelain before staging:
+      M docs/jev/HANDOFF.md
+      M docs/jev/dogfood-log.md
+      M docs/reference/configuration.md
+      M package.json
+      M packages/jev-core/AGENTS.md
+      M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+      M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+      M packages/omo-codex/scripts/install-dist/install-local.mjs
+      M packages/omo-senpi/plugin/extensions/omo-member.js
+      M packages/omo-senpi/plugin/extensions/omo.js
+   Expected ambient dirt, and nothing else tracked:
+     the 5 permanently dirty generated bundles (codegraph dist/cli.js, codegraph
+     dist/serve.js, omo-codex install-dist/install-local.mjs, omo-senpi omo.js,
+     omo-senpi omo-member.js) plus this todo' package.json and four docs.
+   .env / .env.local present in status: 0 (0 means gitignored and invisible to git)
+   generated bundles in status: 5 (expected 5, NEVER staged)
+   temporary markdown probe still present: 0 (0 means reverted)
+   The post-staging git diff --cached --name-only list is recorded in task-17-staged-paths.txt.
+
+4. malformed_input  APPLIES. PROBED.
+   The documented dogfood block is read back out of both committed docs and parsed with the
+   real JevConfigSchema: 39 assertions, 0 failures, exit 0. It also proves the documented
+   defaults table equals JevConfigSchema.parse({}), that observe_only false is rejected, and
+   that outcome_window_ms equal to timeout_ms is rejected. See task-17-dogfood-config-parse.txt.
+
+RULED OUT, one line each
+  prompt_injection:        this todo adds no model-facing prompt and no untrusted input path; the docs are human-facing prose and the config block is parsed by Zod, not executed.
+  cancel_resume:           nothing here is long-running or resumable; every command is a single synchronous invocation with a captured exit status.
+  hung_or_long_commands:   the longest command is bun run test:fast at 8.44 s, and the two schema builds finish in seconds; no command needs a watchdog.
+  flaky_tests:             test:fast is deterministic here (it ran three times in this todo, pre-change, post-change, and as the newly covered subset, with stable counts 621/778/157); no network call is made by any of them.
+  repeated_interruptions:  no interactive or interruptible process was driven; no partial state can survive a cancel because every artifact is written by one completed shell.

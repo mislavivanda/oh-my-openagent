@@ -1,0 +1,89 @@
+TODO 17 - test:fast TARGET DELTA IS PURELY ADDITIVE
+===================================================
+
+WHAT WAS TESTED
+  That the test:fast change only APPENDS targets: no existing target removed, renamed,
+  or narrowed from a directory to a file.
+
+--- before (17 targets) ---
+     1	packages/jev-core
+     2	packages/model-core/src/model-error-classifier.test.ts
+     3	packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts
+     4	packages/omo-opencode/src/plugin/event.model-fallback.test.ts
+     5	packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts
+     6	packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts
+     7	packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts
+     8	packages/omo-opencode/src/features/jev
+     9	packages/omo-opencode/src/config/schema
+    10	packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+    11	packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts
+    12	packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+    13	packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts
+    14	packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts
+    15	script/jev-w1-report.test.ts
+    16	script/package-registration-audit.test.ts
+    17	script/shared-core-extraction-guard.test.ts
+
+-- after (21 targets) ---
+     1	packages/jev-core
+     2	packages/model-core/src/model-error-classifier.test.ts
+     3	packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts
+     4	packages/omo-opencode/src/plugin/event.model-fallback.test.ts
+     5	packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts
+     6	packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts
+     7	packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts
+     8	packages/omo-opencode/src/features/jev
+     9	packages/omo-opencode/src/config/schema
+    10	packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+    11	packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts
+    12	packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+    13	packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts
+    14	packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts
+    15	script/jev-w1-report.test.ts
+    16	script/package-registration-audit.test.ts
+    17	script/shared-core-extraction-guard.test.ts
+    18	packages/omo-opencode/src/hooks/todo-continuation-enforcer
+    19	packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+    20	packages/omo-opencode/src/shared/completion-promise-pattern.test.ts
+    21	script/jev-w2-report.test.ts
+
+--- COMMAND: diff -u before after ---
+--- /tmp/jev-w2-targets-before.txt	2026-09-30 13:07:51.141640128 +0000
++++ /tmp/jev-w2-targets-after.txt	2026-09-30 13:08:38.332894378 +0000
+@@ -15,3 +15,7 @@
+ script/jev-w1-report.test.ts
+ script/package-registration-audit.test.ts
+ script/shared-core-extraction-guard.test.ts
++packages/omo-opencode/src/hooks/todo-continuation-enforcer
++packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
++packages/omo-opencode/src/shared/completion-promise-pattern.test.ts
++script/jev-w2-report.test.ts
+exit=1 (files differ, as intended)
+added_lines=4  removed_lines=0
+
+--- COMMAND: comm -23 before after (targets present before but gone after) ---
+matching_line_count=0 (0 proves nothing was removed or narrowed)
+
+--- COMMAND: the before list is an exact leading prefix of the after list ---
+command: head -n 17 after | cmp - before
+exit=0 (0 proves append-only ordering, not a rewrite)
+
+--- COMMAND: git diff of the test:fast definition ---
+-     "test:fast": "bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts script/jev-w1-report.test.ts script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts",
++     "test:fast": "bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts script/jev-w1-report.test.ts script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts packages/omo-opencode/src/hooks/todo-continuation-enforcer packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts packages/omo-opencode/src/shared/completion-promise-pattern.test.ts script/jev-w2-report.test.ts",
+
+WHAT WAS OBSERVED
+  Exactly 4 appended targets, 0 removed, and the pre-change 17 targets survive in their
+  original order at the head of the list:
+    packages/omo-opencode/src/hooks/todo-continuation-enforcer
+    packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+    packages/omo-opencode/src/shared/completion-promise-pattern.test.ts
+    script/jev-w2-report.test.ts
+
+WHY IT IS ENOUGH
+  Three independent checks agree: the unified diff shows only + lines, comm reports zero
+  before-only targets, and cmp proves the old list is a byte-exact prefix of the new one.
+  A removal or a directory-to-file narrowing would break at least two of the three.
+
+WHAT WAS OMITTED
+  Nothing relevant. No secrets appear in a target list.

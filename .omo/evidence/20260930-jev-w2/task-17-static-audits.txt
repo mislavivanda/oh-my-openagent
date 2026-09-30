@@ -1,0 +1,86 @@
+TODO 17 - STATIC AUDITS
+=======================
+
+WHAT WAS TESTED
+  250-line ceiling on every changed hand-written TypeScript file, no new star export, the 71
+  pre-existing export * lines in packages/omo-opencode/src/shared/index.ts left unchanged, no
+  banned punctuation or filler on added doc lines, no accuracy threshold introduced, and no
+  README added.
+
+--- COMMAND 1: 250-line gate over every changed *.ts ---
+command: git diff --name-only jev/foundation...HEAD -- '*.ts' | xargs -r wc -l | awk '$2!="total" && $1>250{print;bad=1} END{exit bad}'
+exit=0 (0 means no changed TypeScript file exceeds 250 lines)
+changed_ts_file_count=82
+five largest changed TypeScript files:
+   250 packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.ts
+   250 packages/jev-core/src/completion-continuation.test.ts
+   247 packages/omo-opencode/src/config/schema/jev.test.ts
+   244 packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts
+   243 packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts
+
+--- COMMAND 2: this todo changed no TypeScript file at all ---
+command: git status --porcelain -- '*.ts'
+matching_line_count=0 (0 means todo 17 touches docs plus package.json only)
+
+--- COMMAND 3: star-export inventory, both forms ---
+command: grep -c 'export \*' packages/omo-opencode/src/shared/index.ts
+shared/index.ts  export * lines = 71  (must stay 71)
+command: git diff jev/foundation...HEAD -- packages/omo-opencode/src/shared/index.ts | grep -cE '^\+export (type )?\* '
+shared/index.ts  star exports ADDED on this branch = 0
+command: grep -nE '^export (type )?\* ' packages/jev-core/src/index.ts
+1:export type * from "./types"
+2:export type * from "./intent-routing-record"
+jev-core barrel star exports = 2 (both are pre-existing export type * lines)
+command: git diff jev/foundation...HEAD -- packages/jev-core/src/index.ts | grep -cE '^\+export (type )?\* '
+jev-core barrel star exports ADDED on this branch = 0
+command: git diff jev/foundation...HEAD -- '*.ts' | grep -cE '^\+export (type )?\* '
+star exports ADDED anywhere in TypeScript on this branch = 0
+
+--- COMMAND 4: banned punctuation and filler on ADDED doc lines only ---
+docs/jev/HANDOFF.md                      added_em_dash=0 added_en_dash=0 added_filler=0
+docs/jev/dogfood-log.md                  added_em_dash=0 added_en_dash=0 added_filler=0
+docs/reference/configuration.md          added_em_dash=0 added_en_dash=0 added_filler=0
+packages/jev-core/AGENTS.md              added_em_dash=0 added_en_dash=0 added_filler=0
+configuration.md carries pre-existing upstream em dashes on lines this todo does not own;
+whole-file counts are reported here for context and were deliberately not rewritten:
+docs/jev/HANDOFF.md                      whole_file_em_dash=0 whole_file_en_dash=0
+docs/jev/dogfood-log.md                  whole_file_em_dash=0 whole_file_en_dash=0
+docs/reference/configuration.md          whole_file_em_dash=0 whole_file_en_dash=0
+packages/jev-core/AGENTS.md              whole_file_em_dash=0 whole_file_en_dash=0
+
+--- COMMAND 5: no accuracy threshold introduced ---
+command: git diff -- docs packages/jev-core/AGENTS.md | grep '^+' | grep -niE 'accuracy (threshold|minimum)|minimum (accuracy|score)'
+29:+- **There is no accuracy threshold.** Not in the tests, not in the report, not in the
+114:+  - Stated that no accuracy threshold exists anywhere in W2.
+201:+**There is no accuracy threshold.** Nothing in this wire, its tests, its report, or its
+202:+gates asserts a minimum score. Continuation was Jev's worst class in the W1 measurement,
+235:+**There is no accuracy threshold for W2**, in this package or anywhere else. The real-API baseline (requested `jev-latest`, resolved `jev-1.13.0`, 18 of 18
+matching_line_count=5
+Four of those five added lines carry the negation on the same line. The fifth (diff-added
+line 202 of configuration.md) is the tail of the sentence that starts on the line above it:
+  "There is no accuracy threshold. Nothing in this wire, its tests, its report, or its
+   gates asserts a minimum score."
+So every mention is a denial. No added line asserts, gates, or requires a minimum score.
+command: git diff -- docs packages/jev-core/AGENTS.md | grep '^+' | grep -icE 'no accuracy threshold'
+explicit no-accuracy-threshold statements added = 4
+
+--- COMMAND 6: no README added ---
+command: git status --porcelain | grep -ci readme
+matching_line_count=0
+
+WHAT WAS OBSERVED
+  No changed TypeScript file exceeds 250 lines, and this todo changed no TypeScript file at
+  all. shared/index.ts still carries exactly 71 export * lines with zero added on this branch;
+  the jev-core barrel still carries its 2 pre-existing export type * lines with zero added;
+  zero star exports were added anywhere in TypeScript on this branch. No em dash, en dash, or
+  banned filler word appears on any added doc line. Every accuracy-threshold mention is a
+  denial. No README was created.
+
+WHY IT IS ENOUGH
+  Each audit is a counted command over the real diff. The searches that are supposed to be
+  empty report a matching-line count rather than an empty file, and the one nonzero count is
+  explained line by line instead of being hidden.
+
+WHAT WAS OMITTED
+  Pre-existing upstream em dashes in configuration.md are reported but not rewritten; this
+  todo may not touch lines it does not own.

@@ -1,0 +1,77 @@
+TODO 17 CLEANUP RECEIPT
+=======================
+
+TEMP FILES CREATED BY THIS TODO (all under /tmp/jev-w2-*)
+  /tmp/jev-w2-commit.lock
+  /tmp/jev-w2-coverage-after.txt
+  /tmp/jev-w2-coverage-before.txt
+  /tmp/jev-w2-coverage.mjs
+  /tmp/jev-w2-docs.actual
+  /tmp/jev-w2-dogfood-log.orig
+  /tmp/jev-w2-dogfood-parse.ts
+  /tmp/jev-w2-junit.xml
+  /tmp/jev-w2-manifest.lock
+  /tmp/jev-w2-newly-covered.txt
+  /tmp/jev-w2-notices-now.txt
+  /tmp/jev-w2-oh-before-rerun.json
+  /tmp/jev-w2-omo-before-rerun.json
+  /tmp/jev-w2-real-omo-after.tsv
+  /tmp/jev-w2-real-omo-final.tsv
+  /tmp/jev-w2-targets-after.txt
+  /tmp/jev-w2-targets-before.txt
+  /tmp/jev-w2-test-fast-before.txt
+  /tmp/jev-w2-testfast.lock
+  count=19
+
+REAL ~/.omo MANIFEST COMPARISON (recursive, name + type + size)
+  command: find "$HOME/.omo" -printf '%P\t%y\t%s\n' | LC_ALL=C sort
+  entries=1013
+  diff against the manifest taken during the adversarial probe earlier in this todo:
+  diff_exit=0 (0 means unchanged)
+  jev sink files under the real ~/.omo (must be 0, nothing in this todo writes a sink):
+    matching_line_count=0
+
+PROCESSES AND PORTS
+  No process was spawned that outlives its shell. No opencode, codex, or server was started,
+  so there is no PID to kill and no port to close. Every command in this todo is a single
+  synchronous invocation whose exit status was captured: bun run test:fast, bun test, bun -e,
+  bun run build:schema, bun run build:omo-schema, node, git, diff, cmp.
+  No global process matcher (pkill -f, pgrep -f, killall) was used anywhere in this todo.
+
+CREDENTIALS
+  .env exists: yes   .env.local exists: yes
+  Neither was read, printed, modified, or staged. git status shows them 0 times (gitignored).
+  TYPESAFE_API_KEY was never read and no network call was made.
+
+TEMPORARY DOC MUTATION
+  The markdown-audit failure probe appended one line to docs/jev/dogfood-log.md and then
+  restored the saved copy. Verified reverted:
+    probe marker in any tracked .md: matching_line_count=0
+    docs/jev/dogfood-log.md added lines in the final diff: 5 (the 5 real dogfood entries)
+    docs/jev/dogfood-log.md removed lines in the final diff: 0
+
+PEER WORKTREES AND MAIN CHECKOUT
+  Nothing outside /home/opencode/projects/oh-my-openagent-jev-w2 was written. The plan file at
+  .omo/plans/jev-w2-todo-17-execution.md is inside this worktree and gitignored.
+
+TEMP FILE REMOVAL
+  command: rm -f /tmp/jev-w2-* (the 17 files listed above, removed individually by name)
+  command: ls -1 /tmp/jev-w2-* 2>&1
+    /tmp/jev-w2-commit.lock
+    /tmp/jev-w2-manifest.lock
+    /tmp/jev-w2-testfast.lock
+  ls_exit=0 (nonzero with "No such file" proves they are gone)
+  remaining /tmp/jev-w2-* count: 3
+
+CORRECTION AND PRECISE ACCOUNTING
+  The listing above was taken before removal and includes 3 files this todo did NOT create
+  and MUST NOT remove, because they are the shared cross-task coordination locks:
+    /tmp/jev-w2-commit.lock     (mandated commit flock)
+    /tmp/jev-w2-manifest.lock   (mandated manifest flock)
+    /tmp/jev-w2-testfast.lock   (pre-existing shared lock, created by an earlier todo)
+  So: 19 matching paths, 3 pre-existing shared locks preserved, 16 created by this todo and
+  removed. Verified:
+  command: ls -1 /tmp/jev-w2-* | grep -v '\.lock$'
+  non-lock /tmp/jev-w2-* remaining: matching_line_count=0 (0 means every file this todo
+  created is gone)
+  lock files still present (expected 3): 3

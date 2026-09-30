@@ -1,0 +1,103 @@
+TODO 17 RED SCOPE PROOF - test:fast did NOT run the W2 enforcer tests before this change
+=========================================================================================
+
+WHAT WAS TESTED
+  Whether the hardcoded test:fast target list in package.json reaches every W2 test file
+  added by todos 2-16 and 18. Captured BEFORE any edit in this todo.
+
+--- COMMAND 1: pre-change test:fast target list ---
+command: node /tmp/jev-w2-coverage.mjs targets
+exit=0
+target_count=17
+packages/jev-core
+packages/model-core/src/model-error-classifier.test.ts
+packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts
+packages/omo-opencode/src/plugin/event.model-fallback.test.ts
+packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts
+packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts
+packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts
+packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/config/schema
+packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts
+packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts
+packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts
+script/jev-w1-report.test.ts
+script/package-registration-audit.test.ts
+script/shared-core-extraction-guard.test.ts
+
+--- COMMAND 2: the enforcer directory is absent from the pre-change list ---
+command: grep -n "todo-continuation-enforcer" /tmp/jev-w2-targets-before.txt
+exit=1 (1 means no match; emptiness is the finding)
+matching_line_count=0
+
+--- COMMAND 3: same absence for the other three appended targets ---
+pattern=create-continuation-hooks    matching_line_count=0
+pattern=completion-promise-pattern   matching_line_count=0
+pattern=jev-w2-report                matching_line_count=0
+
+--- COMMAND 4: full W2 test-file coverage table, pre-change ---
+command: node /tmp/jev-w2-coverage.mjs
+exit=1 (nonzero because uncovered > 0; this is the RED)
+w2 test file                                                                                                status     covered by test:fast target
+----------------------------------------------------------------------------------------------------------  ---------  ----------------------------
+packages/jev-core/src/completion-continuation-accuracy.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-fixtures.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-questions.test.ts                                             covered    packages/jev-core
+packages/jev-core/src/completion-continuation-real-run.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-record-validation.test.ts                                     covered    packages/jev-core
+packages/jev-core/src/completion-continuation-state.test.ts                                                 covered    packages/jev-core
+packages/jev-core/src/completion-continuation.test.ts                                                       covered    packages/jev-core
+packages/omo-opencode/src/config/schema/jev.test.ts                                                         covered    packages/omo-opencode/src/config/schema
+packages/omo-opencode/src/features/jev/completion-continuation-adversarial.test.ts                          covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts                                covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts                        covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts                                 covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts                                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts                                          covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts                                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/observation-process-identity.test.ts                                 covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts            UNCOVERED  -
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts  UNCOVERED  -
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts         UNCOVERED  -
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts              UNCOVERED  -
+packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts                                    UNCOVERED  -
+packages/omo-opencode/src/shared/completion-promise-pattern.test.ts                                         UNCOVERED  -
+script/jev-w2-report.test.ts                                                                                UNCOVERED  -
+
+total W2 test files: 24
+covered:             17
+uncovered:           7
+
+--- COMMAND 5: pre-change test:fast run, for the before-count baseline ---
+command: bun run test:fast
+exit=0
+ 621 pass
+ 0 fail
+Ran 621 tests across 66 files. [7.95s]
+
+WHAT WAS OBSERVED
+  7 of the 24 W2 test files were NOT reachable by any pre-change test:fast target:
+    packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts
+    packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts
+    packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts
+    packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+    packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+    packages/omo-opencode/src/shared/completion-promise-pattern.test.ts
+    script/jev-w2-report.test.ts
+  Four of those live in packages/omo-opencode/src/hooks/todo-continuation-enforcer, which is
+  where todo 14 put the observer wiring and outcome tests and todo 15 put the inert proof.
+  The pre-change fast gate therefore never executed the W2 wiring, outcome, characterization,
+  inert, hook-construction, shared-matcher, or report tests.
+
+WHY IT IS ENOUGH
+  The target list is the whole mechanism: bun test only walks the paths named on the command
+  line, so a path absent from the list cannot run. The absence greps report matching-line
+  counts of 0 rather than an empty file, and the coverage table enumerates every W2 test file
+  by name with the target that would cover it.
+
+WHAT WAS OMITTED
+  No secrets, tokens, env dumps, or credential files are reproduced here. The captured
+  test:fast stdout is summarized to its pass/fail/count lines.
