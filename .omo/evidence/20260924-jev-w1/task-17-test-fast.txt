@@ -1,0 +1,17 @@
+WHAT WAS TESTED
+bun run test:fast
+
+WHAT WAS OBSERVED
+exit=0
+482 pass
+0 fail
+1395 expect() calls
+51 files
+duration=6.66s
+Intent-routing accuracy reported backend=mock, paidApi=false, fixtures=15, networkCalls=0, resolvedModel=mock, questionVersion=1.
+
+WHY IT IS ENOUGH
+This is the repository fast gate after adding the six missing W1 file paths. It exercised the complete W1 test inventory without a paid network call.
+
+WHAT WAS OMITTED
+No secret-bearing logs, environment dump, tokens, or auth headers were captured.

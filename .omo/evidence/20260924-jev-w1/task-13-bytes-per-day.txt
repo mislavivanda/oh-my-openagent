@@ -1,0 +1,13 @@
+WHAT WAS TESTED: JSON byte length of a finalized observation with a 200-character prompt head and one delegation, plus a cumulative counter_delta.
+MEASUREMENT METHOD: construct the real turn-store record, serialize each entry as JSON.stringify(entry) + newline, and measure Buffer.byteLength.
+ASSUMPTION: 2,000 finalized turns/day and 288 five-minute counter flushes/day, intentionally representing a sustained high-use process.
+observation_bytes=1680
+counter_delta_bytes=441
+formula=(1680 * 2000) + (441 * 288)
+measured_expected_bytes_per_day=3487008
+derived_cap_bytes=33554432
+retention_days_at_assumed_volume=9.62
+WHY IT IS ENOUGH: the 32 MiB cap retains about 9.62 days at the measured high-use rate; it is derived from this sink payload rather than copied from the 50 MB logger policy.
+MAX LINE SIZE: 65,536 bytes. Oversized valid entries are rejected and counted, never truncated.
+PRIVACY BOUNDARY: promptHeadChars is stored verbatim. The sink does not perform or claim secret scrubbing.
+WHAT WAS OMITTED: no prompts, credentials, tokens, or host environment values were written to this artifact.

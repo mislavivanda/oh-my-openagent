@@ -22,9 +22,9 @@ export function compileTimeOnly(
   sdkU: Sdk.Usage,
 ): void {
   const a: Sdk.ChoiceQuestion<{
-    retry: string | null
-    stop: string | null
-    ignore: string | null
+    retry: Sdk.Description
+    stop: Sdk.Description
+    ignore: Sdk.Description
   }> = cq
   const b: Sdk.NoulQuestion = nq
   const c: Sdk.ScoreQuestion<readonly [string, string, ...string[]]> = sq

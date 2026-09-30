@@ -1,0 +1,3 @@
+COMMAND	git diff jev/foundation..HEAD --stat -- packages/omo-opencode/src/plugin/event-model-fallback.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev/model-error-triage.ts packages/omo-opencode/src/features/jev/model-error-triage.test.ts packages/jev-core/src/model-error-triage.ts
+OBSERVED	stdout was empty
+RESULT	W4 differs by zero files

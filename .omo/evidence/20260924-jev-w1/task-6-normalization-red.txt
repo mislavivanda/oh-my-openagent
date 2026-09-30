@@ -1,0 +1,315 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-normalization.test.ts:
+41 |     ],
+42 |   ])("#given %s #when normalizing #then the route class is explicit", (_name, args, expected) => {
+43 |     expect(
+44 |       normalizeObservedDelegation(args),
+45 |       `normalization failed for ${_name}`,
+46 |     ).toMatchObject(expected)
+           ^
+error: normalization failed for rule (a): requested_subagent_type overrides the rewritten subagent_type
+
+  {
++   "callID": null,
++   "category": null,
+    "normalizedCategory": "none",
+-   "normalizedSubagent": "oracle",
+-   "routeClass": "subagent",
++   "normalizedSubagent": "none",
++   "requestedSubagentType": null,
++   "routeClass": "unknown",
++   "subagentType": null,
++   "taskId": null,
++   "tool": "task",
+  }
+
+- Expected  - 2
++ Received  + 8
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:46:7)
+(fail) observed delegation normalization > #given rule (a): requested_subagent_type overrides the rewritten subagent_type #when normalizing #then the route class is explicit [1.07ms]
+41 |     ],
+42 |   ])("#given %s #when normalizing #then the route class is explicit", (_name, args, expected) => {
+43 |     expect(
+44 |       normalizeObservedDelegation(args),
+45 |       `normalization failed for ${_name}`,
+46 |     ).toMatchObject(expected)
+           ^
+error: normalization failed for rule (b): a category survives the sisyphus-junior rewrite
+
+  {
+-   "normalizedCategory": "deep",
++   "callID": null,
++   "category": null,
++   "normalizedCategory": "none",
+    "normalizedSubagent": "none",
+-   "routeClass": "category",
++   "requestedSubagentType": null,
++   "routeClass": "unknown",
++   "subagentType": null,
++   "taskId": null,
++   "tool": "task",
+  }
+
+- Expected  - 2
++ Received  + 8
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:46:7)
+(fail) observed delegation normalization > #given rule (b): a category survives the sisyphus-junior rewrite #when normalizing #then the route class is explicit [0.19ms]
+41 |     ],
+42 |   ])("#given %s #when normalizing #then the route class is explicit", (_name, args, expected) => {
+43 |     expect(
+44 |       normalizeObservedDelegation(args),
+45 |       `normalization failed for ${_name}`,
+46 |     ).toMatchObject(expected)
+           ^
+error: normalization failed for rule (c): a direct subagent remains a subagent route
+
+  {
++   "callID": null,
++   "category": null,
+    "normalizedCategory": "none",
+-   "normalizedSubagent": "librarian",
+-   "routeClass": "subagent",
++   "normalizedSubagent": "none",
++   "requestedSubagentType": null,
++   "routeClass": "unknown",
++   "subagentType": null,
++   "taskId": null,
++   "tool": "call_omo_agent",
+  }
+
+- Expected  - 2
++ Received  + 8
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:46:7)
+(fail) observed delegation normalization > #given rule (c): a direct subagent remains a subagent route #when normalizing #then the route class is explicit [0.11ms]
+41 |     ],
+42 |   ])("#given %s #when normalizing #then the route class is explicit", (_name, args, expected) => {
+43 |     expect(
+44 |       normalizeObservedDelegation(args),
+45 |       `normalization failed for ${_name}`,
+46 |     ).toMatchObject(expected)
+           ^
+error: normalization failed for rule (d): a task resume without routing fields is unscorable
+
+  {
++   "callID": null,
++   "category": null,
+    "normalizedCategory": "none",
+    "normalizedSubagent": "none",
+-   "routeClass": "unscorable_resume",
++   "requestedSubagentType": null,
++   "routeClass": "unknown",
++   "subagentType": null,
++   "taskId": null,
++   "tool": "task",
+  }
+
+- Expected  - 1
++ Received  + 7
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:46:7)
+(fail) observed delegation normalization > #given rule (d): a task resume without routing fields is unscorable #when normalizing #then the route class is explicit [0.08ms]
+51 |       tool: "task",
+52 |       category: "deep",
+53 |       subagent_type: "oracle",
+54 |     })
+55 | 
+56 |     expect(result).toMatchObject({
+                        ^
+error: expect(received).toMatchObject(expected)
+
+  {
+-   "normalizedCategory": "deep",
++   "callID": null,
++   "category": null,
++   "normalizedCategory": "none",
+    "normalizedSubagent": "none",
+-   "routeClass": "category",
++   "requestedSubagentType": null,
++   "routeClass": "unknown",
++   "subagentType": null,
++   "taskId": null,
++   "tool": "task",
+  }
+
+- Expected  - 2
++ Received  + 8
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:56:20)
+(fail) observed delegation normalization > #given category and subagent together #when normalizing #then category wins like the task harness [0.13ms]
+65 |       tool: "task",
+66 |       task_id: "ses_x",
+67 |       subagent_type: "explore",
+68 |     })
+69 | 
+70 |     expect(result.routeClass).toBe("subagent")
+                                   ^
+error: expect(received).toBe(expected)
+
+Expected: "subagent"
+Received: "unknown"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:70:31)
+(fail) observed delegation normalization > #given task_id and an explicit route #when normalizing #then the explicit route wins [0.12ms]
+86 |         routeClass,
+87 |         normalizedCategory: "deep",
+88 |         normalizedSubagent: "oracle",
+89 |       }
+90 | 
+91 |       expect(deriveRoute(observation)).toEqual(expected)
+                                            ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "kind": "scorable",
+-   "route": "category:deep",
++   "kind": "unscorable",
++   "reason": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:91:40)
+(fail) observed route derivation > #given routeClass category #when deriving the route #then the result is total and discriminated [0.12ms]
+86 |         routeClass,
+87 |         normalizedCategory: "deep",
+88 |         normalizedSubagent: "oracle",
+89 |       }
+90 | 
+91 |       expect(deriveRoute(observation)).toEqual(expected)
+                                            ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "kind": "scorable",
+-   "route": "subagent:oracle",
++   "kind": "unscorable",
++   "reason": "unknown",
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:91:40)
+(fail) observed route derivation > #given routeClass subagent #when deriving the route #then the result is total and discriminated [0.16ms]
+86 |         routeClass,
+87 |         normalizedCategory: "deep",
+88 |         normalizedSubagent: "oracle",
+89 |       }
+90 | 
+91 |       expect(deriveRoute(observation)).toEqual(expected)
+                                            ^
+error: expect(received).toEqual(expected)
+
+@@ -2,3 +2,3 @@
+    "kind": "unscorable",
+-   "reason": "resume",
++   "reason": "unknown",
+  }
+
+- Expected  - 1
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:91:40)
+(fail) observed route derivation > #given routeClass unscorable_resume #when deriving the route #then the result is total and discriminated [0.09ms]
+101 |     ["deep", "none", { route: "category:deep", coherent: true }],
+102 |     ["none", "oracle", { route: "subagent:oracle", coherent: true }],
+103 |   ])(
+104 |     "#given category %s and subagent %s #when deriving #then the prediction is coherent",
+105 |     (category, subagent, expected) => {
+106 |       expect(derivePredictedRoute({ category: answer(category), subagent: answer(subagent) })).toEqual(expected)
+                                                                                                     ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "coherent": true,
+-   "route": "none",
++   "coherent": false,
++   "route": null,
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:106:96)
+(fail) predicted route derivation > #given category none and subagent none #when deriving #then the prediction is coherent [0.20ms]
+101 |     ["deep", "none", { route: "category:deep", coherent: true }],
+102 |     ["none", "oracle", { route: "subagent:oracle", coherent: true }],
+103 |   ])(
+104 |     "#given category %s and subagent %s #when deriving #then the prediction is coherent",
+105 |     (category, subagent, expected) => {
+106 |       expect(derivePredictedRoute({ category: answer(category), subagent: answer(subagent) })).toEqual(expected)
+                                                                                                     ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "coherent": true,
+-   "route": "category:deep",
++   "coherent": false,
++   "route": null,
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:106:96)
+(fail) predicted route derivation > #given category deep and subagent none #when deriving #then the prediction is coherent [0.09ms]
+101 |     ["deep", "none", { route: "category:deep", coherent: true }],
+102 |     ["none", "oracle", { route: "subagent:oracle", coherent: true }],
+103 |   ])(
+104 |     "#given category %s and subagent %s #when deriving #then the prediction is coherent",
+105 |     (category, subagent, expected) => {
+106 |       expect(derivePredictedRoute({ category: answer(category), subagent: answer(subagent) })).toEqual(expected)
+                                                                                                     ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "coherent": true,
+-   "route": "subagent:oracle",
++   "coherent": false,
++   "route": null,
+  }
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:106:96)
+(fail) predicted route derivation > #given category none and subagent oracle #when deriving #then the prediction is coherent [0.08ms]
+118 | })
+119 | 
+120 | describe("subagent vocabulary", () => {
+121 |   test("#given the frozen vocabulary #when inspected #then it includes none and every admitted builtin", () => {
+122 |     expect(Object.isFrozen(INTENT_ROUTING_SUBAGENT_VOCABULARY)).toBe(true)
+123 |     expect(INTENT_ROUTING_SUBAGENT_VOCABULARY).toEqual([
+                                                     ^
+error: expect(received).toEqual(expected)
+
+@@ -2,13 +2,2 @@
+    "none",
+-   "sisyphus",
+-   "hephaestus",
+-   "prometheus",
+-   "oracle",
+-   "librarian",
+-   "explore",
+-   "multimodal-looker",
+-   "metis",
+-   "momus",
+-   "atlas",
+-   "sisyphus-junior",
+  ]
+
+- Expected  - 11
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-normalization.test.ts:123:48)
+(fail) subagent vocabulary > #given the frozen vocabulary #when inspected #then it includes none and every admitted builtin [0.16ms]
+
+ 3 pass
+ 13 fail
+ 17 expect() calls
+Ran 16 tests across 1 file. [172.00ms]

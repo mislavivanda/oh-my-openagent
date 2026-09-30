@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+bun test packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts packages/omo-opencode/src/plugin
+
+WHAT WAS OBSERVED
+GREEN after wiring: 592 pass, 0 fail, 1608 assertions across 74 files. The wiring probe asserted one factory call and recorded the same object as the receiver for observe, capture, sealSessionIdle, and dispose. The dispose receiver completed once.
+
+WHY IT IS ENOUGH
+The focused integration test and complete plugin handler suite cover construction, all four consumers, disposal, and handler regressions.
+
+WHAT WAS OMITTED
+No secrets, environment dumps, or credentials were captured.

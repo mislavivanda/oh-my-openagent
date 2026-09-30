@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+grep -rn "intentRouting" packages/omo-opencode/src/create-hooks.ts packages/omo-opencode/src/config/schema/hooks.ts
+
+WHAT WAS OBSERVED
+The command returned no output.
+
+WHY IT IS ENOUGH
+Neither the hook composer nor HookNameSchema contains intent-routing registration.
+
+WHAT WAS OMITTED
+Nothing.

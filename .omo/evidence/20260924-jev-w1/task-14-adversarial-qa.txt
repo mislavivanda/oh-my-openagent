@@ -1,0 +1,17 @@
+WHAT WAS TESTED
+1. Split-instance negative control: the wiring test asserts createJevIntentRouting is called exactly once and compares receiver identity at all four consumers.
+2. Dispose flush route: plugin dispose awaits the shared instance's dispose method and the probe records exactly one completed dispose.
+3. Disabled startup matrix: pluginConfig.jev absent, jev.enabled false, and wires.intent_routing.enabled false.
+4. Real harness smoke: opencode-qa sse-hook-probe.sh --self-test with 120 second and 300 second limits.
+
+WHAT WAS OBSERVED
+1. Constructing twice would make the factory count exceed 1 or place a different receiver in the four-entry identity array, failing the test.
+2. Dispose completed once on the same shared receiver. The production instance delegates to the seal coordinator's bounded dispose flush.
+3. All three disabled configurations initialized without throwing, constructed one disabled routing no-op, and constructed neither a seal coordinator nor a sink. Therefore no sink interval, seal timer, file handle, or background dispatch exists on the disabled path.
+4. Both isolated SSE smoke attempts timed out before producing output. No successful real-harness claim is made. The same environment limitation is recorded by task 12.
+
+WHY IT IS ENOUGH
+The automated negative controls cover the silent data-split risk, flush reachability, and strict default-off resource gate. Plugin tests, typecheck, and test:fast pass. The failed real-harness smoke remains a residual QA limitation rather than being hidden.
+
+WHAT WAS OMITTED
+No raw environment, auth header, token, or private credential was copied. Generated files already modified before this task were not staged or edited.

@@ -1,0 +1,250 @@
+ENABLED RECEIPTS
+sandbox=/tmp/jev19-enabled.ROeArt
+receipts=/tmp/jev19-enabled-receipts.BvwQKg
+--- pids.tsv ---
+pid	role	state
+1713723	fake-model	started
+1713724	fake-jev	started
+1713754	opencode-server	started
+1713784	opencode-run-1	started
+1714158	opencode-run-2	started
+1714361	opencode-run-3	started
+1714632	opencode-run-4	started
+1714896	opencode-run-5	started
+1715045	opencode-run-6	started
+1715191	opencode-run-7	started
+1715453	opencode-run-8	started
+1715713	opencode-run-9	started
+1715977	opencode-run-10	started
+1716351	opencode-run-11	started
+1716729	opencode-run-12	started
+1717224	opencode-run-13	started
+1717369	opencode-run-14	started
+1717633	opencode-run-15	started
+1717892	opencode-run-16	started
+1718271	opencode-run-17	started
+1718417	opencode-run-18	started
+1718680	opencode-run-19	started
+1718825	opencode-run-20	started
+1719317	opencode-run-21	started
+1719576	opencode-run-22	started
+1719724	opencode-run-23	started
+1719985	opencode-run-24	started
+1720477	opencode-run-25	started
+1720622	opencode-run-26	started
+1720884	opencode-run-27	started
+1721029	opencode-run-28	started
+1721407	opencode-run-29	started
+1721552	opencode-run-30	started
+1721816	opencode-run-31	started
+1722199	opencode-run-32	started
+--- ports.tsv ---
+port	role	state
+44077	fake-model	bound
+39525	fake-jev	bound
+41625	opencode-server	bound
+41625	opencode-server	released
+44077	fake-model	released
+39525	fake-jev	released
+--- cleanup.tsv ---
+pid	role	result
+1713784	opencode-run-1	exited-rc-0
+1714158	opencode-run-2	exited-rc-0
+1714361	opencode-run-3	exited-rc-0
+1714632	opencode-run-4	exited-rc-0
+1714896	opencode-run-5	exited-rc-0
+1715045	opencode-run-6	exited-rc-0
+1715191	opencode-run-7	exited-rc-0
+1715453	opencode-run-8	exited-rc-0
+1715713	opencode-run-9	exited-rc-0
+1715977	opencode-run-10	exited-rc-0
+1716351	opencode-run-11	exited-rc-0
+1716729	opencode-run-12	exited-rc-0
+1717224	opencode-run-13	exited-rc-0
+1717369	opencode-run-14	exited-rc-0
+1717633	opencode-run-15	exited-rc-0
+1717892	opencode-run-16	exited-rc-0
+1718271	opencode-run-17	exited-rc-0
+1718417	opencode-run-18	exited-rc-0
+1718680	opencode-run-19	exited-rc-0
+1718825	opencode-run-20	exited-rc-0
+1719317	opencode-run-21	exited-rc-0
+1719576	opencode-run-22	exited-rc-0
+1719724	opencode-run-23	exited-rc-0
+1719985	opencode-run-24	exited-rc-0
+1720477	opencode-run-25	exited-rc-0
+1720622	opencode-run-26	exited-rc-0
+1720884	opencode-run-27	exited-rc-0
+1721029	opencode-run-28	exited-rc-0
+1721407	opencode-run-29	exited-rc-0
+1721552	opencode-run-30	exited-rc-0
+1721816	opencode-run-31	exited-rc-0
+1722199	opencode-run-32	exited-rc-0
+1713754	opencode-server	terminated
+1713723	fake-model	terminated
+1713724	fake-jev	terminated
+DISABLED RECEIPTS
+sandbox=/tmp/jev19-disabled.gVCA2b
+receipts=/tmp/jev19-disabled-receipts.K7Ycza
+--- pids.tsv ---
+pid	role	state
+1722890	fake-model	started
+1722891	fake-jev	started
+1722920	opencode-server	started
+1722952	opencode-run-1	started
+1723358	opencode-run-2	started
+1723515	opencode-run-3	started
+1723780	opencode-run-4	started
+1724046	opencode-run-5	started
+1724195	opencode-run-6	started
+1724342	opencode-run-7	started
+1724605	opencode-run-8	started
+1724868	opencode-run-9	started
+1725131	opencode-run-10	started
+1725505	opencode-run-11	started
+1725882	opencode-run-12	started
+1726371	opencode-run-13	started
+1726519	opencode-run-14	started
+1726779	opencode-run-15	started
+1727042	opencode-run-16	started
+1727419	opencode-run-17	started
+1727564	opencode-run-18	started
+1727827	opencode-run-19	started
+1727972	opencode-run-20	started
+1728464	opencode-run-21	started
+1728723	opencode-run-22	started
+1728871	opencode-run-23	started
+1729131	opencode-run-24	started
+1729623	opencode-run-25	started
+1729768	opencode-run-26	started
+1730031	opencode-run-27	started
+1730176	opencode-run-28	started
+1730553	opencode-run-29	started
+1730699	opencode-run-30	started
+1730969	opencode-run-31	started
+1731346	opencode-run-32	started
+--- ports.tsv ---
+port	role	state
+42253	fake-model	bound
+34869	fake-jev	bound
+39521	opencode-server	bound
+39521	opencode-server	released
+42253	fake-model	released
+34869	fake-jev	released
+--- cleanup.tsv ---
+pid	role	result
+1722952	opencode-run-1	exited-rc-0
+1723358	opencode-run-2	exited-rc-0
+1723515	opencode-run-3	exited-rc-0
+1723780	opencode-run-4	exited-rc-0
+1724046	opencode-run-5	exited-rc-0
+1724195	opencode-run-6	exited-rc-0
+1724342	opencode-run-7	exited-rc-0
+1724605	opencode-run-8	exited-rc-0
+1724868	opencode-run-9	exited-rc-0
+1725131	opencode-run-10	exited-rc-0
+1725505	opencode-run-11	exited-rc-0
+1725882	opencode-run-12	exited-rc-0
+1726371	opencode-run-13	exited-rc-0
+1726519	opencode-run-14	exited-rc-0
+1726779	opencode-run-15	exited-rc-0
+1727042	opencode-run-16	exited-rc-0
+1727419	opencode-run-17	exited-rc-0
+1727564	opencode-run-18	exited-rc-0
+1727827	opencode-run-19	exited-rc-0
+1727972	opencode-run-20	exited-rc-0
+1728464	opencode-run-21	exited-rc-0
+1728723	opencode-run-22	exited-rc-0
+1728871	opencode-run-23	exited-rc-0
+1729131	opencode-run-24	exited-rc-0
+1729623	opencode-run-25	exited-rc-0
+1729768	opencode-run-26	exited-rc-0
+1730031	opencode-run-27	exited-rc-0
+1730176	opencode-run-28	exited-rc-0
+1730553	opencode-run-29	exited-rc-0
+1730699	opencode-run-30	exited-rc-0
+1730969	opencode-run-31	exited-rc-0
+1731346	opencode-run-32	exited-rc-0
+1722920	opencode-server	terminated
+1722890	fake-model	terminated
+1722891	fake-jev	terminated
+--- exact post-run verification ---
+pid=1713723 state=released
+pid=1713724 state=released
+pid=1713754 state=released
+pid=1713784 state=released
+pid=1714158 state=released
+pid=1714361 state=released
+pid=1714632 state=released
+pid=1714896 state=released
+pid=1715045 state=released
+pid=1715191 state=released
+pid=1715453 state=released
+pid=1715713 state=released
+pid=1715977 state=released
+pid=1716351 state=released
+pid=1716729 state=released
+pid=1717224 state=released
+pid=1717369 state=released
+pid=1717633 state=released
+pid=1717892 state=released
+pid=1718271 state=released
+pid=1718417 state=released
+pid=1718680 state=released
+pid=1718825 state=released
+pid=1719317 state=released
+pid=1719576 state=released
+pid=1719724 state=released
+pid=1719985 state=released
+pid=1720477 state=released
+pid=1720622 state=released
+pid=1720884 state=released
+pid=1721029 state=released
+pid=1721407 state=released
+pid=1721552 state=released
+pid=1721816 state=released
+pid=1722199 state=released
+pid=1722890 state=released
+pid=1722891 state=released
+pid=1722920 state=released
+pid=1722952 state=released
+pid=1723358 state=released
+pid=1723515 state=released
+pid=1723780 state=released
+pid=1724046 state=released
+pid=1724195 state=released
+pid=1724342 state=released
+pid=1724605 state=released
+pid=1724868 state=released
+pid=1725131 state=released
+pid=1725505 state=released
+pid=1725882 state=released
+pid=1726371 state=released
+pid=1726519 state=released
+pid=1726779 state=released
+pid=1727042 state=released
+pid=1727419 state=released
+pid=1727564 state=released
+pid=1727827 state=released
+pid=1727972 state=released
+pid=1728464 state=released
+pid=1728723 state=released
+pid=1728871 state=released
+pid=1729131 state=released
+pid=1729623 state=released
+pid=1729768 state=released
+pid=1730031 state=released
+pid=1730176 state=released
+pid=1730553 state=released
+pid=1730699 state=released
+pid=1730969 state=released
+pid=1731346 state=released
+port=44077 state=released
+port=39525 state=released
+port=41625 state=released
+port=42253 state=released
+port=34869 state=released
+port=39521 state=released
+real_db_sandbox_session_matches=0
+global_process_matcher_used=no
+result=PASS

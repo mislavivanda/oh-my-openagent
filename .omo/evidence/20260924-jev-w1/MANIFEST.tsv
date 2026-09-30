@@ -1,0 +1,159 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260924-jev-w1/task-1-worktree.txt	artifact	Worktree proof: HEAD is jev/w1-a20f, merge-base --is-ancestor jev/foundation exits 0, plus the finding that a fresh worktree is fully clean and the 5 modified generated files are bun install build output
+1	.omo/evidence/20260924-jev-w1/task-1-install.txt	artifact	bun install in the isolated jev/w1-a20f worktree, stdout+stderr with trailing exit= line, exit=0, 544 packages in 80s
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline.txt	baseline	THE CANONICAL BASELINE. env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000, exit=1 with 12777 pass / 3 skip / 7 fail across 1678 files. F2 diffs against this, asserting no new failures rather than exit 0
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline-failures.txt	baseline	Machine-diffable list of the 7 accepted pre-existing failures, one normalized test name per line, LC_ALL=C sorted, no counts or commentary, sha256 e58c7b4ab1d56299fd92dd3a115e1029d5bb81ff5aed86435e63e773af508011
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline-duration.txt	artifact	Wall-clock duration of the canonical baseline, 121s (02:01), plus all three study-run durations for later wave budgeting
+1	.omo/evidence/20260924-jev-w1/task-1-canonical-baseline-flake-analysis.txt	artifact	3-run stability study proving the 8th observed failure (pollForCompletion) is a 1-in-3 load flake that passes 6 of 6 isolated runs, and is therefore quarantined out of the failures file
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-policy.txt	artifact	Reviewer-facing statement of the amended gate: canonical command, why the ambient env var is excluded, the 7 accepted failures by root-cause class, the exact reproducible normalization command, and which gates stay hard exit-0
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-bun-test.txt	artifact	Contrast run WITH ambient OPENCODE_SERVER_PASSWORD present, exit=1 with 22 fail, the in-tree isolation proof that the 15-line delta versus canonical is entirely tmux argv fixtures
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-bun-test-duration.txt	artifact	Wall-clock duration of the env-polluted contrast run, 121s
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-bun-test-cleanenv.txt	baseline	Corroborating clean-env full-suite run captured before the move to the isolated worktree, independently showing the same 7 failures and no pollForCompletion entry
+1	.omo/evidence/20260924-jev-w1/task-1-baseline-typecheck.txt	baseline	bun run typecheck across root, script, and all 28 workspace packages, exit=0. Remains a HARD exit-zero gate
+1	.omo/evidence/20260924-jev-w1/task-1-test-fast.txt	qa	Happy-path QA scenario and HARD exit-zero gate: bun run test:fast, exit=0 with 317 pass / 0 fail across 31 files
+1	.omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt	baseline	Byte-comparable missing-heading list from check-third-party-notices.mjs, 4 entries, deliberately carries NO exit= line so F2 can diff it directly
+1	.omo/evidence/20260924-jev-w1/task-1-notices-exit.txt	baseline	Exit status of check-third-party-notices.mjs in a separate file, exit=1, the known and expected baseline debt
+1	.omo/evidence/20260924-jev-w1/task-1-redstop-analysis.txt	artifact	Original RED-STOP analysis that triggered the plan-mandated full stop, classifying all 22 env-polluted failures into env pollution, cross-file mock leak, and Bun 1.4.0 behavior change
+1	.omo/evidence/20260924-jev-w1/task-1-manifest-selfcheck.txt	artifact	Self-verification that MANIFEST row 1 uses real tab characters and that every artifact listed here exists and is non-empty
+2	.omo/evidence/20260924-jev-w1/task-2-schema-red.txt	red	Focused schema test RED: missing intent_routing defaults and absent rejection/refine behavior fail for the intended assertions before implementation
+2	.omo/evidence/20260924-jev-w1/task-2-schema-green.txt	green	Focused schema test GREEN: 10 tests pass, covering dedicated defaults, apply-mode rejection, unchanged W4 shape, and strict timeout ordering
+3	.omo/evidence/20260924-jev-w1/task-3-record-red.txt	red	Focused contract RED before implementation: assertion-level failures for the populated observation, counter snapshot, reader selection, and frozen continuation lexicon; no module-not-found failure
+3	.omo/evidence/20260924-jev-w1/task-3-record-green.txt	green	Focused contract GREEN: 21 tests and 25 assertions pass for both union arms, strict malformed-input rejection, reader selection, and continuation cohort
+3	.omo/evidence/20260924-jev-w1/task-3-guard-proof.txt	qa	Harness-neutrality negative proof: guard passes, detects the temporary forbidden OpenCode import, then passes after a byte-identical SHA256-confirmed revert
+3	.omo/evidence/20260924-jev-w1/task-3-typecheck.txt	qa	Root bun run typecheck gate across root, scripts, and workspace packages exits 0
+3	.omo/evidence/20260924-jev-w1/task-3-test-fast.txt	qa	Hard test-fast gate exits 0 with 342 passing tests across 32 files
+3	.omo/evidence/20260924-jev-w1/task-3-adversarial-qa.txt	qa	Explicit malformed-input rejections, barrel import proof, RED chronology, dirty-worktree classification, scenario applicability, and diagnostics receipt
+2	.omo/evidence/20260924-jev-w1/task-2-observe-only-reject.txt	qa	Exact failure-scenario command rejects observe_only=false with the not-yet-implemented apply-phase message
+2	.omo/evidence/20260924-jev-w1/task-2-both-schemas.txt	artifact	Both schema generators exit 0, the omo asset changes after build:schema alone, and second-run no-index diffs prove idempotence
+2	.omo/evidence/20260924-jev-w1/task-2-schema-diff.txt	artifact	Advisory full diff of both generated schema assets for the human-sensitive config touchpoint
+2	.omo/evidence/20260924-jev-w1/task-2-adversarial-qa.txt	qa	All 21 malformed numeric and boolean cases reject observably, with applicability rulings for every adversarial scenario
+2	.omo/evidence/20260924-jev-w1/task-2-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+2	.omo/evidence/20260924-jev-w1/task-2-test-fast.txt	qa	Hard test-fast gate exits 0 with 342 passing tests across 32 files
+2	.omo/evidence/20260924-jev-w1/task-2-dirty-worktree.txt	artifact	Porcelain status classifies task-2 files, five known build outputs, concurrent peer TODO 3 files, and no unexpected paths
+4	.omo/evidence/20260924-jev-w1/task-4-questions-red.txt	red	Focused assertion RED predates implementation and fails because buildIntentRoutingQuestions is absent from the jev-core barrel
+4	.omo/evidence/20260924-jev-w1/task-4-questions-green.txt	green	Focused question-set GREEN passes 6 tests and 24 assertions for keys, none sentinels, labels, structured criteria, and invalid vocabulary
+4	.omo/evidence/20260924-jev-w1/task-4-empty-vocab.txt	qa	Empty vocabulary failure scenario prints the named IntentRoutingVocabularyError and exits 0
+4	.omo/evidence/20260924-jev-w1/task-4-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+4	.omo/evidence/20260924-jev-w1/task-4-test-fast.txt	qa	Hard test-fast gate exits 0 with 366 passing tests across 35 files
+4	.omo/evidence/20260924-jev-w1/task-4-adversarial-qa.txt	qa	Malformed-input probes, barrel reachability, RED chronology, dirty-worktree classification, scenario applicability, and diagnostics receipt
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-red.txt	red	Focused assertion RED predates implementation and names requested_subagent_type precedence as the intended failing behavior
+6	.omo/evidence/20260924-jev-w1/task-6-normalization-green.txt	green	Focused normalization GREEN covers rules (a) through (e), exhaustive route derivation, prediction coherence, and frozen vocabulary
+6	.omo/evidence/20260924-jev-w1/task-6-resume-unscorable.txt	qa	Exact resume probe classifies a task_id-only call as unscorable_resume rather than none
+6	.omo/evidence/20260924-jev-w1/task-6-drift-proof.txt	qa	Registry drift test is GREEN, fails naming temporarily removed hephaestus, then returns GREEN with matching before and after SHA256
+6	.omo/evidence/20260924-jev-w1/task-6-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+6	.omo/evidence/20260924-jev-w1/task-6-test-fast.txt	qa	Hard test-fast gate exits 0 with 363 passing tests across 35 files
+6	.omo/evidence/20260924-jev-w1/task-6-adversarial-qa.txt	qa	Malformed-input observables, stale-state proof, dirty-worktree receipt, barrel preservation, RED chronology, scenario rulings, and harness-neutrality guard
+5	.omo/evidence/20260924-jev-w1/task-5-decide-red.txt	red	Focused assertion RED predates implementation and fails only because decideIntentRouting is absent while TODO 4 tests remain green
+5	.omo/evidence/20260924-jev-w1/task-5-decide-green.txt	green	Focused final GREEN covers one-call four-question dispatch, threshold labels, invalid-choice accounting, unavailable and throwing backends, resolved model, and bounded state
+5	.omo/evidence/20260924-jev-w1/task-5-throwing-backend.txt	qa	Rejecting backend proof passes expect(operation).not.toThrow and returns failed with transport_error
+5	.omo/evidence/20260924-jev-w1/task-5-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and workspace packages exits 0 with no diagnostics
+5	.omo/evidence/20260924-jev-w1/task-5-test-fast.txt	qa	Hard test-fast gate and focused shared-core extraction guard both exit 0
+5	.omo/evidence/20260924-jev-w1/task-5-adversarial-qa.txt	qa	Malformed answer accounting, prompt-as-data isolation, RED chronology, dirty-worktree classification, barrel preservation, and scenario rulings
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-red.txt	red	Focused fixture RED predates populated data and fails the intended minimum-count assertion with 0 fixtures
+7	.omo/evidence/20260924-jev-w1/task-7-fixtures-green.txt	green	Focused fixture GREEN passes 11 tests covering all required classes, option vocabularies, no-delegation precision, multilingual prompts, and high ambiguity
+7	.omo/evidence/20260924-jev-w1/task-7-bad-label-proof.txt	qa	Three-run bad-label proof passes cleanly, fails naming no-delegation-pure-question after mutation, and passes after a matching-sha256 revert
+7	.omo/evidence/20260924-jev-w1/task-7-typecheck.txt	qa	Repository typecheck across root, scripts, and workspace packages exits 0
+7	.omo/evidence/20260924-jev-w1/task-7-test-fast.txt	qa	Hard test-fast gate exits 0 with 381 passing tests across 36 files
+7	.omo/evidence/20260924-jev-w1/task-7-adversarial-qa.txt	qa	Six malformed-input probes, inert prompt-data audit, dirty-worktree and barrel proof, RED chronology, scenario rulings, and harness-neutrality guard
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-red.txt	red	Focused behavior RED fails on zero completed fixtures before the harness implementation while loading all 15 expected fixture ids
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-mock.txt	green	Exact default-path command passes 6 tests, labels backend=mock and paidApi=false, scores all 15 fixtures, and proves networkCalls=0
+8	.omo/evidence/20260924-jev-w1/task-8-ceiling-abort.txt	qa	Counter pre-set to 14 of the configured 15-call ceiling allows one dispatch then raises IntentRoutingCallCeilingError before a second backend call
+8	.omo/evidence/20260924-jev-w1/task-8-accuracy-result.json	artifact	Complete mock accuracy artifact with per-question confusion matrices, all completed fixture ids, call ceiling, resolvedModel, and questionVersion
+8	.omo/evidence/20260924-jev-w1/task-8-adversarial-qa.txt	qa	Direct dry-run zero-call proof, malformed/partial/stale-state probes, mock labelling, runtime bound, dirty-worktree classification, scenario rulings, and diagnostics receipt
+8	.omo/evidence/20260924-jev-w1/task-8-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
+8	.omo/evidence/20260924-jev-w1/task-8-test-fast.txt	qa	Hard test-fast gate exits 0 with 419 passing tests across 39 files, including the default zero-network accuracy harness
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-red.txt	red	Focused behavioral RED predates implementation and all 21 cases fail on the explicit IntentRoutingTurnStoreNotImplementedError seam
+10	.omo/evidence/20260924-jev-w1/task-10-turnstore-green.txt	green	Focused turn-store GREEN passes 22 tests and 80 assertions for per-session ordinal identity, two-tier reuse, lifecycle ordering, normalization, timeout, and bounded eviction
+10	.omo/evidence/20260924-jev-w1/task-10-eviction-counter.txt	qa	Dedicated maxTurnsPerSession plus five stress case passes, asserting evictedCount equals 5, a counter_delta reaches 5, and only the three newest turns survive
+10	.omo/evidence/20260924-jev-w1/task-10-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
+10	.omo/evidence/20260924-jev-w1/task-10-test-fast.txt	qa	Hard test-fast gate exits 0 with 420 passing tests across 41 files after the move-only module split
+10	.omo/evidence/20260924-jev-w1/task-10-adversarial-qa.txt	qa	Stale-alias, malformed-input, cancellation, repeated interruption, hung prediction, prompt-data isolation, flake, RED chronology, and dirty-worktree probes
+10	.omo/evidence/20260924-jev-w1/task-10-refactor.txt	qa	Before/after LOC, exact module boundaries, explicit barrel ownership, unchanged 45-feature-test and 22-turn-store-test counts, and all files at or below 250 lines
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-red.txt	red	Focused adapter RED predates implementation and fails because the intent-routing adapter module does not yet exist
+9	.omo/evidence/20260924-jev-w1/task-9-adapter-green.txt	green	Focused adapter GREEN passes 11 tests covering fail-closed gates, nested logs, immutable snapshots, macrotask order, baseURL passthrough, bounded in-flight work, rejection safety, and synchronous p99
+9	.omo/evidence/20260924-jev-w1/task-9-no-unhandled-rejection.txt	qa	Rejecting dispatcher probe registers process unhandledRejection, observes zero events, emits the failure log, and exits with one passing test
+9	.omo/evidence/20260924-jev-w1/task-9-inflight-bounded.txt	qa	Never-resolving dispatcher with max_inflight one stays at one active dispatch and increments dispatchesDropped exactly three times
+9	.omo/evidence/20260924-jev-w1/task-9-macrotask-ordering-proof.txt	qa	Negative control replaces the macrotask with queueMicrotask, fails the ordering assertion, and passes after a matching-SHA256 revert
+9	.omo/evidence/20260924-jev-w1/task-9-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and every workspace package exits 0
+9	.omo/evidence/20260924-jev-w1/task-9-test-fast.txt	qa	Hard test-fast gate exits 0 with 419 passing tests across 39 files, including the final adapter suite
+9	.omo/evidence/20260924-jev-w1/task-9-adversarial-qa.txt	qa	Prompt-as-data isolation, malformed inputs, max_inflight one, hung dispatch, stale snapshot, RED chronology, dirty-worktree classification, and scenario rulings
+11	.omo/evidence/20260924-jev-w1/task-11-capture-red.txt	red	Focused capture RED predates implementation and fails because the intent-routing capture module does not yet exist
+11	.omo/evidence/20260924-jev-w1/task-11-capture-green.txt	green	Focused capture GREEN passes 16 tests for both delegation tools, resume exclusion, ordered attempts, distinct targets, immutable args, handler invocation, malformed inputs, session symmetry, and registry drift
+11	.omo/evidence/20260924-jev-w1/task-11-allowlist-drift-proof.txt	qa	Negative control removes call_omo_agent, fails its direct capture and registry-drift checks, then passes after a matching-SHA256 restore
+11	.omo/evidence/20260924-jev-w1/task-11-resume-regression-proof.txt	qa	Negative control drops task_id capture, exposes normalized none plus unknown instead of unscorable_resume, then passes after a matching-SHA256 restore
+11	.omo/evidence/20260924-jev-w1/task-11-typecheck.txt	qa	Repository typecheck across root, scripts, and all workspace packages exits 0 after replacing invalid test fixture casts
+11	.omo/evidence/20260924-jev-w1/task-11-test-fast.txt	qa	Hard test-fast gate exits 0 with 444 passing tests across 43 files, including the final capture suite
+11	.omo/evidence/20260924-jev-w1/task-11-adversarial-qa.txt	qa	Seven malformed probes, allowlist and resume negative controls, immutable args, prompt-data isolation, dirty-worktree hashes, and non-applicable scenario rulings
+13	.omo/evidence/20260924-jev-w1/task-13-sink-red.txt	red	Focused sink RED under a temporary HOME fails only on the explicit unimplemented sink seam and proves the real ~/.omo hash is unchanged
+13	.omo/evidence/20260924-jev-w1/task-13-sink-green.txt	green	Focused sink GREEN under a temporary HOME passes 8 tests and 31 assertions for both union arms, interval and dispose flushes, permissions, malformed tolerance, process isolation, and epoch-safe truncation
+13	.omo/evidence/20260924-jev-w1/task-13-malformed-tolerance.txt	qa	Exact partial trailing-line probe returns the valid observation, counts malformedLines as 1, and does not throw
+13	.omo/evidence/20260924-jev-w1/task-13-bytes-per-day.txt	artifact	Measured 1,680-byte observation and 441-byte counter rows derive 3,487,008 expected bytes/day and the 32 MiB cap with 9.62 days at the stated high-use assumption
+13	.omo/evidence/20260924-jev-w1/task-13-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0 without an LSP server
+13	.omo/evidence/20260924-jev-w1/task-13-test-fast.txt	qa	Hard test-fast gate under a temporary HOME exits 0 with 444 passing tests across 43 files and proves the real ~/.omo hash is unchanged
+13	.omo/evidence/20260924-jev-w1/task-13-adversarial-qa.txt	qa	Invalid union, oversized and cyclic write rejection, malformed middle and partial-line tolerance, bounded dispose, double-truncation identity, dirty-worktree, and HOME-isolation proofs
+12	.omo/evidence/20260924-jev-w1/task-12-seal-red.txt	red	Focused seal RED under a temporary HOME proves a successor did not logically seal its predecessor before implementation
+12	.omo/evidence/20260924-jev-w1/task-12-seal-green.txt	green	Focused seal GREEN under a temporary HOME passes 12 tests for all four seal paths, synthetic skip, deferred finalization, overlap, inflation exclusion, and idempotence
+12	.omo/evidence/20260924-jev-w1/task-12-overlap-both-sides.txt	qa	Ordered synthetic-message then real-successor then late-observation probe marks predecessor and successor overlap_ambiguous before append
+12	.omo/evidence/20260924-jev-w1/task-12-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0 without an LSP server
+12	.omo/evidence/20260924-jev-w1/task-12-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests across 45 files including final seal and adversarial coverage
+12	.omo/evidence/20260924-jev-w1/task-12-adversarial-qa.txt	qa	Pending interruption, deferred stale state, repeated lifecycle events, hung sink writes, malformed input, mechanical classification, and prompt-injection rule-out are covered
+12	.omo/evidence/20260924-jev-w1/task-12-opencode-server-smoke.txt	qa	Isolated opencode-qa server smoke timed out at both 120 and 300 seconds before readiness; limitation is recorded for TODO 14 wiring QA
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-red.txt	red	Focused wiring RED fails because the shared constructor and chat dispatcher are not yet connected
+14	.omo/evidence/20260924-jev-w1/task-14-wiring-green.txt	green	Wiring and plugin suites pass 592 tests, proving one shared receiver reaches dispatch, capture, event sealing, and dispose
+14	.omo/evidence/20260924-jev-w1/task-14-not-awaited.txt	qa	A 3000 ms dispatcher is called once while chat.message resolves under the 50 ms assertion
+14	.omo/evidence/20260924-jev-w1/task-14-no-hook-registry.txt	qa	Exact registry grep returns no intentRouting matches in create-hooks or HookNameSchema
+14	.omo/evidence/20260924-jev-w1/task-14-typecheck.txt	qa	Repository tsgo typecheck across root, scripts, and all workspace packages exits 0
+14	.omo/evidence/20260924-jev-w1/task-14-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and zero paid network calls
+14	.omo/evidence/20260924-jev-w1/task-14-adversarial-qa.txt	qa	Split-instance, dispose, three disabled configurations, and isolated SSE timeout limitation are recorded
+16	.omo/evidence/20260924-jev-w1/task-16-report-red.txt	red	Focused report RED fails on the explicit unimplemented report seam before corpus scoring and rendering exist
+16	.omo/evidence/20260924-jev-w1/task-16-report-green.txt	green	Focused report GREEN covers known denominators, epoch supersession, resume versus unknown eligibility, none recall and precision, weighted coverage, cohorts, and empty data
+16	.omo/evidence/20260924-jev-w1/task-16-report-output.txt	qa	Full rendered generated-corpus report proves denominators precede all rates and exposes every required metric family
+16	.omo/evidence/20260924-jev-w1/task-16-empty-corpus.txt	qa	Empty sink report prints zero denominators and explicit insufficient-data results without division errors
+16	.omo/evidence/20260924-jev-w1/task-16-typecheck.txt	qa	Repository typecheck across root, scripts, and all workspace packages exits 0 after the concurrent TODO 15 worker completed
+16	.omo/evidence/20260924-jev-w1/task-16-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and no failures
+16	.omo/evidence/20260924-jev-w1/task-16-adversarial-qa.txt	qa	CLI exclusion, forbidden escape and Unicode checks, per-file LOC, script typecheck, and LSP limitation receipt
+15	.omo/evidence/20260924-jev-w1/task-15-inert-red.txt	red	Focused pre-implementation invocation fails because the required inertness test file did not yet exist
+15	.omo/evidence/20260924-jev-w1/task-15-inert-green.txt	green	Enabled-versus-disabled byte identity and hook-order suite passes all sync throw, async rejection, timeout, never-awaited I/O, p99, and macrotask-order cases with p99 13.93 microseconds
+15	.omo/evidence/20260924-jev-w1/task-15-hanging-backend-stress.txt	qa	Real dispatcher and real sink stress passes 50 turns with 2 in flight, 48 dropped, 790308 bytes heap growth, and child exit 0 in 441.88 ms under a temporary HOME
+15	.omo/evidence/20260924-jev-w1/task-15-mutation-detected.txt	qa	Negative control mutates output.parts text, produces a readable byte-identity diff, and records matching SHA256 before and after revert
+15	.omo/evidence/20260924-jev-w1/task-15-unref-proof.txt	qa	Negative control removes the real sink timer unref, makes the child clean-exit assertion time out, and records matching SHA256 before and after revert
+15	.omo/evidence/20260924-jev-w1/task-15-w4-untouched.txt	qa	Exact foundation-to-HEAD W4 stat command emits no paths, proving all five protected W4 files are untouched
+15	.omo/evidence/20260924-jev-w1/task-15-typecheck.txt	qa	Repository tsgo typecheck across root, script, and workspace packages exits 0; TypeScript LSP was unavailable because the workspace TypeScript 7 package has no tsserver.js
+15	.omo/evidence/20260924-jev-w1/task-15-test-fast.txt	qa	Hard test-fast gate exits 0 with 458 passing tests and no failures
+18	.omo/evidence/20260924-jev-w1/task-18-request-count-facts.txt	artifact	Pre-spend real four-question counting-fetch measurement: one HTTP request, 1008 input tokens, 295 output tokens, 275.436809 ms, resolved jev-1.13.0, with exact official billing quote and URL
+18	.omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt	artifact	Single paid 15-fixture baseline with resolved jev-1.13.0, 15 of 15 requests, 15125 input and 4449 output tokens, 100.919306 to 254.558423 ms latency, per-fixture outcomes, and honest confusion matrices
+18	.omo/evidence/20260924-jev-w1/task-18-missing-key.txt	qa	Real-mode missing-key scenario evaluates all 15 fixtures as missing_api_key, makes zero HTTP requests, and exits with 6 passing tests
+18	.omo/evidence/20260924-jev-w1/task-18-adversarial-qa.txt	qa	Ceiling, duplicate-dispatch, partial retention, missing-key, resolved-model, observe-only accuracy, credential handling, artifact completeness, and forbidden-pattern checks
+17	.omo/evidence/20260924-jev-w1/task-17-testfast-scope.txt	qa	Nonzero intent-routing output count, unique matched file list, and all 22 W1 tests mapped to hardcoded test:fast arguments
+17	.omo/evidence/20260924-jev-w1/task-17-markdown-audit-proof.txt	qa	Machine-local absolute-path negative control fails naming HANDOFF line 3, then byte-identical SHA256 revert and 16-test green audit
+17	.omo/evidence/20260924-jev-w1/task-17-notices-unchanged.txt	qa	Empty unified diff against the Todo 1 third-party notices baseline, proving no new missing notice entry
+17	.omo/evidence/20260924-jev-w1/task-17-schema-clean.txt	qa	Both schema generators exit 0 and the two generated assets have an empty final worktree diff
+17	.omo/evidence/20260924-jev-w1/task-17-typecheck.txt	qa	Repository typecheck across root, script, and configured workspace packages exits 0
+17	.omo/evidence/20260924-jev-w1/task-17-test-fast.txt	qa	Expanded hard test:fast gate exits 0 with 482 passing tests across 51 files and zero paid API calls
+17	.omo/evidence/20260924-jev-w1/task-17-adversarial-qa.txt	qa	Exact four-doc scope, all 22 W1 tests reachable, no README, no banned prose, clean diff check, and concurrent Todo 18 ownership recorded
+18	.omo/evidence/20260924-jev-w1/task-18-no-key-leak.txt	qa	Required recursive secret-assignment pattern scan prints no matches after all task-18 evidence is present
+19	.omo/evidence/20260924-jev-w1/task-19-drive.sh	qa	Reusable isolated one-server driver with required sandbox, receipts, wire, keep, readiness, exact cleanup, and assertion contract
+19	.omo/evidence/20260924-jev-w1/task-19-turn-script.jsonl	fixture	Deterministic 32-turn model corpus covering pure, one, many, mixed, duplicate, resume-only, continuation, and direct-agent attempts
+19	.omo/evidence/20260924-jev-w1/task-19-fake-jev-server.ts	fixture	Local System One endpoint returning validated pinned-model four-question answers
+19	.omo/evidence/20260924-jev-w1/task-19-fake-model-provider.ts	fixture	Local OpenAI Responses-compatible provider replaying the turn corpus and scripted tool calls
+19	.omo/evidence/20260924-jev-w1/task-19-dogfood-session.txt	qa	Enabled live-session counts: 32 sealed records, finalized prediction reuse, three direct-agent captures, and all required cohorts
+19	.omo/evidence/20260924-jev-w1/task-19-report.txt	qa	Rendered agreement report with passing 32 equals 32 plus 0 plus 0 record identity
+19	.omo/evidence/20260924-jev-w1/task-19-control-disabled.txt	qa	Separate disabled sandbox: 32 turns, zero wire logs, zero Jev requests, and zero sink files
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-before.tsv	artifact	Recursive real-home pre-run path, type, size, nanosecond mtime, and content-hash manifest
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-after.tsv	artifact	Recursive real-home post-run path, type, size, nanosecond mtime, and content-hash manifest
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt	artifact	Empty recursive real-home diff for the refreshed isolated dogfood run
+19	.omo/evidence/20260924-jev-w1/task-19-session-count.txt	artifact	Real database remained at 426 sessions and contains neither fresh sandbox session id
+19	.omo/evidence/20260924-jev-w1/task-19-receipts.txt	qa	Exact enabled and disabled PIDs and ports, with every process exited or individually terminated and every port released
+19	.omo/evidence/20260924-jev-w1/task-19-README.md	artifact	Reviewer-facing tested, observed, sufficiency, omission, isolation, and final acceptance record
+19	.omo/evidence/20260924-jev-w1/task-19-reuse-regression-red.txt	qa	Failing-first regression proves finalization caused a second dispatch instead of reusing the filled predecessor
+19	.omo/evidence/20260924-jev-w1/task-19-reuse-regression-green.txt	qa	Focused turn-store suite passes with finalized prediction reuse and bounded completed-cache coverage
+19	.omo/evidence/20260924-jev-w1/task-19-sink-home-before.tsv	artifact	Recursive ambient ~/.omo manifest captured before the JEV feature suite without overriding HOME
+19	.omo/evidence/20260924-jev-w1/task-19-sink-home-after.tsv	artifact	Recursive ambient ~/.omo manifest captured after the JEV feature suite without overriding HOME
+19	.omo/evidence/20260924-jev-w1/task-19-sink-home-diff.txt	artifact	Full ambient ~/.omo manifest diff with zero changed lines under the existing empty jev directory
+19	.omo/evidence/20260924-jev-w1/task-19-sink-ambient-home-proof.txt	qa	Ambient-HOME JEV suite passes 85 tests and proves the existing ~/.omo/jev tree was not modified
+19	.omo/evidence/20260924-jev-w1/task-19-call-omo-agent-live.txt	qa	Structured live tool_use event and sink count prove call_omo_agent reached the intent-routing capture path
+F3	.omo/evidence/20260924-jev-w1/F3-redrive.txt	qa	Independent real-surface redrive: 32 sealed observations in one session, fan-out cohorts 12/12/8, separate disabled control with zero output, sandbox-ID DB isolation, ambient-only CodeGraph manifest delta, and exact scoped teardown receipts
+F5	.omo/evidence/20260924-jev-w1/F5-integrity.txt	qa	Independent measurement-integrity approval over an isolated 32-turn live corpus, deterministic synthetic edge corpus, report source audit, and resolved-model baseline check
+F1	.omo/evidence/20260924-jev-w1/F1-compliance.txt	qa	Plan compliance audit: six numbered checks, dependency-graph adjudication of two commit transpositions, and six RED/GREEN spot-checks with independent re-verification
+F4	.omo/evidence/20260924-jev-w1/F4-scope.txt	qa	Independent scope-fidelity audit: all four mandated commands print nothing, all ten Must-NOT-Have bullets HELD, no new hook registered, docs footprint is exactly the four permitted files, and both disclosed deviations independently judged in scope with the tool-execute-before disclosure noted as understating its own diff
+F2	.omo/evidence/20260924-jev-w1/F2-quality.txt	qa	Independent code-quality audit: seven numbered gates all pass, full-suite failure set byte-identical to the recorded baseline with zero regressions, plus conventions judgment on file sizes, barrels, and test style

@@ -1,0 +1,22 @@
+$ GIT_MASTER=1 git status --porcelain=v1
+ M assets/oh-my-opencode.schema.json
+ M assets/omo.schema.json
+ M packages/jev-core/src/index.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/config/schema/jev.test.ts
+ M packages/omo-opencode/src/config/schema/jev.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/intent-routing-record.test.ts
+?? packages/jev-core/src/intent-routing-record.ts
+status exit=0
+
+classification:
+- task-2 intended tracked files: assets/oh-my-opencode.schema.json, assets/omo.schema.json, packages/omo-opencode/src/config/schema/jev.test.ts, packages/omo-opencode/src/config/schema/jev.ts
+- known bun-install build outputs: packages/omo-codex/plugin/components/codegraph/dist/cli.js, packages/omo-codex/plugin/components/codegraph/dist/serve.js, packages/omo-codex/scripts/install-dist/install-local.mjs, packages/omo-senpi/plugin/extensions/omo-member.js, packages/omo-senpi/plugin/extensions/omo.js
+- concurrent peer TODO 3 files: packages/jev-core/src/index.ts, packages/jev-core/src/intent-routing-record.test.ts, packages/jev-core/src/intent-routing-record.ts
+- unexpected files: none
+
+cleanup: removed both task-2 temporary schema snapshots from /tmp/opencode; no processes or sandboxes were started.

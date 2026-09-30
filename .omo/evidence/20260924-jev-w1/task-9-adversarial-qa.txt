@@ -1,0 +1,20 @@
+WHAT WAS TESTED: adversarial tests for prompt-as-data, stale mutable output, malformed message shapes, and max_inflight=1 with never-resolving dispatch.
+COMMAND: bun test packages/omo-opencode/src/features/jev/intent-routing.test.ts -t "mutable output|malformed message|max inflight plus three"
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 8 filtered out
+ 0 fail
+ 6 expect() calls
+Ran 3 tests across 1 file. [188.00ms]
+OBSERVED:
+- prompt injection: PASS. The injected sentence appears only in request.state.promptText; serialized question framing does not contain it.
+- malformed input: PASS. Empty/missing/non-text parts and null sessionID do not throw or dispatch; max_inflight=1 is exercised.
+- hung commands: PASS. A never-resolving dispatcher is capped at max_inflight, excess work is dropped, and unrefed scheduling lets the test process exit.
+- stale state: PASS. Immediate post-return mutation cannot change the immutable prompt snapshot used by deferred state construction.
+- dirty worktree / misleading success: PASS. RED evidence predates GREEN; queueMicrotask fails the order test; restored source SHA-256 is 9c9db323b51d597a7e104eca57036d79112aa739a49dd065ccad531c538284c3 before and after. Five generated build outputs remain excluded; concurrent TODO 8 and TODO 10 files are separately owned.
+- cancel/resume: NOT APPLICABLE. This adapter observes one chat turn and owns no resumable or cancellable workflow.
+- flaky tests: NOT APPLICABLE. Tests use injected completion signals and one event-loop boundary, not wall-clock sleeps.
+- repeated interruptions: NOT APPLICABLE. The seam has no retry or interruption state; each accepted turn creates at most one bounded dispatch.
+WHY IT IS ENOUGH: probes cover the untrusted data boundary, mutation race, scheduling boundary, concurrency cap, and rejection path without external services.
+WHAT WAS OMITTED: no secrets, credentials, environment dumps, or raw private prompts were captured.

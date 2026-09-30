@@ -1,0 +1,54 @@
+EXPERIMENT: temporarily omit task_id from the immutable normalization snapshot.
+before_sha256=c81ad3fa7549dace78a72aeac74f6f6667b7d5e9205bbaa71de23f278e7a331e
+COMMAND (negative control): bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:
+89 | 
+90 |     captureWithoutMutation(harness, {
+91 |       tool: "task", sessionID: MAIN_SESSION_ID, callID: "call-resume",
+92 |     }, { task_id: "ses-resume" })
+93 | 
+94 |     expect(observed(harness)).toEqual([expect.objectContaining({
+                                   ^
+error: expect(received).toEqual(expected)
+
+@@ -1,7 +1,12 @@
+  [
+-   ObjectContaining {
++   {
++     "callID": "call-resume",
++     "category": null,
+      "normalizedCategory": "none",
+      "normalizedSubagent": "none",
+-     "routeClass": "unscorable_resume",
+-     "taskId": "ses-resume",
++     "requestedSubagentType": null,
++     "routeClass": "unknown",
++     "subagentType": null,
++     "taskId": null,
++     "tool": "task",
+    },
+
+- Expected  - 3
++ Received  + 8
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:94:31)
+(fail) JEV intent-routing delegation capture > #given a task resume #when captured before agent resolution #then it is unscorable and counted [0.33ms]
+
+ 14 pass
+ 1 fail
+ 47 expect() calls
+Ran 15 tests across 1 file. [212.00ms]
+negative_exit=1
+OBSERVED REGRESSION: normalizedCategory and normalizedSubagent both became none, routeClass became unknown, taskId became null, and the unscorable_resume assertion failed.
+after_sha256=c81ad3fa7549dace78a72aeac74f6f6667b7d5e9205bbaa71de23f278e7a331e
+hashes_match=true
+COMMAND (restored control): bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 15 pass
+ 0 fail
+ 48 expect() calls
+Ran 15 tests across 1 file. [222.00ms]
+restored_exit=0

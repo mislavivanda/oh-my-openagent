@@ -1,0 +1,230 @@
+F1 - PLAN COMPLIANCE AUDIT
+plan .omo/plans/jev-w1-intent-routing.md | worktree oh-my-openagent-jev-w1-a20f
+branch jev/w1-a20f (plan text says jev/w1; substituted per instruction) | base jev/foundation
+HEAD at audit: 18d22ebba
+Auditor: F1, independent of the implementing workers. Read-only: no source file, evidence file,
+commit, stage, or branch was modified. Confirmed by `git status --short` before and after, which
+showed only the 5 pre-existing generated build-output files that task-1-baseline-policy.txt
+section 7 already identified as `bun install` postinstall output, not anyone's edits.
+
+Baseline policy read before judging any test evidence: task-1-baseline-policy.txt. Canonical
+command `env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000`, gate is baseline-relative
+with 7 accepted pre-existing failures plus 1 quarantined flake, user-approved.
+
+VERDICT: APPROVE
+Two findings recorded, both non-blocking. Check 2 fails as literally specified; every one of its
+three underlying claims was independently re-verified TRUE by this auditor, which is why the
+verdict is APPROVE rather than REJECT. The adjudication is spelled out under Check 2 so a reader
+who weighs the literal wording differently can see exactly what was traded off.
+
+
+=====================================================================
+THE SIX NUMBERED CHECKS
+=====================================================================
+
+CHECK 1 - MANIFEST header present. PASS
+`head -1 .omo/evidence/20260924-jev-w1/MANIFEST.tsv | od -c` observed:
+  0000000   t   o   d   o  \t   a   r   t   i   f   a   c   t  \t   k   i
+  0000020   n   d  \t   d   e   s   c   r   i   p   t   i   o   n  \n
+Exactly `todo<TAB>artifact<TAB>kind<TAB>description` with three real 0x09 tabs and no trailing
+whitespace. Checked against the MANIFEST, not a regex over the plan, as instructed.
+
+CHECK 2 - every listed artifact exists and is non-empty. FAILS AS SPECIFIED, adjudicated
+NON-BLOCKING. The prescribed command printed three lines instead of nothing:
+  MISSING_OR_EMPTY .omo/evidence/20260924-jev-w1/task-17-notices-unchanged.txt
+  MISSING_OR_EMPTY .omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt
+  MISSING_OR_EMPTY .omo/evidence/20260924-jev-w1/task-19-sink-home-diff.txt
+All three exist, are git-tracked, and are committed at 0 bytes:
+  -rw-r--r-- 0 Sep 24 18:41 task-17-notices-unchanged.txt
+  -rw-r--r-- 0 Sep 24 19:28 task-19-home-manifest-diff.txt
+  -rw-r--r-- 0 Sep 30 09:14 task-19-sink-home-diff.txt
+All three are deliberate NEGATIVE-PROOF artifacts where an empty diff IS the assertion, and the
+MANIFEST says so in its own description column:
+  row 129 todo 17 "Empty unified diff against the Todo 1 third-party notices baseline, proving no
+                   new missing notice entry"
+  row 144 todo 19 "Empty recursive real-home diff for the refreshed isolated dogfood run"
+  row 152 todo 19 "Full ambient ~/.omo manifest diff with zero changed lines under the existing
+                   empty jev directory"
+A zero-byte file cannot by itself distinguish "the command ran and produced no output" from "the
+command was never run". So rather than accept or reject on the artifact, this auditor reproduced
+all three claims independently:
+
+  (a) todo 17, no new missing third-party notice. Confirmed scripts/check-third-party-notices.mjs
+      performs no writes (no writeFile/mkdir/unlink/appendFile), then re-ran it fresh at HEAD:
+        exit=1, matching the recorded task-1-notices-exit.txt exit=1
+        diff task-1-notices-baseline.txt <fresh run> -> no output, byte-identical
+      The todo 17 acceptance criterion "produces the SAME missing-entry list as the todo-1
+      baseline, no new entry" is INDEPENDENTLY CONFIRMED TRUE at HEAD.
+
+  (b) todo 19, real-home untouched by the isolated dogfood run. The pair backing the empty diff is
+      substantial and present: task-19-home-manifest-before.tsv and -after.tsv, 142251 bytes and
+      1014 lines each. `diff -q` -> IDENTICAL. The empty diff is TRUE.
+
+  (c) todo 19, ambient ~/.omo untouched by the JEV suite. task-19-sink-home-before.tsv and
+      -after.tsv, 141772 bytes and 1009 lines each. `diff -q` -> IDENTICAL. The empty diff is TRUE.
+
+  Adjudication: the QA was actually executed and its conclusion is correct in all three cases. The
+  defect is presentational, not substantive.
+
+  FINDING 1 (minor, non-blocking, process quality). A negative-proof artifact should not be a bare
+  zero-byte file. It should carry a command line and an exit code, the way task-13-sink-red.txt
+  and task-13-sink-green.txt already do with their real_home_omo_sha256_before/after lines, and
+  the way todo 1 itself reasoned when it deliberately split task-1-notices-exit.txt out of
+  task-1-notices-baseline.txt. Three files here fall below the standard the same evidence set
+  meets elsewhere.
+
+  FINDING 2 (minor, non-blocking, factual accuracy). MANIFEST row 152 and
+  task-19-sink-ambient-home-proof.txt both describe "the existing empty jev directory" and assert
+  EXISTING_EMPTY_JEV_DIRECTORY_LEFT_IN_PLACE: yes. No such directory exists. `grep -i jev` over
+  task-19-sink-home-before.tsv returns zero rows, and `ls -la ~/.omo/` at audit time shows only
+  codegraph, lsp-daemon, omo.jsonc, omo.jsonc.bak.2026-09-18T14-39-06-443Z, and runtime. The
+  substantive isolation claim is unaffected and in fact STRONGER than written: the before and
+  after manifests are byte-identical, so the suite created no ~/.omo/jev directory at all. Only
+  the prose is wrong.
+
+CHECK 3 - every todo id 1 through 19 represented. PASS
+The prescribed per-id loop printed nothing. Distinct todo ids present in column 1:
+  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+154 total lines, 153 data rows. No F-verifier rows are present yet, consistent with F1..F5 running
+in parallel, which is exactly why the id loop was used instead of a regex or a row count.
+
+CHECK 4 - commit count. PASS
+`git log --oneline jev/foundation..jev/w1-a20f | wc -l` -> 18. Matches the required 18.
+Todo 1 is Commit: N by design, so 18 covers todos 2 through 19, as the known-context note states.
+Additionally verified every commit is REAL and non-empty, since "produced a real commit" is in the
+mandate. Changed-file counts per commit, in order:
+  f6ff98574 30, e35bcb3b7 9, 546acf683 12, 3618dc3c3 11, 80eac78cc 11, 3c8040166 9, 6638edc49 9,
+  78d35cd2a 12, d7e761e47 19, 07d1b60c9 13, 463bebe3d 14, 761fd375d 17, a67493c6d 20, 7ec5cf1f0 13,
+  2e15fba2f 14, d7bebe4e5 13, 769d8b60c 6, 18d22ebba 30
+No empty commits.
+
+CHECK 5 - commit messages match the plan. PASS, with an ordering note that is not a defect.
+Extracted the plan's 18 Commit: Y messages and compared against
+`git log --format=%s --reverse jev/foundation..jev/w1-a20f`.
+  Set comparison: diff over both sorted lists -> SETS_IDENTICAL. All 18 subject lines match the
+  plan byte-for-byte. Nothing missing, nothing extra, no wording or typo drift.
+  Sequence comparison: two adjacent pairs are transposed relative to the order the todos are
+  listed in the plan document.
+    pair A: todo 6 "delegation normalization, resume handling, and route derivation" was committed
+            before todo 5 "decision with invalid-answer accounting"
+    pair B: todo 13 "per-process jsonl sink with counter entries" was committed before todo 12
+            "seal semantics, correlation status, and dispose flush"
+  Both were checked against the plan's own dependency graph rather than its document order:
+    todo 5  (line 138) Blocked by: 4      | Blocks: 8, 9
+    todo 6  (line 146) Blocked by: 3      | Blocks: 7, 10, 11, 12, 16
+      No edge exists between 5 and 6. Both are Wave 2. Pair A violates nothing.
+    todo 12 (line 196) Blocked by: 10, 11, 13 | Can parallelize with: - (must flush into the sink
+                                                 todo 13 creates)
+    todo 13 (line 204) Blocked by: 3, 10  | Blocks: 12, 16
+      Todo 12 is explicitly BLOCKED BY todo 13, and todo 13 explicitly BLOCKS todo 12. Pair B is
+      therefore not merely permitted, it is the only order the plan's dependency graph allows. The
+      plan's document ordering contradicts its own graph here; the workers followed the graph.
+  Conclusion: no commit-message mismatch. Landing order is dependency-correct in both cases.
+
+CHECK 6 - plan Commit: Y count. PASS
+`grep -cE '^[[:space:]]+Commit: Y' .omo/plans/jev-w1-intent-routing.md` -> 18. Confirmed 18, and
+consistent with Check 4's 18 commits and with todo 1 being the single Commit: N entry.
+
+
+=====================================================================
+SPOT-CHECKS - were acceptance criteria ACTUALLY EXECUTED
+=====================================================================
+Six todos opened rather than the required five, spread across all five waves. For each, the
+referenced RED and GREEN artifacts were opened and judged on whether they hold real captured
+command output as opposed to a placeholder or a summary.
+
+TODO 3 (Wave 1) task-3-record-red.txt / task-3-record-green.txt - REAL OUTPUT, PASS
+  RED 4517 bytes: `bun test v1.4.0 (34cbb9a40)` banner, quoted source lines 102-107 with the caret
+  column marker, the assertion message "the fully populated observation contract should validate",
+  Expected: true / Received: false, an absolute stack frame, a (fail) line, and the tally
+  15 pass / 6 fail / 22 expect() calls, exit=1.
+  GREEN: 21 pass / 0 fail / 25 expect() calls, Ran 21 tests, exit=0. Test count rises 21 -> 21 with
+  failures going 6 -> 0. Genuine failing-first.
+
+TODO 5 (Wave 2) task-5-decide-red.txt / task-5-decide-green.txt - SUMMARY, NOT CAPTURED OUTPUT
+  FINDING 3 (minor, non-blocking, evidence format). Both files are hand-written prose summaries.
+  Neither carries the `bun test v1.4.0` banner, the raw failure block, or the runner tally as
+  emitted. RED states "Intended failing assertion:", "Observed: Expected \"function\" / Received
+  \"undefined\"", "Summary: 6 pass, 1 fail, 25 assertions". GREEN states "Observed after the
+  LOC-preserving helper extraction: 13 pass, 0 fail, 42 assertions across 1 file in 122ms". The
+  sibling task-5-throwing-backend.txt uses the same summary style. Under the instruction "a todo
+  whose GREEN file exists but contains no test output is a finding", this is the finding.
+  Substance was then tested rather than assumed, twice, and both times it held:
+    GREEN re-run by this auditor at HEAD:
+      env -u OPENCODE_SERVER_PASSWORD bun test packages/jev-core/src/intent-routing.test.ts
+      -> 13 pass, 0 fail, 42 expect() calls, Ran 13 tests across 1 file, exit=0
+      An exact match to the summary's transcribed numbers, including the assertion count.
+    RED corroborated by an independent raw artifact: the RED claims a 6 pass / 1 fail state before
+      decideIntentRouting existed, and task-4-questions-green.txt, which IS raw captured output,
+      independently records exactly "6 pass / 0 fail / 24 expect() calls" for the immediately
+      preceding todo. The 6 is corroborated from outside todo 5's own prose.
+  A post-hoc RED cannot be re-executed without reverting source, which an auditor must not do, so
+  the RED rests on a summary plus that corroboration. Numbers are accurate; the format is below
+  the standard set by todos 3, 4, 10, 13, 15, and 19, all of which paste raw output.
+
+TODO 10 (Wave 3) task-10-turnstore-red.txt / task-10-turnstore-green.txt - REAL OUTPUT, PASS
+  RED 16996 bytes: real banner, the thrown
+  IntentRoutingTurnStoreNotImplementedError: "Intent-routing turn store is not implemented" with
+  stack frames into intent-routing-turn-store.ts:9:9, many named (fail) lines, tally 0 pass /
+  21 fail. GREEN: 22 pass / 0 fail / 80 expect() calls. Clean 0 -> 22.
+
+TODO 13 (Wave 3) task-13-sink-red.txt / task-13-sink-green.txt - REAL OUTPUT, STRONGEST, PASS
+  Both carry the literal command `bash -c 'HOME=$(mktemp -d) bun test .../intent-routing-sink.test.ts'`,
+  the raw bun banner and body, test_exit, AND a real-home integrity proof:
+  real_home_omo_sha256_before and _after both 85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+  with real_home_omo_unchanged: yes on both runs. RED 7 fail / exit 1 on "Intent-routing sink is
+  not implemented"; GREEN 8 pass / 0 fail / 31 expect() calls / exit 0. This is the template the
+  three zero-byte files in Finding 1 should have followed.
+
+TODO 15 (Wave 4) task-15-inert-red.txt / task-15-inert-green.txt - REAL OUTPUT, PASS with a note
+  GREEN is real: banner, TASK15_SYNC_P99_US=13.93, 9 pass / 0 fail / 34 expect() calls across
+  2 files, EXIT 0, TEMP_HOME /tmp/tmp.3t5gJPSUqI.
+  Note, not a finding: the RED is a RED-BY-ABSENCE. Its captured output is bun reporting
+  "The following filters did not match any test files ... 6434 files were searched", meaning the
+  test file did not yet exist. That is authentic captured output and legitimate TDD sequencing,
+  but it is weaker evidence than a failing assertion, since it proves absence rather than a
+  specific behavior being unimplemented. Todos 3, 10, and 19 all produce the stronger form.
+
+TODO 19 (Wave 5) task-19-reuse-regression-red.txt / task-19-reuse-regression-green.txt - REAL, PASS
+  RED: real banner, quoted source lines 98-103, and a genuine behavioral failure rather than a
+  missing symbol: expect(dispatch).toHaveBeenCalledTimes(1) with "Expected number of calls: 1 /
+  Received number of calls: 2", tally 13 pass / 1 fail / 52 expect() calls, exit=1. GREEN:
+  15 pass / 0 fail / 58 expect() calls, exit=0. Test count 14 -> 15, so the regression test was
+  added and the double-dispatch defect fixed. Exemplary failing-first evidence.
+
+Spot-check summary: 5 of 6 hold real captured command output. Todo 5 alone uses summaries, and its
+claims were independently re-verified as accurate.
+
+
+=====================================================================
+FINDINGS, consolidated
+=====================================================================
+All three are minor, non-blocking, and none indicates unexecuted QA or a missing commit.
+1. Three committed evidence artifacts are zero-byte negative proofs with no command line or exit
+   code recorded: task-17-notices-unchanged.txt, task-19-home-manifest-diff.txt,
+   task-19-sink-home-diff.txt. All three claims independently re-verified TRUE by this auditor.
+   Remedy for future waves: record the command and exit status inside the artifact, as todo 13 does.
+2. MANIFEST row 152 and task-19-sink-ambient-home-proof.txt assert an "existing empty jev
+   directory" under ~/.omo that does not exist and appears in no manifest row. Prose only; the
+   isolation conclusion is correct and stronger than stated.
+3. Todo 5's RED and GREEN artifacts are hand-written summaries rather than captured output.
+   Numbers verified accurate by direct re-run (13 pass / 0 fail / 42 expect() calls, exit=0) and
+   by cross-corroboration of the RED's 6-pass figure against task-4-questions-green.txt.
+
+WHAT WAS TESTED. MANIFEST header bytes via od -c; existence and size of all 153 listed artifacts;
+per-id coverage for todos 1-19; commit count, per-commit changed-file counts, and subject lines on
+jev/foundation..jev/w1-a20f; the plan's Commit: Y count and its dependency graph for the two
+transposed pairs; RED and GREEN artifacts for todos 3, 5, 10, 13, 15, 19; and independent re-runs
+of check-third-party-notices.mjs and packages/jev-core/src/intent-routing.test.ts.
+WHAT WAS OBSERVED. Checks 1, 3, 4, 5, 6 pass. Check 2 fails as literally specified on three
+zero-byte artifacts whose underlying claims were each re-verified TRUE. Commit subjects are a
+byte-identical set to the plan's 18; two adjacent transpositions are dependency-legal and one is
+dependency-required. Five of six spot-checked todos carry real captured output.
+WHY IT IS ENOUGH. Every mandated check ran against the MANIFEST rather than a regex, per
+instruction. Where an artifact could not speak for itself, the underlying claim was reproduced
+first-hand rather than inferred, so the audit does not rest on the workers' own assertions.
+WHAT WAS OMITTED. No source file, evidence file, commit, or branch was modified; nothing was
+staged or committed. Todo 5's RED state cannot be re-executed without reverting source, which is
+outside an auditor's remit, so it was corroborated indirectly instead. No secrets, tokens, auth
+headers, API keys, or environment dumps were captured; the only absolute paths reproduced are
+worktree and mktemp paths already present in the audited artifacts.

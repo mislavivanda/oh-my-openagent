@@ -1,0 +1,44 @@
+rejected: confidence_threshold non-integer NaN -> Invalid input: expected number, received NaN
+rejected: confidence_threshold out-of-range -> Too big: expected number to be <=1
+rejected: confidence_threshold negative -> Too small: expected number to be >=0
+rejected: confidence_threshold wrong-type -> Invalid input: expected number, received string
+rejected: timeout_ms non-integer -> Invalid input: expected int, received number
+rejected: timeout_ms out-of-range -> Too big: expected number to be <=30000
+rejected: timeout_ms negative -> Too small: expected number to be >=100
+rejected: timeout_ms wrong-type -> Invalid input: expected number, received string
+rejected: turn_seal_timeout_ms non-integer -> Invalid input: expected int, received number
+rejected: turn_seal_timeout_ms out-of-range -> Too big: expected number to be <=600000
+rejected: turn_seal_timeout_ms negative -> Too small: expected number to be >=1000
+rejected: turn_seal_timeout_ms wrong-type -> Invalid input: expected number, received string
+rejected: max_prompt_chars non-integer -> Invalid input: expected int, received number
+rejected: max_prompt_chars out-of-range -> Too small: expected number to be >=256
+rejected: max_prompt_chars negative -> Too small: expected number to be >=256
+rejected: max_prompt_chars wrong-type -> Invalid input: expected number, received string
+rejected: max_inflight non-integer -> Invalid input: expected int, received number
+rejected: max_inflight out-of-range -> Too big: expected number to be <=64
+rejected: max_inflight negative -> Too small: expected number to be >=1
+rejected: max_inflight wrong-type -> Invalid input: expected number, received string
+rejected: observe_only non-boolean -> Invalid input: expected boolean, received string
+malformed cases rejected=21/21
+stale state: APPLIES; task-2-both-schemas.txt records both generators and zero idempotence diffs after the second consecutive run.
+dirty worktree: APPLIES; task-2-dirty-worktree.txt records the porcelain allowlist proof.
+misleading success output: APPLIES; task-2-schema-red.txt predates implementation and fails on missing intent_routing behavior, not import or syntax errors.
+prompt injection: not applicable; this schema parses scalar configuration and executes no prompt content.
+cancel/resume: not applicable; synchronous Zod parsing has no resumable lifecycle.
+hung commands: not applicable; parsing is synchronous and has no external command or wait loop.
+flaky tests: not applicable; assertions use deterministic pure parsing with no clock, randomness, or I/O.
+repeated interruptions: not applicable; parsing is atomic and stores no partial state.
+LSP diagnostics: attempted for jev.ts and jev.test.ts, but the configured TypeScript LSP cannot initialize because this workspace uses TypeScript 7.0.2 native preview without tsserver.js. No LSP install or config mutation was authorized; the required root typecheck exits 0.
+
+TypeScript post-write audit
+No violations in 2 file(s).
+no-excuse exit=0
+  80 packages/omo-opencode/src/config/schema/jev.ts
+ 136 packages/omo-opencode/src/config/schema/jev.test.ts
+ 216 total
+red_mtime=2026-09-24T15:41:25.649Z
+implementation_mtime=2026-09-24T15:42:23.666Z
+red_predates_implementation=true
+intended_assertion_present=true
+import_error_absent=true
+red_exit_1_present=true

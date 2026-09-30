@@ -1,0 +1,18 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 7 pass
+ 8 filtered out
+ 0 fail
+ 22 expect() calls
+Ran 7 tests across 1 file. [206.00ms]
+malformed_probe_exit=0
+
+MALFORMED INPUT: APPLIES. The seven table cases passed for args null, args undefined, non-object args, wrong-type category, both routing fields, empty-string task_id, and missing callID. Every invocation also deep-compared output.args with its pre-call value.
+STALE STATE: APPLIES. task-11-allowlist-drift-proof.txt removes call_omo_agent, observes the direct regression and registry-schema drift failures, then restores a byte-identical SHA256.
+DIRTY WORKTREE / MISLEADING SUCCESS: APPLIES. RED predates GREEN. Both negative controls end with matching before/after SHA256 c81ad3fa7549dace78a72aeac74f6f6667b7d5e9205bbaa71de23f278e7a331e.
+PROMPT INJECTION: APPLIES WEAKLY. The capture path reads five named fields into normalizeObservedDelegation; it has no execution, shell, template interpolation, logging, network, or dynamic import path. Attacker-influenced strings remain data.
+CANCEL/RESUME: Capture has no cancellable work. The task_id-only resume variant is directly classified unscorable_resume and counted, with its regression proven separately.
+HUNG COMMANDS: Not applicable. capture() is synchronous and contains no Promise, await, timer, IO, or network call.
+FLAKY TESTS: Ruled out by deterministic in-memory stores, no clocks or timers, and exact ordered assertions.
+REPEATED INTERRUPTIONS: Not applicable to the stateless capture object; the turn store owns durable ordering and counters.
+REAL HARNESS SCOPE: The plugin handler invocation is covered in the focused suite. Shared live construction is intentionally deferred to TODO 14, so this TODO adds no enabled-by-default OpenCode runtime path.

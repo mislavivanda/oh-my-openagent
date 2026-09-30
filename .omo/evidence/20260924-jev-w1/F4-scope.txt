@@ -1,0 +1,384 @@
+F4 SCOPE FIDELITY VERIFICATION - jev-w1-intent-routing
+=======================================================
+Verifier:   F4 (independent of implementers), plan line 278
+Mandate:    "Scope fidelity - the Must-NOT-Have list held."
+Worktree:   /home/opencode/projects/oh-my-openagent-jev-w1-a20f
+Branch:     jev/w1-a20f   Base: jev/foundation
+Diff range: jev/foundation..jev/w1-a20f   (18 commits, 226 files, +19054/-64)
+Scope read: .omo/plans/jev-w1-intent-routing.md lines 39-50, all 10 bullets
+Mode:       AUDIT ONLY. No source file modified. Nothing staged. Nothing committed.
+
+VERDICT: APPROVE
+
+
+-------------------------------------------------------
+PART 1. THE FOUR EXACT COMMANDS - each must print NOTHING
+-------------------------------------------------------
+
+[1] Phase 0 prose and routing files untouched
+  $ git diff jev/foundation..jev/w1-a20f --stat -- \
+      packages/omo-opencode/src/agents/sisyphus-dynamic-prompt-role.ts \
+      packages/omo-opencode/src/agents/sisyphus/ \
+      packages/omo-opencode/src/agents/hephaestus/gpt.ts \
+      packages/omo-opencode/src/tools/delegate-task/category-resolver.ts \
+      packages/delegate-core/src/model-selection.ts \
+      packages/omo-opencode/src/plugin/event-model-fallback.ts \
+      packages/omo-opencode/src/features/jev/model-error-triage.ts \
+      packages/jev-core/src/model-error-triage.ts
+  OBSERVED OUTPUT: (empty)
+  RESULT: PASS
+
+[2] The shared W4 schema is untouched
+  $ git diff jev/foundation..jev/w1-a20f -- packages/omo-opencode/src/config/schema/jev.ts \
+      | grep -E '^[-+].*JevWireConfigSchema = '
+  OBSERVED OUTPUT: (empty)
+  RESULT: PASS
+
+[3] observe_only is schema-only with no runtime read
+  $ grep -rn "observe_only" packages/omo-opencode/src --include=*.ts \
+      | grep -v -E '(config/schema|\.test\.ts)'
+  OBSERVED OUTPUT: (empty)
+  RESULT: PASS
+
+[4] The report is not a CLI subcommand
+  $ grep -rn "jev-w1-report" packages/omo-opencode/src/cli/
+  OBSERVED OUTPUT: (empty)
+  RESULT: PASS
+
+All four printed nothing.
+
+
+-------------------------------------------------------
+PART 2. MUST-NOT-HAVE, ONE LINE PER BULLET (plan lines 40-50)
+-------------------------------------------------------
+
+B1. NO prose edits. None of the six Phase 0 Intent Gate blocks touched,
+    no prompt shrink, no directive injection.
+    HELD. Command [1] empty covers all seven enumerated paths including the whole
+    agents/sisyphus/ directory and agents/hephaestus/gpt.ts. Zero bytes changed.
+
+B2. NO behavior change of any kind. Nothing gated on a Jev answer, no awaited
+    network call on the turn path. Three binding constraints: zero awaited I/O on
+    the handler chain, 1ms p99 synchronous seam at max_prompt_chars, all deferred
+    work on a macrotask.
+    HELD. Evidence below in PART 3.
+
+B3. NO modification of tools/delegate-task/category-resolver.ts or
+    packages/delegate-core/src/model-selection.ts.
+    HELD. Both paths are in command [1]; output empty.
+
+B4. NO modification of the shared JevWireConfigSchema or of any W4 file.
+    W4 tests must remain byte-identical.
+    HELD. Command [2] empty. Independent blob-SHA identity check:
+      packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts
+        jev/foundation 4f8ea0e8f5146a2e9fa1fb08b9c5da1798213847
+        jev/w1-a20f    4f8ea0e8f5146a2e9fa1fb08b9c5da1798213847   IDENTICAL
+      packages/omo-opencode/src/features/jev/model-error-triage.test.ts
+        jev/foundation 9ab7a13ca59aa4bde20a06602781486eb5d2b630
+        jev/w1-a20f    9ab7a13ca59aa4bde20a06602781486eb5d2b630   IDENTICAL
+    Both model-error-triage.ts implementations are also untouched via command [1].
+    The jev.ts diff is purely ADDITIVE: a new JevIntentRoutingWireConfigSchema plus
+    the two container objects (JevWiresConfigSchema, JevConfigSchema) gaining the new
+    key. Schema lines 3-8, the block the plan pins, are byte-identical.
+    Caveat carried into PART 4 finding D1: packages/jev-core/src/types.ts was widened.
+
+B5. NO session-DB mining for ground truth.
+    HELD. grep over every added W1 file in packages/jev-core/src/intent-routing*.ts,
+    packages/omo-opencode/src/features/jev/intent-routing*.ts, and script/jev-w1-report*.ts
+    for sqlite, bun:sqlite, opencode.db, "FROM session", Database( returned nothing.
+    Ground truth comes from tool.execute.before args, as C3 mandates.
+
+B6. NO runtime read of observe_only.
+    HELD. Command [3] empty. Broader sweep across packages/, script/, docs/ finds
+    observe_only ONLY in: config/schema/jev.ts (the definition and two default
+    literals), two test files, and three doc files. Zero runtime branches. The Zod
+    .refine rejects false as C5 requires, so the value can only ever be true.
+
+B7. NO new CLI subcommand. Report is a script/ file, absent from --help, with no
+    help-schema or docs surface.
+    HELD. Command [4] empty. grep "jev" over packages/omo-opencode/src/help/ and
+    packages/omo-opencode/src/cli/ returns nothing. Repo-wide, jev-w1-report appears
+    only in: script/ itself, package.json test:fast (as a TEST PATH, not a run script;
+    no new npm script was added), and docs/jev/HANDOFF.md line 42 (internal handoff
+    doc, permitted, and the plan's own Wave 4 ordering note requires docs to describe
+    the report contract). The user-facing docs/reference/configuration.md section
+    documents CONFIG KEYS ONLY and never names the report script.
+
+B8. NO logger-style rotation subsystem. Size cap plus truncate-and-warn only.
+    HELD. grep for rotat|backup|archive|rollover|maxFiles|retention over
+    intent-routing-sink*.ts returns nothing. What exists instead:
+      DEFAULT_INTENT_ROUTING_SINK_SIZE_CAP_BYTES = 32 * 1024 * 1024 (sink.ts:31)
+      atomicTruncate(...) (sink.ts:118), invoked at sink.ts:156 and :168
+      warn("[jev] intent-routing sink truncated at size cap", ...) (sink.ts:139)
+      counters recordsLostToCap and sinkTruncations carried in the warn payload
+    No .1/.2 segments, no file generations, no background rotation task.
+
+B9. NO W2 / W3 / W5 work, and no apply path. ONE wire.
+    HELD. JevWiresConfigSchema contains exactly two keys: the pre-existing
+    model_error_triage (W4) and the single new intent_routing (W1). One wire added.
+    grep for apply|applyRouting|overrideCategory|mutateRoute|setCategory|
+    replaceAgent|forceAgent over all added non-test W1 source returns nothing.
+    grep for W2|W3|W5|wire_2|wire_3|wire_5 returns nothing.
+
+B10. NO em dashes, no AI filler, no emojis in any added code, comment, or doc.
+    HELD. Over every added (+) line in the branch diff excluding .omo/evidence:
+      em dash U+2014 / en dash U+2013 : none
+      emoji ranges U+1F300-1FAFF, U+2600-27BF, U+2B00-2BFF, U+FE0F : none
+      simply|obviously|clearly|moreover|furthermore|seamlessly|robustly : none
+    Note: the branch REMOVES five pre-existing en/em dashes. See finding O1.
+
+
+-------------------------------------------------------
+PART 3. ADDITIONAL MANDATED AUDITS
+-------------------------------------------------------
+
+A1. No behavior change - wire default is enabled: false.
+    HELD. packages/omo-opencode/src/config/schema/jev.ts:13
+      enabled: z.boolean().default(false)
+    and the container default at :42 also pins enabled: false. The wire is
+    DOUBLE-gated: features/jev/intent-routing.ts:68-69 requires
+    jevConfig.enabled === true AND wires.intent_routing.enabled === true.
+    When either is false the factory returns a fully inert object (lines 70-81):
+    observe() {}, capture: () => false, sealSessionIdle: () => false,
+    deleteSession() {}, dispose: async () => {}. No backend is constructed,
+    no coordinator, no sink, no timer, no disk touch.
+    Additionally create-plugin-module.ts:329-339 only builds the seal coordinator
+    and the sink when intentRoutingEnabled, so on default config nothing under
+    ~/.omo/jev/ can ever be created.
+
+A2. No behavior change - todo 15's assertions exist and are REAL, not vacuous.
+    HELD. I read the test bodies rather than trusting the titles.
+    plugin/chat-message.intent-routing-inert.test.ts (207 lines):
+      - Parameterized over three real failure modes: sync-throw, async-reject,
+        timeout. For each, runs the handler wire-disabled and wire-enabled and
+        asserts output.parts deep-equal, JSON byte string equal, parts equal to a
+        structuredClone snapshot taken BEFORE the call, hook invocation order
+        equal between runs AND equal to a hardcoded 12-entry HOOK_ORDER. This is
+        the byte-identity proof, and it holds even when the backend throws.
+      - Never-resolving dispatcher test: races handler completion against a 100ms
+        deadline and asserts "resolved", then asserts routing.inFlight === 1.
+        This is the zero-awaited-I/O proof, and it is falsifiable.
+      - p99 test: 200 samples of observe() with a prompt of exactly
+        max_prompt_chars, sorted, index floor(n*0.99), asserts p99 < 1ms and
+        prints TASK15_SYNC_P99_US. This is constraint (b), numerically asserted.
+      - Macrotask ordering test: asserts order === ["caller-continuation",
+        "state-building"], proving the caller's microtask continuation runs before
+        any deferred work. This is constraint (c). Backed in the implementation by
+        setTimeout(..., 0) plus handle.unref() at intent-routing.ts:216-219.
+    plugin/tool-execute-before.intent-routing-inert.test.ts:
+      Same three failure modes, asserts output.args deep-equal, byte string equal,
+      and hook order equal to HOOK_ORDER. Covers the capture side.
+    plugin/intent-routing-hanging-backend.test.ts:
+      Runtime-effects stress with the REAL dispatcher and REAL sink against a
+      hanging backend: 50 turns, asserts maxHandlerMs < 25, inFlight pinned at
+      maxInflight, observedInflightCeiling === maxInflight,
+      dispatchesDropped === turns - maxInflight, heap growth < 8 MiB, and a
+      spawned-child case asserting exitCode 0 within 1500ms (unref timers do not
+      hold the process open).
+    Conclusion: the three binding constraints from the plan are each asserted with
+    a concrete number, and the byte-identity claim is proven under backend failure.
+
+A3. No W4 test file differs from jev/foundation.
+    HELD. Blob SHAs identical for both named files. See B4 for the hashes.
+
+A4. No new hook registered.
+    HELD.
+    $ grep -rn "intentRouting" packages/omo-opencode/src/create-hooks.ts \
+        packages/omo-opencode/src/config/schema/hooks.ts
+    OBSERVED OUTPUT: (empty)  [grep exit=1]
+    The wire is threaded through existing handler factories (chat-message,
+    tool-execute-before, event, plugin-dispose) via plugin-interface.ts and
+    create-plugin-module.ts. It is NOT a 5-tier hook, has no hooks/ directory,
+    and adds no disabled_hooks key. Hook counts are unchanged.
+
+A5. No new CLI subcommand, no help-schema surface, no docs surface for the report.
+    HELD. See B7.
+
+A6. No logger-style rotation subsystem in the sink.
+    HELD. See B8.
+
+A7. No W2 / W3 / W5 work and no apply path. Exactly ONE wire added.
+    HELD. See B9.
+
+A8. Docs scope - the plan permits EXACTLY four doc files.
+    HELD. Complete list of every .md / .mdx file this branch touches:
+      M  docs/jev/HANDOFF.md                                    PERMITTED (1/4)
+      M  docs/jev/dogfood-log.md                                PERMITTED (2/4)
+      M  docs/reference/configuration.md                        PERMITTED (3/4)
+      M  packages/jev-core/AGENTS.md                            PERMITTED (4/4)
+      A  .omo/evidence/20260924-jev-w1/task-19-README.md        EVIDENCE, allowed
+    Exactly the four permitted files. NO fifth doc. The only README added is inside
+    .omo/evidence/, which the mandate explicitly allows. No README.md anywhere else.
+
+A9. Non-doc, non-test collateral outside packages/jev-core and features/jev.
+    HELD and justified by the plan.
+      package.json                        test:fast path additions ONLY. Verified
+                                          the diff is a single line adding six W1
+                                          test paths. No version change, no new
+                                          script, no dependency. C5 permits this.
+      assets/oh-my-opencode.schema.json   regenerated, C5 mandates build:schema
+      assets/omo.schema.json              regenerated, C5 mandates build:omo-schema
+      plugin-interface.ts, plugin-dispose.ts, plugin/chat-message.ts,
+      plugin/event.ts, plugin/tool-execute-before.ts,
+      testing/create-plugin-module.ts     the C2/C3 wiring surface, all additive
+
+
+-------------------------------------------------------
+PART 4. JUDGMENT ON THE TWO DISCLOSED DEVIATIONS
+-------------------------------------------------------
+
+D1. packages/jev-core/src/types.ts and sdk-type-compat.test.ts
+    VERDICT: I AGREE. IN SCOPE. Not a reject.
+    What actually changed (4 lines in types.ts, 6 in the test):
+      -  readonly criteria: Readonly<Record<O, string | null>>
+      +  readonly criteria: Readonly<Record<O, QuestionDescription>>
+      +export type QuestionDescription = string | { [key: string]: JsonValue }
+      +                                | JsonValue[] | null
+    Why I agree:
+      a) Neither file is on the plan's forbidden list. The list names
+         JevWireConfigSchema and "any W4 file"; the plan's own operationalization of
+         the W4 rule is byte-identity of the two W4 TEST files plus untouched
+         model-error-triage.ts, and all three hold.
+      b) Type-level only. Zero runtime code. JsonValue is pre-existing
+         (types.ts:61), so no new vocabulary was invented.
+      c) I independently verified backward compatibility rather than accepting the
+         claim. Every consumer of ChoiceQuestion.criteria was enumerated:
+         answer-validation.ts:52 uses `answer.choice in question.criteria` (key
+         membership, value never read) and :61 uses Object.keys. The value-equality
+         read at :100 is on ScoreQuestion, whose criteria is an array and is
+         untouched. No existing code reads a ChoiceQuestion criteria VALUE, so
+         widening it breaks no reader.
+      d) The need is real: intent-routing.test.ts:96-120 shows the new questions
+         carry structured object criteria ({ description: ... }), which the old
+         `string | null` literally could not express. Todo 4 mandates the SDK's
+         structured criteria capability.
+      e) sdk-type-compat.test.ts moving from `string | null` to `Sdk.Description`
+         is the correct direction for a file whose whole purpose is asserting our
+         local types stay assignable to the vendor SDK types.
+    Residual caveat I am recording, not rejecting on: types.ts is shared jev-core
+    infrastructure that W4 also imports, so a maximally literal reading of "any W4
+    file" could sweep it in. I do not read it that way, for reason (a).
+
+D2. packages/omo-opencode/src/plugin/tool-execute-before.ts
+    VERDICT: I AGREE on the SUBSTANCE. IN SCOPE. Not a reject.
+    BUT THE DISCLOSURE AS WRITTEN IS INCOMPLETE. Recording that separately.
+    The disclosure says the file "gained an optional intentRoutingCapture? param
+    plus one optional-chained call". The actual diff is larger:
+      i)   a SECOND new parameter, pluginConfig?: OhMyOpenCodeConfig
+      ii)  a live fallback construction executed at handler-factory time:
+             const intentRoutingCapture = args.intentRoutingCapture
+               ?? createJevIntentRouting({ jevConfig: args.pluginConfig?.jev })
+      iii) the call itself, intentRoutingCapture?.capture(input, output), where the
+           local is non-optional after the ??, so the ?. is vestigial (harmless)
+      iv)  the disclosed em-dash-to-hyphen edit on a pre-existing unrelated comment
+    Why the substance is still in scope:
+      a) C3 explicitly mandates ground-truth capture at tool.execute.before for
+         both task and call_omo_agent. Capturing here is the assignment.
+      b) The `?? createXxx(...)` fallback is NOT a new invention. It exactly mirrors
+         the pre-existing W4 precedent in plugin/event.ts:
+           const jevTriage = args.jevTriage ?? createJevModelErrorTriage({...})
+         The same shape is used consistently in chat-message.ts, plugin-interface.ts,
+         plugin-dispose.ts and event.ts for this wire. Consistent, not ad hoc.
+      c) The fallback instance is constructed WITHOUT a sealCoordinator. Reading
+         intent-routing.ts:109-112 and 230-233, a coordinator-less instance has
+         capture returning false, sealSessionIdle returning false, and dispose a
+         no-op, and it never constructs a sink. It therefore cannot write to disk
+         under any config. The fallback is inert by construction.
+      d) I checked the instance-identity risk that this pattern invites: could
+         plugin-dispose build its OWN instance and flush an empty coordinator while
+         the real one leaks? No. create-plugin-module.ts:336-358 builds exactly one
+         intentRouting and passes the SAME reference to both createPluginInterface
+         and createPluginDispose. The fallbacks only fire for non-production call
+         sites. No split-brain.
+      e) The em-dash-to-hyphen edit touches a comment, not code, in a file that is
+         NOT one of the six Phase 0 Intent Gate blocks, so bullet B1 does not reach
+         it. It also moves the file TOWARD the repo AGENTS.md ban on em dashes.
+    FINDING recorded against the disclosure, not the code: a reviewer relying on
+    the disclosure text alone would not expect a second new parameter or a live
+    default construction on the tool path. Future disclosures should enumerate
+    added parameters and any `?? createXxx()` default. Non-blocking.
+
+
+-------------------------------------------------------
+PART 5. NON-BLOCKING OBSERVATIONS
+-------------------------------------------------------
+
+O1. Drive-by dash normalization in docs/reference/configuration.md.
+    Beyond the new "Jev Intent Routing" section, the branch rewrites FOUR
+    pre-existing lines unrelated to W1:
+      "Main pane % (20-80)"            was 20 en-dash 80
+      "per session (1-20)"             was 1 en-dash 20
+      "protected from pruning (1-10)"  was 1 en-dash 10
+      "prompted again, or to re-enable" was an em dash
+    The file IS on the permitted four-doc list, so the docs-scope bullet HOLDS, and
+    the repo AGENTS.md bans en/em dashes so the direction is correct. Still, these
+    are edits to content outside W1's subject matter, same category as D2(iv).
+    Flagged for transparency. Not a violation of any Must-NOT-Have bullet.
+
+O2. Uncommitted generated-file dirt in the worktree.
+    git status shows 5 modified tracked files:
+      packages/omo-codex/plugin/components/codegraph/dist/cli.js
+      packages/omo-codex/plugin/components/codegraph/dist/serve.js
+      packages/omo-codex/scripts/install-dist/install-local.mjs
+      packages/omo-senpi/plugin/extensions/omo-member.js
+      packages/omo-senpi/plugin/extensions/omo.js
+    NONE of these appear in the jev/foundation..jev/w1-a20f diff, so they are NOT
+    part of the branch and are outside my scope mandate. task-1-worktree.txt already
+    records them as bun install build output. Recording so no later reviewer mistakes
+    them for W1 changes. Not staged, not committed.
+
+O3. Scope-shape sanity.
+    226 files changed, but 156 of them are .omo/evidence artifacts. The non-evidence
+    surface is 70 files, of which 51 are NEW W1 files (jev-core intent-routing*,
+    features/jev/intent-routing*, script/jev-w1-report*) and 19 are modifications,
+    every one of which is accounted for in A9. The shape matches "one observe-only
+    wire plus its proof", not a broader refactor.
+
+
+-------------------------------------------------------
+PART 6. FINAL TALLY
+-------------------------------------------------------
+
+Exact command 1 (Phase 0 prose + routing files)   PASS, empty
+Exact command 2 (shared JevWireConfigSchema)      PASS, empty
+Exact command 3 (observe_only runtime read)       PASS, empty
+Exact command 4 (report as CLI subcommand)        PASS, empty
+
+B1  no prose edits                                HELD
+B2  no behavior change                            HELD
+B3  no category-resolver / model-selection edit   HELD
+B4  no shared schema / W4 file edit               HELD
+B5  no session-DB mining                          HELD
+B6  no runtime read of observe_only               HELD
+B7  no new CLI subcommand / help / docs surface   HELD
+B8  no logger-style rotation subsystem            HELD
+B9  no W2/W3/W5, no apply path, ONE wire          HELD
+B10 no em dashes / AI filler / emojis added       HELD
+
+A4  no new hook registered                        HELD
+A8  docs scope, exactly four files                HELD
+
+D1  jev-core types.ts widening                    IN SCOPE, agreed
+D2  tool-execute-before.ts change                 IN SCOPE, agreed on substance;
+                                                  disclosure incomplete, non-blocking
+
+VIOLATIONS: NONE.
+
+VERDICT: APPROVE
+
+The Must-NOT-Have list held. Every one of the ten plan bullets is satisfied, all
+four mandated commands print nothing, no new hook is registered, and the docs
+footprint is exactly the four permitted files with the only added README living
+inside .omo/evidence/. The two disclosed deviations are both genuinely in scope on
+the merits, which I confirmed independently rather than accepting the disclosures:
+the criteria widening breaks no existing reader because no existing reader reads
+that value, and the tool-execute-before fallback cannot write to disk because it is
+built without a seal coordinator while production injects a single shared instance.
+The one thing I would not let pass silently is that the D2 disclosure understated
+its own diff by a parameter and a live default construction; that is a disclosure
+quality issue, not a scope breach, and it does not change the verdict.
+
+WHAT WAS OMITTED: no secrets, tokens, API keys, auth headers, or environment dumps
+were read or reproduced. TYPESAFE_API_KEY is referenced by name only, as it appears
+in source and docs, never by value. No network calls were made. No live session was
+driven; that surface belongs to F3 and F5.

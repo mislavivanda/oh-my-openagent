@@ -1,0 +1,12 @@
+TODO 5 hard test gates
+
+Command: bun run test:fast
+Exit code: 0
+Observed: 381 pass, 0 fail, 1013 assertions across 36 files in 5.88s.
+
+Command: bun test script/shared-core-extraction-guard.test.ts
+Exit code: 0
+Observed: 3 pass, 0 fail, 4 assertions across 1 file in 204ms.
+
+Why it is enough: test:fast covers jev-core, model-error classification, the OpenCode Jev adapter, config schema, package registration, and the shared-core guard. The focused guard run also proves the new core source remains harness-neutral.
+Omitted: no credentials or external service output was captured.

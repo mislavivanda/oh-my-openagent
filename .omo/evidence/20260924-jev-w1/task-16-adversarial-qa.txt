@@ -1,0 +1,44 @@
+WHAT WAS TESTED
+Adversarial static and script-only type checks for task 16.
+
+CLI exclusion grep (expected no matches)
+no matches
+
+Forbidden Unicode dash grep (expected no matches)
+no matches
+
+Forbidden TypeScript escape grep (expected no matches)
+no matches
+
+Physical LOC
+   28 script/jev-w1-report.ts
+   50 script/jev-w1-report-types.ts
+  106 script/jev-w1-report-scoring.ts
+  133 script/jev-w1-report-analysis.ts
+   80 script/jev-w1-report-render.ts
+  163 script/jev-w1-report.fixtures.ts
+  134 script/jev-w1-report.test.ts
+  694 total
+
+Pure LOC
+23	script/jev-w1-report.ts
+45	script/jev-w1-report-types.ts
+97	script/jev-w1-report-scoring.ts
+127	script/jev-w1-report-analysis.ts
+75	script/jev-w1-report-render.ts
+153	script/jev-w1-report.fixtures.ts
+116	script/jev-w1-report.test.ts
+
+Script typecheck
+$ tsgo --noEmit -p script/tsconfig.json
+
+WHAT WAS OBSERVED
+All report files avoid forbidden escapes and Unicode dashes, remain at or below 250 pure LOC, stay absent from the omo CLI tree, and pass script typecheck.
+
+WHY IT IS ENOUGH
+These checks cover the task-local static constraints while focused tests and rendered artifacts cover scoring behavior.
+
+WHAT WAS OMITTED
+LSP diagnostics could not initialize because the workspace TypeScript 7 package has no tsserver.js; repository tsgo remains the compiler gate.
+
+exit=0

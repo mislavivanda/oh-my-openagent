@@ -1,0 +1,16 @@
+TODO 5 focused GREEN
+
+Command: bun test packages/jev-core/src/intent-routing.test.ts
+Exit code: 0
+Observed after the LOC-preserving helper extraction: 13 pass, 0 fail, 42 assertions across 1 file in 122ms.
+
+Covered behavior:
+- one backend call carries all four questions;
+- all valid Choice answers above threshold are labelled would_apply, while ambiguous has no label;
+- one low-confidence answer alone is labelled would_fall_through;
+- an out-of-vocabulary choice remains visible with valid=false and invalidAnswerCount=1;
+- unavailable and rejecting backends return failed results;
+- long prompt data is truncated in the structured state payload.
+
+Why it is enough: the focused suite covers every TODO 5 acceptance case without a network call.
+Omitted: no credentials, environment dump, or secret-bearing logs were captured.

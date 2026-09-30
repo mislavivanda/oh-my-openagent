@@ -1,0 +1,41 @@
+TODO 4 adversarial QA
+
+malformed input: APPLIES
+- empty categories: IntentRoutingVocabularyError | categories | must contain at least one entry
+- empty subagents: IntentRoutingVocabularyError | subagents | must contain at least one entry
+- empty intents: IntentRoutingVocabularyError | intents | must contain at least one entry
+- duplicate name: IntentRoutingVocabularyError | intents | contains duplicate name "research"
+- empty-string name: IntentRoutingVocabularyError | categories | entry 0 must have a non-empty name
+- reserved none collision: IntentRoutingVocabularyError | categories | entry 0 uses reserved name "none"
+- missing description: IntentRoutingVocabularyError | subagents | entry 0 must have a non-empty description
+- Decision: caller entries named `none` are rejected for category and subagent vocabularies because they collide with the injected no-delegation sentinel.
+
+dirty worktree: APPLIES
+- `GIT_MASTER=1 git status --porcelain` showed the five known build outputs: codegraph dist cli.js, codegraph dist serve.js, install-local.mjs, omo-member.js, and omo.js.
+- TODO 4 paths were intent-routing.ts, intent-routing.test.ts, index.ts, types.ts, and sdk-type-compat.test.ts.
+- Concurrent TODO 6 paths were intent-routing-normalization.ts, intent-routing-normalization.test.ts, and intent-routing-normalization-drift.test.ts. They remain peer-owned and are excluded from the TODO 4 staging request.
+- The final barrel read showed the TODO 4 exports at lines 40-47 and the TODO 6 normalization exports at lines 48-57. Neither export block clobbered the other.
+
+misleading success output: APPLIES
+- RED artifact timestamp: 2026-09-24 15:55:23 UTC.
+- First production implementation timestamp: 2026-09-24 15:56:35 UTC.
+- RED failed at the intended assertion because the jev-core barrel did not contain `buildIntentRoutingQuestions`; it was not a module-resolution or syntax failure.
+
+stale state: APPLIES
+- A real `bun -e` external import from `packages/jev-core/src/index.ts` printed `version=1 keys=intent,category,subagent,ambiguous`.
+- Both category and subagent criteria include a structured `none` option whose description states that no delegation of that kind was required.
+
+prompt injection: NOT APPLICABLE. This pure builder receives trusted runtime vocabulary separately from user-turn state and does not execute or interpolate user content into instructions.
+cancel/resume: NOT APPLICABLE. The builder is synchronous and owns no lifecycle or resumable state.
+hung commands: NOT APPLICABLE. Validation uses finite loops over vocabularies capped below 255 options and performs no IO.
+flaky tests: NOT APPLICABLE. Tests use fixed data with no clock, randomness, process concurrency, or network.
+repeated interruptions: NOT APPLICABLE. The builder has no persisted or mutable cross-call state.
+
+architecture and diagnostics
+- `bun test script/shared-core-extraction-guard.test.ts`: 3 pass, 0 fail. No OpenCode type or adapter dependency entered jev-core.
+- `lsp_diagnostics` could not initialize because the workspace intentionally uses TypeScript 7.0.2 native preview, which ships no tsserver.js. A second attempt with a temporary TypeScript 5.9 tsserver path was not honored by the active MCP client. No tracked LSP configuration remains. Repository `tsgo` typecheck is the static diagnostic gate for this workspace.
+- `bun run typecheck`: exit=0 after the concurrent TODO 6 worker finished its files.
+- `bun run test:fast`: 366 pass, 0 fail, exit=0.
+- TypeScript no-excuse audit: no violations in the five TODO 4 TypeScript files.
+- Pure LOC: intent-routing.ts 112, intent-routing.test.ts 101, types.ts 88, sdk-type-compat.test.ts 39, index.ts 57. All are below the 200 LOC soft limit.
+- No Phase 0 prose file was modified.

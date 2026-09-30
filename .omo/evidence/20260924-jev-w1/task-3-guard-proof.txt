@@ -1,0 +1,52 @@
+Guard negative proof for TODO 3
+Target: packages/jev-core/src/intent-routing-record.ts
+=== SHA256 BEFORE EXPERIMENT ===
+d7b8dcbf673922553ac026c1392a37c7c6e42511f359f7aad46353888932c616  packages/jev-core/src/intent-routing-record.ts
+=== BASELINE GUARD RUN ===
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 0 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [144.00ms]
+baseline_exit=0
+=== TEMPORARY FORBIDDEN IMPORT GUARD RUN ===
+bun test v1.4.0 (34cbb9a40)
+
+script/shared-core-extraction-guard.test.ts:
+ 95 |         }
+ 96 |       }
+ 97 |     }
+ 98 | 
+ 99 |     // then
+100 |     expect(offenders).toEqual([])
+                            ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "packages/jev-core/src/intent-routing-record.ts matches /@opencode-ai\//",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/script/shared-core-extraction-guard.test.ts:100:23)
+(fail) shared core extraction guardrails > #given core package production sources #when scanned #then they stay harness-neutral [27.06ms]
+
+ 2 pass
+ 1 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [162.00ms]
+forbidden_import_exit=1
+=== SHA256 AFTER REVERT ===
+d7b8dcbf673922553ac026c1392a37c7c6e42511f359f7aad46353888932c616  packages/jev-core/src/intent-routing-record.ts
+=== FINAL GUARD RUN AFTER REVERT ===
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 0 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [207.00ms]
+final_exit=0
+Revert result: before and after SHA256 values match; temporary import left no source residue.

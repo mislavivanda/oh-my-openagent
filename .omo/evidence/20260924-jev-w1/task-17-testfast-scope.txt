@@ -1,0 +1,21 @@
+WHAT WAS TESTED
+bun run test:fast 2>&1 | grep -c "intent-routing"
+
+WHAT WAS OBSERVED
+Matched-line count: 5
+The nonzero count includes the expanded command line and passing-suite output. The unique test file paths present in that captured output were:
+packages/jev-core/src/intent-routing-accuracy.test.ts
+packages/omo-opencode/src/features/jev/intent-routing.test.ts
+packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts
+packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts
+packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts
+
+All 22 W1 test files from `git diff --name-only jev/foundation..HEAD -- '*.test.ts'` are reachable. The `packages/jev-core`, `packages/omo-opencode/src/features/jev`, and `packages/omo-opencode/src/config/schema` directory entries cover 16 files. The six newly appended exact paths cover the three plugin tests, two testing tests, and one script test that were outside those directories.
+
+WHY IT IS ENOUGH
+The gate exited 0 with 482 passing tests across 51 files. Its command line names every covering directory and every exact file needed for the complete branch-added W1 test inventory.
+
+WHAT WAS OMITTED
+No secrets, environment dump, tokens, or auth headers were captured.

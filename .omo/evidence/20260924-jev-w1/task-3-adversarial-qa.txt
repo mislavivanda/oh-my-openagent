@@ -1,0 +1,53 @@
+TODO 3 adversarial QA
+
+malformed input: APPLIES. Runtime probe output follows; every named malformed value must print rejected=true.
+dirty worktree: APPLIES. Captured in the final section after all task files exist.
+misleading success output: APPLIES. RED chronology and assertion evidence follow.
+stale state: APPLIES. The runtime probe imports the validators through packages/jev-core/src/index.ts.
+prompt injection: NOT APPLICABLE. This contract parses local JSON-compatible values and does not execute or interpolate prompt text.
+cancel/resume: NOT APPLICABLE. The validator and reader helper are synchronous pure functions with no cancellable operation.
+hung commands: NOT APPLICABLE. No process, network, timer, lock, or polling path was added.
+flaky tests: NOT APPLICABLE. Tests use fixed in-memory values with no time, randomness, shared state, or ordering dependency.
+repeated interruptions: NOT APPLICABLE. No persistence mutation or resumable workflow is implemented by this contract.
+LSP diagnostics: attempted on all three changed TypeScript files, but the configured TypeScript LSP cannot initialize because this workspace uses TypeScript 7.0.2 native preview without tsserver.js. Package-local tsgo and the required root typecheck both exit 0 instead; no LSP install or config mutation was authorized.
+TypeScript no-excuse review: PASS, no violations in intent-routing-record.ts, intent-routing-record.test.ts, or index.ts.
+barrel_observation_validator=function
+barrel_counter_validator=function
+valid_observation_accepted=true
+valid_counter_accepted=true
+wrong_kind_rejected=true
+missing_discriminator_rejected=true
+null_rejected=true
+non_object_rejected=true
+array_rejected=true
+extra_unknown_field_rejected=true
+turnOrdinal_wrong_primitive_rejected=true
+monotonicSeq_wrong_primitive_rejected=true
+sealedBy_out_of_enum_rejected=true
+correlationStatus_out_of_enum_rejected=true
+ambiguous_confidence_extra_rejected=true
+missing_sealedBy_rejected=true
+missing_correlationStatus_rejected=true
+probe_failures=0
+probe_exit=0
+=== RED CHRONOLOGY AND FAILURE MODE ===
+red_mtime_epoch=1790264576 red_mtime=2026-09-24 15:42:56.722708989 +0000
+implementation_mtime_epoch=1790264749 implementation_mtime=2026-09-24 15:45:49.241599241 +0000
+intended_assertion_present=true
+module_not_found_absent=true
+red_exit_1_present=true
+=== DIRTY WORKTREE PROOF ===
+ M assets/oh-my-opencode.schema.json
+ M assets/omo.schema.json
+ M packages/jev-core/src/index.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/config/schema/jev.test.ts
+ M packages/omo-opencode/src/config/schema/jev.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/intent-routing-record.test.ts
+?? packages/jev-core/src/intent-routing-record.ts
+classification=3 TODO-3 source/test/barrel files; 4 peer-owned TODO-2 schema/test/generated-schema files; 5 known bun-install build outputs; no guard-experiment import or extra source file
+guard_residue_absent=true (matching SHA256 is recorded in task-3-guard-proof.txt)

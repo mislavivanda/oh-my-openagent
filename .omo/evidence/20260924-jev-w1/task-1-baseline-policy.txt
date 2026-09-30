@@ -1,0 +1,132 @@
+BASELINE GATE POLICY - plan jev-w1-intent-routing (W1, Jev intent-routing wire)
+Established by todo 1. Binding on every later todo and on the F-wave audits.
+Worktree oh-my-openagent-jev-w1-a20f, branch jev/w1-a20f, from jev/foundation @ 82460563f.
+
+WHY THIS FILE EXISTS
+Todo 1 hit the plan's own full-stop condition: the repository's test suite is already RED on
+jev/foundation for reasons that have nothing to do with W1 and nothing to do with the known
+THIRD-PARTY-NOTICES.md debt the plan anticipated. Work stopped and the finding was escalated.
+The user reviewed the analysis, accepted it, and approved the two amendments recorded below.
+Nothing here was decided unilaterally by the executing agent.
+
+
+1. THE CANONICAL BASELINE COMMAND
+
+    env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+
+Recorded output: task-1-canonical-baseline.txt
+Result: exit=1, 12777 pass / 3 skip / 7 fail, 12787 tests across 1678 files, 121s.
+
+The gate is BASELINE-RELATIVE, not exit-zero. F2 asserts NO NEW FAILURES versus the recorded
+list, exactly the way the plan already treats scripts/check-third-party-notices.mjs. Demanding
+exit 0 would be demanding that W1 fix seven unrelated pre-existing defects.
+
+
+2. WHY THE AMBIENT ENV VAR IS EXCLUDED
+
+OPENCODE_SERVER_PASSWORD is exported into the agent's shell by this repo's own development
+setup (root AGENTS.md documents .env, script/agent/setup.sh, and script/agent/qa-sandbox.sh;
+.env.example lists the variable). When it is set, the tmux pane spawner forwards it as
+`-e OPENCODE_SERVER_PASSWORD=...` to `tmux split-window`, which adds two argv entries that the
+tmux test fixtures do not expect. That is a property of the developer's shell, not of the
+repository, so it is excluded from the canonical command.
+
+Isolation proof, both runs in THIS worktree, same tree, no edits between them:
+  with the variable set     task-1-baseline-bun-test.txt      exit=1   22 fail
+  with the variable removed task-1-canonical-baseline.txt     exit=1    7 fail
+The 15-line difference is 14 distinct tmux tests and nothing else (one name is reported twice):
+all of spawnTmuxPane, spawnTmuxWindow, replaceTmuxPane runner integration, and one
+team-layout-tmux topology test. Scoped confirmation:
+  env -u OPENCODE_SERVER_PASSWORD -u TMUX -u CMUX_SOCKET_PATH bun test packages/tmux-core/src/tmux-utils
+    -> exit=0, 85 pass / 0 fail
+No tmux test is in the accepted-failure list below, because with the variable removed they pass.
+
+
+3. THE 7 ACCEPTED PRE-EXISTING FAILURES
+
+Machine-diffable list: task-1-canonical-baseline-failures.txt (7 lines, LC_ALL=C sorted).
+All 7 are present on jev/foundation before W1 changes a single line. Two root-cause classes:
+
+  CLASS A - cross-file mock.module() leak (5 tests)
+    auto-update-checker/checker > getLatestVersion > accepts channel parameter
+    auto-update-checker/checker > getLatestVersion > accepts latest channel
+    auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+    auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+    auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+  Root cause: packages/omo-opencode/src/hooks/auto-update-checker/hook.test.ts:20 installs a mock
+  whose getLatestVersion returns "3.0.1" and never restores it, so the sibling checker.test.ts
+  observes "3.0.1" in a full-suite run. This is precisely the debt class root AGENTS.md names as
+  mock-module-lifecycle-audit (mock.module() without restore). The file passes 5/5 in isolation.
+
+  CLASS B - Bun 1.4.0 toolchain behavior change (2 tests)
+    dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+    isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+  Root cause: both tests assert that Bun's ResolveMessage is NOT an Error instance. On the locally
+  installed Bun 1.4.0, `resolveMessage instanceof Error` is now true. CI pins Bun 1.3.12 (root
+  AGENTS.md), so CI may show 5 failures here rather than 7. Fewer failures than the baseline is
+  never a regression; F2 only flags NEW names.
+
+Neither class is in W1's scope. Todo 1 did not attempt to fix them, by instruction.
+
+
+4. ONE QUARANTINED FLAKE, DELIBERATELY EXCLUDED FROM THE LIST
+
+    pollForCompletion > does not check completion during stabilization period after first meaningful work
+
+The first canonical run produced 8 failures, not 7. The extra one was investigated rather than
+accepted. A 3-run stability study (details in task-1-canonical-baseline-flake-analysis.txt) showed
+it failing in 1 of 3 full runs and passing 6 of 6 isolated runs. It is a wall-clock race inside the
+test's own stabilization-window assumption, exposed under full-suite CPU contention. It is excluded
+from task-1-canonical-baseline-failures.txt on purpose: a nondeterministic entry would make F2's
+diff raise false alarms in both directions. If a future run shows ONLY this test newly failing,
+re-run that file in isolation before calling it a regression.
+
+
+5. THE EXACT NORMALIZATION COMMAND (reproduce byte-for-byte)
+
+task-1-canonical-baseline-failures.txt was produced from the raw capture by:
+
+    grep -E '^\(fail\)' .omo/evidence/20260924-jev-w1/task-1-canonical-baseline.txt \
+      | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g; s/^\(fail\) //; s/ \[[0-9.]+m?s\]$//' \
+      | LC_ALL=C sort
+
+It strips ANSI escapes, strips the leading "(fail) " marker, strips the trailing "[12.34ms]"
+timing suffix, and sorts under LC_ALL=C so ordering never depends on locale. Verified: re-running
+the command against the recorded raw capture reproduces the file byte-for-byte,
+sha256 e58c7b4ab1d56299fd92dd3a115e1029d5bb81ff5aed86435e63e773af508011.
+F2 must apply this identical pipeline to its own run before diffing, or the comparison is invalid.
+
+
+6. GATES THAT REMAIN HARD
+
+  bun run test:fast                  MUST exit 0. No exceptions, no baseline relief.
+                                     Every W1 test lands in this list, so it is the real gate for
+                                     this plan's own work. Baseline: exit=0, 317 pass / 0 fail.
+                                     Evidence task-1-test-fast.txt.
+  bun run typecheck                  MUST exit 0. Baseline: exit=0 across root, script, and all 28
+                                     workspace packages. Evidence task-1-baseline-typecheck.txt.
+  check-third-party-notices.mjs      Baseline-relative, unchanged from the original plan. Baseline
+                                     exit=1 with exactly 4 missing headings (@opentui/core,
+                                     @opentui/keymap, @opentui/solid, zod). W1 adds no dependency,
+                                     so this must stay byte-identical. The heading list lives in
+                                     task-1-notices-baseline.txt with NO exit= line inside it so F2
+                                     can diff it directly; the status is in task-1-notices-exit.txt.
+
+SUMMARY OF THE RULE: test:fast and typecheck are exit-zero gates. The full suite and the notices
+script are no-new-failure gates measured against the artifacts recorded here.
+
+
+7. NOTE ON THE WORKTREE
+
+Todo 1 was first executed in worktree oh-my-openagent-jev-w1 (branch jev/w1). A peer agent was
+running the same plan in that same tree and overwrote and deleted evidence files there. That tree
+was abandoned on the user's instruction and is treated as read-only foreign property. All evidence
+in this directory was regenerated in the clean, isolated worktree oh-my-openagent-jev-w1-a20f on
+branch jev/w1-a20f, so every artifact here is self-contained and reproducible in this tree alone.
+No peer-authored file was carried over.
+
+Incidental correction to a plan assumption: the 5 modified generated files under
+packages/omo-codex/ and packages/omo-senpi/ are NOT someone's in-progress edits. A freshly created
+worktree reports a completely clean `git status`; those files appear only after `bun install` runs
+its postinstall build step, so they are build output. They were left exactly as produced, never
+stashed, reset, or reverted. Both observations are recorded in task-1-worktree.txt.

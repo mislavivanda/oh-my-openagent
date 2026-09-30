@@ -1,0 +1,30 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing.test.ts:
+1 | import { expect, test } from "bun:test"
+2 | import * as jevCore from "./index"
+3 | 
+4 | test("#given the jev-core barrel #when loading intent routing #then the question builder is exported", () => {
+5 |   expect(Object.keys(jevCore)).toContain("buildIntentRoutingQuestions")
+                                   ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "buildIntentRoutingQuestions"
+Received: [
+  "INTENT_ROUTING_CONTINUATION_LEXICON", "MODEL_ERROR_MESSAGE_MAX_CHARS", "MODEL_ERROR_TRIAGE_FIXTURES",
+  "MODEL_ERROR_TRIAGE_FIXTURE_LABEL_BY_SOURCE", "MODEL_ERROR_TRIAGE_QUESTIONS", "MODEL_ERROR_TRIAGE_QUESTION_VERSION",
+  "buildModelErrorTriageState", "choiceAnswer", "createDisabledDecisionBackend", "createLlmAdapterDecisionBackend",
+  "createMockDecisionBackend", "createRealDecisionBackend", "decideModelErrorTriage", "isIntentRoutingContinuationCandidate",
+  "selectDecisionBackend", "selectLatestIntentRoutingCountersByProcess", "validateIntentRoutingCounterDelta",
+  "validateIntentRoutingEntry", "validateIntentRoutingObservationRecord"
+]
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing.test.ts:5:32)
+(fail) #given the jev-core barrel #when loading intent routing #then the question builder is exported [0.86ms]
+
+ 0 pass
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [128.00ms]
+
+exit=1

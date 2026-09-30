@@ -1,0 +1,30 @@
+Task 18 adversarial QA
+
+WHAT WAS TESTED
+1. A real four-question measurement used a counting fetch capped at one request.
+2. The paid accuracy execution used a fetch observer capped at 15 requests while the harness call budget was also 15.
+3. The harness ceiling-abort test started at 14 of 15 and proved only one backend dispatch occurred before the named ceiling error.
+4. The partial-artifact test proved a failed fixture retains completed fixture ids and is atomically replaced by a later complete run.
+5. The missing-key run selected the real backend, evaluated all fixtures, and used a counting fetch that would throw on any network call.
+6. Artifact self-check required the resolved versioned model, question version, request count and ceiling, token totals, latency range, confusion matrices, and observe-only statement.
+7. Static scans checked the touched TypeScript and task-18 evidence for forbidden type escapes, Unicode dash characters, and accidental use of the floating alias as the resolved model.
+
+WHAT WAS OBSERVED
+- Pre-spend measurement: one HTTP request for four questions, with one outcome latency and token usage record.
+- Paid execution: 15 logical fixtures, 15 HTTP requests, ceiling 15, no retry or duplicate dispatch.
+- All 15 responses resolved to `jev-1.13.0`; none recorded `jev-latest` as the resolved model.
+- The harness completed 6 tests with 0 failures. The ceiling, dry-run, malformed-answer, and partial-retention probes remained green.
+- Accuracy was reported honestly at 66.67% intent, 66.67% category, 66.67% subagent, and 60.00% ambiguity. No score blocked the run.
+- Missing-key execution returned `missing_api_key` for all 15 fixtures, made zero HTTP requests, and completed 6 tests with 0 failures.
+- Artifact self-check passed with three non-empty task-18 files, three four-column manifest rows containing real tab characters, and all nine required matrix fields.
+- Forbidden type-escape, Unicode dash, and resolved-alias scans returned no matches.
+- The first paid-command launch failed before test discovery because the preload path lacked `./`. It made zero API requests and ran zero fixtures. The corrected launch was the only paid fixture execution, so no paid fixture was retried.
+
+CREDENTIAL HANDLING
+The assigned worktree had neither ignored env file. The source checkout had ignored `.env` and `.env.local` files, so they were sourced only inside the paid command process after the worktree-relative lookup returned empty. The credential was asserted non-empty without printing it. It was not copied, interpolated into a command argument, written to configuration, or retained.
+
+WHY IT IS ENOUGH
+The paired logical-call and HTTP counters detect duplicate dispatch rather than relying on retry configuration. The real versioned model, all response token counts, every outcome latency, and every expected/predicted row are retained. Failure behavior is exercised without a credential and without network access. The low observed accuracy remains visible because this task is an observation baseline, not an acceptance threshold.
+
+WHAT WAS OMITTED
+Raw provider payloads, authorization headers, credential values, ignored env-file contents, and the temporary fetch observer were not retained.

@@ -1,0 +1,46 @@
+WHAT WAS TESTED
+- stale state: pinned completed reuse and the floating-alias guard with no independently known resolution.
+- malformed input: empty prompt, reminder-only prompt, null sessionID, maxTurnsPerSession=1, and an unknown ordinal observation.
+- cancel/resume: session deletion and dispose while a prediction is pending.
+- repeated interruptions: session deletion twice followed by dispose twice.
+- hung work: a never-resolving prediction bounded by the prediction timeout.
+- dirty worktree: read-only git status after RED and GREEN evidence creation.
+
+WHAT WAS OBSERVED
+- The targeted adversarial tests below passed.
+- RED was captured before GREEN in task-10-turnstore-red.txt and task-10-turnstore-green.txt.
+
+WHY IT IS ENOUGH
+- The probes exercise the stale-cache, malformed-boundary, lifecycle ordering, idempotence, and liveness risks named by TODO 10 through the real in-memory state machine.
+
+WHAT WAS OMITTED
+- Prompt injection: not applicable because this store never executes prompt text; reminder markup is removed before hashing and the normalized text is only dispatched as data by the separate adapter.
+- Flaky tests: ruled out because promises are completed by explicit resolvers or the store's bounded timeout, with no polling, shared filesystem state, or random values.
+- No secrets, environment dumps, tokens, auth headers, or private credentials were captured.
+
+TEST OUTPUT
+bun test v1.4.0 (34cbb9a40)
+
+ 5 pass
+ 16 filtered out
+ 0 fail
+ 19 expect() calls
+Ran 5 tests across 1 file. [151.00ms]
+ M .omo/evidence/20260924-jev-w1/MANIFEST.tsv
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/features/jev/index.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/intent-routing-accuracy.test.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts
+?? packages/omo-opencode/src/features/jev/intent-routing.test.ts
+?? packages/omo-opencode/src/features/jev/intent-routing.ts
+
+DIRTY-WORKTREE CLASSIFICATION
+- TODO 10 owns the turn-store source, its test, its barrel export, six ignored evidence artifacts, and six MANIFEST rows.
+- Exactly five known bun-install build outputs are present: two codegraph dist files, install-local.mjs, and two omo-senpi extension bundles.
+- Concurrent TODO 8 owns intent-routing-accuracy.test.ts; concurrent TODO 9 owns intent-routing.ts, intent-routing.test.ts, and its surviving barrel export.
+- No unexpected paths were observed, and no generated output was staged, reverted, or edited by TODO 10.

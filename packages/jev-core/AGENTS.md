@@ -1,4 +1,4 @@
-# jev-core — Jev decision backend (Core)
+# jev-core - Jev decision backend (Core)
 
 **Added:** Phase A (`jev/phase-a`), against release tag `v4.19.4`
 
@@ -15,13 +15,17 @@ It is a separate package for two reasons: the same primitives get reused across 
 | `types.ts` | `export type *`: `ChoiceQuestion`, `NoulQuestion`, `ScoreQuestion`, `Question`, `Questions`, `ChoiceAnswer`, `NoulAnswer`, `ScoreAnswer`, `Answer`, `AnswerFor`, `JsonValue`, `DecisionState`, `DecisionRequest`, `DecisionUsage`, `DecisionUnavailableReason`, `DecisionOutcome`, `DecisionBackendKind`, `DecisionBackend` |
 | `mock-backend.ts` | `createMockDecisionBackend(script, options?)`, `choiceAnswer(choice, confidence, options)`, type `MockDecisionScript` |
 | `real-backend.ts` | `createRealDecisionBackend(deps)`, type `RealDecisionBackendDeps` |
-| `llm-adapter-backend.ts` | `createLlmAdapterDecisionBackend()` — placeholder, always `unavailable` / `not_implemented` |
-| `disabled-backend.ts` | `createDisabledDecisionBackend()` — always `unavailable` / `disabled` |
+| `llm-adapter-backend.ts` | `createLlmAdapterDecisionBackend()`: placeholder, always `unavailable` / `not_implemented` |
+| `disabled-backend.ts` | `createDisabledDecisionBackend()`: always `unavailable` / `disabled` |
 | `backend-selector.ts` | `selectDecisionBackend(config, deps?)`, types `DecisionBackendConfig`, `DecisionBackendDeps` |
 | `model-error-triage.ts` | `decideModelErrorTriage(args)`, `buildModelErrorTriageState(input)`, `MODEL_ERROR_TRIAGE_QUESTIONS`, `MODEL_ERROR_TRIAGE_QUESTION_VERSION`, `MODEL_ERROR_MESSAGE_MAX_CHARS`, types `ModelErrorTriageChoice`, `ModelErrorTriageInput`, `ModelErrorTriageResult` |
 | `model-error-triage-fixtures.ts` | `MODEL_ERROR_TRIAGE_FIXTURES`, `MODEL_ERROR_TRIAGE_FIXTURE_LABEL_BY_SOURCE`, types `ModelErrorTriageFixture`, `ModelErrorTriageFixtureSource` |
+| `intent-routing.ts` | `decideIntentRouting(args)`, `buildIntentRoutingQuestions(vocab)`, `INTENT_ROUTING_QUESTION_VERSION`, typed four-question intent/category/subagent/ambiguity result |
+| `intent-routing-normalization.ts` | Normalize attempted category and subagent delegations, derive observed and predicted routes, and expose the canonical subagent vocabulary |
+| `intent-routing-record.ts` | Exact JSONL observation/counter record types, continuation detection, closed-key validation, and counter-delta validation |
+| `intent-routing-fixtures.ts` | `INTENT_ROUTING_FIXTURES`, including no-delegation, category, subagent, ambiguous, multilingual, continuation, and adversarial labels |
 
-`answer-validation.ts` is deliberately NOT exported from the barrel. It is the single internal definition of "well-formed answer" shared by the mock and real backends, and both return the guarded original object so `answers` typechecks as `{ [K in keyof Q]: AnswerFor<Q[K]> }` with no cast.
+`answer-validation.ts` is deliberately NOT exported from the barrel. It is the single internal definition of "well-formed answer" shared by the mock and real backends, and both return the guarded original object so `answers` typechecks as `{ [K in keyof Q]: AnswerFor<Q[K]> }` with no cast. `intent-routing-answer-observation.ts` is also internal; it converts raw Choice and Noul answers into explicit valid/invalid observations used by `decideIntentRouting()`.
 
 ## GRACEFUL DEGRADATION CONTRACT
 
@@ -54,13 +58,15 @@ grep -rnw "Stop" packages/jev-core/src --include='*.ts' --exclude='*.test.ts'   
 
 | Wire | What it replaces | Status |
 |------|------------------|--------|
-| W4 — model-error triage | substring/regex retry classification in `packages/model-core/src/model-error-classifier.ts` | **Implemented, default off.** Gated on `jev.enabled` AND `jev.wires.model_error_triage.enabled` |
-| W1 — intent gate + routing | Phase 0 Intent Gate prose, category/subagent selection | Not started |
-| W2 — completion/continuation gauntlet | `<promise>DONE</promise>` regex + the idle gauntlet | Not started |
-| W3 — stalled/no-progress detection | `/error|failed|failure/i` and zero-token detection | Not started |
-| W5 — keyword mode triggers | `\bthink\b`-style keyword regexes | Not started |
+| W4 - model-error triage | substring/regex retry classification in `packages/model-core/src/model-error-classifier.ts` | **Implemented, default off.** Gated on `jev.enabled` AND `jev.wires.model_error_triage.enabled` |
+| W1 - intent gate + routing | Phase 0 Intent Gate prose, category/subagent selection | **Implemented, default off, observe-only.** Gated on `jev.enabled` AND `jev.wires.intent_routing.enabled`; `observe_only` must remain `true` |
+| W2 - completion/continuation gauntlet | `<promise>DONE</promise>` regex + the idle gauntlet | Not started |
+| W3 - stalled/no-progress detection | `/error|failed|failure/i` and zero-token detection | Not started |
+| W5 - keyword mode triggers | `\bthink\b`-style keyword regexes | Not started |
 
-**Phase A limitation — `status_code` is always `null`.** `ModelErrorTriageInput` carries an optional `statusCode`, `buildModelErrorTriageState()` maps it to `status_code`, and the `STATUS_CODE` fixtures exercise it. But all three Phase A call sites in `packages/omo-opencode/src/plugin/event-model-fallback.ts` pass only `{ name, message }`, exactly what the heuristic receives at those seams, so in production the `status_code` field of the decision state is `null` on every call. Treat it as a declared-but-unwired signal until a later phase threads the real HTTP status through.
+**Phase A limitation: `status_code` is always `null`.** `ModelErrorTriageInput` carries an optional `statusCode`, `buildModelErrorTriageState()` maps it to `status_code`, and the `STATUS_CODE` fixtures exercise it. But all three Phase A call sites in `packages/omo-opencode/src/plugin/event-model-fallback.ts` pass only `{ name, message }`, exactly what the heuristic receives at those seams, so in production the `status_code` field of the decision state is `null` on every call. Treat it as a declared-but-unwired signal until a later phase threads the real HTTP status through.
+
+**W1 storage contract:** the OpenCode adapter writes validated process-specific JSONL files under `~/.omo/jev/`. Observation records include `promptHeadChars` verbatim and a SHA-256 digest of the full prompt. Prompt heads are stored in the sink and are not secret-scrubbed. Core defines and validates the records; adapter files own IO, size caps, permissions, turn sealing, and actual delegation capture.
 
 ## NOTES
 

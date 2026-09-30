@@ -1,0 +1,44 @@
+[dry-run direct mode]
+dry-run fixtures=15 callCount=0 networkCalls=0
+elapsed=0.01 exit=0
+
+[malformed, partial, and stale-state probes]
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 3 filtered out
+ 0 fail
+ 10 expect() calls
+Ran 3 tests across 1 file. [136.00ms]
+
+[dirty worktree]
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/intent-routing-accuracy.test.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts
+?? packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts
+?? packages/omo-opencode/src/features/jev/intent-routing.test.ts
+
+[adversarial findings]
+WHAT WAS TESTED: direct --dry-run execution, three focused malformed/partial/stale-state tests, and git status --short.
+WHAT WAS OBSERVED: all 15 dry-run requests built in 0.01s with callCount=0 and networkCalls=0. The three focused tests passed with 10 assertions.
+WHY IT IS ENOUGH: the probes exercise the harness boundaries without using TYPESAFE_API_KEY or making a paid call.
+WHAT WAS OMITTED: no API key, request body, response body, auth header, or environment dump was retained.
+
+malformed input: APPLIES. A backend answer with the extra key fixture-that-does-not-exist yields PARTIAL/invalid_answer, an unparseable NaN answer yields PARTIAL/unscripted, and an empty fixture set throws IntentRoutingFixtureSetError.
+stale state: APPLIES. The test seeds stale-data-that-must-not-survive, checks an exact PARTIAL JSON replacement with completed ids, then checks an exact complete JSON replacement at the same path. Neither write appends.
+misleading success output: APPLIES. The default artifact says backend=mock, mode=mock, paidApi=false, and networkCallCount=0. Real mode requires JEV_W1_REAL_API=1 plus a non-empty TYPESAFE_API_KEY and asserts networkCallCount>0.
+hung or long commands: APPLIES. Each real request is bounded to 5000ms and the 15-call ceiling bounds a sequential run to 75000ms. The default mock suite completed in 0.13s and direct dry-run in 0.01s.
+dirty worktree: APPLIES. The only task-8 source is packages/jev-core/src/intent-routing-accuracy.test.ts. The five modified dist/extension files are known bun install output. The five omo-opencode Jev files in the final status are concurrent peer-owned work explicitly excluded by the task.
+prompt injection: NOT APPLICABLE. Fixture prompts remain bounded DecisionState data and are never executed as commands or instructions by this harness.
+cancel/resume: NOT APPLICABLE. This finite batch harness exposes no cancellation or resumable lifecycle; retained PARTIAL output is the declared paid rerun policy.
+flaky tests: NOT APPLICABLE. Mock answers, temporary directories, counters, and fixture order are deterministic, with no clocks, sleeps, polling, or network in CI.
+repeated interruptions: NOT APPLICABLE. No external event loop can re-enter a fixture; each completed fixture id is persisted by write-then-rename before the next dispatch, so interruption retains the prior valid PARTIAL artifact.
+
+[static verification receipts]
+LSP diagnostics: unavailable as declared by the plan because workspace TypeScript 7.0.2 has no tsserver.js; no language server was installed. tsgo typecheck is recorded separately and exits 0.
+No-excuse audit: packages/shared-skills/skills/programming/scripts/typescript/check-no-excuse-rules.ts reports no violations.
+File size: 512 pure LOC. The SIZE_OK marker records the plan's explicit requirement that the executable harness, real/mock gates, dry-run mode, and all probes remain in one test file.

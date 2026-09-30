@@ -1,0 +1,45 @@
+FLAKE STABILITY STUDY - canonical baseline, plan jev-w1-intent-routing
+worktree: oh-my-openagent-jev-w1-a20f  branch: jev/w1-a20f  HEAD: 82460563fa1573c49b88d7c70620fac09a971d19
+command under study: env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+
+WHY THIS EXISTS: the first canonical run produced 8 failures, not the 7 the orchestrator
+expected. Rather than silently accept the 8th, it was investigated. It is a load-sensitive
+timing flake. A flaky entry in the baseline failures file would make F2's no-new-failures
+diff raise false alarms in BOTH directions, so it is quarantined out of that file.
+
+THREE FULL RUNS, same command, same tree, no edits between them:
+  run 1  exit=1  12776 pass / 3 skip / 8 fail  141s
+  run 2  exit=1  12777 pass / 3 skip / 7 fail  123s
+  run 3  exit=1  12777 pass / 3 skip / 7 fail  121s   <- recorded as task-1-canonical-baseline.txt
+
+STABLE FAILURES (present in ALL 3 of 3 runs) = the 7 accepted baseline failures:
+  - auto-update-checker/checker > getLatestVersion > accepts channel parameter
+  - auto-update-checker/checker > getLatestVersion > accepts latest channel
+  - auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+  - auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+  - auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+  - dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+  - isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+
+QUARANTINED FLAKE (present in 1 of 3 runs):
+  - pollForCompletion > does not check completion during stabilization period after first meaningful work
+    file: packages/omo-opencode/src/cli/run/poll-for-completion.test.ts:113
+    assertion: expect(todoCallCount).toBe(0) got 1
+    mechanism: the test asserts that no completion check fires DURING a wall-clock stabilization
+      window. Under full-suite CPU contention the polling loop's elapsed-time check can cross the
+      stabilization boundary before the assertion runs, so one todo call slips through. It is a
+      real-time race in the test's own timing assumption, not a defect in W1's scope.
+    isolation evidence: 6 consecutive isolated runs of that file, all green:
+      run1 exit=0 20 pass / 0 fail
+      run2 exit=0 20 pass / 0 fail
+      run3 exit=0 20 pass / 0 fail
+      run4 exit=0 20 pass / 0 fail
+      run5 exit=0 20 pass / 0 fail
+      run6 exit=0 20 pass / 0 fail
+    corroboration: the earlier clean-env run in the abandoned worktree also showed 7 failures
+      and did NOT include this test (task-1-baseline-bun-test-cleanenv.txt).
+
+CONSEQUENCE FOR F2: if a future run shows this pollForCompletion test failing and nothing else
+new, that is NOT a regression introduced by W1. Re-run the file in isolation to confirm, exactly
+as done here. Any OTHER name appearing that is absent from task-1-canonical-baseline-failures.txt
+IS a new failure and must be treated as one.

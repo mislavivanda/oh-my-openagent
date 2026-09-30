@@ -1,0 +1,84 @@
+F5 measurement-integrity verification
+
+VERDICT: APPROVE
+
+CORPORA AND CHECKS
+- Own isolated live corpus: /tmp/jev-f5-sandbox.nD8V8q/home/.omo/jev, produced by task-19-drive.sh with wire enabled and --keep, then removed during mandatory cleanup after analysis.
+- Own deterministic synthetic corpus: /tmp/jev-f5-synthetic.uXiRD1, produced by writeSyntheticCorpus(), then removed during mandatory cleanup after analysis.
+- Focused report suite: bun test script/jev-w1-report.test.ts, 8 pass, 0 fail, 66 assertions.
+- Source audit: script/jev-w1-report-analysis.ts, script/jev-w1-report-scoring.ts, script/jev-w1-report-render.ts, script/jev-w1-report-types.ts, packages/jev-core/src/intent-routing-record.ts.
+- Paid baseline evidence: .omo/evidence/20260924-jev-w1/task-18-real-api-matrix.txt.
+
+TEN ASSERTIONS
+1. PASS. Record identity holds.
+   Own live corpus: records_created 32 = sealed 32 + evicted 0 + in_flight 0.
+   Synthetic corpus: records_created 20 = sealed 17 + evicted 2 + in_flight 1.
+   Proven by both corpora and source analysis.
+
+2. PASS. Evictions are not double-counted as seals.
+   Synthetic corpus separately reports records_evicted=2 while its five sealedBy buckets sum to 17, and identity remains 20=17+2+1. IntentRoutingObservationRecord.sealedBy and SEALED_BY_VALUES contain only next_turn, session_idle, seal_timeout, dispose, and session_deleted. The enum has no evicted member.
+   Proven by the synthetic corpus and source types.
+
+3. PASS. Headline rates use reliable correlations only.
+   headlineBase requires correlationStatus=reliable, predictionStatus=filled, and non-resume-only. The synthetic input contains reliable=15, censored=1, and overlap_ambiguous=1; the latter two are printed as separate counts and excluded from the 11-record headline/coherence base. The own live corpus has reliable=32, censored=0, overlap_ambiguous=0.
+   Proven by source semantics and both corpora; only the synthetic corpus exercises the exclusions.
+
+4. PASS. resume_only_records are absent from all scored numerators and denominators.
+   headlineBase explicitly removes resumeOnly before agreement, coherence, none recall, none precision, coverage, fan-out, sealedBy, and continuation calculations. The synthetic corpus has resume_only_records=1, but the filled/reliable headline base is 11 rather than 12. The own live corpus has resume_only_records=3 and route agreement denominator 24 after scalar-domain filtering.
+   Proven by source semantics and both corpora.
+
+5. PASS. NONE recall and precision are both present, differently conditioned, and correctly labelled.
+   Source: noneRecall selects actualNone where effectiveRoutes.size=0. nonePrecision selects coherent predictedNone where predictedRoute=none.
+   Synthetic result deliberately differs: none recall 1/2 (50.00%); none precision 1/4 (25.00%).
+   Own live result: none recall 12/12 (100.00%); none precision 12/29 (41.38%).
+   Proven by source semantics and both corpora; the synthetic corpus is the decisive naming check.
+
+6. PASS. Per-question figures are COVERAGE, not agreement, with cardinality.
+   Report heading is PER-QUESTION COVERAGE (attempt targets, not agreement). Each category and subagent output prints unweighted coverage, distinct_target_cardinality, and cardinality_weighted coverage.
+   Synthetic values: category 2.50/6 (41.67%), cardinality weighted 3/7 (42.86%), distinct cardinality 7; subagent 1.33/2 (66.67%), cardinality weighted 2/4 (50.00%), distinct cardinality 4.
+   Own live values: category 0.00/11 and 0/11, distinct cardinality 11; subagent 0.00/11 and 0/13, distinct cardinality 13.
+   Proven by both corpora and report-render source.
+
+7. PASS. intent and ambiguous are fixture-scored only.
+   Report prints INTENT AND AMBIGUOUS: FIXTURE-SCORED ONLY, NO LIVE GROUND TRUTH and states that live observations provide no ground-truth labels.
+   Proven by both rendered corpora and report-render source.
+
+8. PASS. Every rendered rate carries its eligible denominator, and zero denominators are safe.
+   Nonzero rates print numerator/denominator. Zero rates print insufficient data (eligible denominator=0), never NaN, Infinity, or a division error. Synthetic fan_out=many exercises the zero case. The live sealedBy buckets next_turn, seal_timeout, dispose, and session_deleted also exercise it.
+   Proven by both corpora, especially synthetic fan_out=many, and rateLine source.
+
+9. PASS. UNKNOWN is not laundered into RESUME.
+   prepareRecord drops resume observations from effectiveRoutes, marks all-resume records resumeOnly, and excludes them in headlineBase. UNKNOWN increments unknownCalls and inserts unrepresentable into effectiveRoutes, so it remains scalar-eligible and cannot agree with a W1 prediction.
+   Synthetic counts: resume_only_records=1, unknown_only_records=1, unrepresentable_route_mismatches=1. The UNKNOWN fixture contributes a scored disagreement; the resume-only fixture does not enter scoring. The own live corpus exercises resume only (3 records) but has zero UNKNOWN observations, so the synthetic corpus is the decisive representability proof.
+   Proven by source semantics and synthetic corpus; own live corpus is too small for UNKNOWN.
+
+10. PASS. The paid baseline records a resolved model id.
+    task-18-real-api-matrix.txt records resolved model: jev-1.13.0 and separately records requested alias: jev-latest. The retained result is versioned, not the floating alias.
+    Proven by task-18 baseline evidence.
+
+HONEST ACCURACY OBSERVATIONS
+Own live corpus:
+- Route agreement: 12/24 (50.00%).
+- Coherence: 29/29 (100.00%).
+- Fan-out zero: 12/12 (100.00%); one: 0/9 (0.00%); many: 0/3 (0.00%).
+- NONE recall: 12/12 (100.00%); NONE precision: 12/29 (41.38%).
+- Category coverage: 0.00/11 (0.00%); weighted 0/11 (0.00%).
+- Subagent coverage: 0.00/11 (0.00%); weighted 0/13 (0.00%).
+- Continuation candidate agreement: 1/1 (100.00%).
+
+Synthetic integrity corpus, not an accuracy benchmark:
+- Route agreement: 3/9 (33.33%).
+- NONE recall: 1/2 (50.00%); NONE precision: 1/4 (25.00%).
+
+Paid fixture baseline from task 18, reported without a threshold gate:
+- intent 10/15 (66.67%), category 10/15 (66.67%), subagent 10/15 (66.67%), ambiguous 9/15 (60.00%).
+
+LIMITATIONS
+- The own live corpus contains no censored, overlap_ambiguous, evicted, in-flight, or UNKNOWN observations. Assertions for those branches therefore rely on the deterministic synthetic corpus plus source semantics, not invented live coverage.
+- This verification changes no source file, stages nothing, and applies no accuracy threshold.
+
+CLEANUP
+- Receipt directory retained at /tmp/jev-f5-receipts.tHVo2m.
+- All 35 receipt-listed PIDs were absent after the driver cleanup.
+- Receipt-listed ports 43999, 44155, and 45437 rejected connections after cleanup.
+- /tmp/jev-f5-sandbox.nD8V8q and /tmp/jev-f5-synthetic.uXiRD1 were removed by exact path. No global process matcher was used.

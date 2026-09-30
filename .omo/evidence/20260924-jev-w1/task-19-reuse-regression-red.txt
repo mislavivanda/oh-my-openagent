@@ -1,0 +1,23 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:
+ 98 |
+ 99 |     const second = store.startTurn(baseTurn("finalized", "continue", dispatch))
+100 |     await second?.settled
+101 |
+102 |     expect(store.getTurn("finalized", first.turnOrdinal)).toBeUndefined()
+103 |     expect(dispatch).toHaveBeenCalledTimes(1)
+                           ^
+error: expect(received).toHaveBeenCalledTimes(expected)
+
+Expected number of calls: 1
+Received number of calls: 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:103:22)
+(fail) intent-routing turn identity and two-tier reuse > #given a finalized filled predecessor #when the pinned prompt repeats #then session cache reuses the prediction [0.61ms]
+
+ 13 pass
+ 1 fail
+ 52 expect() calls
+Ran 14 tests across 1 file. [179.00ms]
+exit=1

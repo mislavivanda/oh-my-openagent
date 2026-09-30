@@ -1,0 +1,21 @@
+Task 18 missing-key failure scenario
+
+WHAT WAS TESTED
+Command: `env -u TYPESAFE_API_KEY JEV_W1_REAL_API=1 bun test packages/jev-core/src/intent-routing-accuracy.test.ts`
+
+The real backend was selected while the credential was explicitly absent. A counting fetch rejected any attempted network access.
+
+WHAT WAS OBSERVED
+fixtures evaluated: 15
+fixtures returning unavailable reason `missing_api_key`: 15
+HTTP requests: 0
+test result: 6 pass, 0 fail, 22 assertions
+elapsed test time: 133.00 ms
+
+The harness printed `missing-key fixtures=15 unavailable=missing_api_key networkCalls=0` and completed cleanly without throwing or crashing.
+
+WHY IT IS ENOUGH
+Every committed fixture traversed the real-backend missing-key short circuit. The injected counting transport stayed at zero, proving that no paid call was attempted. The passing test process proves the scenario is reported as an expected unavailable outcome.
+
+WHAT WAS OMITTED
+No credential was loaded for this scenario. No request, response, authorization header, or env-file content existed to retain.

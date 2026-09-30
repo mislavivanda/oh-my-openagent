@@ -1,0 +1,83 @@
+EXPERIMENT: temporarily remove call_omo_agent from JEV_INTENT_ROUTING_CAPTURE_TOOL_ALLOWLIST.
+before_sha256=c81ad3fa7549dace78a72aeac74f6f6667b7d5e9205bbaa71de23f278e7a331e
+COMMAND (negative control): bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:
+75 | 
+76 |     captureWithoutMutation(harness, {
+77 |       tool: "call_omo_agent", sessionID: MAIN_SESSION_ID, callID: "call-agent",
+78 |     }, { subagent_type: "explore" })
+79 | 
+80 |     expect(observed(harness)).toEqual([expect.objectContaining({
+                                   ^
+error: expect(received).toEqual(expected)
+
+- [
+-   ObjectContaining {
+-     "normalizedSubagent": "explore",
+-     "routeClass": "subagent",
+-     "tool": "call_omo_agent",
+-   },
+- ]
++ []
+
+- Expected  - 7
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:80:31)
+(fail) JEV intent-routing delegation capture > #given call_omo_agent #when the before seam runs #then it captures the second delegation tool [0.32ms]
+134 |     harness.store.sealTurn({ sessionID: MAIN_SESSION_ID, turnOrdinal: harness.turnOrdinal, sealedBy: "session_idle" })
+135 |     const record = harness.entries.find((entry) => entry.kind === "observation")
+136 | 
+137 |     expect(record?.kind).toBe("observation")
+138 |     if (record?.kind !== "observation") return
+139 |     expect(record.observed.map((entry) => entry.callID)).toEqual(["call-1", "call-2", "call-3"])
+                                                               ^
+error: expect(received).toEqual(expected)
+
+@@ -3,3 +3,2 @@
+    "call-2",
+-   "call-3",
+  ]
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:139:58)
+(fail) JEV intent-routing delegation capture > #given three attempts with a duplicate target #when sealed #then one record preserves order and distinct counts [0.34ms]
+178 |     expect(observed(harness)[0]?.routeClass).toBe(expectedRouteClass)
+179 |     if ("omitCallID" in options) expect(observed(harness)[0]?.callID).toBeNull()
+180 |   })
+181 | 
+182 |   test("#given every registered schema #when routing fields are enumerated #then the capture allowlist cannot drift", () => {
+183 |     expect([...JEV_INTENT_ROUTING_CAPTURE_TOOL_ALLOWLIST].sort()).toEqual(
+                                                                        ^
+error: expect(received).toEqual(expected)
+
+@@ -1,3 +1,2 @@
+  [
+-   "call_omo_agent",
+    "task",
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts:183:67)
+(fail) JEV intent-routing delegation capture > #given every registered schema #when routing fields are enumerated #then the capture allowlist cannot drift [12.16ms]
+
+ 12 pass
+ 3 fail
+ 44 expect() calls
+Ran 15 tests across 1 file. [209.00ms]
+negative_exit=1
+after_sha256=c81ad3fa7549dace78a72aeac74f6f6667b7d5e9205bbaa71de23f278e7a331e
+hashes_match=true
+COMMAND (restored control): bun test packages/omo-opencode/src/features/jev/intent-routing-capture.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 15 pass
+ 0 fail
+ 48 expect() calls
+Ran 15 tests across 1 file. [202.00ms]
+restored_exit=0

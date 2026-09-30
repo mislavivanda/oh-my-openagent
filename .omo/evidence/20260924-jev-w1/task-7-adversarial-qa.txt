@@ -1,0 +1,101 @@
+TODO 7 adversarial QA
+
+MALFORMED INPUT: APPLIES
+
+probe=duplicate id
+command=bun test packages/jev-core/src/intent-routing-fixtures.test.ts --test-name-pattern duplicate id
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [125.00ms]
+exit=0
+
+probe=empty prompt
+command=bun test packages/jev-core/src/intent-routing-fixtures.test.ts --test-name-pattern empty prompt
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [136.00ms]
+exit=0
+
+probe=unknown category
+command=bun test packages/jev-core/src/intent-routing-fixtures.test.ts --test-name-pattern unknown category
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [124.00ms]
+exit=0
+
+probe=unknown subagent
+command=bun test packages/jev-core/src/intent-routing-fixtures.test.ts --test-name-pattern unknown subagent
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [121.00ms]
+exit=0
+
+probe=missing source
+command=bun test packages/jev-core/src/intent-routing-fixtures.test.ts --test-name-pattern missing source
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [138.00ms]
+exit=0
+
+probe=unknown intent
+command=bun test packages/jev-core/src/intent-routing-fixtures.test.ts --test-name-pattern unknown intent
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [126.00ms]
+exit=0
+
+Malformed-input conclusion: all six independent validator probes passed. The label probes cover both category and subagent option sets. Every diagnostic assertion includes fixture id validator-probe, so malformed rows cannot be silently tolerated.
+
+PROMPT INJECTION: APPLIES
+The two adversarial promptText values are static string fields in INTENT_ROUTING_FIXTURES. A source audit found fixture references only in intent-routing-fixtures.ts, its test, and the index.ts barrel. A behavior audit found no Bun.spawn, Bun.write, template interpolation, node:child_process, or node:fs reference in the fixture module. The strings are inert data: they are not executed, interpolated into a shell command, or written outside the fixture module.
+
+DIRTY WORKTREE: APPLIES
+git status --porcelain showed only:
+- TODO 7: packages/jev-core/src/intent-routing-fixtures.ts, packages/jev-core/src/intent-routing-fixtures.test.ts, and the shared packages/jev-core/src/index.ts barrel.
+- Concurrent TODO 5: packages/jev-core/src/intent-routing.ts, packages/jev-core/src/intent-routing.test.ts, and its export in the shared index.ts barrel.
+- Five known bun-install build outputs under packages/omo-codex and packages/omo-senpi.
+No other path was present. The barrel retains both TODO 7's INTENT_ROUTING_FIXTURES export on line 58 and TODO 5's decideIntentRouting export on line 59.
+The bad-label experiment restored intent-routing-fixtures.ts from sha256 6d0b737f92b8be684e9a773c8140ed1d64f1fa9ae9a6986271bf8f2d71b94922 to the same sha256. The mutation sha256 differed, the mutated test failed naming no-delegation-pure-question, and the post-revert test passed.
+
+MISLEADING SUCCESS OUTPUT: APPLIES
+task-7-fixtures-red.txt was written at 2026-09-24 16:10:04 UTC before the populated fixture module. It exited 1 on the intended assertion, Expected >= 15 and Received 0. task-7-fixtures-green.txt then exited 0 with 11 tests passing. The final fixture module mtime is 2026-09-24 16:11:50 UTC after implementation and the bad-label revert.
+
+CANCEL/RESUME: NOT APPLICABLE. Fixture declaration and validation have no cancellable or resumable operation.
+HUNG COMMANDS: NOT APPLICABLE. Validation is synchronous, has no loop over external state, and each focused run completed in under 140 ms.
+FLAKY TESTS: NOT APPLICABLE. Inputs are immutable literals with no clock, randomness, network, filesystem, or shared process state; the focused suite passed before mutation, after revert, and in all six filtered probes.
+STALE STATE: NOT APPLICABLE. Each bun test command starts a fresh process, and the byte-identical sha256 plus final GREEN proves the temporary mutation did not survive.
+REPEATED INTERRUPTIONS: NOT APPLICABLE. No background task, signal handler, retry, or interruption-sensitive resource exists in this fixture-only change.
+
+HARNESS NEUTRALITY GUARD
+command=bun test script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 3 pass
+ 0 fail
+ 4 expect() calls
+Ran 3 tests across 1 file. [160.00ms]
+exit=0

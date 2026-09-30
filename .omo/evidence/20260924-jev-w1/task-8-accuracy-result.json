@@ -1,0 +1,100 @@
+{
+  "status": "complete",
+  "backend": "mock",
+  "mode": "mock",
+  "paidApi": false,
+  "fixtureCount": 15,
+  "builtRequestCount": 15,
+  "completedFixtureIds": [
+    "no-delegation-pure-question",
+    "no-delegation-explanation",
+    "no-delegation-acknowledgement",
+    "single-category-responsive-form",
+    "single-category-readme-typo",
+    "single-subagent-session-trace",
+    "single-subagent-zod-docs",
+    "ambiguous-dashboard-speed",
+    "ambiguous-review-and-change",
+    "multilingual-korean-auth-investigation",
+    "multilingual-spanish-migration-guide",
+    "continuation-continue",
+    "continuation-go-on",
+    "adversarial-denied-investigation",
+    "adversarial-explanation-implementation"
+  ],
+  "failedFixtureId": null,
+  "failureReason": null,
+  "callCeiling": 15,
+  "callCount": 15,
+  "networkCallCount": 0,
+  "requestedModel": "jev-latest",
+  "resolvedModel": "mock",
+  "questionVersion": 1,
+  "accuracy": {
+    "intent": 1,
+    "category": 1,
+    "subagent": 1,
+    "ambiguous": 1
+  },
+  "confusionMatrices": {
+    "intent": {
+      "research": {
+        "research": 4
+      },
+      "open-ended": {
+        "open-ended": 2
+      },
+      "implementation": {
+        "implementation": 3
+      },
+      "fix": {
+        "fix": 2
+      },
+      "investigation": {
+        "investigation": 3
+      },
+      "evaluation": {
+        "evaluation": 1
+      }
+    },
+    "category": {
+      "none": {
+        "none": 9
+      },
+      "visual-engineering": {
+        "visual-engineering": 2
+      },
+      "quick": {
+        "quick": 1
+      },
+      "writing": {
+        "writing": 1
+      },
+      "deep": {
+        "deep": 2
+      }
+    },
+    "subagent": {
+      "none": {
+        "none": 9
+      },
+      "explore": {
+        "explore": 3
+      },
+      "librarian": {
+        "librarian": 2
+      },
+      "oracle": {
+        "oracle": 1
+      }
+    },
+    "ambiguous": {
+      "unambiguous": {
+        "unambiguous": 11
+      },
+      "ambiguous": {
+        "ambiguous": 4
+      }
+    }
+  }
+}

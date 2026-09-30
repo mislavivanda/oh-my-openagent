@@ -1,0 +1,50 @@
+DRIFT TEST PROOF
+
+Run 1: baseline registry drift test, expected GREEN.
+SHA256 before temporary deletion follows.
+c59605abebf81a97b2969fec849b03407c3969fffe4e822a52378e7b4f5298d6  packages/jev-core/src/intent-routing-normalization.ts
+bun test v1.4.0 (34cbb9a40)
+
+ 2 pass
+ 0 fail
+ 9 expect() calls
+Ran 2 tests across 1 file. [131.00ms]
+
+Run 2: temporarily deleted hephaestus from the frozen vocabulary, expected RED naming hephaestus.
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-normalization-drift.test.ts:
+16 |     )
+17 | 
+18 |     expect(
+19 |       missing,
+20 |       `INTENT_ROUTING_SUBAGENT_VOCABULARY is missing live registry members: ${missing.join(", ")}`,
+21 |     ).toEqual([])
+           ^
+error: INTENT_ROUTING_SUBAGENT_VOCABULARY is missing live registry members: hephaestus
+
+- []
++ [
++   "hephaestus",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-normalization-drift.test.ts:21:7)
+(fail) intent-routing subagent vocabulary drift > #given the live builtin registry #when compared #then every admitted agent is representable [0.83ms]
+
+ 1 pass
+ 1 fail
+ 9 expect() calls
+Ran 2 tests across 1 file. [129.00ms]
+
+Run 3: restored hephaestus, expected GREEN.
+SHA256 after restoration follows and must equal the before hash.
+bun test v1.4.0 (34cbb9a40)
+
+ 2 pass
+ 0 fail
+ 9 expect() calls
+Ran 2 tests across 1 file. [142.00ms]
+c59605abebf81a97b2969fec849b03407c3969fffe4e822a52378e7b4f5298d6  packages/jev-core/src/intent-routing-normalization.ts

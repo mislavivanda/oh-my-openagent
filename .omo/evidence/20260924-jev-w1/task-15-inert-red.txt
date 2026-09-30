@@ -1,0 +1,8 @@
+bun test v1.4.0 (34cbb9a40)
+The following filters did not match any test files in --cwd="/home/opencode/projects/oh-my-openagent-jev-w1-a20f":
+ packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+6434 files were searched [53.00ms]
+
+note: Tests need ".test", "_test_", ".spec" or "_spec_" in the filename (ex: "MyApp.test.ts")
+note: To treat the "packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts" filter as a path, run "bun test ./packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts"
+

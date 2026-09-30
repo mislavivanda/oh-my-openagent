@@ -1,0 +1,6 @@
+WHAT WAS TESTED: opencode-qa Case B server smoke against an isolated XDG sandbox after the unwired TODO 12 feature component changed.
+WHAT WAS OBSERVED: the isolated server did not become ready within either the 120 second attempt or the 300 second retry. The host session count was 397 before both attempts. No post-run count was available because the harness timed out.
+WHY IT IS ENOUGH: it is not a passing real-harness proof. TODO 12 intentionally does not perform TODO 14 handler wiring, so focused tests cover the new unwired component; TODO 14 must repeat real-harness QA after wiring.
+WHAT WAS OMITTED: sandbox paths, credentials, auth headers, environment dumps, and server logs containing host details were not retained.
+host_session_count_before=397
+retry_host_session_count_before=397

@@ -1,0 +1,43 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+17 | 
+18 | describe("intent-routing accuracy harness", () => {
+19 |   test("#given the default mock path #when scoring fixtures #then every fixture is completed without network calls", async () => {
+20 |     const artifact = await runIntentRoutingAccuracy()
+21 | 
+22 |     expect(artifact.completedFixtureIds).toEqual(
+                                              ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "no-delegation-pure-question",
+-   "no-delegation-explanation",
+-   "no-delegation-acknowledgement",
+-   "single-category-responsive-form",
+-   "single-category-readme-typo",
+-   "single-subagent-session-trace",
+-   "single-subagent-zod-docs",
+-   "ambiguous-dashboard-speed",
+-   "ambiguous-review-and-change",
+-   "multilingual-korean-auth-investigation",
+-   "multilingual-spanish-migration-guide",
+-   "continuation-continue",
+-   "continuation-go-on",
+-   "adversarial-denied-investigation",
+-   "adversarial-explanation-implementation",
+- ]
++ []
+
+- Expected  - 17
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-accuracy.test.ts:22:42)
+(fail) intent-routing accuracy harness > #given the default mock path #when scoring fixtures #then every fixture is completed without network calls [0.79ms]
+
+ 0 pass
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [134.00ms]
+
+exit=1

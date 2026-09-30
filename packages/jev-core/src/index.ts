@@ -1,4 +1,5 @@
 export type * from "./types"
+export type * from "./intent-routing-record"
 export {
   choiceAnswer,
   createMockDecisionBackend,
@@ -28,3 +29,31 @@ export {
   type ModelErrorTriageFixture,
   type ModelErrorTriageFixtureSource,
 } from "./model-error-triage-fixtures"
+export {
+  INTENT_ROUTING_CONTINUATION_LEXICON,
+  isIntentRoutingContinuationCandidate,
+  selectLatestIntentRoutingCountersByProcess,
+  validateIntentRoutingCounterDelta,
+  validateIntentRoutingEntry,
+  validateIntentRoutingObservationRecord,
+} from "./intent-routing-record"
+export {
+  INTENT_ROUTING_QUESTION_VERSION,
+  IntentRoutingVocabularyError,
+  buildIntentRoutingQuestions,
+  type IntentRoutingQuestions,
+  type IntentRoutingVocabulary,
+  type IntentRoutingVocabularyEntry,
+} from "./intent-routing"
+export {
+  INTENT_ROUTING_SUBAGENT_VOCABULARY,
+  derivePredictedRoute,
+  deriveRoute,
+  normalizeObservedDelegation,
+  type IntentRoutingDerivedRoute,
+  type IntentRoutingPredictedRoute,
+  type IntentRoutingPredictionAnswers,
+  type IntentRoutingRoute,
+} from "./intent-routing-normalization"
+export { INTENT_ROUTING_FIXTURES, type IntentRoutingFixture, type IntentRoutingFixtureSource } from "./intent-routing-fixtures"
+export { decideIntentRouting, type IntentRoutingChoiceLabel, type IntentRoutingDecisionAnswers, type IntentRoutingDecisionChoice, type IntentRoutingDecisionResult, type IntentRoutingInput } from "./intent-routing"

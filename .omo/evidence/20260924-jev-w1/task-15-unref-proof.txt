@@ -1,0 +1,31 @@
+temporary mutation target: packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+BEFORE_SHA256	0f64079532d24d1aac80d247bf57139aacb96f07e40a2b23a00aa069a44edf31
+MUTATED_SHA256	cb4f6152e9a59a8a6f8924f222be204f82ef8261eedaef932e0bf2d4585293bc  packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+
+COMMAND	timeout 10s bun test packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts -t unref timers
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts:
+TASK15_CHILD_EXIT=-1 ELAPSED_MS=1506.60
+139 |     const elapsedMs = performance.now() - startedAt
+140 |     const stdout = await new Response(child.stdout).text()
+141 |     const stderr = await new Response(child.stderr).text()
+142 |     console.log(`TASK15_CHILD_EXIT=${outcome.exitCode} ELAPSED_MS=${elapsedMs.toFixed(2)}`)
+143 | 
+144 |     expect(outcome.timedOut, stderr).toBe(false)
+                                           ^
+error: expect(received).toBe(expected)
+
+Expected: false
+Received: true
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts:144:38)
+(fail) Jev intent-routing hanging backend runtime effects > #given the plugin wire and hanging real backend #when the child finishes setup #then unref timers permit clean exit [1518.36ms]
+
+ 0 pass
+ 1 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [1.68s]
+EXPECTED_NONZERO_EXIT	1
+AFTER_REVERT_SHA256	0f64079532d24d1aac80d247bf57139aacb96f07e40a2b23a00aa069a44edf31  packages/omo-opencode/src/features/jev/intent-routing-sink.ts

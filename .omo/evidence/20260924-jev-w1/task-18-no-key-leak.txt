@@ -1,0 +1,15 @@
+Task 18 credential-leak scan
+
+WHAT WAS TESTED
+The required recursive, case-insensitive extended-regex scan ran against `.omo/evidence/20260924-jev-w1/` after all paid-run evidence was written.
+
+Pattern: `(sk-|api[_-]?key|typesafe_api_key)[[:space:]]*[=:]`
+
+WHAT WAS OBSERVED
+The scan printed no lines. Grep returned its expected no-match status.
+
+WHY IT IS ENOUGH
+The pattern covers common secret prefixes and key-assignment spellings requested by the work plan. No retained evidence contains a matching credential assignment or value.
+
+WHAT WAS OMITTED
+No secret-bearing source file or process environment was printed during the scan.

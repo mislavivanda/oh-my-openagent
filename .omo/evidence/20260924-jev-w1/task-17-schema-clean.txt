@@ -1,0 +1,13 @@
+WHAT WAS TESTED
+bun run build:schema
+bun run build:omo-schema
+git diff --exit-code -- assets/oh-my-opencode.schema.json assets/omo.schema.json
+
+WHAT WAS OBSERVED
+Both generators exited 0. The final two-asset diff command exited 0 with no output.
+
+WHY IT IS ENOUGH
+The OpenCode schema generator refreshed both assets, the OMO schema generator refreshed its asset, and the empty final diff proves the checked-in assets were already reproducible from current source.
+
+WHAT WAS OMITTED
+No generated build outputs outside the two schema assets are claimed as evidence.

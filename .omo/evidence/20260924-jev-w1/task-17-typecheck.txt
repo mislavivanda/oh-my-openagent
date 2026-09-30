@@ -1,0 +1,12 @@
+WHAT WAS TESTED
+bun run typecheck
+
+WHAT WAS OBSERVED
+exit=0
+The root tsgo check, script project, and all configured workspace package checks completed without diagnostics.
+
+WHY IT IS ENOUGH
+The command is the repository typecheck gate and includes packages/jev-core, the W1 report scripts, and packages/omo-opencode.
+
+WHAT WAS OMITTED
+No output was omitted; successful tsgo invocations emitted only their command lines.

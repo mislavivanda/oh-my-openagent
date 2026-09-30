@@ -1,0 +1,15 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts:
+TASK15_MAX_HANDLER_US=1074.07
+TASK15_INFLIGHT_CEILING=2
+TASK15_DROPPED=48
+TASK15_HEAP_GROWTH_BYTES=790308
+TASK15_CHILD_EXIT=0 ELAPSED_MS=441.88
+
+ 2 pass
+ 0 fail
+ 9 expect() calls
+Ran 2 tests across 1 file. [677.00ms]
+EXIT	0
+TEMP_HOME	/tmp/tmp.KJ88j6fimy

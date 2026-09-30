@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+bun test packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts
+
+WHAT WAS OBSERVED
+RED before production wiring: 0 pass, 2 fail. The constructor assertion expected 1 call and received 0. The delayed dispatcher assertion expected 1 call and received 0. Both failures named the missing handler wiring rather than a fixture or import error.
+
+WHY IT IS ENOUGH
+The failures prove the tests observed the absent integration seam before implementation.
+
+WHAT WAS OMITTED
+No secrets, environment dumps, or credentials were captured.

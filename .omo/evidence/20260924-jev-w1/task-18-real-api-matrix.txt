@@ -1,0 +1,79 @@
+Task 18 real API intent-routing accuracy baseline
+
+WHAT WAS TESTED
+Exactly one paid accuracy-harness execution ran all 15 committed fixtures with `JEV_W1_REAL_API=1`. A process-only credential was loaded from ignored env files. The SDK retry maximum was zero. A fetch observer enforced a hard ceiling of 15 HTTP requests and retained only model and token metadata. The harness retained one expected/predicted row and outcome latency per fixture.
+
+RUN SUMMARY
+status: complete
+backend: real
+paid API: true
+resolved model: jev-1.13.0
+requested alias: jev-latest
+question version: 1
+completed fixtures: 15 of 15
+actual HTTP requests: 15
+request ceiling: 15
+input tokens total: 15125
+output tokens total: 4449
+latency range: 100.919306 ms to 254.558423 ms
+test result: 6 pass, 0 fail, 30 assertions
+
+HEADLINE ACCURACY BY QUESTION
+intent: 10/15, 66.67%
+category: 10/15, 66.67%
+subagent: 10/15, 66.67%
+ambiguous: 9/15, 60.00%
+
+The scores are observations only. No accuracy threshold gated this run or its acceptance.
+
+PER-FIXTURE RESULTS
+id | intent expected -> predicted | category expected -> predicted | subagent expected -> predicted | ambiguity expected -> predicted | input/output tokens | latency ms
+no-delegation-pure-question | research -> research | none -> none | none -> none | unambiguous -> unambiguous | 1008/295 | 254.558423
+no-delegation-explanation | research -> open-ended | none -> none | none -> none | unambiguous -> unambiguous | 1011/296 | 180.117531
+no-delegation-acknowledgement | open-ended -> evaluation | none -> none | none -> none | unambiguous -> unambiguous | 1004/295 | 126.699264
+single-category-responsive-form | implementation -> implementation | visual-engineering -> visual-engineering | none -> none | unambiguous -> ambiguous | 1008/298 | 135.346321
+single-category-readme-typo | fix -> fix | quick -> quick | none -> none | unambiguous -> ambiguous | 1011/295 | 125.747813
+single-subagent-session-trace | investigation -> investigation | none -> deep | explore -> explore | unambiguous -> ambiguous | 1009/299 | 123.101746
+single-subagent-zod-docs | research -> research | none -> none | librarian -> explore | unambiguous -> unambiguous | 1011/296 | 124.413692
+ambiguous-dashboard-speed | open-ended -> open-ended | visual-engineering -> visual-engineering | none -> none | ambiguous -> ambiguous | 1003/299 | 101.656842
+ambiguous-review-and-change | evaluation -> evaluation | none -> visual-engineering | oracle -> none | ambiguous -> ambiguous | 1006/298 | 104.492065
+multilingual-korean-auth-investigation | investigation -> investigation | none -> deep | explore -> none | unambiguous -> ambiguous | 1017/298 | 113.600792
+multilingual-spanish-migration-guide | implementation -> implementation | writing -> writing | none -> none | unambiguous -> ambiguous | 1010/295 | 125.199476
+continuation-continue | implementation -> open-ended | deep -> none | none -> none | ambiguous -> ambiguous | 998/296 | 145.160943
+continuation-go-on | research -> open-ended | none -> none | librarian -> none | ambiguous -> ambiguous | 999/296 | 100.919306
+adversarial-denied-investigation | investigation -> investigation | none -> none | explore -> none | unambiguous -> unambiguous | 1015/298 | 104.827868
+adversarial-explanation-implementation | fix -> implementation | deep -> none | none -> none | unambiguous -> ambiguous | 1015/295 | 179.168680
+
+PER-QUESTION CONFUSION MATRICES
+Rows are expected labels. Columns are predicted labels. Omitted cells are zero.
+
+intent
+research: research=2, open-ended=2
+open-ended: open-ended=1, evaluation=1
+implementation: implementation=2, open-ended=1
+fix: fix=1, implementation=1
+investigation: investigation=3
+evaluation: evaluation=1
+
+category
+none: none=6, deep=2, visual-engineering=1
+visual-engineering: visual-engineering=2
+quick: quick=1
+writing: writing=1
+deep: none=2
+
+subagent
+none: none=9
+explore: explore=1, none=2
+librarian: explore=1, none=1
+oracle: none=1
+
+ambiguous
+unambiguous: unambiguous=5, ambiguous=6
+ambiguous: ambiguous=4
+
+WHY IT IS ENOUGH
+The network counter matched the 15 logical fixture dispatches and did not exceed the hard ceiling. Every response reported the same versioned model. Token totals come from all 15 API responses, and latency values come from each `DecisionOutcome.latencyMs`. The per-fixture rows reproduce every confusion-matrix cell.
+
+WHAT WAS OMITTED
+The credential, authorization header, raw request bodies, raw response bodies, and ignored env-file contents were never printed or retained.

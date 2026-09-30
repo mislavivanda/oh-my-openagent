@@ -1,0 +1,96 @@
+command: bash -c 'HOME=$(mktemp -d) bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts'
+real_home_omo_sha256_before: 85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:
+30 | }
+31 | 
+32 | export function createIntentRoutingSink(
+33 |   _options: IntentRoutingSinkOptions = {},
+34 | ): IntentRoutingSink {
+35 |   throw new Error("Intent-routing sink is not implemented")
+                                                               ^
+error: Intent-routing sink is not implemented
+      at createIntentRoutingSink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.ts:35:59)
+      at sink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:21:19)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:38:21)
+(fail) intent-routing sink > #given an observation #when appended #then its JSON bytes and restrictive modes round-trip [0.73ms]
+30 | }
+31 | 
+32 | export function createIntentRoutingSink(
+33 |   _options: IntentRoutingSinkOptions = {},
+34 | ): IntentRoutingSink {
+35 |   throw new Error("Intent-routing sink is not implemented")
+                                                               ^
+error: Intent-routing sink is not implemented
+      at createIntentRoutingSink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.ts:35:59)
+      at sink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:21:19)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:50:21)
+(fail) intent-routing sink > #given cumulative counter entries #when read #then the highest sequence wins without summing [0.14ms]
+30 | }
+31 | 
+32 | export function createIntentRoutingSink(
+33 |   _options: IntentRoutingSinkOptions = {},
+34 | ): IntentRoutingSink {
+35 |   throw new Error("Intent-routing sink is not implemented")
+                                                               ^
+error: Intent-routing sink is not implemented
+      at createIntentRoutingSink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.ts:35:59)
+      at sink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:21:19)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:65:21)
+(fail) intent-routing sink > #given no observations #when disposed #then one cumulative counter entry is persisted [0.07ms]
+30 | }
+31 | 
+32 | export function createIntentRoutingSink(
+33 |   _options: IntentRoutingSinkOptions = {},
+34 | ): IntentRoutingSink {
+35 |   throw new Error("Intent-routing sink is not implemented")
+                                                               ^
+error: Intent-routing sink is not implemented
+      at createIntentRoutingSink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.ts:35:59)
+      at sink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:21:19)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:77:21)
+(fail) intent-routing sink > #given a valid entry above the line bound #when appended #then it is rejected and counted [0.17ms]
+30 | }
+31 | 
+32 | export function createIntentRoutingSink(
+33 |   _options: IntentRoutingSinkOptions = {},
+34 | ): IntentRoutingSink {
+35 |   throw new Error("Intent-routing sink is not implemented")
+                                                               ^
+error: Intent-routing sink is not implemented
+      at createIntentRoutingSink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.ts:35:59)
+      at sink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:21:19)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:89:21)
+(fail) intent-routing sink > #given a malformed trailing line #when read #then valid records survive and the line is counted [0.06ms]
+30 | }
+31 | 
+32 | export function createIntentRoutingSink(
+33 |   _options: IntentRoutingSinkOptions = {},
+34 | ): IntentRoutingSink {
+35 |   throw new Error("Intent-routing sink is not implemented")
+                                                               ^
+error: Intent-routing sink is not implemented
+      at createIntentRoutingSink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.ts:35:59)
+      at sink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:21:19)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:103:19)
+(fail) intent-routing sink > #given two process identities #when both dispose #then distinct files merge by process [0.07ms]
+30 | }
+31 | 
+32 | export function createIntentRoutingSink(
+33 |   _options: IntentRoutingSinkOptions = {},
+34 | ): IntentRoutingSink {
+35 |   throw new Error("Intent-routing sink is not implemented")
+                                                               ^
+error: Intent-routing sink is not implemented
+      at createIntentRoutingSink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.ts:35:59)
+      at sink (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:21:19)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts:122:21)
+(fail) intent-routing sink > #given repeated cap truncations #when epochs advance #then corpus counters reset and lifetime loss carries [0.17ms]
+
+ 0 pass
+ 7 fail
+Ran 7 tests across 1 file. [134.00ms]
+test_exit: 1
+real_home_omo_sha256_after: 85f6877aa20345051ade9321dd1754d8110192a1bdcab476eca587825221aa73
+real_home_omo_unchanged: yes

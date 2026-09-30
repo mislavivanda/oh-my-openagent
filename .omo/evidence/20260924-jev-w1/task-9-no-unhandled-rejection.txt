@@ -1,0 +1,9 @@
+COMMAND: bun test packages/omo-opencode/src/features/jev/intent-routing.test.ts -t "rejecting dispatcher"
+PROBE: process.on("unhandledRejection") remains empty; failure log is emitted.
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 10 filtered out
+ 0 fail
+ 4 expect() calls
+Ran 1 test across 1 file. [223.00ms]

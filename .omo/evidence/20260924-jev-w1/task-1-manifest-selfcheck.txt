@@ -1,0 +1,17 @@
+# MANIFEST self-check for todo 1, run from the worktree root of oh-my-openagent-jev-w1-a20f
+# 1) od -c proof that row 1 is exactly todo<TAB>artifact<TAB>kind<TAB>description with real TABs and no stray whitespace
+0000000   t   o   d   o  \t   a   r   t   i   f   a   c   t  \t   k   i
+0000020   n   d  \t   d   e   s   c   r   i   p   t   i   o   n  \n
+0000037
+
+# 2) F1 completeness check: every artifact listed in the manifest must exist and be non-empty.
+# Command: awk -F'\\t' 'NR>1{print $2}' .omo/evidence/20260924-jev-w1/MANIFEST.tsv | while read -r f; do [ -s "$f" ] || echo "MISSING_OR_EMPTY $f"; done
+# Expected output between the markers: NOTHING
+--- BEGIN awk output ---
+--- END awk output ---
+missing_or_empty_count=0
+absolute_path_rows=0
+artifact_rows=16
+files_in_dir_excluding_manifest=16
+peer_files_present=0
+selfcheck_verdict=PASS

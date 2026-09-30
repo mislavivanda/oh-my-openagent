@@ -1,0 +1,19 @@
+wire=enabled
+turns=32
+sealed_observations=32
+counter_deltas=1
+session_id=ses_f0e673e3cffegHu3t2qguSkKGz
+unique_observation_sessions=1
+fan_out_zero=12
+fan_out_one=12
+fan_out_many=8
+prediction_reused=1
+call_omo_agent=3
+unscorable_resume=3
+continuation_candidates=2
+correlation_reliable=32
+correlation_censored=0 unreachable=sequential_runs_idle_before_next_prompt
+correlation_overlap_ambiguous=0 unreachable=sequential_runs_do_not_overlap
+jev_log_lines=31
+jev_requests=31
+result=PASS

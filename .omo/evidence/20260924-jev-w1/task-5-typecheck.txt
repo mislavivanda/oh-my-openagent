@@ -1,0 +1,12 @@
+TODO 5 compiler gate
+
+Command: bun run typecheck
+Exit code: 0
+
+Observed command chain:
+  tsgo --noEmit
+  tsgo --noEmit -p script/tsconfig.json
+  tsgo --noEmit across all workspace package tsconfig files, including packages/jev-core/tsconfig.json
+
+No diagnostics were emitted. This is the repository's required TypeScript compiler gate and substitutes for unavailable LSP diagnostics in this environment.
+Omitted: no environment dump, credentials, or secret-bearing output was captured.

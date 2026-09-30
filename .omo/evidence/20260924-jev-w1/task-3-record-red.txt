@@ -1,0 +1,110 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/intent-routing-record.test.ts:
+102 | describe("intent-routing record validation", () => {
+103 |   test("#given a fully populated observation #when validating #then it is accepted", () => {
+104 |     expect(
+105 |       validateIntentRoutingObservationRecord(validObservation),
+106 |       "the fully populated observation contract should validate",
+107 |     ).toBe(true)
+            ^
+error: the fully populated observation contract should validate
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-record.test.ts:107:7)
+(fail) intent-routing record validation > #given a fully populated observation #when validating #then it is accepted [0.67ms]
+109 |   })
+110 | 
+111 |   test("#given a counter snapshot #when validating #then it is accepted", () => {
+112 |     const entry = counterDelta(1)
+113 | 
+114 |     expect(validateIntentRoutingCounterDelta(entry)).toBe(true)
+                                                           ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-record.test.ts:114:54)
+(fail) intent-routing record validation > #given a counter snapshot #when validating #then it is accepted [0.11ms]
+158 |     const selected = selectLatestIntentRoutingCountersByProcess([
+159 |       counterDelta(2, 7),
+160 |       counterDelta(1, 5),
+161 |     ])
+162 | 
+163 |     expect(selected.get("process-1")?.monotonicSeq).toBe(2)
+                                                          ^
+error: expect(received).toBe(expected)
+
+Expected: 2
+Received: undefined
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-record.test.ts:163:53)
+(fail) intent-routing counter reader > #given two snapshots for one process #when selecting counters #then only the highest sequence remains [0.13ms]
+166 | })
+167 | 
+168 | describe("intent-routing continuation cohort", () => {
+169 |   test("#given the published lexicon #when inspected #then it is frozen and reproducible", () => {
+170 |     expect(Object.isFrozen(INTENT_ROUTING_CONTINUATION_LEXICON)).toBe(true)
+171 |     expect(INTENT_ROUTING_CONTINUATION_LEXICON).toEqual([
+                                                      ^
+error: expect(received).toEqual(expected)
+
+- [
+-   "continue",
+-   "go on",
+-   "go ahead",
+-   "keep going",
+-   "next",
+-   "proceed",
+-   "resume",
+-   "yes",
+-   "ok",
+-   "do it",
+-   "carry on",
+-   "more",
+- ]
++ []
+
+- Expected  - 14
++ Received  + 1
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-record.test.ts:171:49)
+(fail) intent-routing continuation cohort > #given the published lexicon #when inspected #then it is frozen and reproducible [0.17ms]
+188 |     ["continue", true],
+189 |     ["go ahead!!!", true],
+190 |     ["please go ahead", false],
+191 |     ["continue with the implementation now", false],
+192 |   ])("#given %s #when classifying continuation intent #then it returns %s", (prompt, expected) => {
+193 |     expect(isIntentRoutingContinuationCandidate(prompt)).toBe(expected)
+                                                               ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-record.test.ts:193:58)
+(fail) intent-routing continuation cohort > #given continue #when classifying continuation intent #then it returns %s [0.14ms]
+188 |     ["continue", true],
+189 |     ["go ahead!!!", true],
+190 |     ["please go ahead", false],
+191 |     ["continue with the implementation now", false],
+192 |   ])("#given %s #when classifying continuation intent #then it returns %s", (prompt, expected) => {
+193 |     expect(isIntentRoutingContinuationCandidate(prompt)).toBe(expected)
+                                                               ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w1-a20f/packages/jev-core/src/intent-routing-record.test.ts:193:58)
+(fail) intent-routing continuation cohort > #given go ahead!!! #when classifying continuation intent #then it returns %s [0.06ms]
+
+ 15 pass
+ 6 fail
+ 22 expect() calls
+Ran 21 tests across 1 file. [130.00ms]
+
+exit=1
