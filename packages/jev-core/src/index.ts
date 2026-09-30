@@ -92,3 +92,36 @@ export {
   validateCompletionContinuationEntry,
   validateCompletionContinuationObservation,
 } from "./completion-continuation-record-validation"
+export {
+  COMPLETION_CONTINUATION_QUESTIONS,
+  COMPLETION_CONTINUATION_QUESTION_KEYS,
+  COMPLETION_CONTINUATION_QUESTION_VERSION,
+  type CompletionContinuationQuestionKey,
+  type CompletionContinuationQuestions,
+} from "./completion-continuation-questions"
+export {
+  COMPLETION_CONTINUATION_BOULDER_TITLE_MAX_BYTES,
+  COMPLETION_CONTINUATION_DIFF_PATH_LIMIT,
+  COMPLETION_CONTINUATION_DIFF_PATH_MAX_BYTES,
+  COMPLETION_CONTINUATION_DIFF_PATHS_MAX_BYTES,
+  COMPLETION_CONTINUATION_MAX_STATE_BYTES,
+  COMPLETION_CONTINUATION_TODO_CONTENT_MAX_BYTES,
+  COMPLETION_CONTINUATION_TODO_ITEM_LIMIT,
+  COMPLETION_CONTINUATION_TRANSCRIPT_MAX_BYTES,
+  COMPLETION_CONTINUATION_TRANSCRIPT_MESSAGE_LIMIT,
+  COMPLETION_CONTINUATION_TRANSCRIPT_MESSAGE_MAX_BYTES,
+  buildCompletionContinuationState,
+  buildCompletionContinuationTodoStatusDigest,
+  truncateUtf8,
+  utf8ByteLength,
+  type CompletionContinuationBoulderInput,
+  type CompletionContinuationDiffInputFile,
+  type CompletionContinuationState,
+  type CompletionContinuationStateBuildResult,
+  type CompletionContinuationStateInput,
+  type CompletionContinuationTodoInputItem,
+  type CompletionContinuationTodoItem,
+  type CompletionContinuationTodoStatus,
+  type CompletionContinuationTranscriptInputMessage,
+} from "./completion-continuation-state"
+export { applyCompletionContinuationStateBudget } from "./completion-continuation-state-budget"

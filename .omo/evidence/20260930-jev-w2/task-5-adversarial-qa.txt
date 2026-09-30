@@ -1,0 +1,37 @@
+todo=5
+
+malformed_input=APPLIES
+- Empty todo input produced total=0, zero retained items, and a sha256-prefixed canonical status digest.
+- Empty and whitespace-only todo content were preserved as "" and "   ".
+- A transcript containing only a synthetic assistant message retained zero messages.
+- One 12001-byte message was reduced to 1500 UTF-8 bytes.
+- A zero-file diff retained fileCount=0 and zero paths.
+- Boulder total=0 remained present rather than being treated as absent.
+- A lone surrogate serialized as a JSON escape; the serialized UTF-8 contained no replacement character.
+- Boundary probes retained 256-byte todo content, 1500-byte transcript content, 256-byte diff paths with a 4096-byte path total, and a 256-byte boulder title. One-byte-over inputs were reduced to those exact caps.
+- Count probes retained at most 32 todo items, 8 eligible messages, and 32 diff paths.
+Observable: task-5-state-green.txt reports 10 pass / 0 fail; task-5-malformed-input.txt reports 1 matched pass / 0 fail.
+
+stale_state=APPLIES
+- Todo status digest is sha256 over JSON tuples [id,status], sorted bytewise by id and then status.
+- Reordering and content-only changes leave the digest stable. Changing a status changes the digest.
+Observable: the focused suite's reorder-stability and status-sensitivity test passed; the digest remained present after every final-budget reduction stage.
+
+misleading_success_output=APPLIES
+- Filtered UTF-8 command matched 1 test, with 7 filtered out and 0 failures.
+- The multibyte fixture measured 86060 bytes before final reduction, proving budget reduction ran.
+- The serialized result measured 23799 bytes after reduction, below the 24576-byte cap.
+Observable: task-5-utf8-cap.txt.
+
+flaky_tests=APPLIES
+- Three consecutive focused-suite runs each reported 10 pass / 0 fail and identical 86060 / 23799 byte measurements.
+Observable: task-5-flaky-tests.txt records normalized_results_identical=true.
+
+dirty_worktree=APPLIES
+- The shared worktree contains peer edits and five ambient generated bundles. No cleanup, restore, stash, or broad staging was used.
+- Exact pre-staging porcelain status is recorded in task-5-dirty-worktree-before-staging.txt; exact staged paths are recorded in task-5-staged-paths.txt.
+
+prompt_injection=NOT_APPLICABLE: This pure core builder treats bounded text as inert structured data and has no prompt execution or tool-dispatch surface.
+cancel_resume=NOT_APPLICABLE: The state and question builders are synchronous, stateless functions with no resumable lifecycle.
+hung_or_long_commands=NOT_APPLICABLE: The implementation performs bounded in-memory loops over at most 32 retained items and starts no process or network request.
+repeated_interruptions=NOT_APPLICABLE: There is no persistence or partial mutation to recover after interruption; every call returns a new plain-data value.

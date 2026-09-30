@@ -1,0 +1,16 @@
+run=1 exit=0
+preReductionBytes=86060
+postReductionBytes=23799
+ 10 pass
+ 0 fail
+run=2 exit=0
+preReductionBytes=86060
+postReductionBytes=23799
+ 10 pass
+ 0 fail
+run=3 exit=0
+preReductionBytes=86060
+postReductionBytes=23799
+ 10 pass
+ 0 fail
+normalized_results_identical=true

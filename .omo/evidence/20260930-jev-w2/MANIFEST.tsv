@@ -61,3 +61,21 @@ todo	artifact	kind	description
 4	.omo/evidence/20260930-jev-w2/task-4-manual-qa.txt	summary	Reviewer-readable tested, observed, sufficient, and omitted summary
 4	.omo/evidence/20260930-jev-w2/task-4-cleanup.txt	cleanup	Temp roots, processes, ports, and real-home cleanup receipt
 4	.omo/evidence/20260930-jev-w2/task-4-staged-paths.txt	staged-paths	Final cached path allowlist excludes peer paths and five ambient bundles
+4	.omo/evidence/20260930-jev-w2/task-4-test-fast.txt	checkpoint	Locked post-commit test:fast checkpoint, 515 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2/task-5-state-red.txt	red	Focused tests fail before state and question modules exist
+5	.omo/evidence/20260930-jev-w2/task-5-state-green.txt	test	Focused state and question suite passes with byte measurements
+5	.omo/evidence/20260930-jev-w2/task-5-utf8-cap.txt	manual-qa	Filtered multibyte cap test matches one passing test
+5	.omo/evidence/20260930-jev-w2/task-5-malformed-input.txt	adversarial	Filtered malformed and boundary probe passes
+5	.omo/evidence/20260930-jev-w2/task-5-flaky-tests.txt	adversarial	Three normalized focused runs are identical
+5	.omo/evidence/20260930-jev-w2/task-5-adversarial-qa.txt	adversarial	Applicable and ruled-out adversarial classes with observables
+5	.omo/evidence/20260930-jev-w2/task-5-typecheck.txt	typecheck	jev-core tsgo package check exits zero
+5	.omo/evidence/20260930-jev-w2/task-5-core-guard.txt	test	Shared core extraction guard passes
+5	.omo/evidence/20260930-jev-w2/task-5-no-excuse.txt	static	TypeScript no-excuse audit finds no violations
+5	.omo/evidence/20260930-jev-w2/task-5-line-counts.txt	static	Created TypeScript files remain under 250 lines
+5	.omo/evidence/20260930-jev-w2/task-5-export-star.txt	static	Barrel has zero export-star matches
+5	.omo/evidence/20260930-jev-w2/task-5-harness-imports.txt	static	New core modules have zero harness imports
+5	.omo/evidence/20260930-jev-w2/task-5-lsp.txt	lsp	All changed TypeScript files have clean diagnostics
+5	.omo/evidence/20260930-jev-w2/task-5-qa-summary.txt	summary	Reviewer-readable QA scope observations and sufficiency
+5	.omo/evidence/20260930-jev-w2/task-5-dirty-worktree-before-staging.txt	git	Shared dirty worktree recorded before exact staging
+5	.omo/evidence/20260930-jev-w2/task-5-staged-paths.txt	git	Exact cached path list after staging
+5	.omo/evidence/20260930-jev-w2/task-5-cleanup.txt	cleanup	No processes ports containers or temp paths remain
