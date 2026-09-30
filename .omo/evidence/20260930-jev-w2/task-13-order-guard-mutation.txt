@@ -1,0 +1,32 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts:
+168 |       expect(traces[scenario.name]?.some(([kind]) => kind === "log")).toBe(true)
+169 |     }
+170 |   })
+171 | 
+172 |   test("detects reordered cooldown and failure guards", async () => {
+173 |     expect(serialize(await captureAll())).toBe(readFileSync(GOLDEN_PATH, "utf8"))
+                                                ^
+error: expect(received).toBe(expected)
+
+@@ -609,5 +609,6 @@
+        "log",
+-       "[todo-continuation-enforcer] Skipped: max consecutive failures reached",
++       "[todo-continuation-enforcer] Skipped: cooldown active",
+        {
+          "sessionID": "ses-max-failures-before-cooldown",
++         "effectiveCooldown": 160000,
+          "consecutiveFailures": 5
+
+- Expected  - 1
++ Received  + 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts:173:43)
+(fail) idle event characterization > detects reordered cooldown and failure guards [4.60ms]
+
+ 0 pass
+ 2 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [149.00ms]

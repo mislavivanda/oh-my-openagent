@@ -125,3 +125,29 @@ todo	artifact	kind	description
 8	.omo/evidence/20260930-jev-w2/task-8-lsp-diagnostics.txt	static-analysis	LSP and compensating final TypeScript verification receipt
 8	.omo/evidence/20260930-jev-w2/task-8-dirty-worktree-after-staging.txt	git	Exact cached path list after staging
 9	.omo/evidence/20260930-jev-w2/task-9-staged-paths.txt	staged-paths	Exact cached path allowlist after staging excludes peer and ambient paths
+9	.omo/evidence/20260930-jev-w2/task-9-test-fast.txt	checkpoint	Locked post-commit test-fast checkpoint exits zero
+13	.omo/evidence/20260930-jev-w2/task-13-pre-extraction-golden.json	golden	No-clobber ordered trace captured from the original idle gauntlet
+13	.omo/evidence/20260930-jev-w2/task-13-pre-extraction-golden.sha256	checksum	SHA-256 recorded before extraction
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-red.txt	test-red	Characterization RED before extraction
+13	.omo/evidence/20260930-jev-w2/task-13-characterization-baseline.txt	test-baseline	Original-code golden comparison pass
+13	.omo/evidence/20260930-jev-w2/task-13-characterization-post-extraction.txt	test-green	Post-extraction golden comparison pass
+13	.omo/evidence/20260930-jev-w2/task-13-order-guard-mutation.txt	mutation-red	Deliberate guard reorder detected
+13	.omo/evidence/20260930-jev-w2/task-13-order-guard.txt	mutation-green	Restored guard order filtered pass
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-green.txt	test-green	Required todo-continuation suite pass
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-green-run2.txt	flaky-probe	Second identical suite result
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-green-run3.txt	flaky-probe	Third identical suite result
+13	.omo/evidence/20260930-jev-w2/task-13-line-limit.txt	static-check	Physical line counts for all idle-event TypeScript files
+13	.omo/evidence/20260930-jev-w2/task-13-line-limit-command.txt	static-check	Exact wc command total-row defect and corrected per-file pass
+13	.omo/evidence/20260930-jev-w2/task-13-forbidden-reference-output.txt	static-check	Empty output from forbidden-reference grep
+13	.omo/evidence/20260930-jev-w2/task-13-forbidden-reference-check.txt	static-check	Expected no-match grep status
+13	.omo/evidence/20260930-jev-w2/task-13-golden-checksum-verify.txt	checksum	Post-extraction golden checksum verification
+13	.omo/evidence/20260930-jev-w2/task-13-trace-counts.txt	adversarial-qa	Nonempty trace-entry counts for 24 guards and 3 fallthroughs
+13	.omo/evidence/20260930-jev-w2/task-13-repeated-interruption.txt	adversarial-qa	In-flight countdown handle preservation
+13	.omo/evidence/20260930-jev-w2/task-13-mutation-revert.txt	cleanup-proof	Restored max-failures-before-cooldown source order
+13	.omo/evidence/20260930-jev-w2/task-13-idle-event-final-diff.txt	diff	Final tracked idle-event extraction diff
+13	.omo/evidence/20260930-jev-w2/task-13-lsp-diagnostics.txt	diagnostics	Changed-file LSP diagnostic summary
+13	.omo/evidence/20260930-jev-w2/task-13-qa-summary.txt	qa-summary	Reviewer-readable test scope observations and omissions
+13	.omo/evidence/20260930-jev-w2/task-13-adversarial-qa.txt	adversarial-qa	Applicable probes and ruled-out classes
+13	.omo/evidence/20260930-jev-w2/task-13-cleanup.txt	cleanup	Mutation temp and process cleanup receipt
+13	.omo/evidence/20260930-jev-w2/task-13-status-before-staging.txt	dirty-worktree	Shared worktree state before staging
+13	.omo/evidence/20260930-jev-w2/task-13-cached-paths.txt	dirty-worktree	Owned cached paths after staging

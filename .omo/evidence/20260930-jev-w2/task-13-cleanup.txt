@@ -1,0 +1,11 @@
+temporary_guard_reorder_reverted=yes
+restored_guard_order=max-failures-before-cooldown
+restored_filtered_test=1_pass_0_fail_2_filtered
+task_owned_temp_files_removed=yes
+task_owned_temp_dirs_removed=yes
+verified_absent=/tmp/opencode/task13-oqa.*,/tmp/oqa-xdg.*,/tmp/oqa-sse.*
+failed_optional_smoke_artifact_removed=yes
+processes_expected=none
+ports_expected=none
+process_cleanup=exact PID traps and shell process-group termination were used; forbidden global process matchers were not used
+real_home_omo_touched=no

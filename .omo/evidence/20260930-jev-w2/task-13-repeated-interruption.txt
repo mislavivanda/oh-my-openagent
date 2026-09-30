@@ -1,0 +1,4 @@
+before_handles	2
+after_handles	2
+timer_calls	0
+ordered_trace_entries	6
