@@ -1,0 +1,15 @@
+case	detected
+plain-text-match	true
+plain-text-miss	false
+oracle-tool-result	true
+non-oracle-tool-result	false
+done-tool-result-excluded	false
+custom-regex-literal	true
+custom-regex-not-wildcard	false
+case-variation	true
+whitespace-variation	true
+old-timestamp-excluded	false
+current-timestamp-included	true
+malformed-before-valid	true
+malformed-only	false
+user-entry-excluded	false

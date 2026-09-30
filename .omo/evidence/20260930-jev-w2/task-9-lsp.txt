@@ -1,0 +1,6 @@
+LSP diagnostics reported no diagnostics for:
+- packages/omo-opencode/src/shared/completion-promise-pattern.ts
+- packages/omo-opencode/src/shared/completion-promise-pattern.test.ts
+- packages/omo-opencode/src/shared/index.ts
+- packages/omo-opencode/src/hooks/ralph-loop/completion-promise-detector.ts
+- .omo/evidence/20260930-jev-w2/task-9-golden-runner.ts

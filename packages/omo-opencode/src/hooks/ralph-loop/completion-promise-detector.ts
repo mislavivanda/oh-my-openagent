@@ -1,5 +1,6 @@
 import type { PluginInput } from "@opencode-ai/plugin"
 import { existsSync, readFileSync } from "node:fs"
+import { containsCompletionPromise } from "../../shared"
 import { log } from "../../shared/logger"
 import { HOOK_NAME } from "./constants"
 import { ULTRAWORK_VERIFICATION_PROMISE } from "./constants"
@@ -23,14 +24,6 @@ function extractTranscriptEntryText(entry: TranscriptEntry): string {
 	if (typeof entry.tool_output === "string") return entry.tool_output
 	if (entry.tool_output && typeof entry.tool_output === "object" && typeof entry.tool_output.output === "string") return entry.tool_output.output
 	return ""
-}
-
-function escapeRegex(str: string): string {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-}
-
-function buildPromisePattern(promise: string): RegExp {
-	return new RegExp(`<promise>\\s*${escapeRegex(promise)}\\s*</promise>`, "is")
 }
 
 function shouldInspectSessionMessagePart(
@@ -76,7 +69,6 @@ export function detectCompletionInTranscript(
 		if (!existsSync(transcriptPath)) return false
 
 		const content = readFileSync(transcriptPath, "utf-8")
-		const pattern = buildPromisePattern(promise)
 		const lines = content.split("\n").filter((line: string) => line.trim())
 
 		for (const line of lines) {
@@ -87,7 +79,7 @@ export function detectCompletionInTranscript(
 				const entryText = extractTranscriptEntryText(entry)
 				if (!entryText) continue
 				if (!shouldInspectTranscriptEntry(entry, promise, entryText)) continue
-				if (pattern.test(entryText)) return true
+				if (containsCompletionPromise(entryText, promise)) return true
 			} catch (error) {
 				if (!(error instanceof Error)) {
 					throw error
@@ -143,7 +135,6 @@ export async function detectCompletionInSessionMessages(
 		const assistantMessages = (scopedMessages as OpenCodeSessionMessage[]).filter((msg) => msg.info?.role === "assistant")
 		if (assistantMessages.length === 0) return false
 
-		const pattern = buildPromisePattern(options.promise)
 		for (let index = assistantMessages.length - 1; index >= 0; index -= 1) {
 			const assistant = assistantMessages[index]
 			if (!assistant.parts) continue
@@ -152,7 +143,7 @@ export async function detectCompletionInSessionMessages(
 				const partText = part.text ?? ""
 				if (!partText) continue
 				if (!shouldInspectSessionMessagePart(part.type, options.promise, partText)) continue
-				if (pattern.test(partText)) {
+				if (containsCompletionPromise(partText, options.promise)) {
 					return true
 				}
 			}

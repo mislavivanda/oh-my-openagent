@@ -79,3 +79,49 @@ todo	artifact	kind	description
 5	.omo/evidence/20260930-jev-w2/task-5-dirty-worktree-before-staging.txt	git	Shared dirty worktree recorded before exact staging
 5	.omo/evidence/20260930-jev-w2/task-5-staged-paths.txt	git	Exact cached path list after staging
 5	.omo/evidence/20260930-jev-w2/task-5-cleanup.txt	cleanup	No processes ports containers or temp paths remain
+9	.omo/evidence/20260930-jev-w2/task-9-golden-runner.ts	golden-runner	Shared pre-edit and post-edit detector corpus runner with worktree-local cleanup
+9	.omo/evidence/20260930-jev-w2/task-9-status-pre-edit.txt	dirty-worktree	Porcelain status captured before product edits
+9	.omo/evidence/20260930-jev-w2/task-9-detector-pre.sha256	stale-state	Pre-edit detector source checksum
+9	.omo/evidence/20260930-jev-w2/task-9-golden-pre.tsv	golden-baseline	Fourteen pre-extraction detector booleans
+9	.omo/evidence/20260930-jev-w2/task-9-pre-capture-order.txt	stale-state	Trace proving baseline and checksum creation order before edits
+9	.omo/evidence/20260930-jev-w2/task-9-golden-pre.sha256	stale-state	Immutable pre-extraction golden checksum
+9	.omo/evidence/20260930-jev-w2/task-9-promise-red.txt	tdd-red	Focused RED fails because the helper module does not exist
+9	.omo/evidence/20260930-jev-w2/task-9-promise-green.txt	green	Exact happy QA passes eleven tests
+9	.omo/evidence/20260930-jev-w2/task-9-regex-escape.txt	failure-qa	Exact filtered regex-literal test reports one pass
+9	.omo/evidence/20260930-jev-w2/task-9-flaky-run-1.txt	flaky-tests	Helper test repetition one passes three tests
+9	.omo/evidence/20260930-jev-w2/task-9-flaky-run-2.txt	flaky-tests	Helper test repetition two passes three tests
+9	.omo/evidence/20260930-jev-w2/task-9-flaky-run-3.txt	flaky-tests	Helper test repetition three passes three tests
+9	.omo/evidence/20260930-jev-w2/task-9-golden-post.tsv	golden-output	Fourteen post-extraction detector booleans
+9	.omo/evidence/20260930-jev-w2/task-9-golden-post.sha256	golden-output	Post-extraction checksum identical to baseline
+9	.omo/evidence/20260930-jev-w2/task-9-golden-diff.txt	compatibility	Empty diff proves zero golden mismatches
+9	.omo/evidence/20260930-jev-w2/task-9-all-completion-tests.txt	verification	All sixteen completion tests pass
+9	.omo/evidence/20260930-jev-w2/task-9-ralph-registration.txt	dormancy	Empty grep proves ralph remains unregistered
+9	.omo/evidence/20260930-jev-w2/task-9-export-star-check.txt	static	Required grep records pre-existing shared barrel export-star lines
+9	.omo/evidence/20260930-jev-w2/task-9-export-star-preexisting.txt	static	HEAD comparison proves all export-star lines predate todo 9
+9	.omo/evidence/20260930-jev-w2/task-9-single-matcher-check.txt	static	Only the shared helper owns escaping and pattern construction
+9	.omo/evidence/20260930-jev-w2/task-9-line-counts.txt	static	Every edited TypeScript file remains under 250 lines
+9	.omo/evidence/20260930-jev-w2/task-9-no-excuse-audit.txt	static	TypeScript no-excuse audit reports no violations
+9	.omo/evidence/20260930-jev-w2/task-9-adversarial-qa.txt	adversarial	Applicable probes and ruled-out classes with observables
+9	.omo/evidence/20260930-jev-w2/task-9-build.txt	build	bun run build exits zero
+9	.omo/evidence/20260930-jev-w2/task-9-lsp.txt	lsp	All changed TypeScript files have clean diagnostics
+9	.omo/evidence/20260930-jev-w2/task-9-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted summary
+9	.omo/evidence/20260930-jev-w2/task-9-cleanup.txt	cleanup	No runtime resources or temporary paths remain
+9	.omo/evidence/20260930-jev-w2/task-9-status-before-staging.txt	dirty-worktree	Porcelain status captured immediately before exact staging
+8	.omo/evidence/20260930-jev-w2/task-8-real-home-before.txt	isolation	Recursive real Jev home manifest before todo 8 tests
+8	.omo/evidence/20260930-jev-w2/task-8-sink-red.txt	tdd-red	Focused sink test fails against the explicit unimplemented scaffold
+8	.omo/evidence/20260930-jev-w2/task-8-sink-green.txt	test	Exact focused happy command with 13 passing tests
+8	.omo/evidence/20260930-jev-w2/task-8-malformed-line.txt	manual-qa	Exact malformed-tail filter with one matched passing test
+8	.omo/evidence/20260930-jev-w2/task-8-adversarial-malformed.txt	adversarial	Six malformed-input observables including oversized and invalid UTF-8 lines
+8	.omo/evidence/20260930-jev-w2/task-8-stale-state.txt	adversarial	Counter epoch truncation and tuple ordering probe
+8	.omo/evidence/20260930-jev-w2/task-8-repeated-interruptions.txt	adversarial	Reentrant and repeated dispose probe
+8	.omo/evidence/20260930-jev-w2/task-8-flaky-tests.txt	stability	Five identical focused runs with 13 passes each
+8	.omo/evidence/20260930-jev-w2/task-8-dirty-worktree-before-staging.txt	git	Dirty worktree receipt before staging preserves peer and ambient changes
+8	.omo/evidence/20260930-jev-w2/task-8-adversarial-summary.txt	adversarial	Applicable probes and ruled-out classes with observables
+8	.omo/evidence/20260930-jev-w2/task-8-real-home-after.txt	isolation	Recursive real Jev home manifest after all todo 8 tests
+8	.omo/evidence/20260930-jev-w2/task-8-real-home-diff.txt	isolation	Empty before and after real-home manifest diff
+8	.omo/evidence/20260930-jev-w2/task-8-cleanup.txt	cleanup	Eight RED-run roots removed with zero remaining and no process or port assets
+8	.omo/evidence/20260930-jev-w2/task-8-no-excuse-audit.txt	static-analysis	Strict TypeScript rule audit reports no violations
+8	.omo/evidence/20260930-jev-w2/task-8-acceptance.txt	acceptance	Line counts, forbidden-pattern checks, filename pattern, modes, and isolation byte sizes
+8	.omo/evidence/20260930-jev-w2/task-8-lsp-diagnostics.txt	static-analysis	LSP and compensating final TypeScript verification receipt
+8	.omo/evidence/20260930-jev-w2/task-8-dirty-worktree-after-staging.txt	git	Exact cached path list after staging
+9	.omo/evidence/20260930-jev-w2/task-9-staged-paths.txt	staged-paths	Exact cached path allowlist after staging excludes peer and ambient paths

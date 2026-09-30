@@ -1,0 +1,29 @@
+WHAT WAS TESTED
+- The focused RED command failed before implementation because completion-promise-pattern.ts did not exist.
+- The exact happy command exercised the existing session detector and the new pure matcher.
+- The exact filtered command exercised literal regex-metacharacter escaping and reported a nonzero test count.
+- The full completion suite exercised session messages, transcript filtering, Oracle tool results, and the helper.
+- The pre-edit and post-edit golden runner exercised 14 rows across plain text, tool results, custom regex characters, case, whitespace, timestamps, malformed transcript lines, and user exclusion.
+- bun run build and LSP diagnostics checked compilation and static correctness.
+
+WHAT WAS OBSERVED
+- Focused happy: 11 pass, 0 fail, 20 expect calls.
+- Filtered regex escape: 1 pass, 2 filtered out, 0 fail.
+- Full completion suite: 16 pass, 0 fail, 25 expect calls.
+- Three helper repetitions: each 3 pass, 0 fail, 12 expect calls.
+- Golden comparison: 14 rows, 7 true and 7 false, zero differing lines.
+- Pre-edit and post-edit golden checksum: 7b873242ff55f20e213e7272ef80017ef19d34b0a9e795e476786238ee785e33.
+- Ralph registration grep: empty.
+- Build: exit 0. LSP: no diagnostics.
+
+WHY IT IS ENOUGH
+- The golden table binds post-extraction booleans to output captured before product edits.
+- Existing detector tests pin message scoping and Oracle handling while transcript tests pin timestamps and malformed-line tolerance.
+- The dormant hook cannot be driven through live OpenCode without re-registering it, which todo 9 forbids. The dormancy grep proves it stayed unwired.
+
+WHAT WAS OMITTED
+- Repetitive build logs were summarized after a successful exit to keep every evidence file under 250 lines.
+- No environment dump, token, credential, auth header, or private session content was captured.
+
+KNOWN CAVEAT
+- shared/index.ts contained 71 export-star lines before todo 9. The assigned append-only barrel change is a named export. Rewriting pre-existing exports is outside todo 9 ownership.
