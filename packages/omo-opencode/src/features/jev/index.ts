@@ -106,3 +106,25 @@ export type {
   CompletionContinuationBoulderSnapshotTask,
   ScheduleCompletionContinuationBoulderSnapshotInput,
 } from "./completion-continuation-boulder-snapshot"
+export { classifyCompletionContinuationOutcome } from "./completion-continuation-outcome-classification"
+export { createCompletionContinuationOutcomeStore } from "./completion-continuation-outcome-store"
+export {
+  CompletionContinuationOutcomeStoreDisposedError,
+  DEFAULT_COMPLETION_CONTINUATION_OUTCOME_MAX_RECORDS_PER_SESSION,
+  DEFAULT_COMPLETION_CONTINUATION_OUTCOME_MAX_SESSIONS,
+  DEFAULT_COMPLETION_CONTINUATION_OUTCOME_WINDOW_MS,
+} from "./completion-continuation-outcome-types"
+export type {
+  ClassifyCompletionContinuationOutcomeInput,
+  CompletionContinuationActivity,
+  CompletionContinuationOutcomeClassification,
+  CompletionContinuationOutcomeClock,
+  CompletionContinuationOutcomeHandle,
+  CompletionContinuationOutcomeRecordSnapshot,
+  CompletionContinuationOutcomeSnapshot,
+  CompletionContinuationOutcomeStartInput,
+  CompletionContinuationOutcomeStore,
+  CompletionContinuationOutcomeStoreInspection,
+  CompletionContinuationOutcomeStoreOptions,
+  CompletionContinuationOutcomeTimer,
+} from "./completion-continuation-outcome-types"

@@ -1,0 +1,5 @@
+completion-continuation-outcome-types.ts: No diagnostics found
+completion-continuation-outcome-classification.ts: No diagnostics found
+completion-continuation-outcome-store.ts: No diagnostics found
+completion-continuation-outcome-store.test.ts: No diagnostics found
+index.ts: No diagnostics found

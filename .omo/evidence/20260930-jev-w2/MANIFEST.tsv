@@ -210,3 +210,18 @@ todo	artifact	kind	description
 7	.omo/evidence/20260930-jev-w2/task-7-adversarial-qa.txt	adversarial	Applicable probes and ruled-out classes
 7	.omo/evidence/20260930-jev-w2/task-7-cleanup.txt	cleanup	No leaked processes, ports, containers, or temp files
 7	.omo/evidence/20260930-jev-w2/task-7-staged-paths.txt	git-state	Exact cached paths after staging
+11	.omo/evidence/20260930-jev-w2/task-11-outcome-red.txt	test-red	Focused pre-implementation failure
+11	.omo/evidence/20260930-jev-w2/task-11-outcome-green.txt	test-green	Focused store suite with real LRU bounds
+11	.omo/evidence/20260930-jev-w2/task-11-timeout-censored.txt	manual-failure	Filtered timeout censorship proof with Ran 1 test
+11	.omo/evidence/20260930-jev-w2/task-11-flaky-tests.txt	stability	Five deterministic focused runs
+11	.omo/evidence/20260930-jev-w2/task-11-dirty-worktree-before-staging.txt	git-state	Porcelain state before staging
+11	.omo/evidence/20260930-jev-w2/task-11-adversarial-qa.txt	adversarial-qa	Applicable probes and exclusions
+11	.omo/evidence/20260930-jev-w2/task-11-typecheck.txt	typecheck	Root strict typecheck
+11	.omo/evidence/20260930-jev-w2/task-11-build.txt	build	Successful root build summary
+11	.omo/evidence/20260930-jev-w2/task-11-line-counts.txt	line-counts	Per-file physical line bounds
+11	.omo/evidence/20260930-jev-w2/task-11-no-excuse.txt	static-audit	TypeScript no-excuse audit
+11	.omo/evidence/20260930-jev-w2/task-11-static-audit.txt	static-audit	Forbidden pattern and sleep audit
+11	.omo/evidence/20260930-jev-w2/task-11-lsp-diagnostics.txt	lsp	Clean diagnostics on every changed TypeScript file
+11	.omo/evidence/20260930-jev-w2/task-11-cleanup.txt	cleanup	Zero temp roots and no home process or port impact
+11	.omo/evidence/20260930-jev-w2/task-11-qa-summary.txt	qa-summary	Reviewer-readable QA scope and sufficiency
+11	.omo/evidence/20260930-jev-w2/task-11-staged-paths.txt	git-state	Exact cached paths after staging

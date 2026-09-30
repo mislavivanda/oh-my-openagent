@@ -1,0 +1,6 @@
+Todo 11 cleanup receipt
+leftover_temp_roots=0
+No temp root was created by the implementation or focused tests; injected clocks and in-memory stores required no filesystem cleanup.
+No HOME override was set and no command or test read or wrote the real ~/.omo.
+No process was spawned by the focused tests; no background process remains.
+No network listener was opened; no port cleanup was required.
