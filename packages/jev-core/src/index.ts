@@ -57,3 +57,38 @@ export {
 } from "./intent-routing-normalization"
 export { INTENT_ROUTING_FIXTURES, type IntentRoutingFixture, type IntentRoutingFixtureSource } from "./intent-routing-fixtures"
 export { decideIntentRouting, type IntentRoutingChoiceLabel, type IntentRoutingDecisionAnswers, type IntentRoutingDecisionChoice, type IntentRoutingDecisionResult, type IntentRoutingInput } from "./intent-routing"
+export {
+  COMPLETION_CONTINUATION_CENSORED_CLOSURES,
+  COMPLETION_CONTINUATION_GAUNTLET_OUTCOMES,
+  COMPLETION_CONTINUATION_OBSERVED_CLOSURES,
+  COMPLETION_CONTINUATION_PREDICTION_STATUSES,
+  COMPLETION_CONTINUATION_PRE_INPUT_SKIP_REASONS,
+  COMPLETION_CONTINUATION_THRESHOLD_LABELS,
+  type CompletionContinuationCensoredClosure,
+  type CompletionContinuationCounterDelta,
+  type CompletionContinuationCounters,
+  type CompletionContinuationEntry,
+  type CompletionContinuationGauntletOutcome,
+  type CompletionContinuationHeuristicFacts,
+  type CompletionContinuationInputDigests,
+  type CompletionContinuationInputTruncations,
+  type CompletionContinuationNotDispatchedReason,
+  type CompletionContinuationObservation,
+  type CompletionContinuationObservedClosure,
+  type CompletionContinuationOutcomeClosedBy,
+  type CompletionContinuationOutcomeFacts,
+  type CompletionContinuationOutcomeStatus,
+  type CompletionContinuationOutcomeTruth,
+  type CompletionContinuationPredictionStatus,
+  type CompletionContinuationPreInputSkipReason,
+  type CompletionContinuationPreInputSkips,
+  type CompletionContinuationProbabilities,
+  type CompletionContinuationThresholdLabel,
+  type CompletionContinuationThresholdLabels,
+} from "./completion-continuation-record-types"
+export {
+  selectLatestCompletionContinuationCountersByProcess,
+  validateCompletionContinuationCounterDelta,
+  validateCompletionContinuationEntry,
+  validateCompletionContinuationObservation,
+} from "./completion-continuation-record-validation"

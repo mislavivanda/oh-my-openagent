@@ -1,0 +1,16 @@
+.omo/evidence/20260930-jev-w2/task-3-adversarial.txt
+.omo/evidence/20260930-jev-w2/task-3-circular-label-reject.txt
+.omo/evidence/20260930-jev-w2/task-3-cleanup.txt
+.omo/evidence/20260930-jev-w2/task-3-core-guard.txt
+.omo/evidence/20260930-jev-w2/task-3-dirty-before-staging.txt
+.omo/evidence/20260930-jev-w2/task-3-lsp.txt
+.omo/evidence/20260930-jev-w2/task-3-qa-summary.txt
+.omo/evidence/20260930-jev-w2/task-3-record-green.txt
+.omo/evidence/20260930-jev-w2/task-3-record-red.txt
+.omo/evidence/20260930-jev-w2/task-3-staged-paths.txt
+.omo/evidence/20260930-jev-w2/task-3-static-checks.txt
+.omo/evidence/20260930-jev-w2/task-3-typecheck.txt
+packages/jev-core/src/completion-continuation-record-types.ts
+packages/jev-core/src/completion-continuation-record-validation.test.ts
+packages/jev-core/src/completion-continuation-record-validation.ts
+packages/jev-core/src/index.ts

@@ -1,0 +1,5 @@
+LSP diagnostics ran against each changed source file:
+- packages/jev-core/src/completion-continuation-record-types.ts: no diagnostics
+- packages/jev-core/src/completion-continuation-record-validation.ts: no diagnostics
+- packages/jev-core/src/completion-continuation-record-validation.test.ts: no diagnostics
+- packages/jev-core/src/index.ts: no diagnostics
