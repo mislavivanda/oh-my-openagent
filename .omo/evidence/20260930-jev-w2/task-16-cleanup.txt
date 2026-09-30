@@ -1,0 +1,7 @@
+mktemp_corpus_dirs_before=2
+mktemp_corpus_dirs_removed=2
+mktemp_corpus_dirs_remaining=0
+real_omo_unchanged=yes
+processes_expected=none
+ports_expected=none
+cleanup_exit=0

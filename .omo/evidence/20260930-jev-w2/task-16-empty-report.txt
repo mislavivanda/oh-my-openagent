@@ -1,0 +1,251 @@
+JEV W2 COMPLETION-CONTINUATION AGREEMENT REPORT
+
+DENOMINATORS
+starts: 0
+records: 0
+prediction_status_filled: 0
+prediction_status_failed: 0
+prediction_status_timeout: 0
+prediction_status_not_dispatched: 0
+invalid_answers: 0
+uncertain_answers: 0
+gauntlet_outcome_no_todos: 0
+gauntlet_outcome_all_todos_complete: 0
+gauntlet_outcome_injection_in_flight: 0
+gauntlet_outcome_max_failures: 0
+gauntlet_outcome_cooldown: 0
+gauntlet_outcome_latest_compaction: 0
+gauntlet_outcome_agent_skipped: 0
+gauntlet_outcome_compaction_agent_unknown: 0
+gauntlet_outcome_compaction_guard: 0
+gauntlet_outcome_continuation_stopped: 0
+gauntlet_outcome_turn_boundary_block: 0
+gauntlet_outcome_stagnation_stop: 0
+gauntlet_outcome_continuation_scheduled: 0
+outcome_status_pending: 0
+outcome_status_observed: 0
+outcome_status_censored: 0
+outcome_closure_pending: 0
+outcome_closure_tracked_work_complete: 0
+outcome_closure_tracked_work_progressed: 0
+outcome_closure_unchanged_next_idle: 0
+outcome_closure_timeout: 0
+outcome_closure_dispose: 0
+outcome_closure_session_deleted: 0
+outcome_closure_human_intervention: 0
+outcome_closure_evicted: 0
+censor_reason_timeout: 0
+censor_reason_dispose: 0
+censor_reason_session_deleted: 0
+censor_reason_human_intervention: 0
+censor_reason_evicted: 0
+pre_input_skip_alreadyComplete: 0
+pre_input_skip_recovering: 0
+pre_input_skip_cancelled: 0
+pre_input_skip_syncHandoff: 0
+pre_input_skip_tokenLimit: 0
+pre_input_skip_recentAbort: 0
+pre_input_skip_backgroundTasks: 0
+pre_input_skip_assistantAborted: 0
+pre_input_skip_pendingQuestion: 0
+pre_input_skip_internalContinuationPending: 0
+pre_input_skip_messagesUnavailable: 0
+pre_input_skip_todosUnavailable: 0
+dispatches_dropped: 0
+records_evicted: 0
+censored_windows: 0
+malformed_lines: 0
+malformed_write_rejections: 0
+records_lost_to_cap: 0
+sink_truncations: 0
+truncation_flag_todo_items: 0
+truncation_flag_todo_content: 0
+truncation_flag_transcript_messages: 0
+truncation_flag_transcript_content: 0
+truncation_flag_diff_paths: 0
+truncation_flag_diff_content: 0
+truncation_flag_boulder_content: 0
+truncation_flag_state: 0
+transcript_available: 0
+transcript_unavailable: 0
+diff_available: 0
+diff_unavailable: 0
+boulder_available: 0
+boulder_unavailable: 0
+continuation_fixture_cohort_candidate: 0
+continuation_fixture_cohort_non_candidate: 0
+in_flight: 0
+in_flight_identity: starts=0 records=0 in_flight=0 balanced=yes
+
+HEURISTIC PROXY AGREEMENT
+eligible denominator: confident prediction + known heuristic proxy
+todo_complete overall: insufficient data (eligible denominator=0); coverage=0/0
+todo_complete cross-tab by closure_reason
+closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=unchanged_next_idle: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/0
+todo_complete cross-tab by transcript_present
+transcript_present=present: insufficient data (eligible denominator=0); coverage=0/0
+transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+todo_complete cross-tab by boulder_present
+boulder_present=present: insufficient data (eligible denominator=0); coverage=0/0
+boulder_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+todo_complete cross-tab by diff_present
+diff_present=present: insufficient data (eligible denominator=0); coverage=0/0
+diff_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+todo_complete cross-tab by continuation_fixture_cohort
+continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
+continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
+
+promise_complete overall: insufficient data (eligible denominator=0); coverage=0/0
+promise_complete cross-tab by closure_reason
+closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=unchanged_next_idle: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/0
+promise_complete cross-tab by transcript_present
+transcript_present=present: insufficient data (eligible denominator=0); coverage=0/0
+transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+promise_complete cross-tab by boulder_present
+boulder_present=present: insufficient data (eligible denominator=0); coverage=0/0
+boulder_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+promise_complete cross-tab by diff_present
+diff_present=present: insufficient data (eligible denominator=0); coverage=0/0
+diff_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+promise_complete cross-tab by continuation_fixture_cohort
+continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
+continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
+
+todo_progress overall: insufficient data (eligible denominator=0); coverage=0/0
+todo_progress cross-tab by closure_reason
+closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=unchanged_next_idle: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/0
+todo_progress cross-tab by transcript_present
+transcript_present=present: insufficient data (eligible denominator=0); coverage=0/0
+transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+todo_progress cross-tab by boulder_present
+boulder_present=present: insufficient data (eligible denominator=0); coverage=0/0
+boulder_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+todo_progress cross-tab by diff_present
+diff_present=present: insufficient data (eligible denominator=0); coverage=0/0
+diff_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+todo_progress cross-tab by continuation_fixture_cohort
+continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
+continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
+
+stagnation_stop overall: insufficient data (eligible denominator=0); coverage=0/0
+stagnation_stop cross-tab by closure_reason
+closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=unchanged_next_idle: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/0
+stagnation_stop cross-tab by transcript_present
+transcript_present=present: insufficient data (eligible denominator=0); coverage=0/0
+transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+stagnation_stop cross-tab by boulder_present
+boulder_present=present: insufficient data (eligible denominator=0); coverage=0/0
+boulder_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+stagnation_stop cross-tab by diff_present
+diff_present=present: insufficient data (eligible denominator=0); coverage=0/0
+diff_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+stagnation_stop cross-tab by continuation_fixture_cohort
+continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
+continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
+
+OUTCOME AGREEMENT (observed non-censored labels only)
+eligible denominator: confident prediction + observed non-censored outcome label
+actually_complete overall: insufficient data (eligible denominator=0); coverage=0/0
+actually_complete cross-tab by closure_reason
+closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=unchanged_next_idle: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/0
+actually_complete cross-tab by transcript_present
+transcript_present=present: insufficient data (eligible denominator=0); coverage=0/0
+transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+actually_complete cross-tab by boulder_present
+boulder_present=present: insufficient data (eligible denominator=0); coverage=0/0
+boulder_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+actually_complete cross-tab by diff_present
+diff_present=present: insufficient data (eligible denominator=0); coverage=0/0
+diff_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+actually_complete cross-tab by continuation_fixture_cohort
+continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
+continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
+
+progressing overall: insufficient data (eligible denominator=0); coverage=0/0
+progressing cross-tab by closure_reason
+closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=unchanged_next_idle: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/0
+progressing cross-tab by transcript_present
+transcript_present=present: insufficient data (eligible denominator=0); coverage=0/0
+transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+progressing cross-tab by boulder_present
+boulder_present=present: insufficient data (eligible denominator=0); coverage=0/0
+boulder_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+progressing cross-tab by diff_present
+diff_present=present: insufficient data (eligible denominator=0); coverage=0/0
+diff_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+progressing cross-tab by continuation_fixture_cohort
+continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
+continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
+
+stuck overall: insufficient data (eligible denominator=0); coverage=0/0
+stuck cross-tab by closure_reason
+closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=unchanged_next_idle: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/0
+closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/0
+stuck cross-tab by transcript_present
+transcript_present=present: insufficient data (eligible denominator=0); coverage=0/0
+transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+stuck cross-tab by boulder_present
+boulder_present=present: insufficient data (eligible denominator=0); coverage=0/0
+boulder_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+stuck cross-tab by diff_present
+diff_present=present: insufficient data (eligible denominator=0); coverage=0/0
+diff_present=absent: insufficient data (eligible denominator=0); coverage=0/0
+stuck cross-tab by continuation_fixture_cohort
+continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
+continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
+

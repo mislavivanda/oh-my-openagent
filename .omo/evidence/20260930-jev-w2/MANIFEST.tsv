@@ -258,3 +258,18 @@ todo	artifact	kind	description
 14	.omo/evidence/20260930-jev-w2/task-14-lsp-diagnostics.txt	diagnostics	changed-file diagnostics and compiler backstop
 14	.omo/evidence/20260930-jev-w2/task-14-qa-summary.txt	summary	manual and adversarial QA summary
 14	.omo/evidence/20260930-jev-w2/task-14-staged-paths.txt	status	exact staged path receipt excluding ambient bundles
+16	.omo/evidence/20260930-jev-w2/task-16-report-red.txt	tdd-red	Focused report suite fails before the W2 report modules exist
+16	.omo/evidence/20260930-jev-w2/task-16-report.txt	manual-qa	Exact populated-root CLI report with denominators before separate agreement blocks
+16	.omo/evidence/20260930-jev-w2/task-16-empty-report.txt	failure-qa	Exact empty-root CLI report exits zero and renders insufficient data
+16	.omo/evidence/20260930-jev-w2/task-16-divergence-mutation.txt	misleading-success	Temporary shared-conditioning regression fails the divergent-corpus test and is reverted
+16	.omo/evidence/20260930-jev-w2/task-16-censored-leak-mutation.txt	censor-integrity	Temporary censored stuck leak changes denominator one to two fails and is reverted
+16	.omo/evidence/20260930-jev-w2/task-16-malformed-input.txt	adversarial	Malformed unknown missing-facts and truncated JSONL probe passes
+16	.omo/evidence/20260930-jev-w2/task-16-stale-state.txt	adversarial	Highest counter epoch and sequence wins without double addition
+16	.omo/evidence/20260930-jev-w2/task-16-flaky-tests.txt	stability	Three identical focused runs each report 7 pass 0 fail and 96 expectations
+16	.omo/evidence/20260930-jev-w2/task-16-dirty-worktree.txt	dirty-worktree	Porcelain status before staging preserves peer and generated paths
+16	.omo/evidence/20260930-jev-w2/task-16-line-counts.txt	static	Per-file physical counts prove every report file is at most 250 lines
+16	.omo/evidence/20260930-jev-w2/task-16-forbidden-source-scan.txt	static	No-match scan records command exit one and zero forbidden pattern matches
+16	.omo/evidence/20260930-jev-w2/task-16-adversarial-summary.txt	adversarial	Applicable probes and one-line ruled-out classes with observations
+16	.omo/evidence/20260930-jev-w2/task-16-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted summary
+16	.omo/evidence/20260930-jev-w2/task-16-cleanup.txt	cleanup	Two temporary corpus roots removed real omo unchanged and no processes or ports expected
+16	.omo/evidence/20260930-jev-w2/task-16-staged-paths.txt	staged-paths	Final cached allowlist contains only todo 16 owned paths and the shared manifest
