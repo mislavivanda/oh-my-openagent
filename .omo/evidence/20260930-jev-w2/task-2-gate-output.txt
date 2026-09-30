@@ -1,0 +1,778 @@
+=== DECISIVE ACCEPTANCE GATE OUTPUT (todo 2) ===
+date: 2026-09-30T11:00:46Z
+command (verbatim from the plan, run from the worktree root):
+bash -lc 'bun run build:schema; if git diff --exit-code assets/oh-my-opencode.schema.json assets/omo.schema.json; then exit 1; fi; if git diff --exit-code assets/omo.schema.json; then exit 1; fi; cp assets/omo.schema.json /tmp/jev-w2-omo-after-build-schema.json; bun run build:omo-schema; cmp /tmp/jev-w2-omo-after-build-schema.json assets/omo.schema.json; cp assets/oh-my-opencode.schema.json /tmp/jev-w2-oh-final.json; cp assets/omo.schema.json /tmp/jev-w2-omo-final.json; bun run build:schema; bun run build:omo-schema; cmp /tmp/jev-w2-oh-final.json assets/oh-my-opencode.schema.json; cmp /tmp/jev-w2-omo-final.json assets/omo.schema.json; if git diff --exit-code assets/oh-my-opencode.schema.json assets/omo.schema.json; then exit 1; fi'
+
+OBSERVED EXIT STATUS: 0
+Both cmp checks were silent (byte identity after the second consecutive run of BOTH generators).
+Both inverted git-diff checks saw a nonzero diff and therefore did NOT take the then-branch.
+
+--- raw captured stdout+stderr below ---
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+diff --git a/assets/oh-my-opencode.schema.json b/assets/oh-my-opencode.schema.json
+index 159ff0593..f4e2181b5 100644
+--- a/assets/oh-my-opencode.schema.json
++++ b/assets/oh-my-opencode.schema.json
+@@ -7859,6 +7859,15 @@
+               "turn_seal_timeout_ms": 120000,
+               "max_prompt_chars": 8000,
+               "max_inflight": 8
++            },
++            "completion_continuation": {
++              "enabled": false,
++              "observe_only": true,
++              "confidence_threshold": 0.8,
++              "timeout_ms": 2500,
++              "outcome_window_ms": 120000,
++              "max_inflight": 8,
++              "max_state_bytes": 24576
+             }
+           },
+           "type": "object",
+@@ -7948,11 +7957,74 @@
+                 "max_inflight"
+               ],
+               "additionalProperties": false
++            },
++            "completion_continuation": {
++              "default": {
++                "enabled": false,
++                "observe_only": true,
++                "confidence_threshold": 0.8,
++                "timeout_ms": 2500,
++                "outcome_window_ms": 120000,
++                "max_inflight": 8,
++                "max_state_bytes": 24576
++              },
++              "type": "object",
++              "properties": {
++                "enabled": {
++                  "default": false,
++                  "type": "boolean"
++                },
++                "observe_only": {
++                  "default": true,
++                  "type": "boolean"
++                },
++                "confidence_threshold": {
++                  "default": 0.8,
++                  "type": "number",
++                  "minimum": 0,
++                  "maximum": 1
++                },
++                "timeout_ms": {
++                  "default": 2500,
++                  "type": "integer",
++                  "minimum": 100,
++                  "maximum": 30000
++                },
++                "outcome_window_ms": {
++                  "default": 120000,
++                  "type": "integer",
++                  "minimum": 1000,
++                  "maximum": 3600000
++                },
++                "max_inflight": {
++                  "default": 8,
++                  "type": "integer",
++                  "minimum": 1,
++                  "maximum": 64
++                },
++                "max_state_bytes": {
++                  "default": 24576,
++                  "type": "integer",
++                  "minimum": 1024,
++                  "maximum": 262144
++                }
++              },
++              "required": [
++                "enabled",
++                "observe_only",
++                "confidence_threshold",
++                "timeout_ms",
++                "outcome_window_ms",
++                "max_inflight",
++                "max_state_bytes"
++              ],
++              "additionalProperties": false
+             }
+           },
+           "required": [
+             "model_error_triage",
+-            "intent_routing"
++            "intent_routing",
++            "completion_continuation"
+           ],
+           "additionalProperties": false
+         }
+diff --git a/assets/omo.schema.json b/assets/omo.schema.json
+index 8c53ba66e..faa9f8c25 100644
+--- a/assets/omo.schema.json
++++ b/assets/omo.schema.json
+@@ -9058,6 +9058,15 @@
+                   "turn_seal_timeout_ms": 120000,
+                   "max_prompt_chars": 8000,
+                   "max_inflight": 8
++                },
++                "completion_continuation": {
++                  "enabled": false,
++                  "observe_only": true,
++                  "confidence_threshold": 0.8,
++                  "timeout_ms": 2500,
++                  "outcome_window_ms": 120000,
++                  "max_inflight": 8,
++                  "max_state_bytes": 24576
+                 }
+               },
+               "type": "object",
+@@ -9147,11 +9156,74 @@
+                     "max_inflight"
+                   ],
+                   "additionalProperties": false
++                },
++                "completion_continuation": {
++                  "default": {
++                    "enabled": false,
++                    "observe_only": true,
++                    "confidence_threshold": 0.8,
++                    "timeout_ms": 2500,
++                    "outcome_window_ms": 120000,
++                    "max_inflight": 8,
++                    "max_state_bytes": 24576
++                  },
++                  "type": "object",
++                  "properties": {
++                    "enabled": {
++                      "default": false,
++                      "type": "boolean"
++                    },
++                    "observe_only": {
++                      "default": true,
++                      "type": "boolean"
++                    },
++                    "confidence_threshold": {
++                      "default": 0.8,
++                      "type": "number",
++                      "minimum": 0,
++                      "maximum": 1
++                    },
++                    "timeout_ms": {
++                      "default": 2500,
++                      "type": "integer",
++                      "minimum": 100,
++                      "maximum": 30000
++                    },
++                    "outcome_window_ms": {
++                      "default": 120000,
++                      "type": "integer",
++                      "minimum": 1000,
++                      "maximum": 3600000
++                    },
++                    "max_inflight": {
++                      "default": 8,
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 64
++                    },
++                    "max_state_bytes": {
++                      "default": 24576,
++                      "type": "integer",
++                      "minimum": 1024,
++                      "maximum": 262144
++                    }
++                  },
++                  "required": [
++                    "enabled",
++                    "observe_only",
++                    "confidence_threshold",
++                    "timeout_ms",
++                    "outcome_window_ms",
++                    "max_inflight",
++                    "max_state_bytes"
++                  ],
++                  "additionalProperties": false
+                 }
+               },
+               "required": [
+                 "model_error_triage",
+-                "intent_routing"
++                "intent_routing",
++                "completion_continuation"
+               ],
+               "additionalProperties": false
+             }
+@@ -21199,6 +21271,15 @@
+                         "turn_seal_timeout_ms": 120000,
+                         "max_prompt_chars": 8000,
+                         "max_inflight": 8
++                      },
++                      "completion_continuation": {
++                        "enabled": false,
++                        "observe_only": true,
++                        "confidence_threshold": 0.8,
++                        "timeout_ms": 2500,
++                        "outcome_window_ms": 120000,
++                        "max_inflight": 8,
++                        "max_state_bytes": 24576
+                       }
+                     },
+                     "type": "object",
+@@ -21288,11 +21369,74 @@
+                           "max_inflight"
+                         ],
+                         "additionalProperties": false
++                      },
++                      "completion_continuation": {
++                        "default": {
++                          "enabled": false,
++                          "observe_only": true,
++                          "confidence_threshold": 0.8,
++                          "timeout_ms": 2500,
++                          "outcome_window_ms": 120000,
++                          "max_inflight": 8,
++                          "max_state_bytes": 24576
++                        },
++                        "type": "object",
++                        "properties": {
++                          "enabled": {
++                            "default": false,
++                            "type": "boolean"
++                          },
++                          "observe_only": {
++                            "default": true,
++                            "type": "boolean"
++                          },
++                          "confidence_threshold": {
++                            "default": 0.8,
++                            "type": "number",
++                            "minimum": 0,
++                            "maximum": 1
++                          },
++                          "timeout_ms": {
++                            "default": 2500,
++                            "type": "integer",
++                            "minimum": 100,
++                            "maximum": 30000
++                          },
++                          "outcome_window_ms": {
++                            "default": 120000,
++                            "type": "integer",
++                            "minimum": 1000,
++                            "maximum": 3600000
++                          },
++                          "max_inflight": {
++                            "default": 8,
++                            "type": "integer",
++                            "minimum": 1,
++                            "maximum": 64
++                          },
++                          "max_state_bytes": {
++                            "default": 24576,
++                            "type": "integer",
++                            "minimum": 1024,
++                            "maximum": 262144
++                          }
++                        },
++                        "required": [
++                          "enabled",
++                          "observe_only",
++                          "confidence_threshold",
++                          "timeout_ms",
++                          "outcome_window_ms",
++                          "max_inflight",
++                          "max_state_bytes"
++                        ],
++                        "additionalProperties": false
+                       }
+                     },
+                     "required": [
+                       "model_error_triage",
+-                      "intent_routing"
++                      "intent_routing",
++                      "completion_continuation"
+                     ],
+                     "additionalProperties": false
+                   }
+diff --git a/assets/omo.schema.json b/assets/omo.schema.json
+index 8c53ba66e..faa9f8c25 100644
+--- a/assets/omo.schema.json
++++ b/assets/omo.schema.json
+@@ -9058,6 +9058,15 @@
+                   "turn_seal_timeout_ms": 120000,
+                   "max_prompt_chars": 8000,
+                   "max_inflight": 8
++                },
++                "completion_continuation": {
++                  "enabled": false,
++                  "observe_only": true,
++                  "confidence_threshold": 0.8,
++                  "timeout_ms": 2500,
++                  "outcome_window_ms": 120000,
++                  "max_inflight": 8,
++                  "max_state_bytes": 24576
+                 }
+               },
+               "type": "object",
+@@ -9147,11 +9156,74 @@
+                     "max_inflight"
+                   ],
+                   "additionalProperties": false
++                },
++                "completion_continuation": {
++                  "default": {
++                    "enabled": false,
++                    "observe_only": true,
++                    "confidence_threshold": 0.8,
++                    "timeout_ms": 2500,
++                    "outcome_window_ms": 120000,
++                    "max_inflight": 8,
++                    "max_state_bytes": 24576
++                  },
++                  "type": "object",
++                  "properties": {
++                    "enabled": {
++                      "default": false,
++                      "type": "boolean"
++                    },
++                    "observe_only": {
++                      "default": true,
++                      "type": "boolean"
++                    },
++                    "confidence_threshold": {
++                      "default": 0.8,
++                      "type": "number",
++                      "minimum": 0,
++                      "maximum": 1
++                    },
++                    "timeout_ms": {
++                      "default": 2500,
++                      "type": "integer",
++                      "minimum": 100,
++                      "maximum": 30000
++                    },
++                    "outcome_window_ms": {
++                      "default": 120000,
++                      "type": "integer",
++                      "minimum": 1000,
++                      "maximum": 3600000
++                    },
++                    "max_inflight": {
++                      "default": 8,
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 64
++                    },
++                    "max_state_bytes": {
++                      "default": 24576,
++                      "type": "integer",
++                      "minimum": 1024,
++                      "maximum": 262144
++                    }
++                  },
++                  "required": [
++                    "enabled",
++                    "observe_only",
++                    "confidence_threshold",
++                    "timeout_ms",
++                    "outcome_window_ms",
++                    "max_inflight",
++                    "max_state_bytes"
++                  ],
++                  "additionalProperties": false
+                 }
+               },
+               "required": [
+                 "model_error_triage",
+-                "intent_routing"
++                "intent_routing",
++                "completion_continuation"
+               ],
+               "additionalProperties": false
+             }
+@@ -21199,6 +21271,15 @@
+                         "turn_seal_timeout_ms": 120000,
+                         "max_prompt_chars": 8000,
+                         "max_inflight": 8
++                      },
++                      "completion_continuation": {
++                        "enabled": false,
++                        "observe_only": true,
++                        "confidence_threshold": 0.8,
++                        "timeout_ms": 2500,
++                        "outcome_window_ms": 120000,
++                        "max_inflight": 8,
++                        "max_state_bytes": 24576
+                       }
+                     },
+                     "type": "object",
+@@ -21288,11 +21369,74 @@
+                           "max_inflight"
+                         ],
+                         "additionalProperties": false
++                      },
++                      "completion_continuation": {
++                        "default": {
++                          "enabled": false,
++                          "observe_only": true,
++                          "confidence_threshold": 0.8,
++                          "timeout_ms": 2500,
++                          "outcome_window_ms": 120000,
++                          "max_inflight": 8,
++                          "max_state_bytes": 24576
++                        },
++                        "type": "object",
++                        "properties": {
++                          "enabled": {
++                            "default": false,
++                            "type": "boolean"
++                          },
++                          "observe_only": {
++                            "default": true,
++                            "type": "boolean"
++                          },
++                          "confidence_threshold": {
++                            "default": 0.8,
++                            "type": "number",
++                            "minimum": 0,
++                            "maximum": 1
++                          },
++                          "timeout_ms": {
++                            "default": 2500,
++                            "type": "integer",
++                            "minimum": 100,
++                            "maximum": 30000
++                          },
++                          "outcome_window_ms": {
++                            "default": 120000,
++                            "type": "integer",
++                            "minimum": 1000,
++                            "maximum": 3600000
++                          },
++                          "max_inflight": {
++                            "default": 8,
++                            "type": "integer",
++                            "minimum": 1,
++                            "maximum": 64
++                          },
++                          "max_state_bytes": {
++                            "default": 24576,
++                            "type": "integer",
++                            "minimum": 1024,
++                            "maximum": 262144
++                          }
++                        },
++                        "required": [
++                          "enabled",
++                          "observe_only",
++                          "confidence_threshold",
++                          "timeout_ms",
++                          "outcome_window_ms",
++                          "max_inflight",
++                          "max_state_bytes"
++                        ],
++                        "additionalProperties": false
+                       }
+                     },
+                     "required": [
+                       "model_error_triage",
+-                      "intent_routing"
++                      "intent_routing",
++                      "completion_continuation"
+                     ],
+                     "additionalProperties": false
+                   }
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+diff --git a/assets/oh-my-opencode.schema.json b/assets/oh-my-opencode.schema.json
+index 159ff0593..f4e2181b5 100644
+--- a/assets/oh-my-opencode.schema.json
++++ b/assets/oh-my-opencode.schema.json
+@@ -7859,6 +7859,15 @@
+               "turn_seal_timeout_ms": 120000,
+               "max_prompt_chars": 8000,
+               "max_inflight": 8
++            },
++            "completion_continuation": {
++              "enabled": false,
++              "observe_only": true,
++              "confidence_threshold": 0.8,
++              "timeout_ms": 2500,
++              "outcome_window_ms": 120000,
++              "max_inflight": 8,
++              "max_state_bytes": 24576
+             }
+           },
+           "type": "object",
+@@ -7948,11 +7957,74 @@
+                 "max_inflight"
+               ],
+               "additionalProperties": false
++            },
++            "completion_continuation": {
++              "default": {
++                "enabled": false,
++                "observe_only": true,
++                "confidence_threshold": 0.8,
++                "timeout_ms": 2500,
++                "outcome_window_ms": 120000,
++                "max_inflight": 8,
++                "max_state_bytes": 24576
++              },
++              "type": "object",
++              "properties": {
++                "enabled": {
++                  "default": false,
++                  "type": "boolean"
++                },
++                "observe_only": {
++                  "default": true,
++                  "type": "boolean"
++                },
++                "confidence_threshold": {
++                  "default": 0.8,
++                  "type": "number",
++                  "minimum": 0,
++                  "maximum": 1
++                },
++                "timeout_ms": {
++                  "default": 2500,
++                  "type": "integer",
++                  "minimum": 100,
++                  "maximum": 30000
++                },
++                "outcome_window_ms": {
++                  "default": 120000,
++                  "type": "integer",
++                  "minimum": 1000,
++                  "maximum": 3600000
++                },
++                "max_inflight": {
++                  "default": 8,
++                  "type": "integer",
++                  "minimum": 1,
++                  "maximum": 64
++                },
++                "max_state_bytes": {
++                  "default": 24576,
++                  "type": "integer",
++                  "minimum": 1024,
++                  "maximum": 262144
++                }
++              },
++              "required": [
++                "enabled",
++                "observe_only",
++                "confidence_threshold",
++                "timeout_ms",
++                "outcome_window_ms",
++                "max_inflight",
++                "max_state_bytes"
++              ],
++              "additionalProperties": false
+             }
+           },
+           "required": [
+             "model_error_triage",
+-            "intent_routing"
++            "intent_routing",
++            "completion_continuation"
+           ],
+           "additionalProperties": false
+         }
+diff --git a/assets/omo.schema.json b/assets/omo.schema.json
+index 8c53ba66e..faa9f8c25 100644
+--- a/assets/omo.schema.json
++++ b/assets/omo.schema.json
+@@ -9058,6 +9058,15 @@
+                   "turn_seal_timeout_ms": 120000,
+                   "max_prompt_chars": 8000,
+                   "max_inflight": 8
++                },
++                "completion_continuation": {
++                  "enabled": false,
++                  "observe_only": true,
++                  "confidence_threshold": 0.8,
++                  "timeout_ms": 2500,
++                  "outcome_window_ms": 120000,
++                  "max_inflight": 8,
++                  "max_state_bytes": 24576
+                 }
+               },
+               "type": "object",
+@@ -9147,11 +9156,74 @@
+                     "max_inflight"
+                   ],
+                   "additionalProperties": false
++                },
++                "completion_continuation": {
++                  "default": {
++                    "enabled": false,
++                    "observe_only": true,
++                    "confidence_threshold": 0.8,
++                    "timeout_ms": 2500,
++                    "outcome_window_ms": 120000,
++                    "max_inflight": 8,
++                    "max_state_bytes": 24576
++                  },
++                  "type": "object",
++                  "properties": {
++                    "enabled": {
++                      "default": false,
++                      "type": "boolean"
++                    },
++                    "observe_only": {
++                      "default": true,
++                      "type": "boolean"
++                    },
++                    "confidence_threshold": {
++                      "default": 0.8,
++                      "type": "number",
++                      "minimum": 0,
++                      "maximum": 1
++                    },
++                    "timeout_ms": {
++                      "default": 2500,
++                      "type": "integer",
++                      "minimum": 100,
++                      "maximum": 30000
++                    },
++                    "outcome_window_ms": {
++                      "default": 120000,
++                      "type": "integer",
++                      "minimum": 1000,
++                      "maximum": 3600000
++                    },
++                    "max_inflight": {
++                      "default": 8,
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 64
++                    },
++                    "max_state_bytes": {
++                      "default": 24576,
++                      "type": "integer",
++                      "minimum": 1024,
++                      "maximum": 262144
++                    }
++                  },
++                  "required": [
++                    "enabled",
++                    "observe_only",
++                    "confidence_threshold",
++                    "timeout_ms",
++                    "outcome_window_ms",
++                    "max_inflight",
++                    "max_state_bytes"
++                  ],
++                  "additionalProperties": false
+                 }
+               },
+               "required": [
+                 "model_error_triage",
+-                "intent_routing"
++                "intent_routing",
++                "completion_continuation"
+               ],
+               "additionalProperties": false
+             }
+@@ -21199,6 +21271,15 @@
+                         "turn_seal_timeout_ms": 120000,
+                         "max_prompt_chars": 8000,
+                         "max_inflight": 8
++                      },
++                      "completion_continuation": {
++                        "enabled": false,
++                        "observe_only": true,
++                        "confidence_threshold": 0.8,
++                        "timeout_ms": 2500,
++                        "outcome_window_ms": 120000,
++                        "max_inflight": 8,
++                        "max_state_bytes": 24576
+                       }
+                     },
+                     "type": "object",
+@@ -21288,11 +21369,74 @@
+                           "max_inflight"
+                         ],
+                         "additionalProperties": false
++                      },
++                      "completion_continuation": {
++                        "default": {
++                          "enabled": false,
++                          "observe_only": true,
++                          "confidence_threshold": 0.8,
++                          "timeout_ms": 2500,
++                          "outcome_window_ms": 120000,
++                          "max_inflight": 8,
++                          "max_state_bytes": 24576
++                        },
++                        "type": "object",
++                        "properties": {
++                          "enabled": {
++                            "default": false,
++                            "type": "boolean"
++                          },
++                          "observe_only": {
++                            "default": true,
++                            "type": "boolean"
++                          },
++                          "confidence_threshold": {
++                            "default": 0.8,
++                            "type": "number",
++                            "minimum": 0,
++                            "maximum": 1
++                          },
++                          "timeout_ms": {
++                            "default": 2500,
++                            "type": "integer",
++                            "minimum": 100,
++                            "maximum": 30000
++                          },
++                          "outcome_window_ms": {
++                            "default": 120000,
++                            "type": "integer",
++                            "minimum": 1000,
++                            "maximum": 3600000
++                          },
++                          "max_inflight": {
++                            "default": 8,
++                            "type": "integer",
++                            "minimum": 1,
++                            "maximum": 64
++                          },
++                          "max_state_bytes": {
++                            "default": 24576,
++                            "type": "integer",
++                            "minimum": 1024,
++                            "maximum": 262144
++                          }
++                        },
++                        "required": [
++                          "enabled",
++                          "observe_only",
++                          "confidence_threshold",
++                          "timeout_ms",
++                          "outcome_window_ms",
++                          "max_inflight",
++                          "max_state_bytes"
++                        ],
++                        "additionalProperties": false
+                       }
+                     },
+                     "required": [
+                       "model_error_triage",
+-                      "intent_routing"
++                      "intent_routing",
++                      "completion_continuation"
+                     ],
+                     "additionalProperties": false
+                   }

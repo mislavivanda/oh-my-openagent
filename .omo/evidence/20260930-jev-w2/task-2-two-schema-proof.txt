@@ -1,0 +1,41 @@
+=== TWO-GENERATOR COVERAGE PROOF (todo 2) ===
+date: 2026-09-30T10:59:13Z
+HEAD: 9cf67bef6e0b214bd46db25bfca8ea5211ec19cc
+
+--- byte sizes at HEAD (before any generation) ---
+assets/oh-my-opencode.schema.json = 254223 bytes
+assets/omo.schema.json            = 868291 bytes
+
+--- both assets clean at HEAD before generation ---
+git diff --exit-code exit=0 (CLEAN, as expected pre-generation)
+
+--- STEP 1: run ONLY the first generator: bun run build:schema ---
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+build:schema exit=0
+
+--- STEP 2: the combined tracked diff MUST be nonzero (gate inverts this) ---
+ assets/oh-my-opencode.schema.json |  74 ++++++++++++++++++-
+ assets/omo.schema.json            | 148 +++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 219 insertions(+), 3 deletions(-)
+git diff --exit-code (both assets) exit=1  # nonzero == changed == gate proceeds
+
+--- STEP 3: DELIBERATE separate check: assets/omo.schema.json alone MUST also be nonzero ---
+This is the load-bearing proof that build:schema writes the SECOND, separate omo output,
+not just the legacy oh-my-opencode output.
+ assets/omo.schema.json | 148 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 146 insertions(+), 2 deletions(-)
+git diff --exit-code (assets/omo.schema.json ONLY) exit=1  # nonzero == the separate omo asset changed
+
+--- STEP 4: byte sizes after the first generator ---
+assets/oh-my-opencode.schema.json = 256571 bytes (was 254223)
+assets/omo.schema.json            = 873995 bytes (was 868291)
+
+--- STEP 5: the new W2 wire is present in BOTH generated assets ---
+oh-my-opencode.schema.json completion_continuation occurrences: 3
+omo.schema.json            completion_continuation occurrences: 6
+oh-my-opencode.schema.json outcome_window_ms occurrences:       4
+omo.schema.json            outcome_window_ms occurrences:       8
+oh-my-opencode.schema.json max_state_bytes occurrences:         4
+omo.schema.json            max_state_bytes occurrences:         8

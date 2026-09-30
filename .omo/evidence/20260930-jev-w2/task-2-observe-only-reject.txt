@@ -1,0 +1,11 @@
+[
+  {
+    "code": "custom",
+    "path": [
+      "wires",
+      "completion_continuation",
+      "observe_only"
+    ],
+    "message": "The Jev completion-continuation apply phase is not yet implemented; observe_only must remain true."
+  }
+]

@@ -1,0 +1,38 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260930-jev-w2/task-1-bun-install.txt	command-output	bun install in the W2 worktree, full output with exit=0 and 72s duration
+1	.omo/evidence/20260930-jev-w2/task-1-test-fast.txt	verification	bun run test:fast mid-loop gate baseline, 484 pass 0 fail, exit 0
+1	.omo/evidence/20260930-jev-w2/task-1-test-fast-exit.txt	verification	recorded exit status and wall clock for the exact test:fast QA invocation
+1	.omo/evidence/20260930-jev-w2/task-1-typecheck.txt	verification	bun run typecheck across root, script and all workspace packages, exit 0
+1	.omo/evidence/20260930-jev-w2/task-1-typecheck-exit.txt	verification	recorded exit status and wall clock for bun run typecheck
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite.txt	baseline	raw log of env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000, 12954 tests across 1698 files
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite-exit.txt	baseline	canonical full-suite process exit status, expected nonzero, recorded as exit=1
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite-failures.txt	baseline	the load-bearing 7 unique normalized (fail) identities F2 must match byte for byte
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite-duration.txt	verification	full-suite wall clock 123s and proof the run terminated on its own without a kill
+1	.omo/evidence/20260930-jev-w2/task-1-third-party-notices.txt	baseline	plain-mode node scripts/check-third-party-notices.mjs output, 4 missing upstream entries
+1	.omo/evidence/20260930-jev-w2/task-1-third-party-notices-exit.txt	baseline	third-party notices plain-mode exit status exit=1 with the exact command recorded
+1	.omo/evidence/20260930-jev-w2/planned-commit-subjects.txt	baseline	18 planned commit subjects extracted from the plan with the plan's own awk command
+1	.omo/evidence/20260930-jev-w2/task-1-worktree-verify.txt	verification	worktree record: branch jev/w2, HEAD sha, both ancestor checks, porcelain status, churn provenance
+1	.omo/evidence/20260930-jev-w2/task-1-tree-state-pre.txt	verification	git status --porcelain captured immediately before the full suite for the stale_state probe
+1	.omo/evidence/20260930-jev-w2/task-1-tree-state-post.txt	verification	git status --porcelain captured immediately after the full suite, identical to the pre capture
+1	.omo/evidence/20260930-jev-w2/task-1-adversarial-qa.txt	verification	ultraqa probe results for 5 applicable classes and ruled-out reasons for the other 4
+1	.omo/evidence/20260930-jev-w2/task-1-cleanup.txt	verification	cleanup receipt listing every started resource and its verified-gone status
+2	.omo/evidence/20260930-jev-w2/task-2-schema-red.txt	red	TDD RED before implementation: wires keys lack completion_continuation, observe_only:false is ACCEPTED, and the JevCompletionContinuationWireConfigSchema export is missing
+2	.omo/evidence/20260930-jev-w2/task-2-schema-green.txt	green	plan happy QA verbatim, exit 0: 17 jev schema tests pass then both generators prove separate-omo-output and second-run byte identity
+2	.omo/evidence/20260930-jev-w2/task-2-observe-only-reject.txt	failure-qa	plan failure QA verbatim, exit 0: observe_only:false rejected with the apply-phase message matching not yet implemented|apply phase
+2	.omo/evidence/20260930-jev-w2/task-2-two-schema-proof.txt	verification	deliberate first-generator nonzero omo diff: build:schema alone changes assets/omo.schema.json separately, +146/-2 lines, 868291 to 873995 bytes
+2	.omo/evidence/20260930-jev-w2/task-2-gate-output.txt	verification	raw stdout of the plan decisive two-generator plus idempotence acceptance gate, observed exit 0 with both cmp checks silent
+2	.omo/evidence/20260930-jev-w2/task-2-adversarial-qa.txt	verification	adversarial probes for malformed_input, stale_state, misleading_success_output plus one-line ruleouts for the 5 inapplicable classes
+2	.omo/evidence/20260930-jev-w2/task-2-cleanup.txt	verification	cleanup receipt: all 7 /tmp/jev-w2-* artifacts verified gone via test -e exit 1, no processes ports or containers started
+2	.omo/evidence/20260930-jev-w2/task-2-dirty-worktree.txt	verification	dirty_worktree probe: porcelain status before staging and git diff --cached --name-only after staging, proving only todo-2-owned paths were staged
+3	.omo/evidence/20260930-jev-w2/task-3-record-red.txt	tdd-red	Focused validator suite fails before implementation
+3	.omo/evidence/20260930-jev-w2/task-3-record-green.txt	qa	Focused validator suite passes 17 tests
+3	.omo/evidence/20260930-jev-w2/task-3-circular-label-reject.txt	failure-qa	Filtered anti-circularity test matches and passes one test
+3	.omo/evidence/20260930-jev-w2/task-3-core-guard.txt	guard	Harness-neutral core extraction guard passes
+3	.omo/evidence/20260930-jev-w2/task-3-typecheck.txt	typecheck	jev-core tsgo package typecheck exits zero
+3	.omo/evidence/20260930-jev-w2/task-3-static-checks.txt	static	Line cap named-export and banned-pattern checks
+3	.omo/evidence/20260930-jev-w2/task-3-lsp.txt	lsp	Changed files have no LSP diagnostics
+3	.omo/evidence/20260930-jev-w2/task-3-adversarial.txt	adversarial	Applicable probes and ruled-out classes
+3	.omo/evidence/20260930-jev-w2/task-3-dirty-before-staging.txt	dirty-worktree	Pre-staging status distinguishes own peer and ambient paths
+3	.omo/evidence/20260930-jev-w2/task-3-staged-paths.txt	staged-paths	Exact staged allowlist excludes peer and ambient paths
+3	.omo/evidence/20260930-jev-w2/task-3-cleanup.txt	cleanup	No runtime or temporary resources created
+3	.omo/evidence/20260930-jev-w2/task-3-qa-summary.txt	summary	Reviewer-readable test observation sufficiency and omission summary
