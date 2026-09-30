@@ -9,6 +9,7 @@ import type {
 
 export const DEFAULT_INTENT_ROUTING_MAX_TRACKED_SESSIONS = 256
 export const DEFAULT_INTENT_ROUTING_MAX_TURNS_PER_SESSION = 128
+export const DEFAULT_INTENT_ROUTING_MAX_COMPLETED_PREDICTIONS_PER_SESSION = 128
 export const DEFAULT_INTENT_ROUTING_PREDICTION_TIMEOUT_MS = 2_500
 export const INTENT_ROUTING_PROMPT_HEAD_CHARS = 200
 
@@ -85,6 +86,7 @@ export type IntentRoutingSealInput = {
 export type IntentRoutingTurnStoreOptions = {
   readonly maxTrackedSessions?: number
   readonly maxTurnsPerSession?: number
+  readonly maxCompletedPredictionsPerSession?: number
   readonly predictionTimeoutMs?: number
   readonly processId?: string
   readonly now?: () => number
@@ -155,6 +157,20 @@ export type MutableTurn = {
   lastAccess: number
 }
 
+export type CompletedPrediction = Pick<
+  MutableTurn,
+  | "reuseKey"
+  | "unavailableReason"
+  | "resolvedModel"
+  | "latencyMs"
+  | "answers"
+  | "invalidAnswerCount"
+  | "truncatedInput"
+> & {
+  readonly sourceTurnOrdinal: number
+  readonly resolvedModel: string
+}
+
 export type SessionState = {
   readonly sessionID: string
   readonly turns: Map<number, MutableTurn>
@@ -165,13 +181,14 @@ export type SessionState = {
 export type TurnStoreState = {
   readonly maxTrackedSessions: number
   readonly maxTurnsPerSession: number
+  readonly maxCompletedPredictionsPerSession: number
   readonly predictionTimeoutMs: number
   readonly processId: string
   readonly now: () => number
   readonly onEntry: (entry: IntentRoutingEntry) => void
   readonly sessions: Map<string, SessionState>
   readonly pendingByTierOne: Map<string, PendingGroup>
-  readonly completedByTierTwo: Map<string, Set<MutableTurn>>
+  readonly completedBySession: Map<string, Map<string, CompletedPrediction>>
   readonly counters: MutableCounters
   readonly clocks: {
     ordinalHighWater: number

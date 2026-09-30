@@ -84,6 +84,54 @@ describe("intent-routing turn identity and two-tier reuse", () => {
     expect(store.getTurn("pinned", second.turnOrdinal)?.reuseKey).toContain(PINNED_MODEL)
   })
 
+  test("#given a finalized filled predecessor #when the pinned prompt repeats #then session cache reuses the prediction", async () => {
+    const dispatch = mock(async () => filledResult())
+    const store = createIntentRoutingTurnStore()
+    const first = store.startTurn(baseTurn("finalized", "continue", dispatch))
+    expect(first).not.toBeNull()
+    await first?.settled
+    if (first === null) return
+    store.sealTurn({
+      sessionID: "finalized",
+      turnOrdinal: first.turnOrdinal,
+      sealedBy: "session_idle",
+    })
+
+    const second = store.startTurn(baseTurn("finalized", "continue", dispatch))
+    expect(second).not.toBeNull()
+    await second?.settled
+
+    expect(store.getTurn("finalized", first.turnOrdinal)).toBeUndefined()
+    expect(dispatch).toHaveBeenCalledTimes(1)
+    if (second === null) return
+    expect(store.getTurn("finalized", second.turnOrdinal)?.predictionReused).toBe(true)
+  })
+
+  test("#given a one-entry completed cache #when two finalized prompts fill it #then the oldest prediction is evicted", async () => {
+    const dispatch = mock(async () => filledResult())
+    const store = createIntentRoutingTurnStore({ maxCompletedPredictionsPerSession: 1 })
+    for (const prompt of ["first", "second"]) {
+      const turn = store.startTurn(baseTurn("bounded-cache", prompt, dispatch))
+      await turn?.settled
+      if (turn !== null) {
+        store.sealTurn({
+          sessionID: "bounded-cache",
+          turnOrdinal: turn.turnOrdinal,
+          sealedBy: "session_idle",
+        })
+      }
+    }
+
+    const repeated = store.startTurn(baseTurn("bounded-cache", "first", dispatch))
+    await repeated?.settled
+
+    expect(store.inspect().completedCacheCount).toBe(1)
+    expect(dispatch).toHaveBeenCalledTimes(3)
+    expect(repeated === null
+      ? undefined
+      : store.getTurn("bounded-cache", repeated.turnOrdinal)?.predictionReused).toBe(false)
+  })
+
   test("#given a filled predecessor with an unresolved floating alias #when the prompt repeats #then completed reuse is blocked", async () => {
     const dispatch = mock(async () => filledResult())
     const store = createIntentRoutingTurnStore()

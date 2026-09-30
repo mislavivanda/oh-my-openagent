@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, jest, test } from "bun:test"
-import { appendFileSync, readFileSync, rmSync, statSync } from "fs"
-import { homedir } from "os"
+import { afterEach, beforeEach, describe, expect, jest, test } from "bun:test"
+import { appendFileSync, mkdtempSync, readFileSync, rmSync, statSync } from "fs"
+import { tmpdir } from "os"
 import { join } from "path"
 import type { IntentRoutingCounters } from "@oh-my-opencode/jev-core"
 import { readIntentRoutingSink } from "./intent-routing-reader"
@@ -14,7 +14,7 @@ import {
   processIdentity,
 } from "./intent-routing-sink.test-support"
 
-const rootDir = join(homedir(), ".omo", "jev")
+let rootDir = ""
 const openSinks: IntentRoutingSink[] = []
 
 function sink(pid: number, options: Parameters<typeof createIntentRoutingSink>[0] = {}): IntentRoutingSink {
@@ -28,6 +28,10 @@ function sink(pid: number, options: Parameters<typeof createIntentRoutingSink>[0
   openSinks.push(created)
   return created
 }
+
+beforeEach(() => {
+  rootDir = mkdtempSync(join(tmpdir(), "omo-jev-sink-test-"))
+})
 
 afterEach(() => {
   for (const created of openSinks.splice(0)) created.dispose()

@@ -81,17 +81,6 @@ export function beginDispatch(
   )
 }
 
-export function reusableTurn(state: TurnStoreState, reuseKey: string): MutableTurn | undefined {
-  const candidates = state.completedByTierTwo.get(reuseKey)
-  if (candidates === undefined) return undefined
-  let latest: MutableTurn | undefined
-  for (const candidate of candidates) {
-    if (candidate.predictionState !== "filled" || candidate.terminalState === "evicted") continue
-    if (latest === undefined || candidate.turnOrdinal > latest.turnOrdinal) latest = candidate
-  }
-  return latest
-}
-
 export function coalescePending(turn: MutableTurn, group: PendingGroup): void {
   turn.pendingGroup = group
   group.records.add(turn)

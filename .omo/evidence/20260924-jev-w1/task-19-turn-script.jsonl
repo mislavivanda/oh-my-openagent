@@ -1,0 +1,32 @@
+{"turn":1,"prompt":"[JEV19] Turn 01: What does intent routing observe? Answer briefly.","tools":[]}
+{"turn":2,"prompt":"[JEV19] Turn 02: Name one benefit of observe-only routing.","tools":[]}
+{"turn":3,"prompt":"[JEV19] Turn 03: Route one quick category attempt.","tools":[{"name":"task","args":{"prompt":"Task 19 category probe","category":"quick","task_id":"ses_task19_missing_03"}}]}
+{"turn":4,"prompt":"[JEV19] Turn 04: Route one oracle subagent attempt.","tools":[{"name":"task","args":{"prompt":"Task 19 subagent probe","subagent_type":"oracle","task_id":"ses_task19_missing_04"}}]}
+{"turn":5,"prompt":"[JEV19] Repeated identical prompt for completed prediction reuse.","tools":[]}
+{"turn":6,"prompt":"[JEV19] Repeated identical prompt for completed prediction reuse.","tools":[]}
+{"turn":7,"prompt":"[JEV19] Turn 07: Attempt direct agent invocation.","tools":[{"name":"call_omo_agent","args":{"description":"Dogfood direct route","prompt":"Task 19 direct route probe","subagent_type":"explore","run_in_background":true,"session_id":"ses_task19_missing_direct_07"}}]}
+{"turn":8,"prompt":"[JEV19] Turn 08: Attempt a task continuation with only task_id as its route selector.","tools":[{"name":"task","args":{"prompt":"Task 19 resume-only probe","task_id":"ses_task19_missing_08"}}]}
+{"turn":9,"prompt":"continue!!!","tools":[{"name":"task","args":{"prompt":"Task 19 continuation candidate","task_id":"ses_task19_missing_09"}}]}
+{"turn":10,"prompt":"[JEV19] Turn 10: Mixed category and subagent fan-out.","tools":[{"name":"task","args":{"prompt":"Task 19 mixed category","category":"quick","task_id":"ses_task19_missing_10a"}},{"name":"task","args":{"prompt":"Task 19 mixed subagent","subagent_type":"oracle","task_id":"ses_task19_missing_10b"}}]}
+{"turn":11,"prompt":"[JEV19] Turn 11: Duplicate-target category fan-out.","tools":[{"name":"task","args":{"prompt":"Task 19 duplicate target A","category":"quick","task_id":"ses_task19_missing_11a"}},{"name":"task","args":{"prompt":"Task 19 duplicate target B","category":"quick","task_id":"ses_task19_missing_11b"}}]}
+{"turn":12,"prompt":"[JEV19] Turn 12: Three-way delegation attempt.","tools":[{"name":"task","args":{"prompt":"Task 19 fanout A","category":"deep","task_id":"ses_task19_missing_12a"}},{"name":"task","args":{"prompt":"Task 19 fanout B","subagent_type":"explore","task_id":"ses_task19_missing_12b"}},{"name":"task","args":{"prompt":"Task 19 fanout C","subagent_type":"librarian","task_id":"ses_task19_missing_12c"}}]}
+{"turn":13,"prompt":"[JEV19] Turn 13: Why is a shared session ID useful?","tools":[]}
+{"turn":14,"prompt":"[JEV19] Turn 14: Attempt one writing category route.","tools":[{"name":"task","args":{"prompt":"Task 19 writing route","category":"writing","task_id":"ses_task19_missing_14"}}]}
+{"turn":15,"prompt":"[JEV19] Turn 15: Attempt one explore subagent route.","tools":[{"name":"task","args":{"prompt":"Task 19 explore route","subagent_type":"explore","task_id":"ses_task19_missing_15"}}]}
+{"turn":16,"prompt":"[JEV19] Turn 16: Fan out through direct and category tools.","tools":[{"name":"call_omo_agent","args":{"description":"Dogfood mixed route","prompt":"Task 19 direct mixed probe","subagent_type":"explore","run_in_background":true,"session_id":"ses_task19_missing_direct_16"}},{"name":"task","args":{"prompt":"Task 19 category mixed probe","category":"quick","task_id":"ses_task19_missing_16"}}]}
+{"turn":17,"prompt":"keep going!!!","tools":[]}
+{"turn":18,"prompt":"[JEV19] Turn 18: Resume-only attempt again.","tools":[{"name":"task","args":{"prompt":"Task 19 second resume-only probe","task_id":"ses_task19_missing_18"}}]}
+{"turn":19,"prompt":"[JEV19] Turn 19: State the meaning of fan-out zero.","tools":[]}
+{"turn":20,"prompt":"[JEV19] Turn 20: Three duplicate category attempts.","tools":[{"name":"task","args":{"prompt":"Task 19 duplicate A","category":"quick","task_id":"ses_task19_missing_20a"}},{"name":"task","args":{"prompt":"Task 19 duplicate B","category":"quick","task_id":"ses_task19_missing_20b"}},{"name":"task","args":{"prompt":"Task 19 duplicate C","category":"quick","task_id":"ses_task19_missing_20c"}}]}
+{"turn":21,"prompt":"[JEV19] Turn 21: Attempt another call_omo_agent route.","tools":[{"name":"call_omo_agent","args":{"description":"Dogfood direct retry","prompt":"Task 19 second direct probe","subagent_type":"explore","run_in_background":true,"session_id":"ses_task19_missing_direct_21"}}]}
+{"turn":22,"prompt":"[JEV19] Turn 22: What seals each sequential turn?","tools":[]}
+{"turn":23,"prompt":"[JEV19] Turn 23: Attempt one deep category route.","tools":[{"name":"task","args":{"prompt":"Task 19 deep route","category":"deep","task_id":"ses_task19_missing_23"}}]}
+{"turn":24,"prompt":"[JEV19] Turn 24: Mixed three-way fan-out.","tools":[{"name":"task","args":{"prompt":"Task 19 mixed A","category":"writing","task_id":"ses_task19_missing_24a"}},{"name":"task","args":{"prompt":"Task 19 mixed B","subagent_type":"oracle","task_id":"ses_task19_missing_24b"}},{"name":"task","args":{"prompt":"Task 19 mixed C","subagent_type":"explore","task_id":"ses_task19_missing_24c"}}]}
+{"turn":25,"prompt":"[JEV19] Turn 25: Define a sealed observation.","tools":[]}
+{"turn":26,"prompt":"[JEV19] Turn 26: Attempt one librarian subagent route.","tools":[{"name":"task","args":{"prompt":"Task 19 librarian route","subagent_type":"librarian","task_id":"ses_task19_missing_26"}}]}
+{"turn":27,"prompt":"resume!!!","tools":[]}
+{"turn":28,"prompt":"[JEV19] Turn 28: Duplicate oracle target fan-out.","tools":[{"name":"task","args":{"prompt":"Task 19 oracle duplicate A","subagent_type":"oracle","task_id":"ses_task19_missing_28a"}},{"name":"task","args":{"prompt":"Task 19 oracle duplicate B","subagent_type":"oracle","task_id":"ses_task19_missing_28b"}}]}
+{"turn":29,"prompt":"[JEV19] Turn 29: Why must the model alias be pinned?","tools":[]}
+{"turn":30,"prompt":"[JEV19] Turn 30: Attempt one unspecified-low category route.","tools":[{"name":"task","args":{"prompt":"Task 19 unspecified route","category":"unspecified-low","task_id":"ses_task19_missing_30"}}]}
+{"turn":31,"prompt":"[JEV19] Turn 31: Final mixed fan-out cohort.","tools":[{"name":"task","args":{"prompt":"Task 19 final category","category":"quick","task_id":"ses_task19_missing_31a"}},{"name":"task","args":{"prompt":"Task 19 final subagent","subagent_type":"librarian","task_id":"ses_task19_missing_31b"}}]}
+{"turn":32,"prompt":"[JEV19] Turn 32: Confirm the driver used one long-lived server.","tools":[]}

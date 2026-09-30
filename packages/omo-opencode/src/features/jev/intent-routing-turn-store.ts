@@ -11,8 +11,12 @@ import {
   beginDispatch,
   coalescePending,
   completePendingGroup,
-  reusableTurn,
 } from "./intent-routing-turn-prediction"
+import {
+  clearCompletedPredictions,
+  completedPredictionCount,
+  findCompletedPrediction,
+} from "./intent-routing-completed-cache"
 import {
   createMutableCounters,
   defaultCorrelationStatus,
@@ -31,6 +35,7 @@ import {
 } from "./intent-routing-turn-runtime"
 import {
   DEFAULT_INTENT_ROUTING_MAX_TRACKED_SESSIONS,
+  DEFAULT_INTENT_ROUTING_MAX_COMPLETED_PREDICTIONS_PER_SESSION,
   DEFAULT_INTENT_ROUTING_MAX_TURNS_PER_SESSION,
   DEFAULT_INTENT_ROUTING_PREDICTION_TIMEOUT_MS,
   type IntentRoutingSealInput,
@@ -80,6 +85,10 @@ function createState(options: IntentRoutingTurnStoreOptions): TurnStoreState {
       options.maxTurnsPerSession,
       DEFAULT_INTENT_ROUTING_MAX_TURNS_PER_SESSION,
     ),
+    maxCompletedPredictionsPerSession: positiveInteger(
+      options.maxCompletedPredictionsPerSession,
+      DEFAULT_INTENT_ROUTING_MAX_COMPLETED_PREDICTIONS_PER_SESSION,
+    ),
     predictionTimeoutMs: positiveInteger(
       options.predictionTimeoutMs,
       DEFAULT_INTENT_ROUTING_PREDICTION_TIMEOUT_MS,
@@ -89,7 +98,7 @@ function createState(options: IntentRoutingTurnStoreOptions): TurnStoreState {
     onEntry: options.onEntry ?? (() => undefined),
     sessions: new Map(),
     pendingByTierOne: new Map(),
-    completedByTierTwo: new Map(),
+    completedBySession: new Map(),
     counters: createMutableCounters(),
     clocks: { ordinalHighWater: 0, access: 0, counterSequence: 0 },
   }
@@ -127,12 +136,13 @@ export function createIntentRoutingTurnStore(
       ? input.configuredModelSpec
       : input.knownResolvedModel
     if (knownResolvedModel !== undefined) {
-      const predecessor = reusableTurn(
+      const predecessor = findCompletedPrediction(
         state,
+        sessionID,
         buildIntentRoutingTierTwoKey(dedupKey, knownResolvedModel),
       )
       if (predecessor !== undefined) {
-        reuseCompletedPrediction(state, turn, predecessor)
+        reuseCompletedPrediction(turn, predecessor)
         return handle
       }
     }
@@ -207,6 +217,7 @@ export function createIntentRoutingTurnStore(
     }
     for (const turn of [...session.turns.values()]) removeTurn(state, turn)
     state.sessions.delete(sessionID)
+    clearCompletedPredictions(state, sessionID)
   }
 
   function getSessionTurns(sessionID: string): readonly IntentRoutingTurnSnapshot[] {
@@ -228,7 +239,7 @@ export function createIntentRoutingTurnStore(
       disposed = true
       for (const sessionID of [...state.sessions.keys()]) terminateSession(sessionID, "dispose")
       state.pendingByTierOne.clear()
-      state.completedByTierTwo.clear()
+      state.completedBySession.clear()
     },
     getTurn: (sessionID, turnOrdinal) => {
       const turn = state.sessions.get(sessionID)?.turns.get(turnOrdinal)
@@ -239,7 +250,7 @@ export function createIntentRoutingTurnStore(
     inspect: (): IntentRoutingTurnStoreInspection => ({
       sessionCount: state.sessions.size,
       pendingCoalescingCount: state.pendingByTierOne.size,
-      completedCacheCount: state.completedByTierTwo.size,
+      completedCacheCount: completedPredictionCount(state),
       evictedCount: state.counters.recordsEvicted,
     }),
   }

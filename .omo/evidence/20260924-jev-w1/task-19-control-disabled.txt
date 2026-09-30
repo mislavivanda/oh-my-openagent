@@ -1,0 +1,7 @@
+wire=disabled
+turns=32
+session_id=ses_f0e663f88ffeN9kwAeleQ1kwiV
+jev_log_lines=0
+jev_requests=0
+sink_files=0
+result=PASS

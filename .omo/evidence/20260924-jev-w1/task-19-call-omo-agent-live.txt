@@ -1,0 +1,4 @@
+LIVE call_omo_agent OBSERVATION
+Driver agent: jev-dogfood (custom primary with explicit call_omo_agent allow)
+{"type":"tool_use","sessionID":"ses_f0e673e3cffegHu3t2qguSkKGz","tool":"call_omo_agent","status":"completed","input":{"description":"Dogfood direct route","prompt":"Task 19 direct route probe","subagent_type":"explore","run_in_background":true,"session_id":"ses_task19_missing_direct_07"},"output":"Error: session_id is not supported in background mode. Use run_in_background=false to continue an existing session."}
+Sink summary: call_omo_agent=3

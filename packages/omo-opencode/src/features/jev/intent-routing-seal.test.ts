@@ -1,8 +1,7 @@
 import { afterEach, describe, expect, jest, test } from "bun:test"
-import { rmSync } from "fs"
-import { homedir } from "os"
+import { mkdtempSync, rmSync } from "fs"
+import { tmpdir } from "os"
 import { join } from "path"
-import { randomUUID } from "crypto"
 import { JevConfigSchema } from "../../config/schema/jev"
 import { readIntentRoutingSink } from "./intent-routing-reader"
 import {
@@ -24,7 +23,7 @@ type Harness = {
 const harnesses: Harness[] = []
 
 function createHarness(turnSealTimeoutMs = 60_000): Harness {
-  const rootDir = join(homedir(), ".omo", "jev", `task-12-${randomUUID()}`)
+  const rootDir = mkdtempSync(join(tmpdir(), "omo-jev-seal-test-"))
   const coordinator = createIntentRoutingSealCoordinator({
     turnSealTimeoutMs,
     createSink: (getCounters) => createIntentRoutingSink({

@@ -3,13 +3,14 @@ import type {
   IntentRoutingDecisionResult,
 } from "@oh-my-opencode/jev-core"
 import { buildIntentRoutingTierTwoKey } from "./intent-routing-turn-keys"
+import { cacheCompletedPrediction } from "./intent-routing-completed-cache"
 import {
   buildObservationRecord,
   EMPTY_INTENT_ROUTING_ANSWERS,
   predictionAnswers,
   snapshotCounters,
 } from "./intent-routing-turn-record"
-import type { MutableTurn, TurnStoreState } from "./intent-routing-turn-types"
+import type { CompletedPrediction, MutableTurn, TurnStoreState } from "./intent-routing-turn-types"
 
 export function touchTurn(state: TurnStoreState, turn: MutableTurn): void {
   state.clocks.access += 1
@@ -52,21 +53,6 @@ export function settleTurn(turn: MutableTurn): void {
   settle()
 }
 
-function completedSet(state: TurnStoreState, reuseKey: string): Set<MutableTurn> {
-  const existing = state.completedByTierTwo.get(reuseKey)
-  if (existing !== undefined) return existing
-  const created = new Set<MutableTurn>()
-  state.completedByTierTwo.set(reuseKey, created)
-  return created
-}
-
-function removeCompletedReference(state: TurnStoreState, turn: MutableTurn): void {
-  const matches = state.completedByTierTwo.get(turn.reuseKey)
-  if (matches === undefined) return
-  matches.delete(turn)
-  if (matches.size === 0) state.completedByTierTwo.delete(turn.reuseKey)
-}
-
 function removePendingReference(state: TurnStoreState, turn: MutableTurn): void {
   const group = turn.pendingGroup
   turn.pendingGroup = undefined
@@ -82,7 +68,6 @@ function removePendingReference(state: TurnStoreState, turn: MutableTurn): void 
 
 export function removeTurn(state: TurnStoreState, turn: MutableTurn): void {
   removePendingReference(state, turn)
-  removeCompletedReference(state, turn)
   state.sessions.get(turn.sessionID)?.turns.delete(turn.turnOrdinal)
 }
 
@@ -130,7 +115,7 @@ export function applyResult(
     turn.predictionState = "filled"
     turn.lifecycleState = "prediction_filled"
     turn.reuseKey = buildIntentRoutingTierTwoKey(turn.dedupKey, result.resolvedModel)
-    completedSet(state, turn.reuseKey).add(turn)
+    cacheCompletedPrediction(state, turn)
   } else {
     turn.predictionState = "failed"
     turn.lifecycleState = "prediction_failed"
@@ -141,9 +126,8 @@ export function applyResult(
 }
 
 export function reuseCompletedPrediction(
-  state: TurnStoreState,
   turn: MutableTurn,
-  predecessor: MutableTurn,
+  predecessor: CompletedPrediction,
 ): void {
   turn.reuseKey = predecessor.reuseKey
   turn.predictionReused = true
@@ -155,6 +139,5 @@ export function reuseCompletedPrediction(
   turn.answers = predecessor.answers
   turn.invalidAnswerCount = predecessor.invalidAnswerCount
   turn.truncatedInput = predecessor.truncatedInput
-  completedSet(state, turn.reuseKey).add(turn)
   settleTurn(turn)
 }

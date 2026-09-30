@@ -132,3 +132,23 @@ todo	artifact	kind	description
 17	.omo/evidence/20260924-jev-w1/task-17-test-fast.txt	qa	Expanded hard test:fast gate exits 0 with 482 passing tests across 51 files and zero paid API calls
 17	.omo/evidence/20260924-jev-w1/task-17-adversarial-qa.txt	qa	Exact four-doc scope, all 22 W1 tests reachable, no README, no banned prose, clean diff check, and concurrent Todo 18 ownership recorded
 18	.omo/evidence/20260924-jev-w1/task-18-no-key-leak.txt	qa	Required recursive secret-assignment pattern scan prints no matches after all task-18 evidence is present
+19	.omo/evidence/20260924-jev-w1/task-19-drive.sh	qa	Reusable isolated one-server driver with required sandbox, receipts, wire, keep, readiness, exact cleanup, and assertion contract
+19	.omo/evidence/20260924-jev-w1/task-19-turn-script.jsonl	fixture	Deterministic 32-turn model corpus covering pure, one, many, mixed, duplicate, resume-only, continuation, and direct-agent attempts
+19	.omo/evidence/20260924-jev-w1/task-19-fake-jev-server.ts	fixture	Local System One endpoint returning validated pinned-model four-question answers
+19	.omo/evidence/20260924-jev-w1/task-19-fake-model-provider.ts	fixture	Local OpenAI Responses-compatible provider replaying the turn corpus and scripted tool calls
+19	.omo/evidence/20260924-jev-w1/task-19-dogfood-session.txt	qa	Enabled live-session counts: 32 sealed records, finalized prediction reuse, three direct-agent captures, and all required cohorts
+19	.omo/evidence/20260924-jev-w1/task-19-report.txt	qa	Rendered agreement report with passing 32 equals 32 plus 0 plus 0 record identity
+19	.omo/evidence/20260924-jev-w1/task-19-control-disabled.txt	qa	Separate disabled sandbox: 32 turns, zero wire logs, zero Jev requests, and zero sink files
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-before.tsv	artifact	Recursive real-home pre-run path, type, size, nanosecond mtime, and content-hash manifest
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-after.tsv	artifact	Recursive real-home post-run path, type, size, nanosecond mtime, and content-hash manifest
+19	.omo/evidence/20260924-jev-w1/task-19-home-manifest-diff.txt	artifact	Empty recursive real-home diff for the refreshed isolated dogfood run
+19	.omo/evidence/20260924-jev-w1/task-19-session-count.txt	artifact	Real database remained at 426 sessions and contains neither fresh sandbox session id
+19	.omo/evidence/20260924-jev-w1/task-19-receipts.txt	qa	Exact enabled and disabled PIDs and ports, with every process exited or individually terminated and every port released
+19	.omo/evidence/20260924-jev-w1/task-19-README.md	artifact	Reviewer-facing tested, observed, sufficiency, omission, isolation, and final acceptance record
+19	.omo/evidence/20260924-jev-w1/task-19-reuse-regression-red.txt	qa	Failing-first regression proves finalization caused a second dispatch instead of reusing the filled predecessor
+19	.omo/evidence/20260924-jev-w1/task-19-reuse-regression-green.txt	qa	Focused turn-store suite passes with finalized prediction reuse and bounded completed-cache coverage
+19	.omo/evidence/20260924-jev-w1/task-19-sink-home-before.tsv	artifact	Recursive ambient ~/.omo manifest captured before the JEV feature suite without overriding HOME
+19	.omo/evidence/20260924-jev-w1/task-19-sink-home-after.tsv	artifact	Recursive ambient ~/.omo manifest captured after the JEV feature suite without overriding HOME
+19	.omo/evidence/20260924-jev-w1/task-19-sink-home-diff.txt	artifact	Full ambient ~/.omo manifest diff with zero changed lines under the existing empty jev directory
+19	.omo/evidence/20260924-jev-w1/task-19-sink-ambient-home-proof.txt	qa	Ambient-HOME JEV suite passes 85 tests and proves the existing ~/.omo/jev tree was not modified
+19	.omo/evidence/20260924-jev-w1/task-19-call-omo-agent-live.txt	qa	Structured live tool_use event and sink count prove call_omo_agent reached the intent-routing capture path

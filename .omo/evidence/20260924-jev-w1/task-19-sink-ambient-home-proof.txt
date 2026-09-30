@@ -1,0 +1,18 @@
+COMMAND: bun test packages/omo-opencode/src/features/jev/
+HOME: ambient operator home (/home/opencode), no override
+BEFORE: task-19-sink-home-before.tsv (recursive path/type/size/mtime/hash manifest of ~/.omo)
+AFTER: task-19-sink-home-after.tsv (recursive path/type/size/mtime/hash manifest of ~/.omo)
+FULL_DIFF: task-19-sink-home-diff.txt
+EXISTING_EMPTY_JEV_DIRECTORY_LEFT_IN_PLACE: yes
+JEV_MANIFEST_CHANGED_LINES: 0
+--- test output ---
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+SYNC_P99_US=14.13
+
+ 85 pass
+ 0 fail
+ 375 expect() calls
+Ran 85 tests across 11 files. [372.00ms]
+exit=0

@@ -1,5 +1,6 @@
 import { isIntentRoutingContinuationCandidate } from "@oh-my-opencode/jev-core"
 import { completePendingGroup } from "./intent-routing-turn-prediction"
+import { clearCompletedPredictions, dropEvictedPrediction } from "./intent-routing-completed-cache"
 import { EMPTY_INTENT_ROUTING_ANSWERS } from "./intent-routing-turn-record"
 import {
   applyTimeout,
@@ -19,6 +20,7 @@ import {
 function evictTurn(state: TurnStoreState, turn: MutableTurn): void {
   turn.terminalState = "evicted"
   turn.lifecycleState = "evicted"
+  dropEvictedPrediction(state, turn)
   removeTurn(state, turn)
   settleTurn(turn)
   state.counters.recordsEvicted += 1
@@ -64,6 +66,7 @@ function evictSession(state: TurnStoreState, session: SessionState): void {
   if (deferred !== undefined) forceFinalizeDeferred(state, deferred)
   for (const turn of [...session.turns.values()]) evictTurn(state, turn)
   state.sessions.delete(session.sessionID)
+  clearCompletedPredictions(state, session.sessionID)
 }
 
 function ensureSessionCapacity(state: TurnStoreState): void {
