@@ -1,0 +1,37 @@
+WHAT WAS TESTED
+1. RED: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+2. GREEN: the same focused command.
+3. Throw isolation: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer -t 'keeps continuation behavior when the W2 observer throws'
+4. Checkpoint: bun run test:fast
+5. Adapter and outcome adversarial probes: completion-continuation-outcome-store.test.ts, completion-continuation-input.test.ts, and completion-continuation-adversarial.test.ts.
+6. Build and static gates: bun run typecheck, bun run build, the TypeScript no-excuse audit, per-file physical line limits, and protected W3/Atlas diffs.
+
+WHAT WAS OBSERVED
+- RED exited 1 for the missing observer calls and missing construction fallback log: 140 pass, 4 fail, 144 tests.
+- GREEN exited 0: 145 pass, 0 fail, 333 assertions across 20 files.
+- Throw isolation matched exactly one test and exited 0: 1 pass, 141 filtered out, 0 fail.
+- test:fast exited 0: 610 pass, 0 fail, 1812 assertions across 64 files.
+- Adversarial feature probes exited 0: 27 pass, 0 fail, 114 assertions.
+- Five continuation-suite repetitions each reported 142 pass, 0 fail, 320 assertions across 19 files.
+- Typecheck and build exited 0. The no-excuse audit reported no violations in 14 files.
+- Every changed file is at most 234 physical lines. Protected W3 and Atlas diffs both exited 0 with zero lines.
+- Disabled W2 asserted zero timers, zero files, zero backend calls, zero starts, and zero observer state.
+- One literal observer object received diff, three idle begins including a duplicate idle, exact finishes, later activity, human intervention, delete, and dispose. Every recorded receiver was strictly equal to that object.
+- Construction failure logged the fallback and the existing todo hook still fetched messages and todos, showed its toast, and scheduled its 1000 ms interval and 2000 ms timeout.
+
+WHY IT IS ENOUGH
+The focused suite covers all 13 exact gauntlet outcomes and their progress facts. The throw test makes every observer method throw and compares the complete pre-existing continuation trace against the no-op run. The ownership test keeps a non-empty gauntlet trace, lists every removed W2-owned category, and proves a one-millisecond countdown perturbation is detected. Existing W2 store/input tests prove predecessor resolution before successor ordinal, duplicate-idle coalescing, stale and malformed diff availability, dispose-before-clear flushing, and dispose during in-flight work.
+
+ADVERSARIAL QA
+- misleading_success_output: applicable. The filtered trace has 23 pre-existing effects. The exact 26-entry W2 removal list is in task-14-ownership-filter.txt. A deliberate delay perturbation failed with exit 1, then the restored test passed.
+- repeated_interruptions: applicable. The focused wiring test sends a next idle and a duplicate idle. The outcome store proves predecessor resolution and successor ordinal minting. The adversarial adapter test disposes during in-flight work.
+- stale_state: applicable. The input tests assert no_event and malformed_event availability facts and synchronous reads with no waiting.
+- malformed_input: applicable. The focused suite absorbs missing idle input; the input suite covers malformed diff payloads; handlers retain their missing-session-id early returns.
+- cancel_resume: applicable. The adapter and store tests prove censored records and counters flush before maps clear and repeated dispose is idempotent.
+- flaky_tests: applicable. Five consecutive suite runs had identical pass, fail, assertion, and file counts.
+- dirty_worktree: applicable. task-14-dirty-worktree-before-staging.txt identifies the five ambient bundles separately. The staged-path receipt must exclude them.
+- prompt_injection: not applicable. This change consumes typed lifecycle events and snapshots; it does not interpolate observer output into prompts.
+- hung_or_long_commands: not applicable. No external command, process, port, or awaited observer work was added to the idle chain.
+
+WHAT WAS OMITTED
+No credentials, environment dumps, auth headers, private message contents, or raw secret-bearing logs were captured. Real OpenCode dogfood is reserved for approved plan todo 19; todo 14 used its exact focused hook and checkpoint channels only.

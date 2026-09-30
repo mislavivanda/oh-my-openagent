@@ -1,0 +1,14 @@
+234	packages/omo-opencode/src/features/jev/completion-continuation.ts
+77	packages/omo-opencode/src/hooks/index.ts
+87	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer.ts
+63	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-events.ts
+172	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts
+201	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts
+164	packages/omo-opencode/src/hooks/todo-continuation-enforcer/handler.ts
+203	packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-preflight.ts
+39	packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-types.ts
+149	packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.ts
+75	packages/omo-opencode/src/hooks/todo-continuation-enforcer/index.ts
+76	packages/omo-opencode/src/hooks/todo-continuation-enforcer/types.ts
+141	packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.ts
+150	packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts

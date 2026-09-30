@@ -240,3 +240,21 @@ todo	artifact	kind	description
 12	.omo/evidence/20260930-jev-w2/task-12-qa-summary.txt	summary	Reviewer-readable test, QA, omission, and residual-risk summary
 12	.omo/evidence/20260930-jev-w2/task-12-dirty-worktree-before-staging.txt	dirty-worktree	Porcelain status before staging includes owned changes, repaired evidence, and five ambient bundles
 12	.omo/evidence/20260930-jev-w2/task-12-staged-paths.txt	staging	Exact cached path list after staging, including eleven repaired evidence files and excluding ambient bundles
+14	.omo/evidence/20260930-jev-w2/task-14-wiring-red.txt	red	focused wiring tests fail before implementation
+14	.omo/evidence/20260930-jev-w2/task-14-wiring-green.txt	test	focused wiring suite green
+14	.omo/evidence/20260930-jev-w2/task-14-observer-throw.txt	test	all throwing observer methods preserve continuation trace
+14	.omo/evidence/20260930-jev-w2/task-14-test-fast.txt	checkpoint	mid-loop test fast gate
+14	.omo/evidence/20260930-jev-w2/task-14-adversarial-probes.txt	qa	repeated interruption stale malformed and cancel probes
+14	.omo/evidence/20260930-jev-w2/task-14-mutation-proof.txt	mutation	deliberate countdown perturbation fails then reverts
+14	.omo/evidence/20260930-jev-w2/task-14-flaky-five-runs.txt	stability	five identical todo continuation suite results
+14	.omo/evidence/20260930-jev-w2/task-14-line-counts.txt	static	per-file physical line limits
+14	.omo/evidence/20260930-jev-w2/task-14-no-excuse.txt	static	typescript no-excuse audit
+14	.omo/evidence/20260930-jev-w2/task-14-typecheck.txt	typecheck	repository typecheck
+14	.omo/evidence/20260930-jev-w2/task-14-build.txt	build	repository build
+14	.omo/evidence/20260930-jev-w2/task-14-w3-atlas-unchanged.txt	diff	protected W3 and Atlas paths unchanged
+14	.omo/evidence/20260930-jev-w2/task-14-dirty-worktree-before-staging.txt	status	pre-staging dirty worktree receipt
+14	.omo/evidence/20260930-jev-w2/task-14-cleanup.txt	cleanup	home isolation temp cleanup and process receipt
+14	.omo/evidence/20260930-jev-w2/task-14-ownership-filter.txt	trace	nonempty gauntlet trace and exact W2 ownership removal list
+14	.omo/evidence/20260930-jev-w2/task-14-lsp-diagnostics.txt	diagnostics	changed-file diagnostics and compiler backstop
+14	.omo/evidence/20260930-jev-w2/task-14-qa-summary.txt	summary	manual and adversarial QA summary
+14	.omo/evidence/20260930-jev-w2/task-14-staged-paths.txt	status	exact staged path receipt excluding ambient bundles

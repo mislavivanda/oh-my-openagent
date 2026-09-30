@@ -1,0 +1,62 @@
+WHAT WAS TESTED
+The trace test tagged every effect with owner=gauntlet or owner=w2, filtered only owner=w2, and compared the remaining gauntlet bytes. The trace was required to be non-empty and to include messages, todos, toast, countdown interval, and countdown timeout effects.
+
+FILTERED GAUNTLET TRACE
+[
+  "setInterval:120000",
+  "messages",
+  "todos",
+  "toast:Todo Continuation:Resuming in 2s... (1 tasks remaining)",
+  "setInterval:1000",
+  "setTimeout:2000",
+  "clearTimeout:42",
+  "clearInterval:41",
+  "messages",
+  "todos",
+  "toast:Todo Continuation:Resuming in 2s... (1 tasks remaining)",
+  "setInterval:1000",
+  "setTimeout:2000",
+  "messages",
+  "todos",
+  "clearTimeout:44",
+  "clearInterval:43",
+  "toast:Todo Continuation:Resuming in 2s... (1 tasks remaining)",
+  "setInterval:1000",
+  "setTimeout:2000",
+  "clearTimeout:46",
+  "clearInterval:45",
+  "clearInterval:40"
+]
+
+EXACT W2-OWNED REMOVED ENTRY LIST
+[
+  "observeEvent",
+  "recordPreInputSkip",
+  "observeEvent",
+  "observeEvent",
+  "beginIdle",
+  "finishHeuristic",
+  "observeEvent",
+  "markContinuationActivity",
+  "observeEvent",
+  "beginIdle",
+  "finishHeuristic",
+  "observeEvent",
+  "beginIdle",
+  "finishHeuristic",
+  "observeEvent",
+  "humanIntervention",
+  "observeEvent",
+  "deleteSession",
+  "dispose",
+  "macrotask",
+  "outcome_timer",
+  "sink_interval",
+  "backend_call",
+  "log",
+  "counter",
+  "file"
+]
+
+MUTATION SENSITIVITY
+The test harness changed each pre-existing countdown setTimeout delay from 2000 to 2001. A temporary reversal to 2000 made the sensitivity assertion fail with exit 1. The intended 2001 perturbation was restored, diffed byte-for-byte against the saved intended test, and passed with exit 0. See task-14-mutation-proof.txt.

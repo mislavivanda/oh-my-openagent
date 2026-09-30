@@ -1,5 +1,6 @@
 import type { HookName, OhMyOpenCodeConfig } from "../../config"
 import type { BackgroundManager } from "../../features/background-agent"
+import { createJevCompletionContinuation } from "../../features/jev"
 import type { PluginContext } from "../types"
 
 import {
@@ -9,7 +10,10 @@ import {
   createCompactionContextInjector,
   createCompactionTodoPreserverHook,
   createAtlasHook,
+  NOOP_COMPLETION_CONTINUATION_OBSERVER,
+  type CompletionContinuationObserver,
 } from "../../hooks"
+import { log } from "../../shared/logger"
 import { safeCreateHook } from "../../shared/safe-create-hook"
 import { createUnstableAgentBabysitter } from "../unstable-agent-babysitter"
 
@@ -21,6 +25,42 @@ export type ContinuationHooks = {
   unstableAgentBabysitter: ReturnType<typeof createUnstableAgentBabysitter> | null
   backgroundNotificationHook: ReturnType<typeof createBackgroundNotificationHook> | null
   atlasHook: ReturnType<typeof createAtlasHook> | null
+}
+
+function createCompletionContinuationObserver(
+  pluginConfig: OhMyOpenCodeConfig,
+): CompletionContinuationObserver {
+  try {
+    const jevConfig = pluginConfig.jev
+    if (
+      jevConfig?.enabled !== true
+      || jevConfig.wires.completion_continuation.enabled !== true
+    ) {
+      return NOOP_COMPLETION_CONTINUATION_OBSERVER
+    }
+    const completionContinuation = createJevCompletionContinuation({ jevConfig })
+    return {
+      observeEvent: completionContinuation.observeEvent,
+      recordPreInputSkip: completionContinuation.recordPreInputSkip,
+      beginIdle: (input) => { completionContinuation.beginIdle(input) },
+      finishHeuristic: (sessionID, facts) => { completionContinuation.finishHeuristic(sessionID, facts) },
+      markContinuationActivity: (sessionID, successful) => {
+        completionContinuation.markContinuationActivity(sessionID, successful)
+      },
+      humanIntervention: (sessionID) => { completionContinuation.humanIntervention(sessionID) },
+      deleteSession: completionContinuation.deleteSession,
+      dispose: () => {
+        void completionContinuation.dispose().catch((error) => {
+          log("[jev] completion-continuation observer dispose failed", { error: String(error) })
+        })
+      },
+    }
+  } catch (error) {
+    log("[jev] completion-continuation observer construction failed", {
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return NOOP_COMPLETION_CONTINUATION_OBSERVER
+  }
 }
 
 export function createContinuationHooks(args: {
@@ -58,11 +98,14 @@ export function createContinuationHooks(args: {
     : null
 
   const todoContinuationEnforcer = isHookEnabled("todo-continuation-enforcer")
-    ? safeHook("todo-continuation-enforcer", () =>
-      createTodoContinuationEnforcer(ctx, {
+    ? safeHook("todo-continuation-enforcer", () => {
+      const completionContinuationObserver = createCompletionContinuationObserver(pluginConfig)
+      return createTodoContinuationEnforcer(ctx, {
           backgroundManager,
           isContinuationStopped: stopContinuationGuard?.isStopped,
-        }))
+          completionContinuationObserver,
+        })
+      })
     : null
 
   const unstableAgentBabysitter = isHookEnabled("unstable-agent-babysitter")

@@ -1,0 +1,14 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts:
+preCapTodos=40 preCapTranscript=12 preCapDiff=40
+preCapBoulderTitleBytes=303
+
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts:
+preEvictionSessions=256
+preEvictionRecordsPerSession=64
+
+ 27 pass
+ 0 fail
+ 114 expect() calls
+Ran 27 tests across 3 files. [237.00ms]

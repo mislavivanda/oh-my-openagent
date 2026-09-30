@@ -7,6 +7,7 @@ import {
   type CompletionContinuationDecisionArgs,
   type CompletionContinuationDecisionResult,
   type CompletionContinuationHeuristicFacts,
+  type CompletionContinuationPreInputSkipReason,
   type DecisionBackend,
   type DecisionBackendDeps,
 } from "@oh-my-opencode/jev-core"
@@ -52,6 +53,7 @@ export type JevCompletionContinuationInspection = {
 export type JevCompletionContinuation = {
   readonly enabled: boolean
   observeEvent(event: CompletionContinuationObservedEvent): void
+  recordPreInputSkip(reason: CompletionContinuationPreInputSkipReason): void
   beginIdle(input: JevCompletionContinuationBeginInput): boolean
   finishHeuristic(sessionID: string, facts: CompletionContinuationHeuristicFacts): boolean
   markContinuationActivity(sessionID: string, successful: boolean): boolean
@@ -110,6 +112,7 @@ function disabledAdapter(): JevCompletionContinuation {
   return {
     enabled: false,
     observeEvent() {},
+    recordPreInputSkip() {},
     beginIdle: () => false,
     finishHeuristic: () => false,
     markContinuationActivity: () => false,
@@ -148,20 +151,30 @@ export function createJevCompletionContinuation(
       ...(options.fetch === undefined ? {} : { fetch: options.fetch }),
     })
     const clock = options.clock ?? DEFAULT_CLOCK
+    const preInputSkips = { ...emptyCompletionContinuationCounters().preInputSkips }
     let counterReader = emptyCompletionContinuationCounters
+    const readCounters = (): CompletionContinuationCounters => ({
+      ...counterReader(),
+      preInputSkips: { ...preInputSkips },
+    })
     const sink = options.sink ?? createCompletionContinuationSink({
       rootDir: options.rootDir ?? join(homedir(), ".omo", "jev"),
       now: clock.now,
-      getCounters: () => counterReader(),
+      getCounters: readCounters,
       onWarning: safeLog,
     })
     const safeAppend = (entry: unknown): boolean => {
       try { return sink.append(entry) }
-      catch (error) { safeLog("[jev] completion-continuation sink write failed", { error: String(error) }); return false }
+      catch (error) {
+        safeLog("[jev] completion-continuation sink write failed", { error: error instanceof Error ? error.message : String(error) })
+        return false
+      }
     }
     const safeFlushCounters = (): void => {
       try { sink.flushCounters() }
-      catch (error) { safeLog("[jev] completion-continuation counter flush failed", { error: String(error) }) }
+      catch (error) {
+        safeLog("[jev] completion-continuation counter flush failed", { error: error instanceof Error ? error.message : String(error) })
+      }
     }
     const outcomes = createCompletionContinuationOutcomeStore({
       clock,
@@ -185,13 +198,19 @@ export function createJevCompletionContinuation(
     let disposePromise: Promise<void> | undefined
     return {
       enabled: true,
-      observeEvent: (event) => { try { diffCache.observeEvent(event) } catch (error) { safeLog("[jev] completion-continuation event failed", { error: String(error) }) } },
+      observeEvent: (event) => {
+        try { diffCache.observeEvent(event) }
+        catch (error) {
+          safeLog("[jev] completion-continuation event failed", { error: error instanceof Error ? error.message : String(error) })
+        }
+      },
+      recordPreInputSkip: (reason) => { preInputSkips[reason] += 1 },
       beginIdle: controller.beginIdle,
       finishHeuristic: controller.finishHeuristic,
       markContinuationActivity: controller.markContinuationActivity,
       humanIntervention: controller.humanIntervention,
       deleteSession: controller.deleteSession,
-      getCounters: outcomes.getCounters,
+      getCounters: readCounters,
       inspect: () => ({
         ...controller.inspect(),
         dispatchesDropped: outcomes.getCounters().dispatchesDropped,
@@ -201,13 +220,15 @@ export function createJevCompletionContinuation(
         disposePromise ??= controller.dispose().then(() => {
           safeFlushCounters()
           try { sink.dispose() }
-          catch (error) { safeLog("[jev] completion-continuation sink dispose failed", { error: String(error) }) }
+          catch (error) {
+            safeLog("[jev] completion-continuation sink dispose failed", { error: error instanceof Error ? error.message : String(error) })
+          }
         }, (error) => safeLog("[jev] completion-continuation dispose failed", { error: String(error) }))
         return disposePromise
       },
     }
   } catch (error) {
-    safeLog("[jev] completion-continuation construction failed", { error: String(error) })
+    safeLog("[jev] completion-continuation construction failed", { error: error instanceof Error ? error.message : String(error) })
     return disabledAdapter()
   }
 }

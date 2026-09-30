@@ -1,10 +1,12 @@
 import type { BackgroundManager } from "../../features/background-agent"
 import type { ToolPermission } from "../../features/hook-message-injector"
+import type { CompletionContinuationObserver } from "./completion-continuation-observer"
 
 export interface TodoContinuationEnforcerOptions {
   backgroundManager?: BackgroundManager
   skipAgents?: string[]
   isContinuationStopped?: (sessionID: string) => boolean
+  completionContinuationObserver?: CompletionContinuationObserver
 }
 
 export interface TodoContinuationEnforcer {

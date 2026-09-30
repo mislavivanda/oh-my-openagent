@@ -1,0 +1,6 @@
+COMMAND_HEAD=GIT_MASTER=1 git diff --exit-code jev/foundation...HEAD -- <three protected paths>
+HEAD_EXIT=0
+HEAD_MATCHING_LINES=0
+COMMAND_WORKTREE=GIT_MASTER=1 git diff --exit-code -- <three protected paths>
+WORKTREE_EXIT=0
+WORKTREE_MATCHING_LINES=0

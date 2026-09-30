@@ -2,6 +2,7 @@ import type { PluginInput } from "@opencode-ai/plugin"
 
 import type { BackgroundManager } from "../../features/background-agent"
 
+import type { CompletionContinuationObserver } from "./completion-continuation-observer"
 import type { SessionStateStore } from "./session-state"
 import type { MessageWithInfo, SessionState, Todo } from "./types"
 
@@ -12,6 +13,7 @@ export type HandleSessionIdleArgs = {
   readonly backgroundManager?: BackgroundManager
   readonly skipAgents?: string[]
   readonly isContinuationStopped?: (sessionID: string) => boolean
+  readonly completionContinuationObserver?: CompletionContinuationObserver
 }
 
 export type IdleEventContext = {
@@ -21,6 +23,7 @@ export type IdleEventContext = {
   readonly backgroundManager?: BackgroundManager
   readonly skipAgents: string[]
   readonly isContinuationStopped?: (sessionID: string) => boolean
+  readonly completionContinuationObserver: CompletionContinuationObserver
 }
 
 export type IdleEventPreflightResult =
@@ -32,4 +35,5 @@ export type IdleEventPreflightResult =
     readonly prefetchedMessages: MessageWithInfo[]
     readonly todos: Todo[]
     readonly incompleteCount: number
+    readonly promiseComplete: boolean
   }

@@ -3,6 +3,7 @@ import { getAgentConfigKey } from "../../shared/agent-display-names"
 import { log } from "../../shared/logger"
 
 import { acknowledgeCompactionGuard, isCompactionGuardActive } from "./compaction-guard"
+import { NOOP_COMPLETION_CONTINUATION_OBSERVER } from "./completion-continuation-observer"
 import { DEFAULT_SKIP_AGENTS, HOOK_NAME } from "./constants"
 import { startCountdown } from "./countdown"
 import { runIdleEventPreflight } from "./idle-event-preflight"
@@ -19,6 +20,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     backgroundManager,
     skipAgents = DEFAULT_SKIP_AGENTS,
     isContinuationStopped,
+    completionContinuationObserver = NOOP_COMPLETION_CONTINUATION_OBSERVER,
   } = args
 
   const preflight = await runIdleEventPreflight({
@@ -28,6 +30,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     backgroundManager,
     skipAgents,
     isContinuationStopped,
+    completionContinuationObserver,
   })
   if (preflight.kind === "stop") return
 
@@ -37,7 +40,20 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     prefetchedMessages,
     todos,
     incompleteCount,
+    promiseComplete,
   } = preflight
+
+  const finish = (
+    gauntletOutcome: Parameters<typeof completionContinuationObserver.finishHeuristic>[1]["gauntletOutcome"],
+    todoProgress: boolean | null,
+    stagnationStop = false,
+  ): void => completionContinuationObserver.finishHeuristic(sessionID, {
+    gauntletOutcome,
+    todoComplete: false,
+    promiseComplete,
+    todoProgress,
+    stagnationStop,
+  })
 
   let resolvedInfo: ResolvedMessageInfo | undefined
   let encounteredCompaction = false
@@ -54,6 +70,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
 
   if (latestMessageWasCompaction) {
     log(`[${HOOK_NAME}] Skipped: latest message is a compaction marker`, { sessionID })
+    finish("latest_compaction", null)
     return
   }
 
@@ -78,19 +95,23 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
   const resolvedAgentName = resolvedInfo?.agent
   if (resolvedAgentName && skipAgents.some(s => getAgentConfigKey(s) === getAgentConfigKey(resolvedAgentName))) {
     log(`[${HOOK_NAME}] Skipped: agent in skipAgents list`, { sessionID, agent: resolvedAgentName })
+    finish("agent_skipped", null)
     return
   }
   if ((compactionGuardActive || encounteredCompaction) && !resolvedInfo?.agent) {
     log(`[${HOOK_NAME}] Skipped: compaction occurred but no agent info resolved`, { sessionID })
+    finish("compaction_agent_unknown", null)
     return
   }
   if (compactionGuardActive) {
     log(`[${HOOK_NAME}] Skipped: compaction guard still armed for current epoch`, { sessionID, observedCompactionEpoch, currentCompactionEpoch: state.recentCompactionEpoch })
+    finish("compaction_guard", null)
     return
   }
 
   if (isContinuationStopped?.(sessionID)) {
     log(`[${HOOK_NAME}] Skipped: continuation stopped for session`, { sessionID })
+    finish("continuation_stopped", null)
     return
   }
 
@@ -105,11 +126,15 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
       reason: state.continuationBlockReason,
       hasProgressed: progressUpdate.hasProgressed,
     })
+    finish("turn_boundary_block", progressUpdate.hasProgressed)
     return
   }
-  if (shouldStopForStagnation({ sessionID, incompleteCount, progressUpdate })) {
+  const stagnationStop = shouldStopForStagnation({ sessionID, incompleteCount, progressUpdate })
+  if (stagnationStop) {
+    finish("stagnation_stop", progressUpdate.hasProgressed, true)
     return
   }
+  finish("continuation_scheduled", progressUpdate.hasProgressed)
   startCountdown({
     ctx,
     sessionID,

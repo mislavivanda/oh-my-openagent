@@ -1,0 +1,70 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts:
+109 |       })
+110 |       await hooks.todoContinuationEnforcer?.handler({ event: { type: "session.idle", properties: { sessionID: "construction-failure" } } })
+111 | 
+112 |       // then
+113 |       expect(hooks.todoContinuationEnforcer).not.toBeNull()
+114 |       expect(logs.some((message) => message.includes("completion-continuation observer construction failed"))).toBe(true)
+                                                                                                                     ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts:114:112)
+(fail) createContinuationHooks completion-continuation wiring > falls back to a no-op observer when W2 construction throws without disabling todo continuation [1.88ms]
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts:
+112 | 
+113 |     // when
+114 |     await runContinuationTrace(observer)
+115 | 
+116 |     // then
+117 |     expect(calls.length).toBeGreaterThan(8)
+                               ^
+error: expect(received).toBeGreaterThan(expected)
+
+Expected: > 8
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts:117:26)
+(fail) completion-continuation observer wiring > shares one observer across diff, idle, activity, intervention, delete, and dispose [0.99ms]
+148 |     const filtered = gauntletTrace(combined)
+149 |     const removed = combined.filter(([owner]) => owner === "w2").map(([, effect]) => effect)
+150 |     const perturbed = filtered.map((entry) => entry[1] === "setTimeout" ? [entry[0], entry[1], 2001] as const : entry)
+151 | 
+152 |     // then
+153 |     expect(filtered.length).toBeGreaterThan(4)
+                                  ^
+error: expect(received).toBeGreaterThan(expected)
+
+Expected: > 4
+Received: 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts:153:29)
+(fail) completion-continuation observer wiring > filters only owned W2 effects and detects a pre-existing trace perturbation [0.27ms]
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts:
+161 |         "no_todos", "all_todos_complete", "injection_in_flight", "max_failures", "cooldown",
+162 |         "latest_compaction", "agent_skipped", "compaction_agent_unknown", "compaction_guard",
+163 |         "continuation_stopped", "turn_boundary_block", "stagnation_stop", "continuation_scheduled",
+164 |       ])
+165 |       for (const [index, scenario] of SCENARIOS.entries()) {
+166 |         expect(results[index]?.begins).toHaveLength(1)
+                                             ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 1
+Received length: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts:166:40)
+(fail) completion-continuation gauntlet outcomes > begins after fetched input and reports every exact post-input outcome [1.17ms]
+
+ 140 pass
+ 4 fail
+ 298 expect() calls
+Ran 144 tests across 20 files. [720.00ms]
+
+RED_COMMAND_EXIT=1
