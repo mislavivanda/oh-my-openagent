@@ -1,0 +1,11 @@
+lines=181 path=.omo/evidence/20260930-jev-w2/task-19-drive.sh
+lines=28 path=.omo/evidence/20260930-jev-w2/task-19-turn-script.jsonl
+lines=47 path=.omo/evidence/20260930-jev-w2/task-19-fake-jev-server.ts
+lines=108 path=.omo/evidence/20260930-jev-w2/task-19-fake-model-provider.ts
+lines=221 path=packages/omo-opencode/src/features/jev/completion-continuation-input.ts
+lines=222 path=packages/omo-opencode/src/features/jev/completion-continuation-diff-cache.ts
+lines=222 path=packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts
+lines=87 path=packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-events.ts
+forbidden_driver_scan_command=grep -nE global-process-pattern task-19-drive.sh
+forbidden_driver_scan_exit=1
+forbidden_driver_scan_matches=0

@@ -1,30 +1,18 @@
-import type { PluginInput } from "@opencode-ai/plugin"
-import type { BackgroundManager } from "../../features/background-agent"
-import { getSessionAgent, handedBackSyncSessions } from "../../features/claude-code-session-state"
-import { normalizeSDKResponse } from "../../shared"
+import { getSessionAgent } from "../../features/claude-code-session-state"
 import { getAgentConfigKey } from "../../shared/agent-display-names"
-import { log } from "../../shared/logger"
-import { latestAssistantTurnBlocksInternalPrompt } from "../../shared/prompt-async-gate/pending-tool-turn"
+import { log as defaultLog } from "../../shared/logger"
 
-import { isLastAssistantMessageAborted } from "./abort-detection"
 import { acknowledgeCompactionGuard, isCompactionGuardActive } from "./compaction-guard"
-import { ABORT_WINDOW_MS, CONTINUATION_COOLDOWN_MS, DEFAULT_SKIP_AGENTS, FAILURE_RESET_WINDOW_MS, HOOK_NAME, MAX_CONSECUTIVE_FAILURES } from "./constants"
+import { NOOP_COMPLETION_CONTINUATION_OBSERVER } from "./completion-continuation-observer"
+import { DEFAULT_SKIP_AGENTS, HOOK_NAME } from "./constants"
 import { startCountdown } from "./countdown"
-import { hasUnansweredQuestion } from "./pending-question-detection"
+import { runIdleEventPreflight } from "./idle-event-preflight"
+import type { HandleSessionIdleArgs } from "./idle-event-types"
 import { resolveLatestMessageInfo } from "./resolve-message-info"
-import type { SessionStateStore } from "./session-state"
 import { shouldStopForStagnation } from "./stagnation-detection"
-import { getIncompleteCount } from "./todo"
-import type { MessageWithInfo, ResolvedMessageInfo, Todo } from "./types"
+import type { ResolvedMessageInfo } from "./types"
 
-export async function handleSessionIdle(args: {
-  ctx: PluginInput
-  sessionID: string
-  sessionStateStore: SessionStateStore
-  backgroundManager?: BackgroundManager
-  skipAgents?: string[]
-  isContinuationStopped?: (sessionID: string) => boolean
-}): Promise<void> {
+export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<void> {
   const {
     ctx,
     sessionID,
@@ -32,132 +20,42 @@ export async function handleSessionIdle(args: {
     backgroundManager,
     skipAgents = DEFAULT_SKIP_AGENTS,
     isContinuationStopped,
+    completionContinuationObserver = NOOP_COMPLETION_CONTINUATION_OBSERVER,
+    logger = defaultLog,
   } = args
 
-  log(`[${HOOK_NAME}] session.idle`, { sessionID })
+  const preflight = await runIdleEventPreflight({
+    ctx,
+    sessionID,
+    sessionStateStore,
+    backgroundManager,
+    skipAgents,
+    isContinuationStopped,
+    completionContinuationObserver,
+    logger,
+  })
+  if (preflight.kind === "stop") return
 
-  const state = sessionStateStore.getState(sessionID)
-  const observedCompactionEpoch = state.recentCompactionEpoch
+  const {
+    state,
+    observedCompactionEpoch,
+    prefetchedMessages,
+    todos,
+    incompleteCount,
+    promiseComplete,
+  } = preflight
 
-  if (state.allTodosCompletedAt) {
-    log(`[${HOOK_NAME}] Skipped: all todos were already completed`, { sessionID, allTodosCompletedAt: state.allTodosCompletedAt })
-    return
-  }
-
-  if (state.isRecovering) {
-    log(`[${HOOK_NAME}] Skipped: in recovery`, { sessionID })
-    return
-  }
-
-  if (state.wasCancelled) {
-    log(`[${HOOK_NAME}] Skipped: session was cancelled`, { sessionID })
-    return
-  }
-
-  if (handedBackSyncSessions.has(sessionID)) {
-    log(`[${HOOK_NAME}] Skipped: sync subagent already handed back to parent`, { sessionID })
-    return
-  }
-
-  if (state.tokenLimitDetected) {
-    log(`[${HOOK_NAME}] Skipped: token limit error detected, retry would worsen context overflow`, { sessionID })
-    return
-  }
-
-  if (state.abortDetectedAt) {
-    const timeSinceAbort = Date.now() - state.abortDetectedAt
-    if (timeSinceAbort < ABORT_WINDOW_MS) {
-      log(`[${HOOK_NAME}] Skipped: abort detected via event ${timeSinceAbort}ms ago`, { sessionID })
-      state.abortDetectedAt = undefined
-      return
-    }
-    state.abortDetectedAt = undefined
-  }
-
-  const hasRunningBgTasks = backgroundManager
-    ? backgroundManager.getTasksByParentSession(sessionID).some((task: { status: string }) => task.status === "running" || task.status === "pending")
-      || backgroundManager.hasPendingParentWake?.(sessionID) === true
-    : false
-
-  if (hasRunningBgTasks) {
-    log(`[${HOOK_NAME}] Skipped: background tasks running`, { sessionID })
-    return
-  }
-
-  let prefetchedMessages: MessageWithInfo[] | undefined
-  try {
-    const messagesResp = await ctx.client.session.messages({
-      path: { id: sessionID },
-      query: { directory: ctx.directory },
-    })
-    prefetchedMessages = normalizeSDKResponse(messagesResp, [] as MessageWithInfo[])
-    if (isLastAssistantMessageAborted(prefetchedMessages)) {
-      log(`[${HOOK_NAME}] Skipped: last assistant message was aborted (API fallback)`, { sessionID })
-      return
-    }
-    if (hasUnansweredQuestion(prefetchedMessages)) {
-      log(`[${HOOK_NAME}] Skipped: pending question awaiting user response`, { sessionID })
-      return
-    }
-    if (latestAssistantTurnBlocksInternalPrompt(prefetchedMessages)) {
-      log(`[${HOOK_NAME}] Skipped: pending internal continuation response`, { sessionID })
-      return
-    }
-  } catch (error) {
-    const loggedError = error instanceof Error ? { name: error.name, message: error.message } : String(error)
-    log(`[${HOOK_NAME}] Messages fetch failed, skipping continuation`, { sessionID, error: loggedError })
-    return
-  }
-
-  let todos: Todo[] = []
-  try {
-    const response = await ctx.client.session.todo({ path: { id: sessionID } })
-    todos = normalizeSDKResponse(response, [] as Todo[], { preferResponseOnMissingData: true })
-  } catch (error) {
-    const loggedError = error instanceof Error ? { name: error.name, message: error.message } : String(error)
-    log(`[${HOOK_NAME}] Todo fetch failed`, { sessionID, error: loggedError })
-    return
-  }
-
-  if (!todos || todos.length === 0) {
-    sessionStateStore.resetContinuationProgress(sessionID)
-    log(`[${HOOK_NAME}] No todos`, { sessionID })
-    return
-  }
-
-  const incompleteCount = getIncompleteCount(todos)
-  if (incompleteCount === 0) {
-    state.allTodosCompletedAt = Date.now()
-    sessionStateStore.resetContinuationProgress(sessionID)
-    log(`[${HOOK_NAME}] All todos complete`, { sessionID, total: todos.length })
-    return
-  }
-
-  if (state.inFlight) {
-    log(`[${HOOK_NAME}] Skipped: injection in flight`, { sessionID })
-    return
-  }
-
-  if (
-    state.consecutiveFailures >= MAX_CONSECUTIVE_FAILURES
-    && state.lastInjectedAt
-    && Date.now() - state.lastInjectedAt >= FAILURE_RESET_WINDOW_MS
-  ) {
-    state.consecutiveFailures = 0
-    log(`[${HOOK_NAME}] Reset consecutive failures after recovery window`, { sessionID, failureResetWindowMs: FAILURE_RESET_WINDOW_MS })
-  }
-
-  if (state.consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
-    log(`[${HOOK_NAME}] Skipped: max consecutive failures reached`, { sessionID, consecutiveFailures: state.consecutiveFailures })
-    return
-  }
-
-  const effectiveCooldown =
-    CONTINUATION_COOLDOWN_MS * 2 ** Math.min(state.consecutiveFailures, 5)
-  if (state.lastInjectedAt && Date.now() - state.lastInjectedAt < effectiveCooldown) {
-    log(`[${HOOK_NAME}] Skipped: cooldown active`, { sessionID, effectiveCooldown, consecutiveFailures: state.consecutiveFailures })
-    return
-  }
+  const finish = (
+    gauntletOutcome: Parameters<typeof completionContinuationObserver.finishHeuristic>[1]["gauntletOutcome"],
+    todoProgress: boolean | null,
+    stagnationStop = false,
+  ): void => completionContinuationObserver.finishHeuristic(sessionID, {
+    gauntletOutcome,
+    todoComplete: false,
+    promiseComplete,
+    todoProgress,
+    stagnationStop,
+  })
 
   let resolvedInfo: ResolvedMessageInfo | undefined
   let encounteredCompaction = false
@@ -169,11 +67,12 @@ export async function handleSessionIdle(args: {
     latestMessageWasCompaction = messageInfoResult.latestMessageWasCompaction
   } catch (error) {
     const loggedError = error instanceof Error ? { name: error.name, message: error.message } : String(error)
-    log(`[${HOOK_NAME}] Failed to fetch messages for agent check`, { sessionID, error: loggedError })
+    logger(`[${HOOK_NAME}] Failed to fetch messages for agent check`, { sessionID, error: loggedError })
   }
 
   if (latestMessageWasCompaction) {
-    log(`[${HOOK_NAME}] Skipped: latest message is a compaction marker`, { sessionID })
+    logger(`[${HOOK_NAME}] Skipped: latest message is a compaction marker`, { sessionID })
+    finish("latest_compaction", null)
     return
   }
 
@@ -185,7 +84,7 @@ export async function handleSessionIdle(args: {
   const acknowledgedCompaction = resolvedInfo?.agent ? acknowledgeCompactionGuard(state, observedCompactionEpoch) : false
   const compactionGuardActive = isCompactionGuardActive(state, Date.now())
 
-  log(`[${HOOK_NAME}] Agent check`, {
+  logger(`[${HOOK_NAME}] Agent check`, {
     sessionID,
     agentName: resolvedInfo?.agent,
     skipAgents,
@@ -197,20 +96,24 @@ export async function handleSessionIdle(args: {
 
   const resolvedAgentName = resolvedInfo?.agent
   if (resolvedAgentName && skipAgents.some(s => getAgentConfigKey(s) === getAgentConfigKey(resolvedAgentName))) {
-    log(`[${HOOK_NAME}] Skipped: agent in skipAgents list`, { sessionID, agent: resolvedAgentName })
+    logger(`[${HOOK_NAME}] Skipped: agent in skipAgents list`, { sessionID, agent: resolvedAgentName })
+    finish("agent_skipped", null)
     return
   }
   if ((compactionGuardActive || encounteredCompaction) && !resolvedInfo?.agent) {
-    log(`[${HOOK_NAME}] Skipped: compaction occurred but no agent info resolved`, { sessionID })
+    logger(`[${HOOK_NAME}] Skipped: compaction occurred but no agent info resolved`, { sessionID })
+    finish("compaction_agent_unknown", null)
     return
   }
   if (compactionGuardActive) {
-    log(`[${HOOK_NAME}] Skipped: compaction guard still armed for current epoch`, { sessionID, observedCompactionEpoch, currentCompactionEpoch: state.recentCompactionEpoch })
+    logger(`[${HOOK_NAME}] Skipped: compaction guard still armed for current epoch`, { sessionID, observedCompactionEpoch, currentCompactionEpoch: state.recentCompactionEpoch })
+    finish("compaction_guard", null)
     return
   }
 
   if (isContinuationStopped?.(sessionID)) {
-    log(`[${HOOK_NAME}] Skipped: continuation stopped for session`, { sessionID })
+    logger(`[${HOOK_NAME}] Skipped: continuation stopped for session`, { sessionID })
+    finish("continuation_stopped", null)
     return
   }
 
@@ -220,16 +123,20 @@ export async function handleSessionIdle(args: {
     todos,
   )
   if (state.continuationBlockReason) {
-    log(`[${HOOK_NAME}] Skipped: continuation paused at turn boundary`, {
+    logger(`[${HOOK_NAME}] Skipped: continuation paused at turn boundary`, {
       sessionID,
       reason: state.continuationBlockReason,
       hasProgressed: progressUpdate.hasProgressed,
     })
+    finish("turn_boundary_block", progressUpdate.hasProgressed)
     return
   }
-  if (shouldStopForStagnation({ sessionID, incompleteCount, progressUpdate })) {
+  const stagnationStop = shouldStopForStagnation({ sessionID, incompleteCount, progressUpdate, logger })
+  if (stagnationStop) {
+    finish("stagnation_stop", progressUpdate.hasProgressed, true)
     return
   }
+  finish("continuation_scheduled", progressUpdate.hasProgressed)
   startCountdown({
     ctx,
     sessionID,
@@ -240,5 +147,6 @@ export async function handleSessionIdle(args: {
     skipAgents,
     sessionStateStore,
     isContinuationStopped,
+    logger,
   })
 }

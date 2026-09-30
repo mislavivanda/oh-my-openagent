@@ -1,0 +1,54 @@
+F13R EXACT STAGED PATH ALLOWLIST
+
+WHAT WAS TESTED
+
+Exactly one commit is produced, through the shared lock, staging only paths this
+remediation owns plus the shared MANIFEST.tsv. Two concurrent peers own packages/
+and script/jev-w2-report*.ts respectively and neither is touched here.
+
+WHAT WAS OBSERVED
+
+Intended allowlist, staged with git add -f because .gitignore ignores .omo/*:
+  .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+  .omo/evidence/20260930-jev-w2/task-19-drive.sh
+  .omo/evidence/20260930-jev-w2/task-19-enabled.txt
+  .omo/evidence/20260930-jev-w2/task-19-disabled.txt
+  .omo/evidence/20260930-jev-w2/task-19-qa-summary.txt
+  .omo/evidence/20260930-jev-w2/task-F13R-secret-gate.txt
+  .omo/evidence/20260930-jev-w2/task-F13R-masking-demo.txt
+  .omo/evidence/20260930-jev-w2/task-F13R-manifest-narrowing.txt
+  .omo/evidence/20260930-jev-w2/task-F13R-isolation.txt
+  .omo/evidence/20260930-jev-w2/task-F13R-line-counts.txt
+  .omo/evidence/20260930-jev-w2/task-F13R-dirty-worktree.txt
+  .omo/evidence/20260930-jev-w2/task-F13R-staged-paths.txt
+
+  12 paths, all under .omo/evidence/20260930-jev-w2/
+
+Explicitly NOT staged:
+  packages/omo-codex/plugin/components/codegraph/dist/cli.js
+  packages/omo-codex/plugin/components/codegraph/dist/serve.js
+  packages/omo-codex/scripts/install-dist/install-local.mjs
+  packages/omo-senpi/plugin/extensions/omo-member.js
+  packages/omo-senpi/plugin/extensions/omo.js
+  .env and .env.local, which were never read or referenced
+  anything under script/, including the peer-owned jev-w2-report sources
+
+Commit subject, exactly:
+  fix(jev): unmask dogfood assertions and clear the evidence secret gate
+
+This is a remediation commit citing verifiers F1 and F3, so its subject is
+intentionally absent from planned-commit-subjects.txt.
+
+The post-staging verification, comparing git diff --cached --name-only against this
+allowlist, is recorded in the commit body check below.
+
+WHY IT IS ENOUGH
+
+The allowlist is explicit and path-by-path rather than a wildcard, so nothing can be
+swept in. No forbidden git verb was used: no add -A, no add ., no commit -a, no
+checkout, switch, restore, reset, stash, rebase, pull, push, worktree, or clean.
+
+WHAT WAS OMITTED
+
+Peer-owned files and generated bundles are listed by path only and were neither read
+for modification nor reverted.

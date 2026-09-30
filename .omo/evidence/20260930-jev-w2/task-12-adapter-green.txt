@@ -1,0 +1,9 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts:
+ATTEMPTED_STARTS=20 MAX_INFLIGHT=8 IN_FLIGHT=8 PERSISTED_DROPS=12
+
+ 15 pass
+ 0 fail
+ 50 expect() calls
+Ran 15 tests across 1 file. [155.00ms]

@@ -1,0 +1,25 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+35 | 
+36 |     // then
+37 |     expect(COMPLETION_CONTINUATION_FIXTURES.length).toBeGreaterThanOrEqual(18)
+38 |     expect(new Set(ids).size).toBe(ids.length)
+39 |     for (const cohort of COMPLETION_CONTINUATION_FIXTURE_COHORTS) {
+40 |       expect(counts[cohort], cohort).toBeGreaterThan(0)
+                                          ^
+error: slow-censored
+
+Expected: > 0
+Received: 0
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/jev-core/src/completion-continuation-fixtures.test.ts:40:38)
+(fail) completion-continuation fixtures > #given the hand-labeled fixture set #when ids and cohorts are enumerated #then every required cohort is non-empty [0.90ms]
+
+ 0 pass
+ 5 filtered out
+ 1 fail
+ 16 expect() calls
+Ran 1 test across 1 file. [135.00ms]
+
+expected_failure_exit=1

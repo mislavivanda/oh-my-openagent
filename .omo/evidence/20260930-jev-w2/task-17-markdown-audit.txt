@@ -1,0 +1,14 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 16 pass
+ 0 fail
+ 21 expect() calls
+Ran 16 tests across 1 file. [309.00ms]
+
+--- CONTEXT: this is the GREEN half of the markdown-audit probe ---
+The failure half is task-17-markdown-audit-red.txt: a machine-local absolute path was
+injected into docs/jev/dogfood-log.md, the audit failed naming docs/jev/dogfood-log.md:20,
+the file was restored byte-for-byte, and this run is the post-revert PASS.
+command: bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+exit=0
+probe marker still present in any tracked .md: matching_line_count=0 (git grep exited 1, no match)

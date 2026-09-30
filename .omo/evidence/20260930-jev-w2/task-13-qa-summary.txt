@@ -1,0 +1,29 @@
+WHAT WAS TESTED
+- Pre-extraction RED: OMO_CAPTURE_IDLE_GOLDEN=1 bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+- Post-extraction characterization: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+- Required happy channel: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer
+- Required restored mutation channel: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts -t 'detects reordered cooldown and failure guards'
+- Deliberate mutation: cooldown guard moved before max-failures guard, then the same filtered characterization test was run and the mutation was reverted.
+- Static checks: per-file physical line counts, forbidden-reference grep, pre-extraction golden SHA-256 verification, and LSP diagnostics for changed files.
+
+WHAT WAS OBSERVED
+- RED failed only on the pending checksum after writing the no-clobber golden: 2 pass, 1 fail, 52 assertions.
+- Original-code baseline and post-extraction characterization both passed: 3 tests, 52 assertions.
+- The complete todo-continuation suite passed three times with identical counts: 137 tests across 17 files, 282 assertions, 0 failures.
+- The deliberate reorder failed with a byte diff from max-failures to cooldown-active; after revert the exact filtered run matched 1 test and passed.
+- The pre-extraction golden checksum is 361d26ff4dc0dfdf6eb6d794c765dcf346b2b8578590c9f2a2492b100e3ed2e4 and still verifies.
+- All five idle-event TypeScript files are below 250 physical lines. idle-event.ts changed from 244 to 124 lines; preflight is 151, types is 35, characterization is 175, and the existing idle-event test is 231.
+- The forbidden-reference grep produced zero bytes and exit 1, which is the expected no-match result.
+- Changed files have no LSP diagnostics. A directory scan also exposed pre-existing diagnostics in unchanged legacy tests; none named the four changed TypeScript files.
+
+WHY IT IS ENOUGH
+- The golden serializes log, client, timer, and state-mutation order for all 24 return guards plus three fallthrough paths.
+- Every guard trace is asserted nonempty and contains a log entry. Trace counts range from 4 to 9 entries for guards.
+- The mutation probe proves the golden distinguishes the highest-risk adjacent-guard reorder.
+- Existing suites preserve countdown, continuation, abort, compaction, failure, and stagnation behavior around the extracted seam.
+
+WHAT WAS OMITTED
+- No full repository suite or global typecheck was run because peers have in-flight edits and the user prohibited full-suite work in this checkbox.
+- No build was run because it writes generated bundles outside the owned paths in this shared worktree.
+- An optional isolated OpenCode SSE smoke did not reach readiness in two bounded attempts. It produced no retained pass artifact, and its exact-PID cleanup traps and shell process-group termination left no expected process or port. The user-required manual-QA channels above all passed.
+- The exact proposed line-limit command exits 1 on GNU wc because wc adds an aggregate total row above 250. The corrected per-file form skips the total row and exits 0; task-13-line-limit.txt records every file count.

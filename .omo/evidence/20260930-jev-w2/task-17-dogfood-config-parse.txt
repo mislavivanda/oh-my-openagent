@@ -1,0 +1,67 @@
+TODO 17 - THE DOCUMENTED W2 DOGFOOD BLOCK PARSES AGAINST THE COMMITTED SCHEMA
+============================================================================
+
+WHAT WAS TESTED
+  The malformed_input probe. Both docs that carry the W2 dogfood block are read from disk,
+  the jsonc block containing "completion_continuation" is extracted, and the jev object is
+  parsed with the real committed JevConfigSchema. A documented config that does not parse
+  is a defect.
+
+command: bun -e "$(cat /tmp/jev-w2-dogfood-parse.ts)"   (cwd is the worktree root)
+
+PASS  docs/reference/configuration.md: block carries the [opencode] harness wrapper  keys=["[opencode]"]
+PASS  docs/reference/configuration.md: JevConfigSchema.parse succeeded  enabled=true backend=real model=jev-latest
+PASS  docs/reference/configuration.md: backend is real  backend=real
+PASS  docs/reference/configuration.md: model is jev-latest  model=jev-latest
+PASS  docs/reference/configuration.md: wire.enabled  documented=true parsed=true
+PASS  docs/reference/configuration.md: wire.observe_only  documented=true parsed=true
+PASS  docs/reference/configuration.md: wire.confidence_threshold  documented=0.8 parsed=0.8
+PASS  docs/reference/configuration.md: wire.timeout_ms  documented=2500 parsed=2500
+PASS  docs/reference/configuration.md: wire.outcome_window_ms  documented=120000 parsed=120000
+PASS  docs/reference/configuration.md: wire.max_inflight  documented=8 parsed=8
+PASS  docs/reference/configuration.md: wire.max_state_bytes  documented=24576 parsed=24576
+PASS  docs/reference/configuration.md: documented wire keys equal the seven schema fields  documented=["confidence_threshold","enabled","max_inflight","max_state_bytes","observe_only","outcome_window_ms","timeout_ms"]
+PASS  docs/reference/configuration.md: no api key appears in the documented block  scanned the raw block
+PASS  docs/reference/configuration.md: W1 defaults untouched by the W2 block  intent_routing.enabled=false
+PASS  docs/reference/configuration.md: W4 defaults untouched by the W2 block  model_error_triage.enabled=false
+PASS  docs/jev/HANDOFF.md: block carries the [opencode] harness wrapper  keys=["[opencode]"]
+PASS  docs/jev/HANDOFF.md: JevConfigSchema.parse succeeded  enabled=true backend=real model=jev-latest
+PASS  docs/jev/HANDOFF.md: backend is real  backend=real
+PASS  docs/jev/HANDOFF.md: model is jev-latest  model=jev-latest
+PASS  docs/jev/HANDOFF.md: wire.enabled  documented=true parsed=true
+PASS  docs/jev/HANDOFF.md: wire.observe_only  documented=true parsed=true
+PASS  docs/jev/HANDOFF.md: wire.confidence_threshold  documented=0.8 parsed=0.8
+PASS  docs/jev/HANDOFF.md: wire.timeout_ms  documented=2500 parsed=2500
+PASS  docs/jev/HANDOFF.md: wire.outcome_window_ms  documented=120000 parsed=120000
+PASS  docs/jev/HANDOFF.md: wire.max_inflight  documented=8 parsed=8
+PASS  docs/jev/HANDOFF.md: wire.max_state_bytes  documented=24576 parsed=24576
+PASS  docs/jev/HANDOFF.md: documented wire keys equal the seven schema fields  documented=["confidence_threshold","enabled","max_inflight","max_state_bytes","observe_only","outcome_window_ms","timeout_ms"]
+PASS  docs/jev/HANDOFF.md: no api key appears in the documented block  scanned the raw block
+PASS  docs/jev/HANDOFF.md: W1 defaults untouched by the W2 block  intent_routing.enabled=false
+PASS  docs/jev/HANDOFF.md: W4 defaults untouched by the W2 block  model_error_triage.enabled=false
+PASS  configuration.md default table: enabled  documented=false schema=false
+PASS  configuration.md default table: observe_only  documented=true schema=true
+PASS  configuration.md default table: confidence_threshold  documented=0.8 schema=0.8
+PASS  configuration.md default table: timeout_ms  documented=2500 schema=2500
+PASS  configuration.md default table: outcome_window_ms  documented=120000 schema=120000
+PASS  configuration.md default table: max_inflight  documented=8 schema=8
+PASS  configuration.md default table: max_state_bytes  documented=24576 schema=24576
+PASS  observe_only false is rejected  rejected by refine
+PASS  outcome_window_ms must exceed timeout_ms  rejected by refine
+
+failures=0
+exit=0
+
+WHAT WAS OBSERVED
+  Every documented field parses, the seven documented wire keys are exactly the seven schema
+  fields, the documented defaults table matches JevConfigSchema.parse({}), W1 and W4 defaults
+  stay off, observe_only false is rejected, and an outcome_window_ms equal to timeout_ms is
+  rejected. No API key appears inside either documented block.
+
+WHY IT IS ENOUGH
+  The probe reads the committed markdown rather than a copy, so drift between the doc and the
+  schema fails it. It also checks the reverse direction (schema defaults equal the documented
+  defaults), which catches a stale table as well as a stale example.
+
+WHAT WAS OMITTED
+  The probe deliberately never reads TYPESAFE_API_KEY and makes no network call.

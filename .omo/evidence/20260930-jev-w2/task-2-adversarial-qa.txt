@@ -1,0 +1,80 @@
+=== ADVERSARIAL QA (todo 2) ===
+date: 2026-09-30T11:00:28Z
+
+### CLASS 1: malformed_input -- APPLIES (this todo adds new config parsing)
+Each row is a real parse observable, captured from the real schema.
+- wrong-typed timeout_ms: "fast"
+    REJECTED -> wires.completion_continuation.timeout_ms: Invalid input: expected number, received string
+- negative outcome_window_ms: -1
+    REJECTED -> wires.completion_continuation.outcome_window_ms: Too small: expected number to be >=1000 | wires.completion_continuation.outcome_window_ms: outcome_window_ms must be strictly greater than timeout_ms
+- negative timeout_ms: -2500
+    REJECTED -> wires.completion_continuation.timeout_ms: Too small: expected number to be >=100
+- negative max_state_bytes: -1
+    REJECTED -> wires.completion_continuation.max_state_bytes: Too small: expected number to be >=1024
+- outcome_window_ms == timeout_ms (2500/2500)
+    REJECTED -> wires.completion_continuation.outcome_window_ms: outcome_window_ms must be strictly greater than timeout_ms
+- outcome_window_ms < timeout_ms (2500/2499)
+    REJECTED -> wires.completion_continuation.outcome_window_ms: outcome_window_ms must be strictly greater than timeout_ms
+- outcome_window_ms > timeout_ms (2500/2501)
+    ACCEPTED -> {"enabled":false,"observe_only":true,"confidence_threshold":0.8,"timeout_ms":2500,"outcome_window_ms":2501,"max_inflight":8,"max_state_bytes":24576}
+- unknown extra key apply_decisions: true
+    ACCEPTED -> {"enabled":false,"observe_only":true,"confidence_threshold":0.8,"timeout_ms":2500,"outcome_window_ms":120000,"max_inflight":8,"max_state_bytes":24576}
+- null wire
+    REJECTED -> wires.completion_continuation: Invalid input: expected object, received null
+- apply mode observe_only: false
+    REJECTED -> wires.completion_continuation.observe_only: The Jev completion-continuation apply phase is not yet implemented; observe_only must remain true.
+- non-integer timeout_ms: 2500.5
+    REJECTED -> wires.completion_continuation.timeout_ms: Invalid input: expected int, received number
+- confidence_threshold above 1: 1.5
+    REJECTED -> wires.completion_continuation.confidence_threshold: Too big: expected number to be <=1
+- max_inflight above cap: 65
+    REJECTED -> wires.completion_continuation.max_inflight: Too big: expected number to be <=64
+- wire schema parsed with undefined
+    REJECTED -> Invalid input: expected object, received undefined
+
+FINDING: every type, range, integer, and cross-field violation is REJECTED.
+FINDING: an unknown extra key is STRIPPED, not rejected. That matches every other
+         schema in packages/omo-opencode/src/config/schema (Zod object default strip)
+         and is recorded here as the honest observable, not claimed as a rejection.
+FINDING: the wire schema is NOT optional in isolation; it is reached through the
+         JevWiresConfigSchema .default(...) so an absent key yields the default-off shape.
+
+### CLASS 2: stale_state -- APPLIES (two tracked generated assets)
+Probe 2a: second-run idempotence. Already proven inside the decisive gate by the
+  two cmp checks after re-running BOTH generators. Re-stated here with fresh hashes:
+  pre-regen  oh-my-opencode.schema.json sha256=ab3e60a2c588f90b3b9da4f641dc39f1c1f435de7033666fecbafc7d497918ee
+  pre-regen  omo.schema.json            sha256=e20ba98020d67ed0aec7a5df333113eeac0f637da71c43879181ec4505e58d74
+  post-regen oh-my-opencode.schema.json sha256=ab3e60a2c588f90b3b9da4f641dc39f1c1f435de7033666fecbafc7d497918ee
+  post-regen omo.schema.json            sha256=e20ba98020d67ed0aec7a5df333113eeac0f637da71c43879181ec4505e58d74
+
+Probe 2b: can a STALE pre-edit asset pass the gate? Deliberately restore the HEAD
+  (pre-edit) bytes of assets/omo.schema.json and run the gate's own inverted check.
+  restored stale bytes: 868291 (HEAD size), sha256=bba2dd98ce49e816ac875ae5403a3de573551b32b327d45f62897a31762ceda1
+  STALE ASSET: git diff --exit-code exited 0 -> the gate line 'if git diff --exit-code assets/omo.schema.json; then exit 1; fi' TAKES the then-branch -> GATE EXITS 1. A stale asset CANNOT pass.
+  restoring the generated assets and proving byte identity with the saved good copies:
+  cmp omo.schema.json vs saved good copy: IDENTICAL
+  cmp oh-my-opencode.schema.json vs saved good copy: IDENTICAL
+
+### CLASS 3: misleading_success_output -- APPLIES
+The gate's green must not be accidental. Its three checks are INVERTED:
+  'if git diff --exit-code <paths>; then exit 1; fi' fails the gate when there is NO diff.
+Probe 3a: fire the same inversion against a genuinely UNCHANGED tracked file.
+  README.md (unchanged): git diff --exit-code exit=0 -> then-branch TAKEN -> inversion fires -> gate would exit 1. CONFIRMED the inversion is live, not dead code.
+Probe 3b: prove the real assets are NOT no-ops, so the green is earned:
+  assets/oh-my-opencode.schema.json: +73 / -1 lines
+  assets/omo.schema.json: +146 / -2 lines
+  byte delta oh-my-opencode.schema.json: 254223 -> 256571
+  byte delta omo.schema.json:            868291 -> 873995
+  diff byte count oh-my-opencode.schema.json: 3153 bytes of patch
+  diff byte count omo.schema.json:            7329 bytes of patch
+CONCLUSION: a no-op schema change would have produced exit 0 on both git diff checks
+  and the gate would have exited 1. The gate exited 0 only because both assets really changed.
+
+### CLASS 4: dirty_worktree -- APPLIES (recorded at staging time in task-2-dirty-worktree.txt)
+
+### RULED OUT (one line each)
+- prompt_injection: no untrusted text is read, parsed, or forwarded to a model; this todo only adds Zod field declarations and regenerates two JSON files.
+- cancel_resume: every command is a synchronous one-shot generator or test run with no resumable state, checkpoint, or partial-write protocol.
+- hung_or_long_commands: the longest command is the gate at a few seconds; no server, watcher, daemon, or network call is started.
+- flaky_tests: the tests are pure in-process Zod parses with no clock, filesystem, network, randomness, or ordering dependency.
+- repeated_interruptions: no interactive prompt, TTY read, or human-in-the-loop step exists in any command in this todo.

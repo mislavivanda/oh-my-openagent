@@ -1,0 +1,5 @@
+idle-event-preflight.ts: no diagnostics
+idle-event-types.ts: no diagnostics
+idle-event-characterization.test.ts: no diagnostics in the final directory scan
+idle-event.ts: no diagnostics in the final directory scan
+directory scan: changed files clean; diagnostics reported only pre-existing issues in unchanged legacy tests and resolve-message-info.ts

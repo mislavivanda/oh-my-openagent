@@ -1,0 +1,22 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts:
+155 | describe("idle event characterization", () => {
+156 |   test("matches the no-clobber pre-extraction golden bytes", async () => {
+157 |     const bytes = serialize(await captureAll())
+158 |     if (process.env.OMO_CAPTURE_IDLE_GOLDEN === "1") writeFileSync(GOLDEN_PATH, bytes, { flag: "wx" })
+159 |     expect(bytes).toBe(readFileSync(GOLDEN_PATH, "utf8"))
+160 |     expect(createHash("sha256").update(bytes).digest("hex")).toBe(EXPECTED_GOLDEN_SHA256)
+                                                                   ^
+error: expect(received).toBe(expected)
+
+Expected: "pending"
+Received: "361d26ff4dc0dfdf6eb6d794c765dcf346b2b8578590c9f2a2492b100e3ed2e4"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts:160:62)
+(fail) idle event characterization > matches the no-clobber pre-extraction golden bytes [4.62ms]
+
+ 2 pass
+ 1 fail
+ 52 expect() calls
+Ran 3 tests across 1 file. [148.00ms]

@@ -1,0 +1,206 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 17 pass
+ 0 fail
+ 28 expect() calls
+Ran 17 tests across 1 file. [139.00ms]
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+diff --git a/assets/omo.schema.json b/assets/omo.schema.json
+index 8c53ba66e..faa9f8c25 100644
+--- a/assets/omo.schema.json
++++ b/assets/omo.schema.json
+@@ -9058,6 +9058,15 @@
+                   "turn_seal_timeout_ms": 120000,
+                   "max_prompt_chars": 8000,
+                   "max_inflight": 8
++                },
++                "completion_continuation": {
++                  "enabled": false,
++                  "observe_only": true,
++                  "confidence_threshold": 0.8,
++                  "timeout_ms": 2500,
++                  "outcome_window_ms": 120000,
++                  "max_inflight": 8,
++                  "max_state_bytes": 24576
+                 }
+               },
+               "type": "object",
+@@ -9147,11 +9156,74 @@
+                     "max_inflight"
+                   ],
+                   "additionalProperties": false
++                },
++                "completion_continuation": {
++                  "default": {
++                    "enabled": false,
++                    "observe_only": true,
++                    "confidence_threshold": 0.8,
++                    "timeout_ms": 2500,
++                    "outcome_window_ms": 120000,
++                    "max_inflight": 8,
++                    "max_state_bytes": 24576
++                  },
++                  "type": "object",
++                  "properties": {
++                    "enabled": {
++                      "default": false,
++                      "type": "boolean"
++                    },
++                    "observe_only": {
++                      "default": true,
++                      "type": "boolean"
++                    },
++                    "confidence_threshold": {
++                      "default": 0.8,
++                      "type": "number",
++                      "minimum": 0,
++                      "maximum": 1
++                    },
++                    "timeout_ms": {
++                      "default": 2500,
++                      "type": "integer",
++                      "minimum": 100,
++                      "maximum": 30000
++                    },
++                    "outcome_window_ms": {
++                      "default": 120000,
++                      "type": "integer",
++                      "minimum": 1000,
++                      "maximum": 3600000
++                    },
++                    "max_inflight": {
++                      "default": 8,
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 64
++                    },
++                    "max_state_bytes": {
++                      "default": 24576,
++                      "type": "integer",
++                      "minimum": 1024,
++                      "maximum": 262144
++                    }
++                  },
++                  "required": [
++                    "enabled",
++                    "observe_only",
++                    "confidence_threshold",
++                    "timeout_ms",
++                    "outcome_window_ms",
++                    "max_inflight",
++                    "max_state_bytes"
++                  ],
++                  "additionalProperties": false
+                 }
+               },
+               "required": [
+                 "model_error_triage",
+-                "intent_routing"
++                "intent_routing",
++                "completion_continuation"
+               ],
+               "additionalProperties": false
+             }
+@@ -21199,6 +21271,15 @@
+                         "turn_seal_timeout_ms": 120000,
+                         "max_prompt_chars": 8000,
+                         "max_inflight": 8
++                      },
++                      "completion_continuation": {
++                        "enabled": false,
++                        "observe_only": true,
++                        "confidence_threshold": 0.8,
++                        "timeout_ms": 2500,
++                        "outcome_window_ms": 120000,
++                        "max_inflight": 8,
++                        "max_state_bytes": 24576
+                       }
+                     },
+                     "type": "object",
+@@ -21288,11 +21369,74 @@
+                           "max_inflight"
+                         ],
+                         "additionalProperties": false
++                      },
++                      "completion_continuation": {
++                        "default": {
++                          "enabled": false,
++                          "observe_only": true,
++                          "confidence_threshold": 0.8,
++                          "timeout_ms": 2500,
++                          "outcome_window_ms": 120000,
++                          "max_inflight": 8,
++                          "max_state_bytes": 24576
++                        },
++                        "type": "object",
++                        "properties": {
++                          "enabled": {
++                            "default": false,
++                            "type": "boolean"
++                          },
++                          "observe_only": {
++                            "default": true,
++                            "type": "boolean"
++                          },
++                          "confidence_threshold": {
++                            "default": 0.8,
++                            "type": "number",
++                            "minimum": 0,
++                            "maximum": 1
++                          },
++                          "timeout_ms": {
++                            "default": 2500,
++                            "type": "integer",
++                            "minimum": 100,
++                            "maximum": 30000
++                          },
++                          "outcome_window_ms": {
++                            "default": 120000,
++                            "type": "integer",
++                            "minimum": 1000,
++                            "maximum": 3600000
++                          },
++                          "max_inflight": {
++                            "default": 8,
++                            "type": "integer",
++                            "minimum": 1,
++                            "maximum": 64
++                          },
++                          "max_state_bytes": {
++                            "default": 24576,
++                            "type": "integer",
++                            "minimum": 1024,
++                            "maximum": 262144
++                          }
++                        },
++                        "required": [
++                          "enabled",
++                          "observe_only",
++                          "confidence_threshold",
++                          "timeout_ms",
++                          "outcome_window_ms",
++                          "max_inflight",
++                          "max_state_bytes"
++                        ],
++                        "additionalProperties": false
+                       }
+                     },
+                     "required": [
+                       "model_error_triage",
+-                      "intent_routing"
++                      "intent_routing",
++                      "completion_continuation"
+                     ],
+                     "additionalProperties": false
+                   }
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json
+$ bun run script/build-schema.ts
+Generating JSON Schemas...
+✓ JSON Schemas generated: assets/omo.schema.json, assets/oh-my-opencode.schema.json
+$ bun run script/build-omo-schema.ts
+Generating omo JSON Schema...
+✓ omo JSON Schema generated: assets/omo.schema.json

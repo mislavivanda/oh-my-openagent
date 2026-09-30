@@ -1,0 +1,7 @@
+Todo 6 cleanup receipt
+- Processes started: none.
+- Ports bound: none.
+- Containers created: none.
+- Temporary files or directories created: none, so none required removal.
+- Timers: focused tests use injected clocks; production timers are cancelled after settlement and unrefed while pending.
+- Persistent QA artifacts remain only under .omo/evidence/20260930-jev-w2 as required.

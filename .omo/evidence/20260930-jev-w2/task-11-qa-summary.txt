@@ -1,0 +1,24 @@
+WHAT WAS TESTED
+- Focused RED then GREEN for completion-continuation-outcome-store.test.ts.
+- Exact timeout filter for "does not label an expired window as stuck".
+- Five deterministic focused reruns.
+- Root typecheck and build.
+- LSP diagnostics, no-excuse audit, forbidden-pattern audit, and per-file physical line limits.
+
+WHAT WAS OBSERVED
+- GREEN: 12 pass, 0 fail, 49 assertions, with real pre-eviction sizes 256 sessions and 64 records per session.
+- Filtered timeout: 1 pass, 11 filtered out, 0 fail, Ran 1 test.
+- Timeout produced outcomeStatus=censored, outcomeClosedBy=timeout, stuck=unknown.
+- Every created timer used 120000 ms and the injected clock recorded one unref call per timer.
+- All five reruns reported 12 pass, 0 fail, and exit 0.
+- Typecheck and build exited 0; all five changed TypeScript files had clean LSP diagnostics.
+
+WHY IT IS ENOUGH
+- Order tests cover heuristic-first, prediction-first, and outcome-first finalization, proving no single terminal dimension evicts a record.
+- Outcome tests cover complete, progress, unchanged successful continuation, human intervention, session deletion, timeout, dispose, malformed input, duplicate idle, real LRU boundaries, and exactly-once append.
+- The pending dispose-write test proves censored observations and the counter delta are submitted before maps clear.
+- Todo 11 is not wired to OpenCode yet; todo 14 owns hook wiring, so no live harness event can reach this module in this checkbox.
+
+WHAT WAS OMITTED
+- Routine 294-line build progress was summarized after a successful exit to keep evidence bounded.
+- No environment dump, token, credential, auth header, private path content, or secret-bearing log was captured.

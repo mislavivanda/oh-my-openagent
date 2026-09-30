@@ -1,0 +1,6 @@
+    8 packages/omo-opencode/src/shared/completion-promise-pattern.ts
+   47 packages/omo-opencode/src/shared/completion-promise-pattern.test.ts
+   88 packages/omo-opencode/src/shared/index.ts
+  163 packages/omo-opencode/src/hooks/ralph-loop/completion-promise-detector.ts
+  112 .omo/evidence/20260930-jev-w2/task-9-golden-runner.ts
+  418 total

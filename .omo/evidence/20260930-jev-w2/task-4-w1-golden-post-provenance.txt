@@ -1,0 +1,4 @@
+phase=post-extraction
+temp_root=/tmp/omo-jev-w1-golden-post-12FFkB
+temp_root_removed=true
+corpus_file=w1-20260924-404-1790000000000000404-suffix404.jsonl

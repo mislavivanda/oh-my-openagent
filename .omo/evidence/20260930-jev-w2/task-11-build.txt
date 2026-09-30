@@ -1,0 +1,5 @@
+Command: bun run build
+Exit: 0
+Observed: build: all steps completed
+Surfaces: OpenCode bundles, declarations, schemas, MCP packages, Codex plugin components, and Senpi plugin completed successfully.
+Omitted: 294 routine build progress lines and npm audit notices unrelated to todo 11.

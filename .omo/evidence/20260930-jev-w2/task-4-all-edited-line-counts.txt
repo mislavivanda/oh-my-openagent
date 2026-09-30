@@ -1,0 +1,9 @@
+  112 packages/omo-opencode/src/features/jev/observation-jsonl-files.ts
+   34 packages/omo-opencode/src/features/jev/observation-process-identity.ts
+  185 packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+   42 packages/omo-opencode/src/features/jev/intent-routing-sink-files.ts
+   65 packages/omo-opencode/src/features/jev/intent-routing-reader.ts
+  114 packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts
+   37 packages/omo-opencode/src/features/jev/observation-process-identity.test.ts
+  202 packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+  791 total

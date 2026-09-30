@@ -1,0 +1,26 @@
+WHAT WAS TESTED
+- Focused W2 policy behavior with the exact happy and rejecting-backend commands.
+- Exact threshold boundaries, adjacent values, one call carrying three questions, raw probability preservation, malformed and missing answers, backend timeout, disabled/unavailable backend, rejected promise, and synchronous throw.
+- Harness neutrality, package typecheck, no-excuse rules, physical line limits, absence of accuracy minimum assertions, five-run stability, and LSP diagnostics.
+
+WHAT WAS OBSERVED
+- task-6-decision-green.txt: 27 pass, 0 fail, Ran 27 tests.
+- task-6-rejecting-backend.txt: 1 pass, 0 fail, Ran 1 test.
+- The backend call count is asserted exactly as 1 and its question keys are exactly actually_complete, progressing, and stuck.
+- At p === threshold the label is would_true. At p === 1 - threshold the label is would_false. The adjacent interior values are uncertain; adjacent exterior values retain the corresponding true or false label.
+- Raw valid probabilities are retained byte-for-number without rounding or clamping.
+- task-6-flaky-tests.txt: five identical count results of 27 pass and 0 fail.
+- task-6-core-guard.txt: 3 pass, 0 fail.
+- task-6-typecheck.txt: exit 0 with no diagnostics output.
+- task-6-accuracy-minimum-check.txt: no matching accuracy minimum assertion.
+- task-6-no-excuse.txt: no violations in four files.
+- task-6-line-counts.txt: every owned TypeScript file is at most 250 physical lines.
+- The public result exposes observations only. It has no apply, recommendation, or actionable decision field.
+
+WHY IT IS ENOUGH
+- Tests exercise every acceptance and adversarial branch at the policy boundary. The one-call assertion would fail a three-call implementation, the fake clock makes timeout deterministic, and the filtered run proves rejection handling without an unhandled rejection.
+- Typecheck, LSP, and the core extraction guard cover strict typing and harness neutrality.
+
+WHAT WAS OMITTED
+- No secrets, credentials, environment dumps, network calls, or private logs were produced.
+- No full suite or test:fast run was performed because the user prohibited them while peer edits are in flight.

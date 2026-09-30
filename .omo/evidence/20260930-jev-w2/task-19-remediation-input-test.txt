@@ -1,0 +1,10 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts:
+preCapTodos=40 preCapTranscript=12 preCapDiff=40
+preCapBoulderTitleBytes=303
+
+ 8 pass
+ 0 fail
+ 49 expect() calls
+Ran 8 tests across 1 file. [151.00ms]

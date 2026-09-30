@@ -1,0 +1,27 @@
+COMMAND: bun test packages/jev-core script/shared-core-extraction-guard.test.ts script/package-registration-audit.test.ts
+PURPOSE: regression gate for the package the todo-18 modules live in, plus the two audits
+that constrain core packages. JEV_W2_REAL_API is unset, so no paid path is taken.
+
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+accuracy backend=mock paidApi=false fixtures=15 networkCalls=0 resolvedModel=mock questionVersion=1
+dry-run verified fixtures=15 callCount=0 networkCalls=0
+ceiling-abort name=IntentRoutingCallCeilingError ceiling=15 backendCalls=1
+
+packages/jev-core/src/completion-continuation-real-run.test.ts:
+A orchestrated status=complete reserved=3 clientCount=3 serverCount=3 perCallRequests=[1,1,1] tokensIn=33 tokensOut=9 resolvedModel=fake-jev-9.9.9
+A verdict clientEqualsServer=true oneRequestPerThreeQuestionCall=true
+B forcedExtraCall counter=1 serverCount=1 rose=true
+B secondForcedCall counter=2 serverCount=2 rose=true
+C ceilingAbort error=PaidCallCeilingError nextOrdinal=3 serverCount=2 retainedStatus=partial retainedCallCount=2
+D hardTimeout status=partial failureReason=timeout elapsedMs=301 timeoutMs=300 serverCount=1
+E malformedResponse status=partial failureReason=malformed_response completed=[] serverCount=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+ 232 pass
+ 0 fail
+ 661 expect() calls
+Ran 232 tests across 21 files. [752.00ms]
+exit=0

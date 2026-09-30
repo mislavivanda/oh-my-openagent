@@ -1,0 +1,14 @@
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation.ts:160:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation.ts:164:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation.ts:188:72: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation.ts:204:11: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation.ts:209:5: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:73:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:153:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:191:13: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:200:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:220:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:224:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:240:7: [catch-without-narrowing] `catch` without `instanceof` narrowing or re-throw — narrow the error type or re-throw
+
+12 violation(s) in 5 file(s).

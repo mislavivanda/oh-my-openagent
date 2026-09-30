@@ -1,0 +1,9 @@
+91	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert-trace.ts
+237	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert-fixture.ts
+74	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts
+121	packages/omo-opencode/src/features/jev/completion-continuation-runtime-audit.ts
+224	packages/omo-opencode/src/features/jev/completion-continuation-runtime-fixture.ts
+62	packages/omo-opencode/src/features/jev/completion-continuation-unref-child.ts
+106	packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts
+EXIT_STATUS	0
+CHECK	each file independently <=250 physical lines

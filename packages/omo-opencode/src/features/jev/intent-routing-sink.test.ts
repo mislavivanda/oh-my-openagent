@@ -1,3 +1,5 @@
+/// <reference types="bun-types" />
+
 import { afterEach, beforeEach, describe, expect, jest, test } from "bun:test"
 import { appendFileSync, mkdtempSync, readFileSync, rmSync, statSync } from "fs"
 import { tmpdir } from "os"
@@ -40,6 +42,45 @@ afterEach(() => {
 })
 
 describe("intent-routing sink", () => {
+  test("#given the pre-extraction golden corpus #when regenerated #then JSONL bytes and reader output are identical", () => {
+    const goldenRoot = mkdtempSync(join(tmpdir(), "omo-jev-w1-golden-post-"))
+    try {
+      const evidenceDir = join(import.meta.dir, "../../../../../.omo/evidence/20260930-jev-w2")
+      const expectedBytes = readFileSync(join(evidenceDir, "task-4-w1-golden-pre.jsonl"))
+      const expectedReader: unknown = JSON.parse(
+        readFileSync(join(evidenceDir, "task-4-w1-golden-pre-reader.json"), "utf8"),
+      )
+      const identity = processIdentity(404)
+      const created = createIntentRoutingSink({
+        rootDir: goldenRoot,
+        now: () => FIXED_NOW,
+        processIdentity: identity,
+        counterFlushIntervalMs: 60_000,
+      })
+      created.append(observation({ sessionID: "golden-first", promptHeadChars: "continue" }))
+      created.append(observation({ sessionID: "golden-unicode", promptHeadChars: "계속해" }))
+      created.append(counterDelta(identity, 7, counters({ turnsSeen: 2, recordsCreated: 2 })))
+      created.dispose()
+
+      const result = readIntentRoutingSink(goldenRoot)
+      const actualReader = {
+        entries: result.entries,
+        observations: result.observations,
+        latestCountersByProcess: [...result.latestCountersByProcess.entries()],
+        malformedLines: result.malformedLines,
+        recordsLostToCap: result.recordsLostToCap,
+        sinkTruncations: result.sinkTruncations,
+        filesRead: result.filesRead,
+      }
+
+      expect(expectedBytes.byteLength).toBeGreaterThan(0)
+      expect(readFileSync(created.path).equals(expectedBytes)).toBe(true)
+      expect(expectedReader).toEqual(actualReader)
+    } finally {
+      rmSync(goldenRoot, { recursive: true, force: true })
+    }
+  })
+
   test("#given an observation #when appended #then its JSON bytes and restrictive modes round-trip", () => {
     const created = sink(101)
     const entry = observation()

@@ -1,0 +1,3 @@
+No processes, ports, containers, tmux sessions, browser sessions, or filesystem sandboxes were created for todo 3.
+No temporary directory or temporary file was created, so there was no temporary resource to remove.
+Only source files and reviewer-readable evidence under the task-owned worktree remain.

@@ -1,0 +1,6 @@
+processes=none expected or started
+ports=none expected or opened
+containers=none expected or started
+temporary_paths_created=none
+verification=/tmp/jev-w2-task-5 absent
+cleanup=complete

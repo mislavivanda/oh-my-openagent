@@ -1,0 +1,15 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts:
+ANTI_VACUITY_UNREF_CHILD=FAIL_DETECTED timed_out=true pid=2020010 elapsed_ms=755.89
+child_exit_ms=98.81 threshold<2000 pid=2020192 exit=0
+ANTI_VACUITY_UNREF_CHILD_REVERT=PASS unref restored
+
+ 1 pass
+ 2 filtered out
+ 0 fail
+ 6 expect() calls
+Ran 1 test across 1 file. [1007.00ms]
+
+COMMAND: bun test packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts -t child-exits-filter
+EXIT_STATUS: 0

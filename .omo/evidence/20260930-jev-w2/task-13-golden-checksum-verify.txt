@@ -1,0 +1,1 @@
+.omo/evidence/20260930-jev-w2/task-13-pre-extraction-golden.json: OK

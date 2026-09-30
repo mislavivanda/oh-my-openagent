@@ -1,0 +1,23 @@
+WHAT WAS TESTED
+- Exact happy command: bun test packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts script/jev-w1-report.test.ts
+- Exact failure command: bun test packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts -t 'rejects a line above the byte cap without truncating it'
+- Golden surface: deterministic W1 sink output and readIntentRoutingSink result under an explicit mkdtemp root.
+- Security surface: 0700 directory mode, 0600 file mode, UTF-8 line cap, tolerant malformed-line reads, atomic replacement, and prefix filtering.
+
+WHAT WAS OBSERVED
+- Happy command: 17 pass, 0 fail, 100 assertions.
+- Oversize command: 1 pass, 0 fail, 3 assertions, 3 filtered out.
+- Golden corpus cmp: identical, 3479 non-empty bytes before and after.
+- Golden reader result: deep-equal and byte-identical, 10344 non-empty bytes before and after.
+- New filesystem and identity tests: three runs, each 6 pass and 0 fail.
+- Real ~/.omo/jev recursive manifest: byte-identical before and after focused QA.
+- LSP diagnostics: no diagnostics on all eight changed TypeScript files after adding Bun type references to changed tests.
+
+WHY IT IS ENOUGH
+- The golden corpus pins filenames, serialized bytes, counters, epochs, ordering, and reader aggregation across the extraction.
+- Primitive tests cover permissions, line boundaries, append, replace, size, malformed input, invalid UTF-8, empty lines, and filename prefix selection.
+- Existing W1 sink and report tests cover the unchanged public behavior.
+
+WHAT WAS OMITTED
+- No live OpenCode process was spawned because this change has no hook, event, CLI, TUI, or server behavior. The observable surface is the filesystem corpus and reader result.
+- No environment dump, token, credential, or private home content was copied. Real-home evidence stores only relative paths, modes, sizes, and SHA-256 digests.

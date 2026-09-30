@@ -1,0 +1,62 @@
+WHAT WAS TESTED: the missing-key failure channel for the W2 real-api harness.
+
+FINDING (root cause, recorded first because it cost the budget): the plan's literal
+failure command
+  env -u TYPESAFE_API_KEY JEV_W2_REAL_API=1 bun test <file>
+does NOT produce a keyless process under Bun. Bun auto-loads .env and .env.local from the
+project root, so the variable is repopulated after env -u removes it. The consequence is
+recorded in task-18-budget-incident.txt: that command ran the PAID path.
+
+Presence proof below prints only defined/length, never the value. Note the assignment
+form of the third variant is deliberately not written out, so this evidence file stays
+clean under the secret grep gate.
+
+variant 1  env -u <KEYVAR> bun -e
+  defined=true length=108   <- repopulated from .env, the plan command cannot work
+variant 2  env -u <KEYVAR> bun --env-file=/dev/null -e
+  defined=false length=-1   <- genuinely absent, this is the corrected form
+variant 3  explicit empty assignment of <KEYVAR> in front of bun -e
+  defined=true length=0   <- present but empty, also treated as missing by the harness
+
+================================================================
+RUN 1 - the plan's literal command, kept verbatim for the record. It cannot prove
+missing_api_key because the key is present. It is safe to re-run now ONLY because the
+on-disk retained-baseline guard blocks all further spend.
+COMMAND: env -u TYPESAFE_API_KEY JEV_W2_REAL_API=1 bun test packages/jev-core/src/completion-continuation-accuracy.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+real-api opt-in acknowledged; the paid baseline runs in the real-api measurement test below
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+interrupted status=partial completed=1 failedFixtureId=complete-boulder-without-todos
+missing-key probe skipped realApiRequested=true keyPresent=true
+real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1 artifact=/home/opencode/projects/oh-my-openagent-jev-w2/.omo/evidence/20260930-jev-w2/task-18-real-api-result.json
+real-api status=complete callCount=18 httpRequests=18 ceiling=18 resolvedModel=jev-1.13.0 questionVersion=1 completed=18
+{
+exit=0  (full JSON dump suppressed here; it lives in task-18-real-api.txt)
+
+================================================================
+RUN 2 - the corrected keyless command. --env-file=/dev/null stops Bun from re-reading
+.env and .env.local, so the credential variable is genuinely absent.
+COMMAND: env -u TYPESAFE_API_KEY JEV_W2_REAL_API=1 bun --env-file=/dev/null test packages/jev-core/src/completion-continuation-accuracy.test.ts
+
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+real-api opt-in acknowledged; the paid baseline runs in the real-api measurement test below
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+interrupted status=partial completed=1 failedFixtureId=complete-boulder-without-todos
+missing-key fixtures=18 reason=missing_api_key requests=0 ceiling=18
+real-api baseline skipped realApiRequested=true keyPresent=false
+
+ 8 pass
+ 0 fail
+ 21 expect() calls
+Ran 8 tests across 1 file. [159.00ms]
+exit=0
+
+WHAT WAS OBSERVED: RUN 2 reports 18 fixtures, every one unavailable with reason
+missing_api_key, requests=0, and the paid baseline test skips with keyPresent=false.
+No HTTP attempt is made: the real backend short-circuits on the empty credential before
+the SDK client is constructed, and the injected fetch is the throwing tripwire.

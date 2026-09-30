@@ -1,0 +1,9 @@
+PROOF OF ABSENCE - todo 8 real-home isolation
+repaired_by: root orchestrator, re-run live on 2026-09-30T11:45:33Z
+command: compare recursive manifest of $HOME/.omo/jev before and after the todo-8 test run
+real_home_jev_state_now: MISSING
+exit_status: 0
+matching_lines: 0
+verdict: PASS - the W2 sink tests pass an explicit rootDir, so the real per-user jev directory was never created or modified
+why_this_file_is_not_empty: a zero-byte diff cannot be distinguished from a diff that never ran, so the observed state is recorded explicitly.
+--- captured diff (expected empty) ---

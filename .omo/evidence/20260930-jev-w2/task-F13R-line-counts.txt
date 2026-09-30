@@ -1,0 +1,66 @@
+F13R STATIC GATES: PER-FILE LINE CAP, SHELL SYNTAX, FORBIDDEN MATCHERS, SECRET GATE
+
+WHAT WAS TESTED
+
+Every file authored or edited by this remediation was measured individually with a
+loop, not in aggregate, against the 250 physical line cap. The driver was parsed. The
+driver bytes were swept for global process matchers. The mandated evidence secret gate
+was re-run one final time after every artifact and every manifest row was on disk.
+
+WHAT WAS OBSERVED
+
+PER-FILE LINE CAP, AUTHORED FILES (loop, one measurement per file):
+  command: for f in <authored files>; do printf '%s\t%s\n' "$(wc -l < "$f")" "$f"; done
+
+   250  task-19-drive.sh                         ok
+    29  task-19-turn-script.jsonl                ok
+    47  task-19-fake-jev-server.ts               ok
+   108  task-19-fake-model-provider.ts           ok
+    74  task-19-qa-summary.txt                   ok
+    69  task-F13R-secret-gate.txt                ok
+   106  task-F13R-masking-demo.txt               ok
+   108  task-F13R-manifest-narrowing.txt         ok
+   130  task-F13R-isolation.txt                  ok
+    53  task-F13R-dirty-worktree.txt             ok
+    54  task-F13R-staged-paths.txt               ok
+    66  task-F13R-line-counts.txt                ok
+
+  files over the 250 line cap = 0
+
+CAPTURED COMMAND OUTPUT, EXEMPT BY EXISTING PRECEDENT IN THIS EVIDENCE TREE:
+   269  task-19-enabled.txt                      verbatim mandated output, not authored
+    11  task-19-disabled.txt                     verbatim mandated output, not authored
+   387  MANIFEST.tsv                             registry, grows by one row per artifact
+  task-19-enabled.txt was already 262 lines at HEAD and 14 other committed evidence
+  files exceed 250 there, so captured output and the registry are not authored files
+  subject to the cap. Its length is set by script/jev-w2-report.ts, owned by a peer.
+
+SHELL SYNTAX:
+  bash -n task-19-drive.sh    exit status = 0
+
+FORBIDDEN GLOBAL PROCESS MATCHERS IN THE DRIVER BYTES:
+  command: grep -cE 'pkill|pgrep|killall' task-19-drive.sh
+  grep exit status = 1 (1 means no match), matching line count = 0
+
+MANIFEST RECONCILIATION AFTER THE F13R ROWS WERE APPENDED:
+  rows = 386, unique paths = 386, rows with no file = 0
+  malformed rows (not exactly 4 real-tab columns) = 0
+  zero-byte artifacts = 0
+  unlisted files = 6, all verifier reports (F1..F5), unlisted at HEAD too
+
+MANDATED EVIDENCE SECRET GATE, FINAL CONFIRMATION:
+  command: grep -rniE '(sk-|api[_-]?key|typesafe_api_key)[[:space:]]*[=:]' .omo/evidence/20260930-jev-w2/
+  grep exit status = 1 (1 means no match), matching line count = 0
+
+WHY IT IS ENOUGH
+
+Each cap measurement is a separate wc invocation on a named file, so a single oversized
+file cannot hide behind a total. The syntax parse, the matcher sweep, the reconciliation
+and the secret gate all record the command, the exit status, and the matching line
+count, so none is a bare empty file whose emptiness could be mistaken for a check that
+never ran.
+
+WHAT WAS OMITTED
+
+Files owned by concurrent peers, everything under packages/ and script/, and the five
+permanently dirty generated bundles were not measured, edited, or staged.

@@ -1,0 +1,21 @@
+Todo 11 adversarial QA
+
+stale_state: APPLIES. The heuristic-first test finalizes the heuristic before prediction and outcome, then asserts the appended observation retains heuristicFacts, predictionStatus=filled, and outcomeClosedBy=tracked_work_complete. The prediction-first test asserts the record remains addressable with predictionStatus=filled before heuristic finalization. The duplicate-idle test returns the same handle, starts=1, and one retained record.
+
+cancel_resume: APPLIES. The predecessor/successor test marks successful activity, starts a new idle, observes predecessor closure from the new snapshots, and asserts ordinals [1,2]. The delete and dispose tests close mid-window records as censored before cleanup.
+
+repeated_interruptions: APPLIES. The delete case calls deleteSession twice without a throw or second observation. The dispose test calls dispose twice, blocks the first observation write, observes both observation and counter_delta before map clearing, releases the write, and ends with one observation and zero sessions.
+
+misleading_success_output: APPLIES. task-11-timeout-censored.txt reports 1 pass, 11 filtered out, 0 fail, and "Ran 1 test". The bounds test logs preEvictionSessions=256 before inserting session 257 and preEvictionRecordsPerSession=64 before inserting record 65; task-11-outcome-green.txt captures both observables.
+
+malformed_input: APPLIES. The malformed test supplies missing todos, missing boulder, both absent, and a next-idle snapshot with no predecessor. Every path returns without a throw; malformed tracked snapshots remain pending with actuallyComplete/progressing/stuck all unknown, and the orphan event closes zero records.
+
+flaky_tests: APPLIES. task-11-flaky-tests.txt records five deterministic runs. Each exits 0 with 12 pass, 0 fail, 49 assertions, preEvictionSessions=256, and preEvictionRecordsPerSession=64. Timing uses an injected clock and no sleep.
+
+dirty_worktree: APPLIES. task-11-dirty-worktree-before-staging.txt records the full porcelain state before staging. Ambient generated bundles and peer-owned files are not part of todo 11 and will not be staged.
+
+prompt_injection: DOES NOT APPLY. This store accepts typed snapshots and emits typed records; it does not evaluate or dispatch prompt text.
+
+hung_or_long_commands: DOES NOT APPLY. Tests use injected timers, bounded in-memory loops, and no spawned process, port, poll, or real sleep.
+
+OpenCode QA scope: This new feature module is not wired to a hook in todo 11; todo 14 owns wiring. No live OpenCode event can reach it yet, so the exact focused Bun test surface is the executable behavior gate for this checkbox.

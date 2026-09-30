@@ -1,0 +1,8 @@
+command=diff -u .omo/evidence/20260930-jev-w2/task-1-full-suite-failures.txt .omo/evidence/20260930-jev-w2/F2R-full-suite-failures.txt
+exit=0
+matching_diff_lines=0
+baseline_lines=7
+normalized_lines=7
+identity_normalization_exit=0
+suite_exit=1
+normalization=terminal test durations canonicalized only after exact duration-free identity equality

@@ -1,0 +1,61 @@
+TODO 17 QA SUMMARY - extend test:fast, regenerate schemas, document observe-only W2
+==================================================================================
+
+WHAT WAS TESTED
+  1. The hardcoded test:fast target list, for a real coverage gap. Surface: package.json
+     script plus bun test. Behavior to prove: the four W2 test files under
+     packages/omo-opencode/src/hooks/todo-continuation-enforcer, the hook-construction test,
+     the shared completion-promise matcher test, and script/jev-w2-report.test.ts now run in
+     the fast gate, and no existing target was removed or narrowed.
+     Commands: node /tmp/jev-w2-coverage.mjs (before and after), bun run test:fast (before
+     and after), bun test with --reporter=junit over the newly covered targets.
+  2. Both schema generators and their idempotence. Surface: bun run build:schema and
+     bun run build:omo-schema plus the mandated cmp pair.
+  3. The exact four-document set. Surface: docs/jev/HANDOFF.md, docs/jev/dogfood-log.md,
+     packages/jev-core/AGENTS.md, docs/reference/configuration.md. Behavior to prove: the W2
+     status, the corrected gate wording, the honest real-API numbers, the absence of any
+     accuracy threshold, the verbatim dogfood block, and the data-retention disclosure.
+  4. That the markdown audit actually fails on a machine-local absolute path in one of those
+     four docs, and passes after a byte-exact revert.
+  5. That the documented dogfood block parses against the committed JevConfigSchema.
+  6. That the third-party notices missing-entry output still matches the todo-1 baseline.
+
+WHAT WAS OBSERVED
+  test:fast BEFORE: Ran 621 tests across 66 files. [7.95s]
+  test:fast AFTER:  Ran 778 tests across 89 files. [8.44s]   (exit 0)
+  newly covered subset run alone: Ran 157 tests across 23 files. [696.00ms]
+  621 + 157 = 778 tests and 66 + 23 = 89 files, so the delta is exactly the appended targets.
+  W2 test-file coverage went from 17 of 24 to 24 of 24. Target list: 17 entries to 21, with
+  4 added, 0 removed, and the old 17 proven a byte-exact leading prefix by cmp.
+  Schemas: oh-my-opencode.schema.json 256571 bytes, omo.schema.json 873995 bytes, identical
+  sha256 before and after regeneration, and the cmp idempotence pair exits 0. git status on
+  assets/ is empty, so todo 2 already committed exactly these bytes.
+  Markdown audit: exit 1 while the injected path was present, naming
+  docs/jev/dogfood-log.md:20, then exit 0 with 16 pass after the byte-exact revert.
+  Dogfood block parse: 39 assertions, 0 failures, exit 0, including observe_only false
+  rejected and outcome_window_ms equal to timeout_ms rejected.
+  Notices: cmp against task-1-third-party-notices.txt exits 0 at 118 bytes each, same exit 1,
+  same four missing entries.
+  F4 doc-set gate: exit 0, exactly the four allowed documents.
+  Isolation: no opencode or codex process was spawned, so no session database or CODEX_HOME
+  could be touched. The real ~/.omo recursive manifest is byte-identical before and after
+  (see task-17-cleanup.txt); no test in this todo writes outside the worktree and /tmp.
+
+WHY IT IS ENOUGH
+  The central claim of this todo is a coverage claim, and it is proven three independent ways:
+  a counted test delta that adds up exactly, a junit-derived list of all 157 newly running
+  tests by name, and an append-only diff proof of the target list. The doc claims are proven
+  by parsing the documented config against the real schema rather than by reading it, and by
+  making the markdown audit fail on purpose before trusting its pass. The schema claim is
+  proven in both directions: deterministic regeneration and an already-current tracked asset.
+  Residual risk: this todo runs no live opencode session, so it does not prove W2 behavior at
+  runtime. That is todo 19 (isolated opencode-qa dogfood) and F2 (full suite, typecheck,
+  build, LSP). This todo also cannot prove the accuracy numbers it documents; they are copied
+  from todo 18 committed artifacts and the paid path was deliberately NOT re-run.
+
+WHAT WAS OMITTED
+  The paid real-API path was not re-run: todo 18 spent 18 of 18 budgeted calls and a
+  persistent on-disk guard now blocks re-arming. No secret, token, auth header, env dump, or
+  credential file content appears in any artifact; .env and .env.local were never read,
+  printed, or staged. Raw test stdout is retained in full for the gate runs and summarized to
+  count lines where it is quoted inside other artifacts.

@@ -1,0 +1,9 @@
+Changed files checked:
+- packages/jev-core/src/completion-continuation-accuracy.test.ts: no diagnostics
+- packages/jev-core/src/completion-continuation-fixtures.test.ts: no diagnostics
+- packages/jev-core/src/completion-continuation-fixtures.ts: no diagnostics
+- packages/jev-core/src/completion-continuation-fixtures-primary.ts: no diagnostics
+- packages/jev-core/src/completion-continuation-fixtures-edge.ts: no diagnostics
+- packages/jev-core/src/index.ts: no diagnostics
+
+Result: PASS. Each changed TypeScript file was checked directly with lsp_diagnostics.

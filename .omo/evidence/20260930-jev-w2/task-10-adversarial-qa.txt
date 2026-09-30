@@ -1,0 +1,16 @@
+Todo 10 adversarial QA
+
+malformed_input: PASS. task-10-malformed-stale.txt ran one matched test with seven assertions. Missing diff fields, a negative additions value, a missing diff session ID, a transcript message with no role, a non-string transcript content, and an empty todo list all returned recorded availability or malformed-count facts without throwing. task-10-boulder-unavailable.txt ran one matched test with sixteen assertions across empty markdown, invalid markdown, zero-checkbox markdown, and a missing plan path. Every case used its own mkdtemp root and returned unavailable with null boulder input.
+
+stale_state: PASS. Before an event, ses_stale returned availability {status: unavailable, reason: no_event}. After a later session.diff event, the same session returned {status: available, reason: null}. The assertion ran in task-10-malformed-stale.txt.
+
+dirty_worktree: PASS. task-10-dirty-worktree-before-staging.txt records the five ambient generated bundles separately from the four todo 10 paths. Boulder tests used only explicit mkdtemp roots and never set HOME.
+
+misleading_success_output: PASS. task-10-no-diff-content.txt says Ran 1 test. The cap test logged preCapTodos=40, preCapTranscript=12, preCapDiff=40, and preCapBoulderTitleBytes=303 before asserting the 32, 8, 32/4096-byte, and 256-byte caps.
+
+flaky_tests: PASS. task-10-flaky-run-1.txt, task-10-flaky-run-2.txt, and task-10-flaky-run-3.txt each report 7 pass, 0 fail, 46 assertions, and Ran 7 tests across 1 file. Runtime timing differs, but the normalized result is identical.
+
+prompt_injection: NOT APPLICABLE. Captured text is serialized data and is never executed or injected by todo 10.
+cancel_resume: NOT APPLICABLE. Todo 10 creates no resumable operation; the deferred boulder task exposes deterministic cancellation before its callback.
+hung_or_long_commands: NOT APPLICABLE. Todo 10 starts no external command, process, port, network request, or unbounded wait.
+repeated_interruptions: NOT APPLICABLE. Todo 10 has no multi-step mutation or persistence transaction to interrupt.

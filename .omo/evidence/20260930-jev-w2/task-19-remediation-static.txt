@@ -1,0 +1,6 @@
+lines=200 path=.omo/evidence/20260930-jev-w2/task-19-drive.sh
+lines=29 path=.omo/evidence/20260930-jev-w2/task-19-turn-script.jsonl
+lines=108 path=.omo/evidence/20260930-jev-w2/task-19-fake-model-provider.ts
+driver_forbidden_scan_exit=1
+driver_forbidden_scan_matches=0
+shell_syntax=PASS

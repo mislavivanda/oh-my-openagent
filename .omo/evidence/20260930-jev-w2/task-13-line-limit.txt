@@ -1,0 +1,6 @@
+  175 packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+  151 packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-preflight.ts
+   35 packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-types.ts
+  231 packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.test.ts
+  124 packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.ts
+  716 total

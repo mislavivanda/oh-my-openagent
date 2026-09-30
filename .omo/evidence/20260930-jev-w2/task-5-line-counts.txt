@@ -1,0 +1,6 @@
+  234 packages/jev-core/src/completion-continuation-state.ts
+  115 packages/jev-core/src/completion-continuation-state-budget.ts
+   47 packages/jev-core/src/completion-continuation-questions.ts
+  211 packages/jev-core/src/completion-continuation-state.test.ts
+   31 packages/jev-core/src/completion-continuation-questions.test.ts
+  638 total

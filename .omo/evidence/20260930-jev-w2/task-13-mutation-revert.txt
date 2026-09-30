@@ -1,0 +1,4 @@
+132:    log(`[${HOOK_NAME}] Skipped: max consecutive failures reached`, { sessionID, consecutiveFailures: state.consecutiveFailures })
+136:  const effectiveCooldown =
+138:  if (state.lastInjectedAt && Date.now() - state.lastInjectedAt < effectiveCooldown) {
+139:    log(`[${HOOK_NAME}] Skipped: cooldown active`, { sessionID, effectiveCooldown, consecutiveFailures: state.consecutiveFailures })

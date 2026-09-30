@@ -1,0 +1,1399 @@
+{
+  "all-todos-already-completed": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "allTodosCompletedAt": 123
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-all-todos-already-completed"
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: all todos were already completed",
+      {
+        "sessionID": "ses-all-todos-already-completed",
+        "allTodosCompletedAt": 123
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "allTodosCompletedAt": 123
+      }
+    ]
+  ],
+  "recovery-active": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "isRecovering": true
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-recovery-active"
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: in recovery",
+      {
+        "sessionID": "ses-recovery-active"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "isRecovering": true
+      }
+    ]
+  ],
+  "session-cancelled": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "wasCancelled": true
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-session-cancelled"
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: session was cancelled",
+      {
+        "sessionID": "ses-session-cancelled"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "wasCancelled": true
+      }
+    ]
+  ],
+  "sync-subagent-handed-back": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-sync-subagent-handed-back"
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: sync subagent already handed back to parent",
+      {
+        "sessionID": "ses-sync-subagent-handed-back"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "token-limit-detected": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "tokenLimitDetected": true
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-token-limit-detected"
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: token limit error detected, retry would worsen context overflow",
+      {
+        "sessionID": "ses-token-limit-detected"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "tokenLimitDetected": true
+      }
+    ]
+  ],
+  "recent-abort": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "abortDetectedAt": 999000
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-recent-abort"
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: abort detected via event 1000ms ago",
+      {
+        "sessionID": "ses-recent-abort"
+      }
+    ],
+    [
+      "state",
+      "abortDetectedAt",
+      null
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "background-task-running": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-background-task-running"
+      }
+    ],
+    [
+      "manager",
+      "getTasksByParentSession"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: background tasks running",
+      {
+        "sessionID": "ses-background-task-running"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "last-assistant-aborted": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-last-assistant-aborted"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: last assistant message was aborted (API fallback)",
+      {
+        "sessionID": "ses-last-assistant-aborted"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "question-awaiting-user": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-question-awaiting-user"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Detected pending question tool in last assistant message",
+      null
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: pending question awaiting user response",
+      {
+        "sessionID": "ses-question-awaiting-user"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "internal-response-pending": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-internal-response-pending"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: pending internal continuation response",
+      {
+        "sessionID": "ses-internal-response-pending"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "messages-fetch-failure": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-messages-fetch-failure"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Messages fetch failed, skipping continuation",
+      {
+        "sessionID": "ses-messages-fetch-failure",
+        "error": {
+          "name": "Error",
+          "message": "messages failed"
+        }
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "todo-fetch-failure": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-todo-fetch-failure"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Todo fetch failed",
+      {
+        "sessionID": "ses-todo-fetch-failure",
+        "error": {
+          "name": "Error",
+          "message": "todos failed"
+        }
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "no-todos": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-no-todos"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "state-store",
+      "resetContinuationProgress"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] No todos",
+      {
+        "sessionID": "ses-no-todos"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "all-todos-complete": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-all-todos-complete"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "state",
+      "allTodosCompletedAt",
+      1000000
+    ],
+    [
+      "state-store",
+      "resetContinuationProgress"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] All todos complete",
+      {
+        "sessionID": "ses-all-todos-complete",
+        "total": 1
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "allTodosCompletedAt": 1000000
+      }
+    ]
+  ],
+  "injection-in-flight": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "inFlight": true,
+        "countdownTimer": 71,
+        "countdownInterval": 72
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-injection-in-flight"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: injection in flight",
+      {
+        "sessionID": "ses-injection-in-flight"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "inFlight": true,
+        "countdownTimer": 71,
+        "countdownInterval": 72
+      }
+    ]
+  ],
+  "max-failures-before-cooldown": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 5,
+        "lastInjectedAt": 999500
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-max-failures-before-cooldown"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: max consecutive failures reached",
+      {
+        "sessionID": "ses-max-failures-before-cooldown",
+        "consecutiveFailures": 5
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 5,
+        "lastInjectedAt": 999500
+      }
+    ]
+  ],
+  "cooldown-active": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "lastInjectedAt": 999500
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-cooldown-active"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: cooldown active",
+      {
+        "sessionID": "ses-cooldown-active",
+        "effectiveCooldown": 5000,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "lastInjectedAt": 999500
+      }
+    ]
+  ],
+  "latest-message-compaction": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-latest-message-compaction"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: latest message is a compaction marker",
+      {
+        "sessionID": "ses-latest-message-compaction"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "agent-skipped": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-agent-skipped"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-agent-skipped",
+        "agentName": "prometheus",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": false,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: agent in skipAgents list",
+      {
+        "sessionID": "ses-agent-skipped",
+        "agent": "prometheus"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "compaction-without-agent": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-compaction-without-agent"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: pending internal continuation response",
+      {
+        "sessionID": "ses-compaction-without-agent"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "compaction-guard-active": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "recentCompactionAt": 999000,
+        "recentCompactionEpoch": 1
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-compaction-guard-active"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "state",
+      "recentCompactionAt",
+      1000000
+    ],
+    [
+      "state",
+      "recentCompactionEpoch",
+      2
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-compaction-guard-active",
+        "agentName": "sisyphus",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": true,
+        "observedCompactionEpoch": 1,
+        "currentCompactionEpoch": 2,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: compaction guard still armed for current epoch",
+      {
+        "sessionID": "ses-compaction-guard-active",
+        "observedCompactionEpoch": 1,
+        "currentCompactionEpoch": 2
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "recentCompactionAt": 1000000,
+        "recentCompactionEpoch": 2
+      }
+    ]
+  ],
+  "continuation-stopped": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-continuation-stopped"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-continuation-stopped",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": false,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "decision",
+      "isContinuationStopped"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: continuation stopped for session",
+      {
+        "sessionID": "ses-continuation-stopped"
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "turn-boundary-paused": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "continuationBlockReason": "directive-response"
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-turn-boundary-paused"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-turn-boundary-paused",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": false,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "state-store",
+      "trackContinuationProgress"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: continuation paused at turn boundary",
+      {
+        "sessionID": "ses-turn-boundary-paused",
+        "reason": "directive-response",
+        "hasProgressed": false
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "continuationBlockReason": "directive-response"
+      }
+    ]
+  ],
+  "stagnation-limit": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-stagnation-limit"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-stagnation-limit",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": false,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "state-store",
+      "trackContinuationProgress"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Skipped: todo continuation stagnated",
+      {
+        "sessionID": "ses-stagnation-limit",
+        "incompleteCount": 1,
+        "previousIncompleteCount": 1,
+        "stagnationCount": 3,
+        "maxStagnationCount": 3
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ]
+  ],
+  "stale-abort-falls-through": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "abortDetectedAt": 990000
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-stale-abort-falls-through"
+      }
+    ],
+    [
+      "state",
+      "abortDetectedAt",
+      null
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-stale-abort-falls-through",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": false,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "state-store",
+      "trackContinuationProgress"
+    ],
+    [
+      "state-store",
+      "cancelCountdown"
+    ],
+    [
+      "state",
+      "inFlight",
+      false
+    ],
+    [
+      "state",
+      "countdownStartedAt",
+      null
+    ],
+    [
+      "client",
+      "tui.showToast"
+    ],
+    [
+      "state",
+      "countdownStartedAt",
+      1000000
+    ],
+    [
+      "timer",
+      "setInterval",
+      1000
+    ],
+    [
+      "state",
+      "countdownInterval",
+      100
+    ],
+    [
+      "timer",
+      "setTimeout",
+      2000
+    ],
+    [
+      "state",
+      "countdownTimer",
+      101
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Countdown started",
+      {
+        "sessionID": "ses-stale-abort-falls-through",
+        "seconds": 2,
+        "incompleteCount": 1
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "inFlight": false,
+        "countdownStartedAt": 1000000,
+        "countdownInterval": 100,
+        "countdownTimer": 101
+      }
+    ]
+  ],
+  "failure-reset-falls-through": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 5,
+        "lastInjectedAt": 600000
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-failure-reset-falls-through"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "state",
+      "consecutiveFailures",
+      0
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Reset consecutive failures after recovery window",
+      {
+        "sessionID": "ses-failure-reset-falls-through",
+        "failureResetWindowMs": 300000
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-failure-reset-falls-through",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": false,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "state-store",
+      "trackContinuationProgress"
+    ],
+    [
+      "state-store",
+      "cancelCountdown"
+    ],
+    [
+      "state",
+      "inFlight",
+      false
+    ],
+    [
+      "state",
+      "countdownStartedAt",
+      null
+    ],
+    [
+      "client",
+      "tui.showToast"
+    ],
+    [
+      "state",
+      "countdownStartedAt",
+      1000000
+    ],
+    [
+      "timer",
+      "setInterval",
+      1000
+    ],
+    [
+      "state",
+      "countdownInterval",
+      100
+    ],
+    [
+      "timer",
+      "setTimeout",
+      2000
+    ],
+    [
+      "state",
+      "countdownTimer",
+      101
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Countdown started",
+      {
+        "sessionID": "ses-failure-reset-falls-through",
+        "seconds": 2,
+        "incompleteCount": 1
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "lastInjectedAt": 600000,
+        "inFlight": false,
+        "countdownStartedAt": 1000000,
+        "countdownInterval": 100,
+        "countdownTimer": 101
+      }
+    ]
+  ],
+  "countdown-starts": [
+    [
+      "snapshot",
+      "before",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0
+      }
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] session.idle",
+      {
+        "sessionID": "ses-countdown-starts"
+      }
+    ],
+    [
+      "client",
+      "session.messages"
+    ],
+    [
+      "client",
+      "session.todo"
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Agent check",
+      {
+        "sessionID": "ses-countdown-starts",
+        "skipAgents": [
+          "prometheus",
+          "compaction",
+          "plan"
+        ],
+        "compactionGuardActive": false,
+        "acknowledgedCompaction": false
+      }
+    ],
+    [
+      "state-store",
+      "trackContinuationProgress"
+    ],
+    [
+      "state-store",
+      "cancelCountdown"
+    ],
+    [
+      "state",
+      "inFlight",
+      false
+    ],
+    [
+      "state",
+      "countdownStartedAt",
+      null
+    ],
+    [
+      "client",
+      "tui.showToast"
+    ],
+    [
+      "state",
+      "countdownStartedAt",
+      1000000
+    ],
+    [
+      "timer",
+      "setInterval",
+      1000
+    ],
+    [
+      "state",
+      "countdownInterval",
+      100
+    ],
+    [
+      "timer",
+      "setTimeout",
+      2000
+    ],
+    [
+      "state",
+      "countdownTimer",
+      101
+    ],
+    [
+      "log",
+      "[todo-continuation-enforcer] Countdown started",
+      {
+        "sessionID": "ses-countdown-starts",
+        "seconds": 2,
+        "incompleteCount": 1
+      }
+    ],
+    [
+      "snapshot",
+      "after",
+      {
+        "stagnationCount": 0,
+        "consecutiveFailures": 0,
+        "inFlight": false,
+        "countdownStartedAt": 1000000,
+        "countdownInterval": 100,
+        "countdownTimer": 101
+      }
+    ]
+  ]
+}

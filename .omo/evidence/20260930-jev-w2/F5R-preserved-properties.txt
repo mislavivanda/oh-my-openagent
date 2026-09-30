@@ -1,0 +1,102 @@
+F5R - every property F5 already confirmed passing, re-confirmed on the NEW rendered output
+SOURCE: the exact F5 invocation captured in F5R-f5-command.txt (exit 0)
+
+P1. DENOMINATORS PRINT BEFORE RATES
+       68  outcome_window_ms: 120000 (config schema default)
+      332  DENOMINATORS
+      345  starts: 15
+     2590  in_flight_identity:
+     2657  HEURISTIC PROXY AGREEMENT
+     2750  todo_complete overall:
+     8636  OUTCOME AGREEMENT (observed non-censored labels only)
+     8771  actually_complete overall:
+  STRICTLY INCREASING: True
+
+P2. HEURISTIC AND OUTCOME SECTIONS USE DIFFERENT NAMED DENOMINATORS
+  matching lines: 2
+  86:eligible denominator: confident prediction + known heuristic proxy
+  184:eligible denominator: confident prediction + observed non-censored outcome label
+  distinct denominator names: 2
+
+P3. UNKNOWN AND CENSORED OUTCOMES ENTER NO OUTCOME NUMERATOR OR DENOMINATOR
+  scoring path script/jev-w2-report-scoring.ts is BYTE-UNCHANGED by this commit (git diff --quiet exits 0).
+  observedTarget() returns null unless outcomeStatus==="observed" AND the truth is a boolean, so
+  outcomeStatus "censored"/"pending" and the truth value "unknown" are all excluded by construction.
+  Corpus arithmetic (13 records):
+    outcome_status_pending: 2 / outcome_status_observed: 6 / outcome_status_censored: 5
+    actuallyComplete: observed=6 unknown=0 unknown_with_confident_prediction=0 eligible_denominator=1
+    progressing     : observed=6 unknown=0 unknown_with_confident_prediction=0 eligible_denominator=1
+    stuck           : observed=6 unknown=0 unknown_with_confident_prediction=0 eligible_denominator=1
+    censored records with a confident stuck prediction: 1, and its eligible denominator contribution is 0
+    pending  records with a confident stuck prediction: 0
+  Rendered overall rates, all coverage 1/13 out of 13 records:
+    185:actually_complete overall: 0/1 (0.00%); coverage=1/13
+    209:progressing overall: 0/1 (0.00%); coverage=1/13
+    233:stuck overall: 0/1 (0.00%); coverage=1/13
+
+P4. TIMEOUT, INTERVENTION, DELETE AND DISPOSE NEVER IMPLY stuck
+  stuck denominator composition, full closure_reason cross-tab:
+    stuck cross-tab by closure_reason
+    closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/2
+    closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/2
+    closure_reason=tracked_work_progressed: insufficient data (eligible denominator=0); coverage=0/2
+    closure_reason=unchanged_next_idle: 0/1 (0.00%); coverage=1/2
+    closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/1
+    closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/1
+    closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/1
+    closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/1
+    closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/1
+    stuck overall denominator: 1
+    sum of closure_reason denominators: pending 0 + tracked_work_complete 0 + tracked_work_progressed 0
+      + unchanged_next_idle 1 + timeout 0 + dispose 0 + session_deleted 0 + human_intervention 0 + evicted 0 = 1
+    ALL FOUR CENSORED KINDS (timeout, dispose, session_deleted, human_intervention) plus evicted have
+    denominator 0. The single contributing bucket unchanged_next_idle is an OBSERVED closure.
+  Denominator counts prove those records exist and were still excluded:
+    42:censor_reason_timeout: 1
+    43:censor_reason_dispose: 1
+    44:censor_reason_session_deleted: 1
+    45:censor_reason_human_intervention: 1
+    46:censor_reason_evicted: 1
+
+P5. TRANSCRIPT-PRESENT CONTINUATION FIXTURES BROKEN OUT FROM NO-HISTORY FIXTURES
+    stuck cross-tab by transcript_present
+    transcript_present=present: 0/1 (0.00%); coverage=1/7
+    transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/6
+    stuck cross-tab by continuation_fixture_cohort
+    continuation_fixture_cohort=candidate: 0/1 (0.00%); coverage=1/7
+    continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/6
+    transcript_available / transcript_unavailable denominators:
+    74:transcript_available: 7
+    75:transcript_unavailable: 6
+    80:continuation_fixture_cohort_candidate: 7
+    81:continuation_fixture_cohort_non_candidate: 6
+
+P6. NO MERGED HEURISTIC-PLUS-OUTCOME HEADLINE
+  matching lines for combined|merged|overall agreement|headline: 0
+  section headers present, exactly two agreement sections:
+    85:HEURISTIC PROXY AGREEMENT
+    183:OUTCOME AGREEMENT (observed non-censored labels only)
+
+P7. NO ACCURACY MINIMUM AND NO THRESHOLD GATE
+  COMMAND: grep -cniE 'accuracy|minimum|process\.exit|exitCode' script/jev-w2-report.ts script/jev-w2-report-types.ts script/jev-w2-report-analysis.ts script/jev-w2-report-scoring.ts script/jev-w2-report-render.ts | awk -F: '{s+=$2} END{print s+0}'
+  EXIT: 0
+  MATCHING LINES: 0
+  the only threshold tokens are record FIELDS, never gates:
+    script/jev-w2-report-analysis.ts:104:    sum + Object.values(record.thresholdLabels).filter((label) => label === "uncertain").length, 0)
+    script/jev-w2-report-scoring.ts:18:  switch (record.thresholdLabels[question]) {
+
+P8. ZERO DENOMINATORS RENDER insufficient data
+  exhaustive corpus, zero-denominator rows: 64
+  empty corpus, zero-denominator rows: 126 (see F5R-empty-corpus.txt, exit 0)
+
+P9. A POOR SCORE STILL EXITS 0
+  every outcome overall rate in this corpus is 0.00%, and the F5 invocation exit status is 0.
+    185:actually_complete overall: 0/1 (0.00%); coverage=1/13
+    209:progressing overall: 0/1 (0.00%); coverage=1/13
+    233:stuck overall: 0/1 (0.00%); coverage=1/13
+
+P10 (new, this commit). THE OUTCOME WINDOW IS RENDERED BEFORE ANY OUTCOME RATE
+    3:MEASUREMENT WINDOW
+    4:outcome_window_ms: 120000 (config schema default)
+    5:every censored count and outcome rate below is conditioned on this finite observation window
+    6:observation records carry no window value, so a run configured with a different outcome_window_ms is not reflected here

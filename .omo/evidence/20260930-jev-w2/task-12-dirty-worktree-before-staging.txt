@@ -1,0 +1,23 @@
+ M .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+ M .omo/evidence/20260930-jev-w2/task-10-forbidden-call-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-10-home-reference-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-13-forbidden-reference-output.txt
+ M .omo/evidence/20260930-jev-w2/task-3-typecheck.txt
+ M .omo/evidence/20260930-jev-w2/task-4-banned-pattern-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-4-test-home-reference-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-5-typecheck.txt
+ M .omo/evidence/20260930-jev-w2/task-6-typecheck.txt
+ M .omo/evidence/20260930-jev-w2/task-8-real-home-diff.txt
+ M .omo/evidence/20260930-jev-w2/task-9-golden-diff.txt
+ M .omo/evidence/20260930-jev-w2/task-9-ralph-registration.txt
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/features/jev/index.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/omo-opencode/src/features/jev/completion-continuation-adversarial.test.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation.test-support.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation.test.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation.ts

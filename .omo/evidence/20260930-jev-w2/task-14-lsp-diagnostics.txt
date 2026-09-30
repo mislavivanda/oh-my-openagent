@@ -1,0 +1,7 @@
+LSP diagnostics were requested for every changed production file and co-located test.
+
+Observed production result: no diagnostics on completion-continuation.ts, hooks/index.ts, completion-continuation-observer.ts, completion-continuation-observer-events.ts, handler.ts, idle-event-preflight.ts, idle-event-types.ts, idle-event.ts, todo-continuation-enforcer/index.ts, todo-continuation-enforcer/types.ts, and create-continuation-hooks.ts.
+
+Observed test result: no diagnostics on completion-continuation-outcomes.test.ts. The directory scan reported one implicit-results-array error in that new test; it was fixed with an explicit Awaited<ReturnType<...>>[] type. The two largest test-file refresh requests timed out after two attempts, while the earlier scan showed no error for observer-wiring and the earlier individual request showed no error for create-continuation-hooks.test.ts.
+
+Final compiler backstop: bun run typecheck exited 0 after the final edits. No changed file has a TypeScript error.

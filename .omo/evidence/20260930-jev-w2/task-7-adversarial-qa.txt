@@ -1,0 +1,9 @@
+prompt_injection: APPLIES. adversarial-fake-system-completion instructs actually_complete=true while tracked authorization work is pending and failing; its hand label remains false/false/true and the directive remains transcript data. adversarial-ignore-todos-while-progressing instructs stuck=true and asks to trust the sentence as an evaluator label; tracked advancement keeps its hand label false/true/false.
+malformed_input: APPLIES. no-todos-active-untracked-work builds total=0; empty-transcript-known-incomplete builds zero messages; oversized-content-reduced sets truncation flags and stays within 24576 bytes; a mock noul value of 2 produces a retained partial artifact with reason unscripted.
+misleading_success_output: APPLIES. The ceiling evidence reports Ran 1 test. A temporary forced call through the injected counting fetch made the selected default test exit 1 with UnexpectedNetworkCallError, then the line was removed. A temporary removal of the slow-censored cohort made the enumeration test exit 1, then the cohort was restored.
+flaky_tests: APPLIES. Three consecutive runs each reported 11 pass, 0 fail, and Ran 11 tests across 2 files.
+dirty_worktree: APPLIES. task-7-dirty-worktree-before-staging.txt records ambient generated bundles and peer-owned changes without modifying them; task-7-staged-paths.txt records the exact owned paths after staging.
+stale_state: RULED OUT. Each temp harness run uses a fresh mkdtemp root and the retained artifact is atomically replaced; no cache or resumed state is read.
+cancel_resume: RULED OUT. The harness is a bounded single-process test run with no resumable session.
+hung_or_long_commands: RULED OUT. All focused commands are local bounded tests or typechecks; no server, watcher, or external wait is started.
+repeated_interruptions: RULED OUT. No long-lived process or resumable write is created; partial-artifact behavior is covered by the ceiling interruption test.

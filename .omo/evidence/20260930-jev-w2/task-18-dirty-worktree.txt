@@ -1,0 +1,25 @@
+ M packages/jev-core/src/completion-continuation-accuracy.test.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/completion-continuation-accuracy-harness.ts
+?? packages/jev-core/src/completion-continuation-accuracy-real-run.ts
+?? packages/jev-core/src/completion-continuation-real-run.test.ts
+
+READING:
+  Owned by todo 18 and to be staged:
+    packages/jev-core/src/completion-continuation-accuracy.test.ts        (modified)
+    packages/jev-core/src/completion-continuation-accuracy-harness.ts     (new)
+    packages/jev-core/src/completion-continuation-accuracy-real-run.ts    (new)
+    packages/jev-core/src/completion-continuation-real-run.test.ts        (new)
+    plus the task-18-* evidence files and MANIFEST.tsv, force-added because .omo is gitignored
+  The five M entries under packages/omo-codex and packages/omo-senpi are the permanently
+  dirty tracked generated bundles that predate this task. They are NOT staged.
+  Anything else present belongs to a concurrent peer (todo 15 owns the inert and
+  runtime-effects tests, todo 16 owns script/jev-w2-report*). Nothing of theirs was
+  reverted, stashed, checked out, reset, or cleaned.
+  .env and .env.local are gitignored and cannot appear here:
+    .gitignore:42:.env	.env
+    .gitignore:43:.env.local	.env.local

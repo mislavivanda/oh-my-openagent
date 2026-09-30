@@ -1,0 +1,3 @@
+No violations in 13 file(s).
+command=programming TypeScript no-excuse audit on 13 changed files
+exit=0

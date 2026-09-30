@@ -1,0 +1,7 @@
+221	packages/omo-opencode/src/features/jev/completion-continuation-input.ts
+214	packages/omo-opencode/src/features/jev/completion-continuation-diff-cache.ts
+104	packages/omo-opencode/src/features/jev/completion-continuation-boulder-snapshot.ts
+208	packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts
+108	packages/omo-opencode/src/features/jev/index.ts
+16	.omo/evidence/20260930-jev-w2/task-10-adversarial-qa.txt
+20	.omo/evidence/20260930-jev-w2/task-10-qa-summary.txt

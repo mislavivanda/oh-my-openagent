@@ -1,0 +1,9 @@
+golden_pre_temp_root=/tmp/omo-jev-w1-golden-pre-ZJpDyT removed=true
+golden_post_temp_root=/tmp/omo-jev-w1-golden-post-12FFkB removed=true
+transient_head_file=/tmp/jev-w2-task4-head removed=true
+test_temp_roots=removed by each test finally block
+matching_task_temp_roots_after_tests=0
+processes_started=0
+ports_opened=0
+real_home_omo_jev_manifest=byte-identical
+real_home_omo_jev_modified=false

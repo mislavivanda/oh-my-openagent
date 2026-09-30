@@ -1,0 +1,23 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-questions.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './completion-continuation-questions' from '/home/opencode/projects/oh-my-openagent-jev-w2/packages/jev-core/src/completion-continuation-questions.test.ts'
+-------------------------------
+
+
+packages/jev-core/src/completion-continuation-state.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './completion-continuation-state' from '/home/opencode/projects/oh-my-openagent-jev-w2/packages/jev-core/src/completion-continuation-state.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 2 fail
+ 2 errors
+Ran 2 tests across 2 files. [137.00ms]
+exit=1

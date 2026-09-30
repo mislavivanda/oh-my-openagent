@@ -1,0 +1,10 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+
+ 5 pass
+ 0 fail
+ 25 expect() calls
+Ran 5 tests across 1 file. [159.00ms]

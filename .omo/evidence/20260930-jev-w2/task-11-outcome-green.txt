@@ -1,0 +1,10 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts:
+preEvictionSessions=256
+preEvictionRecordsPerSession=64
+
+ 12 pass
+ 0 fail
+ 49 expect() calls
+Ran 12 tests across 1 file. [137.00ms]

@@ -1,0 +1,9 @@
+stale_state: APPLIES. The original implementation wrote task-13-pre-extraction-golden.json before extraction with writeFileSync flag wx. The initial test then failed on a pending checksum, and task-13-pre-extraction-golden.sha256 recorded 361d26ff4dc0dfdf6eb6d794c765dcf346b2b8578590c9f2a2492b100e3ed2e4 before production edits. A second capture cannot overwrite the file.
+misleading_success_output: APPLIES. The source has 24 guard returns. The test covers 24 guard scenarios plus 3 fallthrough paths, asserts every guard trace has more than two entries and at least one log, and records per-branch counts in task-13-trace-counts.txt. No branch has an empty trace.
+dirty_worktree: APPLIES. task-13-status-before-staging.txt records the shared worktree before staging. Ambient generated bundles and peer-owned Jev tests remain untouched. task-13-cached-paths.txt records the owned staged set. The restored guard order is recorded in task-13-mutation-revert.txt and the post-revert filtered test passes.
+flaky_tests: APPLIES. Three consecutive directory-suite runs each report 137 pass, 0 fail, 282 assertions across 17 files. Only elapsed times differ.
+repeated_interruptions: APPLIES. The injection-in-flight guard starts with two countdown handles and ends with the same two handles, zero timer calls, and six ordered trace entries. See task-13-repeated-interruption.txt.
+malformed_input: NOT APPLICABLE. This refactor adds no parser or external input boundary.
+prompt_injection: NOT APPLICABLE. This refactor does not add or alter prompt text, prompt routing, or untrusted-text handling.
+cancel_resume: NOT APPLICABLE. This refactor adds no resumable operation or cancellation state.
+hung_or_long_commands: NOT APPLICABLE to product behavior. The extracted code adds no command execution or unbounded wait; all required tests complete in under one second per run.

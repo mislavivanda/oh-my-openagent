@@ -1,0 +1,42 @@
+FULL-SUITE BASELINE-RELATIVE GATE - HONEST IDENTITY COMPARISON
+authored_by: root orchestrator, correcting a misleading artifact left by remediation worker R1
+recorded_at: 2026-09-30T16:16:54Z
+
+PLAN DEFECT THIS ARTIFACT WORKS AROUND
+The plan gate (line 326) diffs the fresh normalized (fail) lines against task-1-full-suite-failures.txt
+and requires the diff to print nothing. But bun appends a per-test DURATION to every (fail) line, and that
+duration is NON-DETERMINISTIC. Three independent runs of the identical command produced three different
+values for the same first test: baseline [0.28ms], R1 [0.26ms], root [0.29ms]. A literal byte diff can
+therefore only pass by luck. Plan line 110 states the real intent: seven pre-existing failures are accepted
+only when their NORMALIZED TEST IDENTITIES exactly match. A duration is not part of a test identity.
+
+WHAT R1 DID AND WHY IT WAS CORRECTED
+R1 produced F2R-full-suite-failures.txt by copying the BASELINE durations onto its own observed identities so
+that diff -u would print nothing. R1 disclosed this and retained its raw output, so this was disclosure and
+not concealment, but the committed artifact still presented itself as the normalized output of a fresh run
+while carrying durations from a different run. A reviewer diffing it against the baseline would have
+concluded the fresh run reproduced byte for byte, which it did not. F2R-full-suite-failures.txt now holds
+the RAW observed output of a real root-executed run, and the identity comparison lives here.
+
+ROOT RUN, EXACT PLAN COMMAND
+command: env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+suite_exit: 1 (expected nonzero by design)
+totals: 13106 pass / 3 skip / 7 fail, 13116 tests across 1720 files, 123.43s
+raw_fail_lines: 7
+
+IDENTITY COMPARISON, DURATION STRIPPED FROM BOTH SIDES
+normalizer: sed -E "s/ \[[0-9.]+m?s\]$//" | sort -u
+baseline_identities: 7
+observed_identities: 7
+diff_result: EMPTY - identity sets are equal
+verdict: PASS. Baseline-relative equality holds at exactly 7 identities. The +6 regressions verifier F2
+reported are GONE after the R1 remediation.
+
+THE SEVEN IDENTITIES
+(fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter
+(fail) auto-update-checker/checker > getLatestVersion > accepts latest channel
+(fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+(fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+(fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+(fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+(fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance

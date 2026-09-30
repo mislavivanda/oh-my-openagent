@@ -1,0 +1,30 @@
+guard_branches	24
+fallthrough_paths	3
+total_scenarios	27
+guard	all-todos-already-completed	4
+guard	recovery-active	4
+guard	session-cancelled	4
+guard	sync-subagent-handed-back	4
+guard	token-limit-detected	4
+guard	recent-abort	5
+guard	background-task-running	5
+guard	last-assistant-aborted	5
+guard	question-awaiting-user	6
+guard	internal-response-pending	5
+guard	messages-fetch-failure	5
+guard	todo-fetch-failure	6
+guard	no-todos	7
+guard	all-todos-complete	8
+guard	injection-in-flight	6
+guard	max-failures-before-cooldown	6
+guard	cooldown-active	6
+guard	latest-message-compaction	6
+guard	agent-skipped	7
+guard	compaction-without-agent	5
+guard	compaction-guard-active	9
+guard	continuation-stopped	8
+guard	turn-boundary-paused	8
+guard	stagnation-limit	8
+fallthrough	stale-abort-falls-through	18
+fallthrough	failure-reset-falls-through	19
+fallthrough	countdown-starts	17

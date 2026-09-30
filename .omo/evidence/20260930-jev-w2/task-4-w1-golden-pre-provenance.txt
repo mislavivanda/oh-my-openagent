@@ -1,0 +1,13 @@
+phase=pre-extraction
+creation_order=fixture generated before any task-4 TypeScript edit
+temp_root=/tmp/omo-jev-w1-golden-pre-ZJpDyT
+temp_root_removed=true
+corpus_file=w1-20260924-404-1790000000000000404-suffix404.jsonl
+corpus_bytes=3479
+corpus_sha256=17660ca7c9ac452ec395fcc799e2f8c61e909b7a0503d46198e498141a867531
+reader_bytes=10344
+reader_sha256=1f03f9269ede2fd4fafe276f118afb6a202be6bf223ac02f109c806f6c0e7b49
+source_sha256 packages/omo-opencode/src/features/jev/intent-routing-sink.ts 0f64079532d24d1aac80d247bf57139aacb96f07e40a2b23a00aa069a44edf31
+source_sha256 packages/omo-opencode/src/features/jev/intent-routing-sink-files.ts 038534162a2ded0c9ac385ed93648eb1317bd8bf10f428fca97f5597ea6353f2
+source_sha256 packages/omo-opencode/src/features/jev/intent-routing-reader.ts c5d5e23269dd463e2371beab8777663c0dd73f6fdf2847195e65c6b3e6cd6178
+head=9cf67bef6e0b214bd46db25bfca8ea5211ec19cc

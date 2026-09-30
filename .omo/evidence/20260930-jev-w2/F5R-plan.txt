@@ -1,0 +1,82 @@
+F5R REMEDIATION PLAN - render the outcome window in the W2 agreement report
+==========================================================================
+
+REJECTING VERIFIER: F5 (measurement-integrity audit)
+PLAN LINE: .omo/plans/jev-w2-completion-continuation.md:335
+  "... the 120000 ms window and closure reason are present ..."
+
+FINDING (reproduced before any edit)
+------------------------------------
+Command:
+  D=$(mktemp -d); D="$D" bun -e 'import{writeJevW2SyntheticCorpus}from"./script/jev-w2-report.fixtures";writeJevW2SyntheticCorpus(process.env.D!)'
+  bun run script/jev-w2-report.ts --root "$D" | grep -c '120000'
+Observed: exit 0, match count 0.
+Closure reasons ARE rendered (outcome_closure_* and censor_reason_* denominators plus the
+closure_reason cross-tab). The outcome observation window is NOT rendered anywhere.
+
+WHY IT MATTERS
+--------------
+Every outcome-agreement number is conditioned on a finite observation window: a record that
+does not close inside the window is censored with closedBy=timeout and enters no outcome
+numerator or denominator. A reader who does not know the window length cannot interpret
+censor_reason_timeout, censored_windows, outcome_status_censored, or any coverage figure.
+
+SOURCE OF THE VALUE (no hardcoded literal)
+------------------------------------------
+Checked every carrier of the window:
+  - packages/jev-core/src/completion-continuation-record-types.ts
+      CompletionContinuationObservation has NO window field.
+      CompletionContinuationCounterDelta has NO window field.
+    => the corpus genuinely carries no window value.
+  - packages/omo-opencode/src/config/schema/jev.ts:54
+      outcome_window_ms: z.number().int().min(1000).max(3600000).default(120000)
+    => the config schema is the only truthful non-record source.
+Decision, matching the finding's own fallback instruction: read the value at runtime from
+JevCompletionContinuationWireConfigSchema.parse({}).outcome_window_ms and LABEL it as the
+config schema default. If the schema default is ever changed, the rendered number follows.
+An explicit caveat line states that records carry no window value, so a run configured with
+a different outcome_window_ms is not reflected. (The F3 live driver configures 180000, so
+this caveat is load-bearing, not decoration.)
+
+PLACEMENT
+---------
+A new MEASUREMENT WINDOW block is emitted immediately after the report title and BEFORE the
+DENOMINATORS block, therefore before every denominator and before every rate. This keeps the
+denominators-first design: the reader meets the observation window, then the censored counts
+the window produces, then the heuristic rates, then the outcome rates.
+
+FILE-BY-FILE PLAN
+-----------------
+1. script/jev-w2-report-types.ts
+   Add `OutcomeWindow` ({ milliseconds, source }) and the `outcomeWindow` field on
+   CompletionContinuationReportAnalysis.
+   Verify: typecheck flags the analysis builder as missing the new field.
+2. script/jev-w2-report-analysis.ts
+   Import JevCompletionContinuationWireConfigSchema, derive the default once at module scope,
+   return it as analysis.outcomeWindow with source "config_schema_default".
+   Verify: no 120000 literal anywhere in script/jev-w2-report*.ts.
+3. script/jev-w2-report-render.ts
+   Emit the MEASUREMENT WINDOW block before DENOMINATORS, with the source label resolved from
+   a lookup keyed by the provenance value.
+   Verify: rendered output contains the window line before "DENOMINATORS".
+4. script/jev-w2-report.test.ts
+   New test in the exhaustive-corpus describe pinning: the window line is present, its number
+   equals the schema default, and its index precedes DENOMINATORS, HEURISTIC PROXY AGREEMENT
+   and OUTCOME AGREEMENT. Extend the empty-corpus test so the window renders there too.
+   Verify: the test fails before steps 1-3 land and passes after.
+
+PRESERVED PROPERTIES (must not regress)
+---------------------------------------
+denominators before rates; different named denominators for the heuristic and outcome
+sections; unknown and censored outcomes in no outcome numerator or denominator; timeout,
+intervention, delete and dispose never implying stuck; transcript-present continuation
+fixtures broken out from no-history fixtures; no merged heuristic-plus-outcome headline; no
+accuracy minimum and no threshold gate; zero denominators rendering "insufficient data"; a
+poor score still exiting 0.
+
+OUT OF SCOPE
+------------
+No change to packages/ (a peer owns the failing typecheck/build/audit fixes there).
+No change to .omo/evidence/20260930-jev-w2/task-19-drive.sh (a peer owns it).
+No record-schema change: adding outcome_window_ms to the JSONL observation would require
+editing packages/jev-core and the sink writer, neither of which this task owns.

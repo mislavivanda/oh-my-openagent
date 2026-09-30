@@ -1,0 +1,10 @@
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/features/jev/completion-continuation-diff-cache.ts
+ M packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts
+ M packages/omo-opencode/src/features/jev/completion-continuation-input.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-events.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? test-support/unsafe-test-value.d.ts

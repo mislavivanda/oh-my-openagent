@@ -1,0 +1,53 @@
+F13R PRE-STAGING GIT STATE AND OWNERSHIP DISCLAIMER
+
+WHAT WAS TESTED
+
+The worktree state was captured immediately before staging, so a reviewer can see
+exactly what this remediation touched and what it deliberately left alone while two
+concurrent peers were active in the same worktree.
+
+WHAT WAS OBSERVED
+
+git status --porcelain
+   M .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+   M .omo/evidence/20260930-jev-w2/task-19-disabled.txt
+   M .omo/evidence/20260930-jev-w2/task-19-drive.sh
+   M .omo/evidence/20260930-jev-w2/task-19-enabled.txt
+   M .omo/evidence/20260930-jev-w2/task-19-qa-summary.txt
+   M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+   M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+   M packages/omo-codex/scripts/install-dist/install-local.mjs
+   M packages/omo-senpi/plugin/extensions/omo-member.js
+   M packages/omo-senpi/plugin/extensions/omo.js
+
+The five modified paths under packages/ are the permanently dirty generated bundles.
+They were NOT produced by this remediation, are NOT staged, and were NOT reverted,
+stashed, checked out, or cleaned. Nothing under packages/ or script/ was edited here:
+
+  files changed by this remediation under packages/ or script/ = 0
+  peer-owned script/jev-w2-report*.ts modified by this remediation = 0
+
+New untracked artifacts in the evidence directory (hidden from porcelain because
+.gitignore line 2 ignores .omo/*, which is why the commit uses git add -f):
+  ?? .omo/evidence/20260930-jev-w2/task-F13R-secret-gate.txt
+  ?? .omo/evidence/20260930-jev-w2/task-F13R-masking-demo.txt
+  ?? .omo/evidence/20260930-jev-w2/task-F13R-manifest-narrowing.txt
+  ?? .omo/evidence/20260930-jev-w2/task-F13R-isolation.txt
+  ?? .omo/evidence/20260930-jev-w2/task-F13R-line-counts.txt
+  ?? .omo/evidence/20260930-jev-w2/task-F13R-dirty-worktree.txt
+  ?? .omo/evidence/20260930-jev-w2/task-F13R-staged-paths.txt
+
+HEAD at capture time
+  4d260f82d fix(jev): keep W2 test scaffolding out of production source paths
+
+WHY IT IS ENOUGH
+
+The porcelain listing is the ground truth for what staging may include. Combined with
+task-F13R-staged-paths.txt, which records the exact cached path list produced after
+staging, it shows the commit carries only this remediation's own evidence paths plus
+the shared manifest row file.
+
+WHAT WAS OMITTED
+
+No credential files were inspected or listed. .env and .env.local were never read,
+staged, or referenced.

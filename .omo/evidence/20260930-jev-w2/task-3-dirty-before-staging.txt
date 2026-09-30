@@ -1,0 +1,21 @@
+ M assets/oh-my-opencode.schema.json
+ M assets/omo.schema.json
+ M packages/jev-core/src/index.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/config/schema/jev.test.ts
+ M packages/omo-opencode/src/config/schema/jev.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-reader.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-sink-files.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/completion-continuation-record-types.ts
+?? packages/jev-core/src/completion-continuation-record-validation.test.ts
+?? packages/jev-core/src/completion-continuation-record-validation.ts
+?? packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts
+?? packages/omo-opencode/src/features/jev/observation-jsonl-files.ts
+?? packages/omo-opencode/src/features/jev/observation-process-identity.test.ts
+?? packages/omo-opencode/src/features/jev/observation-process-identity.ts

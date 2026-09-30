@@ -1,0 +1,15 @@
+ M .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/completion-continuation-questions.test.ts
+?? packages/jev-core/src/completion-continuation-questions.ts
+?? packages/jev-core/src/completion-continuation-state-budget.ts
+?? packages/jev-core/src/completion-continuation-state.test.ts
+?? packages/jev-core/src/completion-continuation-state.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-reader.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-sink.test-support.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-sink.ts

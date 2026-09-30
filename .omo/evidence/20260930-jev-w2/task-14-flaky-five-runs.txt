@@ -1,0 +1,50 @@
+RUN=1
+COMMAND=bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer
+bun test v1.4.0 (34cbb9a40)
+
+ 142 pass
+ 0 fail
+ 320 expect() calls
+Ran 142 tests across 19 files. [607.00ms]
+EXIT=0
+
+RUN=2
+COMMAND=bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer
+bun test v1.4.0 (34cbb9a40)
+
+ 142 pass
+ 0 fail
+ 320 expect() calls
+Ran 142 tests across 19 files. [613.00ms]
+EXIT=0
+
+RUN=3
+COMMAND=bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer
+bun test v1.4.0 (34cbb9a40)
+
+ 142 pass
+ 0 fail
+ 320 expect() calls
+Ran 142 tests across 19 files. [624.00ms]
+EXIT=0
+
+RUN=4
+COMMAND=bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer
+bun test v1.4.0 (34cbb9a40)
+
+ 142 pass
+ 0 fail
+ 320 expect() calls
+Ran 142 tests across 19 files. [609.00ms]
+EXIT=0
+
+RUN=5
+COMMAND=bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer
+bun test v1.4.0 (34cbb9a40)
+
+ 142 pass
+ 0 fail
+ 320 expect() calls
+Ran 142 tests across 19 files. [608.00ms]
+EXIT=0
+

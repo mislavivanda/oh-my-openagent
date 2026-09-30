@@ -1,0 +1,31 @@
+Todo 6 adversarial QA
+
+malformed_input: APPLIES.
+- Missing actually_complete: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=1, and the missing probability/label are null/unavailable.
+- Extra unexpected key: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=1. The payload is not accepted as filled.
+- Probability string: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=1, and the field is null/unavailable.
+- Probability NaN: predictionStatus=failed, unavailableReason=malformed_response, and stuck is null/unavailable.
+- Probability below 0: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=1.
+- Probability above 1: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=1.
+- Null answer: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=1.
+- Empty answer object: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=3.
+- Two well-formed answers of three: predictionStatus=failed, unavailableReason=malformed_response, invalidAnswerCount=1.
+All probes are in task-6-decision-green.txt: 27 tests passed, including the malformed-input table and explicit NaN case. No value is coerced into a valid probability.
+
+misleading_success_output: APPLIES.
+- task-6-rejecting-backend.txt reports Ran 1 test, 1 pass, 0 fail, and 26 filtered out.
+- The one-call test asserts calls exactly equal 1, not merely that a call occurred. It also asserts all three question keys were present in that one request. Three backend calls would make expect(calls).toBe(1) fail.
+
+hung_or_long_commands: APPLIES.
+- The never-resolving backend is raced against an injected fake clock. Its scheduled callback advances fake time by exactly 2500 ms in a microtask. No wall-clock sleep is used. The result is predictionStatus=timeout and unavailableReason=timeout.
+
+flaky_tests: APPLIES.
+- task-6-flaky-tests.txt records five runs. Every run reports 27 pass, 0 fail, and 36 expect calls.
+
+dirty_worktree: APPLIES.
+- task-6-dirty-worktree-before-staging.txt records owned edits, five known generated bundles, and the peer-owned todo-10 test file. Only todo-6 named paths will be staged.
+
+prompt_injection: NOT APPLICABLE. The policy parses typed backend answer objects and does not execute or reinterpret external text.
+stale_state: NOT APPLICABLE. The policy is stateless and receives one immutable bounded state snapshot per call.
+cancel_resume: NOT APPLICABLE. The policy has no resumable lifecycle or persisted cursor.
+repeated_interruptions: NOT APPLICABLE. The policy owns no mutable cross-call state and timer cancellation is local to one request.

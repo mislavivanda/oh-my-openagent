@@ -1,0 +1,21 @@
+COMMAND=grep -R -n "observe_only" packages/omo-opencode/src --include="*.ts" | grep -v -E "config/schema|\.test\.ts"
+<no matching lines>
+EXIT=1 MATCHING_LINES=0
+COMMAND=inspect runtime barrel exports and static apply-style declarations
+RUNTIME_EXPORTS=CompletionContinuationOutcomeStoreDisposedError,captureCompletionContinuationInput,classifyCompletionContinuationOutcome,createCompletionContinuationDiffCache,createCompletionContinuationOutcomeStore,createCompletionContinuationSink,createJevCompletionContinuation,finalizeCompletionContinuationInput,readCompletionContinuationSink,scheduleCompletionContinuationBoulderSnapshot
+APPLY_STYLE_RUNTIME_EXPORTS=0
+<no apply-style declarations>
+APPLY_GREP_EXIT=1 APPLY_MATCHING_LINES=0
+BASE_URL_REFERENCES:
+66:  readonly env?: { readonly TYPESAFE_API_KEY?: string; readonly OMO_JEV_BASE_URL?: string | undefined }
+147:      ...(env.OMO_JEV_BASE_URL === undefined ? {} : { baseURL: env.OMO_JEV_BASE_URL }),
+PHYSICAL_LINE_COUNTS:
+213	packages/omo-opencode/src/features/jev/completion-continuation.ts
+244	packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts
+205	packages/omo-opencode/src/features/jev/completion-continuation.test.ts
+207	packages/omo-opencode/src/features/jev/completion-continuation-adversarial.test.ts
+177	packages/omo-opencode/src/features/jev/completion-continuation.test-support.ts
+141	packages/omo-opencode/src/features/jev/index.ts
+BANNED_PATTERN_CHECK:
+<no matching lines>
+BANNED_EXIT=1 BANNED_MATCHING_LINES=0

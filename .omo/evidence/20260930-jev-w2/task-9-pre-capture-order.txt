@@ -1,0 +1,5 @@
++ GIT_MASTER=1
++ git status --porcelain
++ sha256sum packages/omo-opencode/src/hooks/ralph-loop/completion-promise-detector.ts
++ bun run .omo/evidence/20260930-jev-w2/task-9-golden-runner.ts
++ sha256sum .omo/evidence/20260930-jev-w2/task-9-golden-pre.tsv
