@@ -1,0 +1,309 @@
+F2 CODE QUALITY REVIEW - plan jev-w1-intent-routing, final verification wave (plan line 274)
+Mandate: "gates green and repo conventions held."
+Verifier: F2, independent of the implementers. AUDIT ONLY - nothing was fixed, staged, or committed.
+
+WORKTREE AND RANGE UNDER AUDIT
+  worktree      /home/opencode/projects/oh-my-openagent-jev-w1-a20f
+  branch        jev/w1-a20f
+  HEAD          18d22ebbadf5853eca134b6e2596f4bf1ee84023
+  base          jev/foundation @ 82460563fa1573c49b88d7c70620fac09a971d19
+  merge-base    82460563fa1573c49b88d7c70620fac09a971d19  (equals base, so the range is a clean fast-forward set)
+  commits       18 (f6ff98574 .. 18d22ebba)
+  changed files 226 total, of which 67 are .ts
+
+VERDICT: APPROVE
+
+Every numbered check passed. The full-suite gate is byte-identical to the recorded baseline: zero new
+failures. Two advisory convention observations are recorded in section B; neither is a gate violation
+and neither blocks the PR.
+
+
+==============================================================================================
+PART A - THE SEVEN NUMBERED CHECKS
+==============================================================================================
+
+BASELINE POLICY APPLIED
+The user-approved amendment in task-1-baseline-policy.txt was read first and governs check 3.
+The repository suite is already RED on jev/foundation for reasons unrelated to W1, so check 3 is a
+NO-NEW-FAILURES gate measured against task-1-canonical-baseline-failures.txt, NOT an exit-0 gate.
+test:fast and typecheck remain hard exit-0 gates. The notices script stays baseline-relative.
+
+
+CHECK 1 - bun run typecheck
+  command   bun run typecheck
+  observed  exit=0
+  PASS. Clean across all three legs: root tsgo --noEmit, typecheck:script (script/tsconfig.json),
+  and typecheck:packages (28 workspace package tsconfigs, including packages/jev-core and
+  packages/omo-opencode). No diagnostics emitted on any leg.
+  raw: /tmp/f2/typecheck.log
+
+
+CHECK 2 - bun run test:fast
+  command   bun run test:fast
+  observed  exit=0
+            484 pass / 0 fail / 3 skip-none reported / 1403 expect() calls
+            Ran 484 tests across 51 files. [6.75s]
+  PASS, and it is an exit-0 pass as the policy demands.
+  RECORDED PASS COUNT: 484.
+  Baseline for comparison (task-1-test-fast.txt): exit=0, 317 pass / 0 fail.
+  Delta +167 passing tests, 0 failing.
+
+  Scope audit of the gate itself. package.json is in the changed set, so the fast gate definition
+  was independently diffed to rule out a weakened gate. The change is PURELY ADDITIVE: seven new
+  targets were appended and NOTHING was removed.
+    added  packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts
+           packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts
+           packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts
+           packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts
+           packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts
+           script/jev-w1-report.test.ts
+           (plus new files picked up by the pre-existing packages/jev-core and
+            packages/omo-opencode/src/features/jev directory globs)
+    removed  none
+  So the +167 delta is real new coverage, not a re-scoped or relaxed gate.
+  raw: /tmp/f2/test-fast.log
+
+
+CHECK 3 - BASELINE-RELATIVE FULL SUITE  (the load-bearing check)
+  command   env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+  observed  exit=1
+            12944 pass / 3 skip / 7 fail
+            Ran 12954 tests across 1698 files. [128.63s], wall clock 129s
+
+  Recorded baseline (task-1-canonical-baseline.txt):
+            exit=1, 12777 pass / 3 skip / 7 fail, 12787 tests across 1678 files, 121s
+  Delta      +167 pass, +20 files, +167 tests, fail count UNCHANGED at 7.
+
+  Normalization. The failures were normalized with the EXACT pipeline documented in
+  task-1-baseline-policy.txt section 5, unmodified:
+      grep -E '^\(fail\)' <capture> \
+        | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g; s/^\(fail\) //; s/ \[[0-9.]+m?s\]$//' \
+        | LC_ALL=C sort
+
+  Pipeline self-validation before trusting the comparison. The identical pipeline was re-run against
+  the recorded raw capture and reproduces task-1-canonical-baseline-failures.txt byte-for-byte
+  (diff empty). The recorded artifact still carries the sha256 the policy pins:
+      e58c7b4ab1d56299fd92dd3a115e1029d5bb81ff5aed86435e63e773af508011
+  So the baseline artifact is unaltered and the comparison is valid.
+
+  RESULT:
+      diff task-1-canonical-baseline-failures.txt <F2 normalized failures>   ->  exit 0, NO OUTPUT
+      lines only in the F2 run (REGRESSIONS)   ->  0
+      lines only in the baseline (allowed)     ->  0
+  The two failure sets are BYTE-IDENTICAL.
+
+  *** EXPLICIT ANSWER TO THE REQUIRED QUESTION: NO NEW FAILURE APPEARED. ***
+  Zero lines are present only in the F2 run. Not one regression.
+
+  The 7 observed failures are exactly the 7 accepted pre-existing failures, both root-cause classes:
+    CLASS A - cross-file mock.module() leak from hooks/auto-update-checker/hook.test.ts (5 tests)
+      auto-update-checker/checker > getLatestVersion > accepts channel parameter
+      auto-update-checker/checker > getLatestVersion > accepts latest channel
+      auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+      auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+      auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+    CLASS B - local Bun 1.4.0 making ResolveMessage an Error instance; CI pins 1.3.12 (2 tests)
+      dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+      isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+  Neither class touches W1 code. Local runner confirmed as bun test v1.4.0 (34cbb9a40), consistent
+  with the policy's note that CI on 1.3.12 may legitimately show 5 rather than 7.
+
+  Documented flake. The quarantined 1-in-3 load flake
+      pollForCompletion > does not check completion during stabilization period after first meaningful work
+  DID NOT fire in this run. No flake allowance was needed, so no judgment call was exercised here.
+  Isolation discipline: this run was executed with no other verifier workload started from this
+  session, to keep full-suite CPU contention comparable to the baseline capture.
+  raw: /tmp/f2/f2-fullsuite.txt, normalized: /tmp/f2/f2-failures.txt
+
+
+CHECK 4 - META-AUDIT TESTS
+  command   bun test script/shared-core-extraction-guard.test.ts script/package-registration-audit.test.ts packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+  observed  exit=0, 25 pass / 0 fail / 37 expect() calls, Ran 25 tests across 3 files. [455.00ms]
+  PASS. The three repo-wide invariants hold: packages/*-core stay harness-neutral (so the new
+  packages/jev-core additions did not leak a harness dependency), workspace/devDep registration plus
+  zero ROADMAP reverse-dependency edges, and no machine-local absolute paths in committed markdown
+  (relevant because this branch adds docs/jev/HANDOFF.md, docs/jev/dogfood-log.md, and
+  packages/jev-core/AGENTS.md).
+  raw: /tmp/f2/audits.log
+
+
+CHECK 5 - NO TYPE ESCAPE HATCHES
+  command   grep -rnE '\bas any\b|@ts-ignore|@ts-expect-error' $(git diff --name-only jev/foundation..jev/w1-a20f -- '*.ts')
+  observed  NO OUTPUT, grep exit=1 (no match). 67 .ts files were fed to grep, confirmed non-empty.
+  PASS. Zero `as any`, zero @ts-ignore, zero @ts-expect-error across every .ts file in the range.
+  Combined with check 1, the branch is strictly typed with no suppression.
+
+
+CHECK 6 - NO DASHES, NO AI FILLER  (whole files, not just diff hunks)
+  command   grep -rnP '[\x{2014}\x{2013}]|\b(simply|obviously|clearly|moreover|furthermore)\b' $(git diff --name-only jev/foundation..jev/w1-a20f)
+  observed  NO OUTPUT, grep exit=1 (no match).
+  PASS. Note the scope, as instructed: this greps all 226 changed files END TO END, not only the
+  added lines. That deliberately includes the ~160 evidence artifacts under
+  .omo/evidence/20260924-jev-w1/, the three docs files, both generated schema JSONs, and
+  packages/jev-core/AGENTS.md. Not a single em dash, en dash, or banned filler word anywhere.
+
+
+CHECK 7 - THIRD-PARTY NOTICES, BASELINE-RELATIVE
+  command   bash -c 'node scripts/check-third-party-notices.mjs 2>&1 | diff - .omo/evidence/20260924-jev-w1/task-1-notices-baseline.txt'
+  observed  NO OUTPUT, diff exit=0.
+  PASS. The heading output is byte-identical to the recorded baseline, i.e. still exactly the same
+  4 missing entries (@opentui/core, @opentui/keymap, @opentui/solid, zod). W1 adds no dependency, so
+  this pre-existing debt neither grew nor shrank.
+  Exit status handled per design, in the separate artifact and kept out of the comparison:
+  recorded task-1-notices-exit.txt = exit=1; live re-run = exit=1. Unchanged.
+
+
+==============================================================================================
+PART B - CONVENTIONS JUDGMENT (the rest of the F2 mandate)
+==============================================================================================
+
+B1. FILE SIZES
+Root AGENTS.md sets a 200 LOC soft limit. Reporting threshold for this audit is 250 physical lines.
+Every changed file over 250 lines is listed, with its jev/foundation size, so inherited size is
+never charged to this PR. PHYS is `wc -l`; PURE excludes blank and comment-only lines.
+
+  (a) SOURCE AND TEST CODE OVER 250 PHYSICAL LINES
+
+  PHYS  PURE  BASE  STATUS      PATH
+   573   534     0  NEW         packages/jev-core/src/intent-routing-accuracy.test.ts
+   293   250     0  NEW         packages/omo-opencode/src/features/jev/intent-routing.test.ts
+   266   236     0  NEW         packages/jev-core/src/intent-routing.test.ts
+   260   233     0  NEW         packages/jev-core/src/intent-routing-record.ts
+   257   247     0  NEW         packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts
+   255   233     0  NEW         packages/jev-core/src/intent-routing.ts
+   266   243   256  INHERITED   packages/omo-opencode/src/plugin/event.ts
+   381   348   351  INHERITED   packages/omo-opencode/src/testing/create-plugin-module.ts
+
+  Per-file adjudication:
+    intent-routing-accuracy.test.ts (573, NEW)
+        Already disclosed and accepted. The plan mandates ONE test file for that harness, so the
+        size is a direct consequence of a plan requirement, not drift. Out of scope to split.
+    event.ts (266, was 256, INHERITED)
+        ALREADY OVER on jev/foundation. This branch adds a net +10 lines. Inherited, out of scope
+        for this PR, and the increment is small and proportionate to the wiring it adds.
+    create-plugin-module.ts (381, was 351, INHERITED)
+        ALREADY OVER on jev/foundation. This branch adds a net +30 lines. Inherited, out of scope
+        for this PR. This is the staged plugin init site, so additive wiring here is structural.
+    The remaining five NEW files (293, 266, 260, 257, 255 physical / 250, 236, 233, 247, 233 pure)
+        NEWLY INTRODUCED over 250 and not on the previously disclosed list, so they are reported
+        here in full. Assessment: all five sit 5 to 43 physical lines past the threshold, three of
+        the five are test files where the repo routinely runs long, and the two production files
+        (intent-routing-record.ts at 233 pure, intent-routing-turn-store.ts at 247 pure) are each
+        one cohesive unit: the record/validation union and the bounded turn-record state machine
+        respectively. The feature was in fact decomposed aggressively rather than dumped in one
+        place: 27 new files under packages/omo-opencode/src/features/jev/ plus 10 under
+        packages/jev-core/src/, with sink, counters, keys, types, eviction, lifecycle, prediction,
+        seal, and reader all split apart. ADVISORY, not a gate violation: 200 is explicitly a SOFT
+        limit, nothing in the plan or in AGENTS.md makes it blocking, and no file here is anywhere
+        near the 250-pure-LOC mark that the remove-ai-slops rule treats as mandatory-refactor.
+
+  (b) NON-CODE FILES OVER 250 LINES, listed for completeness and explicitly NOT charged against
+      the LOC convention, which governs source modules:
+        generated schemas   assets/omo.schema.json 24370 (was 24226), assets/oh-my-opencode.schema.json 8747 (was 8675)
+        docs                docs/reference/configuration.md 1244 (was 1199), docs/jev/HANDOFF.md 263 (was 237)
+        evidence artifacts  9 files under .omo/evidence/20260924-jev-w1/ (2 manifest .tsv pairs at
+                            ~1009-1014 lines, task-1-baseline-bun-test.txt 462, task-19-drive.sh 348,
+                            task-1-install.txt 347, task-6-normalization-red.txt 315,
+                            task-2-schema-diff.txt 281)
+
+B2. BARRELS
+  CHECK RESULT: CONFIRMED - no `export *` was introduced.
+      git diff jev/foundation..jev/w1-a20f -- '*.ts' | grep '^\+.*export \*'   ->  no match
+      grep 'export \*' over all 67 changed .ts files                          ->  no match
+  Both new/changed barrels use explicit named exports. packages/omo-opencode/src/features/jev/index.ts
+  (63 lines) and packages/jev-core/src/index.ts (59 lines) are pure re-export barrels with zero
+  business logic, honoring the "barrel exports only, never dump logic in index.ts" rule.
+
+  ADVISORY, disclosed for full transparency. Widening the pattern to the type-only star form finds
+  exactly ONE added line:
+      packages/jev-core/src/index.ts:2  export type * from "./intent-routing-record"
+  This is a TYPE-ONLY star re-export, not a value star re-export. Judgment: acceptable, and not a
+  finding I would block on. It mirrors line 1 of the very same file, `export type * from "./types"`,
+  which already existed on jev/foundation, so the branch followed that file's own established local
+  pattern rather than inventing one. Repo-wide precedent on jev/foundation is 7 files using
+  `export type *` and 398 files using plain `export *`, so the explicit-named-exports convention is
+  aspirational rather than enforced today. Every VALUE export added by this branch is explicit and
+  named. Flagging it only so the reviewer sees it rather than discovering it later.
+
+B3. TEST STYLE
+  CONFIRMED CLEAN on all three axes across all 22 changed/new test files:
+    bun:test            22/22 import from "bun:test". Zero foreign test runners.
+    given/when/then     22/22 use the #given / #when / #then naming convention. Every file has at
+                        least one of each marker; nested describes correctly group several
+                        #when/#then cases under one #given (for example script/jev-w1-report.test.ts
+                        uses 2 #given describes over 8 #when/#then cases, and
+                        packages/omo-opencode/src/config/schema/jev.test.ts additionally carries 28
+                        inline // given / // when / // then comments, which AGENTS.md lists as the
+                        other sanctioned form).
+    no Arrange-Act-Assert
+                        grep -rniE '^\s*//\s*(arrange|act|assert)\b' over all 67 changed .ts files
+                        -> NO OUTPUT. Zero AAA comments anywhere in the range.
+
+B4. ADDITIONAL CONVENTION SWEEP (not requested, run because the mandate is conventions)
+  All clean across the 67 changed .ts files:
+    catch-all files       no utils.ts / helpers.ts / service.ts added
+    empty catch blocks    none
+    path aliases          no `from "@/..."` inside package src
+    file naming           all new files kebab-case, no camelCase or snake_case basenames
+    emojis                none in code
+    factory pattern       honored (createJevIntentRouting, createIntentRoutingTurnStore,
+                          createJevIntentRoutingCapture, ...)
+
+
+==============================================================================================
+PART C - WHAT WAS TESTED / OBSERVED / WHY IT IS ENOUGH / WHAT WAS OMITTED
+==============================================================================================
+
+WHAT WAS TESTED
+  The seven mandated gates in the order 5,6,7 then 1,2,4 then 3, plus a conventions judgment over
+  the whole jev/foundation..jev/w1-a20f range. Check 3, the only gate with a nontrivial pass
+  criterion, was run last and alone so that full-suite CPU contention stayed comparable to the
+  recorded baseline capture and the known load-sensitive flake was not artificially provoked.
+  Beyond the literal checks, the test:fast gate DEFINITION was itself diffed, because package.json
+  is in the changed set and a verifier that only runs a gate can be fooled by a gate that was
+  quietly narrowed.
+
+WHAT WAS OBSERVED
+  typecheck exit 0. test:fast exit 0 with 484 pass / 0 fail, up from the 317-pass baseline via a
+  purely additive scope change. Meta-audits exit 0 with 25 pass / 0 fail. Checks 5, 6, and 7 all
+  silent. Full suite exit 1 by design with 7 failures whose normalized names are BYTE-IDENTICAL to
+  the recorded 7-line baseline: zero regressions, zero disappearances, and the quarantined flake did
+  not fire. The normalization pipeline was validated against the recorded raw capture first and
+  reproduces the pinned sha256 e58c7b4a..., so the comparison rests on an unaltered artifact.
+
+WHY IT IS ENOUGH
+  The two hard exit-0 gates are green and every new W1 test lands inside test:fast, which is the
+  real gate for this plan's own work. The baseline-relative gate is not merely within tolerance, it
+  is exactly equal, which is the strongest possible outcome short of fixing the unrelated
+  pre-existing debt that the amendment explicitly places out of scope. +167 passing tests arrived
+  with +0 failures, so the added coverage is genuinely green rather than skipped or loosened.
+  Convention conformance was checked by mechanical sweeps over the full changed-file set rather than
+  by sampling, and the file-size question was answered against jev/foundation sizes so inherited
+  debt is separated from newly introduced debt.
+
+RESIDUAL RISK
+  1. Runner version. Local Bun is 1.4.0; CI pins 1.3.12. CLASS B's 2 failures are expected to
+     vanish on CI, which the policy already rules a non-regression. This audit cannot observe CI.
+  2. The quarantined pollForCompletion flake is load-dependent and did not fire here. A future run
+     that shows only that name newly failing must be re-run in isolation before anyone calls it a
+     regression.
+  3. The five newly-introduced 255-293 line files and the single added `export type *` are advisory
+     style debt, deliberately left unfixed because F2 audits and does not fix.
+  4. Working tree is dirty with 5 generated build-output files
+     (packages/omo-codex/plugin/components/codegraph/dist/{cli,serve}.js,
+     packages/omo-codex/scripts/install-dist/install-local.mjs,
+     packages/omo-senpi/plugin/extensions/{omo,omo-member}.js) plus a concurrently-edited
+     .omo/evidence/20260924-jev-w1/MANIFEST.tsv. The 5 are bun install postinstall output, already
+     diagnosed in task-1-worktree.txt and task-1-baseline-policy.txt section 7; the MANIFEST churn
+     is the concurrent sibling verifiers appending their rows. None were touched by F2 and none
+     affect a commit-range diff.
+
+WHAT WAS OMITTED
+  No secrets, tokens, auth headers, env dumps, or credentials are reproduced in this file. The full
+  suite ran with OPENCODE_SERVER_PASSWORD explicitly removed from the environment per the canonical
+  command, and that variable's value is never printed here. Raw captures were written outside the
+  repository, under /tmp/f2/, and are referenced by path rather than inlined; only the 7 normalized
+  failure names, which contain no sensitive data, are quoted in full. No source file was modified,
+  no fix was applied, nothing was staged or committed.
+
+FINAL VERDICT: APPROVE

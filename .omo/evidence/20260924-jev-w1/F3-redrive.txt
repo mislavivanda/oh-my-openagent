@@ -1,0 +1,44 @@
+F3 FINAL VERDICT: APPROVE
+
+WHAT WAS TESTED
+- Independently ran task-19-drive.sh from this worktree with a newly allocated enabled sandbox and receipts directory, --wire enabled, and required --keep.
+- Independently ran the disabled control in a second newly allocated sandbox and receipts directory with --wire disabled and --keep.
+- Parsed the retained enabled sink directly rather than accepting task 19's prior evidence.
+- Queried ~/.local/share/opencode/opencode.db read-only before and after, and queried both fresh sandbox session IDs directly.
+- Captured recursive ~/.omo manifests before and after with path, type, size, nanosecond mtime, and SHA256 content hash.
+- Checked only the PIDs and ports recorded by these two runs. No pgrep or pkill command was used.
+
+WHAT WAS OBSERVED
+- Enabled sealed observations: 32.
+- Enabled session ID: ses_f0e5e3a46ffevyeW5RV3fbHoxl.
+- Unique enabled observation session IDs: 1.
+- Fan-out cohorts: zero=12, one=12, many=8. Every cohort was non-empty.
+- Disabled control session ID: ses_f0e5cda23ffeRXJBFCJRLEY4ME.
+- Disabled control: sink_files=0, jev_requests=0, jev_log_lines=0.
+- Real OpenCode session count: before=454, after=455. The concurrent-machine count changed by +1, but direct read-only lookups returned 0 rows for both F3 sandbox session IDs. This is the decisive isolation check under the stated concurrent-peer conditions.
+- Raw recursive ~/.omo manifest diff: 2 entries, both known ambient CodeGraph heartbeat files: codegraph/worker-sweep.stamp and codegraph/zombie-sweep.stamp. The F3-attributable manifest diff was empty. No content appeared under the real ~/.omo/jev directory.
+- Enabled terminated PIDs: 1740615 (opencode-server), 1740586 (fake-model), 1740587 (fake-jev). Enabled released ports: 45745 (opencode-server), 33847 (fake-model), 41331 (fake-jev).
+- Disabled terminated PIDs: 1764022 (opencode-server), 1763877 (fake-model), 1763878 (fake-jev). Disabled released ports: 42457 (opencode-server), 38715 (fake-model), 33643 (fake-jev).
+- All 64 opencode-run child PIDs exited rc=0 naturally. Follow-up kill -0 checks printed no SURVIVED lines for any recorded PID. Follow-up TCP checks printed no PORT_STILL_BOUND lines for any recorded port.
+- Both retained sandboxes were explicitly removed, and both [ ! -d "$SANDBOX" ] checks exited 0.
+
+RECEIPTS
+- Enabled receipts: /tmp/tmp.5hkHaFHnPW
+- Disabled receipts: /tmp/tmp.hy20imiOB9
+- Enabled driver summary: /tmp/tmp.5hkHaFHnPW/summary.txt
+- Independent enabled assertions: /tmp/tmp.5hkHaFHnPW/enabled-assertions.txt
+- Disabled driver summary: /tmp/tmp.hy20imiOB9/summary.txt
+- Independent disabled assertions: /tmp/tmp.hy20imiOB9/disabled-assertions.txt
+- Host DB ID lookups: /tmp/tmp.5hkHaFHnPW/real-session-id-hits.json
+- Full host manifests and raw diff: /tmp/tmp.5hkHaFHnPW/omo-manifest.before.json, omo-manifest.after.json, omo-manifest.diff.json
+- Exact process cleanup receipts: each receipts directory's cleanup.tsv, pids.tsv, and ports.tsv.
+
+WHY IT IS ENOUGH
+- The enabled run drove 32 sequential turns through a fresh real OpenCode server and produced the required sealed sink population, one shared session ID, and all three fan-out cohorts.
+- The separate disabled run drove the same 32-turn surface and produced no JEV sink or request output.
+- Direct session-ID absence proves neither F3 isolated session leaked into the real database despite ambient peer activity changing its total count.
+- The only raw ~/.omo changes were the explicitly allowed CodeGraph heartbeat stamps, leaving an empty F3-attributable diff and no real JEV sink content.
+- Resource checks were scoped to exact run receipts and prove teardown without risking operator or peer processes.
+
+WHAT WAS OMITTED
+- Raw model and server logs were not copied into this report because they are retained in the receipt directories and may include verbose environment or request details. No secrets, tokens, auth headers, or credentials are reproduced here.
