@@ -385,3 +385,4 @@ F13R	.omo/evidence/20260930-jev-w2/task-F13R-isolation.txt	acceptance	Every orig
 F13R	.omo/evidence/20260930-jev-w2/task-F13R-line-counts.txt	static	Per-file 250 line cap loop shell syntax zero process matchers and final secret gate each with command exit and count
 F13R	.omo/evidence/20260930-jev-w2/task-F13R-dirty-worktree.txt	git-state	Pre-staging porcelain with peer ownership disclaimer and untracked artifact list
 F13R	.omo/evidence/20260930-jev-w2/task-F13R-staged-paths.txt	git-state	Exact 12 path staging allowlist with the explicit not-staged list and the commit subject
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-identity-comparison.txt	verification	root-authored honest identity comparison: duration stripped from both sides, 7 identities equal, documents the plan byte-diff defect and the R1 artifact correction
