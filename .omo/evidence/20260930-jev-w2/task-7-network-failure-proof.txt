@@ -1,0 +1,21 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+69 |   get count(): number { return this.used }
+70 | }
+71 | function createCountingFetch(counter: MutableCounter): BackendFetch {
+72 |   return async () => {
+73 |     counter.value += 1
+74 |     throw new UnexpectedNetworkCallError()
+               ^
+UnexpectedNetworkCallError: Mock completion-continuation harness attempted fetch
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/jev-core/src/completion-continuation-accuracy.test.ts:74:11)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/jev-core/src/completion-continuation-accuracy.test.ts:176:11)
+(fail) completion-continuation accuracy harness > #given the selected default mode #when fixtures run #then a bounded mock artifact is emitted without network calls [0.85ms]
+
+ 0 pass
+ 4 filtered out
+ 1 fail
+Ran 1 test across 1 file. [129.00ms]
+
+expected_failure_exit=1

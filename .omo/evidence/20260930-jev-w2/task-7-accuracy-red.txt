@@ -1,0 +1,24 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+16 | 
+17 |     // when
+18 |     const observedStatus: string = artifact.status
+19 | 
+20 |     // then
+21 |     expect(observedStatus).toBe("complete")
+                                ^
+error: expect(received).toBe(expected)
+
+Expected: "complete"
+Received: "partial"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/jev-core/src/completion-continuation-accuracy.test.ts:21:28)
+(fail) completion-continuation accuracy harness > #given the unimplemented harness #when the mock run executes #then it produces a complete artifact [0.79ms]
+
+ 0 pass
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [125.00ms]
+
+exit=1

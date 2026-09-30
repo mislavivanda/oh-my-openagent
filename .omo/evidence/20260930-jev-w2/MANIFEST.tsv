@@ -189,3 +189,24 @@ todo	artifact	kind	description
 10	.omo/evidence/20260930-jev-w2/task-10-lsp-diagnostics.txt	lsp	Changed files report no diagnostics
 10	.omo/evidence/20260930-jev-w2/task-10-cleanup.txt	cleanup	Temp roots, home isolation, process and port receipt
 10	.omo/evidence/20260930-jev-w2/task-10-staged-paths.txt	git	Cached paths after staging contain only todo 10 files
+7	.omo/evidence/20260930-jev-w2/task-7-accuracy-red.txt	tdd-red	Focused harness RED: partial received instead of complete
+7	.omo/evidence/20260930-jev-w2/task-7-accuracy-result.json	benchmark	Mock accuracy artifact with model, versions, caps, and confusion matrices
+7	.omo/evidence/20260930-jev-w2/task-7-accuracy-mock.txt	manual-qa	Exact default mock channel with zero network calls
+7	.omo/evidence/20260930-jev-w2/task-7-call-ceiling.txt	failure-qa	Named ceiling test matched one test and aborted before call 19
+7	.omo/evidence/20260930-jev-w2/task-7-prompt-injection.txt	adversarial	Embedded directive remains inert state data
+7	.omo/evidence/20260930-jev-w2/task-7-malformed-input.txt	adversarial	No-todo, empty-transcript, oversized, and malformed-answer probes
+7	.omo/evidence/20260930-jev-w2/task-7-network-tripwire.txt	adversarial	Injected counting fetch raises on invocation
+7	.omo/evidence/20260930-jev-w2/task-7-network-failure-proof.txt	mutation-proof	Forced fetch made default test fail before revert
+7	.omo/evidence/20260930-jev-w2/task-7-cohort-tripwire.txt	mutation-proof	Removed cohort made enumeration fail before restore
+7	.omo/evidence/20260930-jev-w2/task-7-flaky-tests.txt	stability	Three identical focused test runs
+7	.omo/evidence/20260930-jev-w2/task-7-core-guard.txt	regression	Shared core extraction guard
+7	.omo/evidence/20260930-jev-w2/task-7-typecheck.txt	typecheck	jev-core tsgo noEmit passed
+7	.omo/evidence/20260930-jev-w2/task-7-line-counts.txt	static	Per-file physical line counts at or below 250
+7	.omo/evidence/20260930-jev-w2/task-7-no-excuse.txt	static	TypeScript no-excuse audit
+7	.omo/evidence/20260930-jev-w2/task-7-dry-run.txt	dry-run	Dry-run test builds all fixture states with zero reserved calls
+7	.omo/evidence/20260930-jev-w2/task-7-dirty-worktree-before-staging.txt	git-state	Worktree status before staging
+7	.omo/evidence/20260930-jev-w2/task-7-lsp-diagnostics.txt	diagnostics	Changed TypeScript files have no LSP diagnostics
+7	.omo/evidence/20260930-jev-w2/task-7-qa-summary.txt	summary	Reviewer-readable QA summary
+7	.omo/evidence/20260930-jev-w2/task-7-adversarial-qa.txt	adversarial	Applicable probes and ruled-out classes
+7	.omo/evidence/20260930-jev-w2/task-7-cleanup.txt	cleanup	No leaked processes, ports, containers, or temp files
+7	.omo/evidence/20260930-jev-w2/task-7-staged-paths.txt	git-state	Exact cached paths after staging

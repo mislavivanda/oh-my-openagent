@@ -1,0 +1,2 @@
+command: bunx tsgo --noEmit -p packages/jev-core/tsconfig.json
+exit: 0

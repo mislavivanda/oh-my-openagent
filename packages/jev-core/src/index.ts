@@ -133,3 +133,11 @@ export {
   type CompletionContinuationDecisionStatus,
   type CompletionContinuationTimer,
 } from "./completion-continuation"
+export {
+  COMPLETION_CONTINUATION_FIXTURES,
+  COMPLETION_CONTINUATION_FIXTURE_COHORTS,
+  type CompletionContinuationFixture,
+  type CompletionContinuationFixtureCohort,
+  type CompletionContinuationFixtureLabel,
+  type CompletionContinuationFixtureTruth,
+} from "./completion-continuation-fixtures"

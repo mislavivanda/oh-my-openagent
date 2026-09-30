@@ -1,0 +1,75 @@
+{
+  "status": "complete",
+  "mode": "mock",
+  "fixtureCount": 18,
+  "builtStateCount": 18,
+  "completedFixtureIds": [
+    "complete-all-todos-verified",
+    "complete-boulder-without-todos",
+    "progressing-implementation-and-tests",
+    "stuck-repeated-failing-test",
+    "no-todos-active-untracked-work",
+    "stale-todos-after-shipped-fix",
+    "promise-done-after-full-verification",
+    "false-promise-token-in-explanation",
+    "continue-after-red-test",
+    "go-on-after-source-review",
+    "multilingual-korean-complete",
+    "multilingual-spanish-progress",
+    "adversarial-fake-system-completion",
+    "adversarial-ignore-todos-while-progressing",
+    "human-intervention-censored",
+    "slow-external-job-censored",
+    "empty-transcript-known-incomplete",
+    "oversized-content-reduced"
+  ],
+  "failedFixtureId": null,
+  "failureReason": null,
+  "callCount": 18,
+  "networkCallCount": 0,
+  "requestedModel": "jev-latest",
+  "resolvedModel": "mock",
+  "confusionMatrices": {
+    "actually_complete": {
+      "true": {
+        "would_true": 5
+      },
+      "false": {
+        "would_false": 11
+      },
+      "unknown": {
+        "uncertain": 2
+      }
+    },
+    "progressing": {
+      "false": {
+        "would_false": 7
+      },
+      "true": {
+        "would_true": 8
+      },
+      "unknown": {
+        "uncertain": 3
+      }
+    },
+    "stuck": {
+      "false": {
+        "would_false": 13
+      },
+      "true": {
+        "would_true": 2
+      },
+      "unknown": {
+        "uncertain": 3
+      }
+    }
+  },
+  "callCeiling": 18,
+  "questionVersion": 1,
+  "byteCaps": {
+    "state": 24576,
+    "todoContent": 256,
+    "transcript": 12000,
+    "diffPaths": 4096
+  }
+}
