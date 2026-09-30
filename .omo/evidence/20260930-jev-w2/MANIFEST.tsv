@@ -337,3 +337,12 @@ todo	artifact	kind	description
 19	.omo/evidence/20260930-jev-w2/task-19-no-excuse.txt	static	Strict TypeScript no-excuse audit exits zero
 19	.omo/evidence/20260930-jev-w2/task-19-dirty-worktree.txt	git-state	Porcelain status before exact staging
 19	.omo/evidence/20260930-jev-w2/task-19-staged-paths.txt	git-state	Exact cached path allowlist excludes generated bundles and credentials
+19	.omo/evidence/20260930-jev-w2/task-19-remediation.txt	remediation	Rejecting-verification rationale fresh-session fix and extra-commit accounting
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-input-test.txt	regression	Completion-continuation input suite 8 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-continuation-tests.txt	regression	Continuation hook and construction suites 147 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-inert-runtime.txt	regression	Inertness and runtime-effects suites 5 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-test-fast.txt	regression	Fast gate 779 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-acceptance.txt	acceptance	All live W2 acceptance buckets and isolation checks pass
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-static.txt	static	Line limits shell syntax and zero forbidden process matcher bytes
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-dirty-worktree.txt	git-state	Remediation pre-staging status excludes ownership of ambient generated bundles
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-staged-paths.txt	git-state	Exact remediation cached path allowlist

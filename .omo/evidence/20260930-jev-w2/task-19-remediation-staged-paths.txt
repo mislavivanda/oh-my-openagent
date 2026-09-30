@@ -1,0 +1,16 @@
+.omo/evidence/20260930-jev-w2/MANIFEST.tsv
+.omo/evidence/20260930-jev-w2/task-19-adversarial-qa.txt
+.omo/evidence/20260930-jev-w2/task-19-cleanup.txt
+.omo/evidence/20260930-jev-w2/task-19-disabled.txt
+.omo/evidence/20260930-jev-w2/task-19-drive.sh
+.omo/evidence/20260930-jev-w2/task-19-enabled.txt
+.omo/evidence/20260930-jev-w2/task-19-qa-summary.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation-acceptance.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation-continuation-tests.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation-dirty-worktree.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation-inert-runtime.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation-input-test.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation-static.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation-test-fast.txt
+.omo/evidence/20260930-jev-w2/task-19-remediation.txt
+.omo/evidence/20260930-jev-w2/task-19-turn-script.jsonl

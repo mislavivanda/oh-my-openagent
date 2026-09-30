@@ -127,6 +127,25 @@ while IFS= read -r line; do
     boulder_off) rm -f "$WORK_DIR/.omo/boulder.json" ;;
     wait_continuation) ;;
   esac
+  if [ "$ACTION" = fresh_diff_absent ]; then
+    FRESH_CREATE=$(jq -nc '{title:"JEV W2 diff absent",agent:"jev-w2-dogfood",model:{id:"gpt-w2-task19",providerID:"openai"}}' | curl --max-time 30 -fsS -u "opencode:$OPENCODE_SERVER_PASSWORD" -H 'Content-Type: application/json' -X POST --data-binary @- "$SERVER_URL/session?directory=$WORK_DIR")
+    FRESH_SID=$(jq -r .id <<< "$FRESH_CREATE")
+    [ -n "$FRESH_SID" ] || fail "missing fresh diff-absent session id"
+    FRESH_ABORT=$(curl --max-time 30 -sS -o "$RECEIPTS/fresh-abort-response.txt" -w '%{http_code}' -u "opencode:$OPENCODE_SERVER_PASSWORD" -X POST "$SERVER_URL/session/$FRESH_SID/abort?directory=$WORK_DIR")
+    [ "$FRESH_ABORT" = 200 ] || fail "fresh abort HTTP $FRESH_ABORT"
+    if [ "$WIRE" = enabled ]; then
+      for _ in $(seq 1 50); do
+        FRESH_OBS=$(jq -s --arg sid "$FRESH_SID" '[.[]|select(.kind=="observation" and .sessionID==$sid)]|length' "$HOME/.omo/jev"/w2-*.jsonl 2>/dev/null || printf 0)
+        [ "$FRESH_OBS" -gt 0 ] && break
+        sleep 0.1
+      done
+      [ "$FRESH_OBS" -gt 0 ] || fail "fresh abort produced no idle observation"
+    fi
+    FRESH_DELETE=$(curl --max-time 30 -sS -o "$RECEIPTS/fresh-delete-response.txt" -w '%{http_code}' -u "opencode:$OPENCODE_SERVER_PASSWORD" -X DELETE "$SERVER_URL/session/$FRESH_SID?directory=$WORK_DIR")
+    [ "$FRESH_DELETE" = 200 ] || fail "fresh delete HTTP $FRESH_DELETE"
+    TURN_COUNT=$((TURN_COUNT+1))
+    continue
+  fi
   if [ -z "$SID" ]; then run_turn "$TURN" "$PROMPT" --title "JEV W2 task 19"; SID=$(jq -r '..|objects|(.sessionID? // .session_id? // .id? // empty)|select(type=="string" and startswith("ses_"))' "$RECEIPTS/turn-01.jsonl" | sort -u | sed -n '1p'); [ -n "$SID" ] || fail "missing session id"
   else run_turn "$TURN" "$PROMPT" --session "$SID"; fi
   TURN_COUNT=$((TURN_COUNT+1))

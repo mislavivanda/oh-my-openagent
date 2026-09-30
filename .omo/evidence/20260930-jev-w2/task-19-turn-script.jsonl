@@ -26,3 +26,4 @@
 {"turn":26,"prompt":"[W2-26] Keep timeout work unchanged for stuck observation.","tools":[],"response":"No tracked change."}
 {"turn":27,"prompt":"[W2-27] Progress timeout work before final censorship cases.","tools":[{"name":"todowrite","args":{"todos":[{"id":"todo-live","content":"Timeout censor work progressed","status":"in_progress","priority":"high"}]}}],"response":"Progress before closure."}
 {"turn":28,"prompt":"[W2-28] Leave tracked work pending for deletion and disposal.","tools":[],"response":"Pending at final turn."}
+{"turn":29,"prompt":"[W2-29] Fresh-session diff-absent observation before any model response.","action":"fresh_diff_absent","tools":[],"response":"Fresh session abort probe."}
