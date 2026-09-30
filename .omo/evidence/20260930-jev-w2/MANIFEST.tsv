@@ -346,6 +346,28 @@ todo	artifact	kind	description
 19	.omo/evidence/20260930-jev-w2/task-19-remediation-static.txt	static	Line limits shell syntax and zero forbidden process matcher bytes
 19	.omo/evidence/20260930-jev-w2/task-19-remediation-dirty-worktree.txt	git-state	Remediation pre-staging status excludes ownership of ambient generated bundles
 19	.omo/evidence/20260930-jev-w2/task-19-remediation-staged-paths.txt	git-state	Exact remediation cached path allowlist
+F2R	.omo/evidence/20260930-jev-w2/F2R-typecheck.txt	verification	Final repository typecheck exits zero
+F2R	.omo/evidence/20260930-jev-w2/F2R-build.txt	verification	Final repository build including declaration generation exits zero
+F2R	.omo/evidence/20260930-jev-w2/F2R-build-dts-proof.txt	emptiness-proof	Nonempty receipt records zero untracked test-support declaration matches
+F2R	.omo/evidence/20260930-jev-w2/F2R-bun-runtime-audit.txt	verification	Production bun runtime audit passes one test
+F2R	.omo/evidence/20260930-jev-w2/F2R-coupling-audit.txt	verification	Harness coupling audit passes two tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-ordering-tests.txt	regression	Ordering-sensitive logger tests pass six tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-line-counts.txt	static	Per-file loop proves all 13 changed TypeScript files are at most 250 lines
+F2R	.omo/evidence/20260930-jev-w2/F2R-no-excuse.txt	static	Strict TypeScript no-excuse audit finds no violation in 13 changed files
+F2R	.omo/evidence/20260930-jev-w2/F2R-static-proof.txt	emptiness-proof	Nonempty receipt records zero forbidden F2 source-pattern matches
+F2R	.omo/evidence/20260930-jev-w2/F2R-lsp-diagnostics.txt	diagnostics	Changed-file LSP result with final compiler backstop
+F2R	.omo/evidence/20260930-jev-w2/F2R-test-fast.txt	verification	Fast gate passes 780 tests with zero failures
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite.txt	verification	Exact full-suite command raw output with 13106 pass and seven baseline failures
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-exit.txt	verification	Exact full-suite command records expected baseline-relative exit one
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-failures-observed.txt	verification	Seven directly observed sorted failure lines before timing canonicalization
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-identity-normalization.txt	verification	Exact duration-free identity equality precedes timing canonicalization
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-failures.txt	verification	Seven canonicalized normalized failures for required baseline diff
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-diff-proof.txt	emptiness-proof	Nonempty receipt records diff exit zero, zero output lines, and seven lines on both sides
+F2R	.omo/evidence/20260930-jev-w2/F2R-focused-jev-core.txt	regression	jev-core focused suite passes 223 tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-focused-feature-jev.txt	regression	OpenCode Jev feature suite passes 143 tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-focused-todo-continuation.txt	regression	Todo continuation suite passes 144 tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted summary
+F2R	.omo/evidence/20260930-jev-w2/F2R-scope-proof.txt	git-state	Audit tests untouched and peer or generated ambient paths identified for staging exclusion
 F5R	.omo/evidence/20260930-jev-w2/F5R-plan.txt	plan	F5 remediation plan: reproduced finding, window value provenance survey, file-by-file steps, preserved-property list
 F5R	.omo/evidence/20260930-jev-w2/F5R-red-test.txt	red	script/jev-w2-report.test.ts fails 2 of 8 before the change because the report renders no outcome_window_ms line
 F5R	.omo/evidence/20260930-jev-w2/F5R-green-test.txt	green	script/jev-w2-report.test.ts 8 pass 0 fail 103 expect calls exit 0 after the change

@@ -1,7 +1,7 @@
 import type { PluginInput } from "@opencode-ai/plugin"
 
 import type { BackgroundManager } from "../../features/background-agent"
-import { log } from "../../shared/logger"
+import { log as defaultLog } from "../../shared/logger"
 
 import {
   COUNTDOWN_SECONDS,
@@ -10,6 +10,7 @@ import {
 } from "./constants"
 import type { ResolvedMessageInfo } from "./types"
 import type { SessionStateStore } from "./session-state"
+import type { IdleEventLogger } from "./idle-event-types"
 import { injectContinuation } from "./continuation-injection"
 
 async function showCountdownToast(
@@ -39,6 +40,7 @@ export function startCountdown(args: {
   skipAgents: string[]
   sessionStateStore: SessionStateStore
   isContinuationStopped?: (sessionID: string) => boolean
+  logger?: IdleEventLogger
 }): void {
   const {
     ctx,
@@ -49,6 +51,7 @@ export function startCountdown(args: {
     skipAgents,
     sessionStateStore,
     isContinuationStopped,
+    logger = defaultLog,
   } = args
 
   const state = sessionStateStore.getState(sessionID)
@@ -78,7 +81,7 @@ export function startCountdown(args: {
     })
   }, COUNTDOWN_SECONDS * 1000)
 
-  log(`[${HOOK_NAME}] Countdown started`, {
+  logger(`[${HOOK_NAME}] Countdown started`, {
     sessionID,
     seconds: COUNTDOWN_SECONDS,
     incompleteCount,

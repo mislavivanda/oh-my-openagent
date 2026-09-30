@@ -2,12 +2,9 @@ import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { spyOn } from "bun:test"
 import type { DecisionBackend, DecisionOutcome, DecisionRequest, Questions } from "@oh-my-opencode/jev-core"
 
-import { unsafeTestValue } from "../../../../../test-support/unsafe-test-value"
 import { JevConfigSchema } from "../../config/schema/jev"
-import * as logger from "../../shared/logger"
 import { NOOP_COMPLETION_CONTINUATION_OBSERVER } from "../../hooks/todo-continuation-enforcer"
 import { handleSessionIdle } from "../../hooks/todo-continuation-enforcer/idle-event"
 import { createSessionStateStore } from "../../hooks/todo-continuation-enforcer/session-state"
@@ -28,6 +25,12 @@ import {
   percentile99,
   unrefMissing,
 } from "./completion-continuation-runtime-audit"
+
+function unsafeTestValue<TValue extends PropertyKey>(value: TValue): TValue
+function unsafeTestValue<TValue>(value: unknown): TValue
+function unsafeTestValue<TValue>(value: unknown): TValue {
+  return value as TValue
+}
 
 const BACKEND_TIMEOUT_MS = 100
 const OUTCOME_WINDOW_MS = 1_000
@@ -179,21 +182,25 @@ export async function measureAddedIdleHandlerP99(): Promise<number> {
     } },
   })
   const samples: number[] = []
-  const logSpy = spyOn(logger, "log").mockImplementation(() => {})
   try {
     for (let sample = 0; sample < 200; sample += 1) {
       const sessionID = `idle-${sample}`
       disabledStore.getState(sessionID).inFlight = true
       const baselineAt = performance.now()
-      await handleSessionIdle({ ctx, sessionID, sessionStateStore: disabledStore })
+      await handleSessionIdle({ ctx, sessionID, sessionStateStore: disabledStore, logger: () => {} })
       const baselineMs = performance.now() - baselineAt
       enabledStore.getState(sessionID).inFlight = true
       const enabledAt = performance.now()
-      await handleSessionIdle({ ctx, sessionID, sessionStateStore: enabledStore, completionContinuationObserver: enabledObserver })
+      await handleSessionIdle({
+        ctx,
+        sessionID,
+        sessionStateStore: enabledStore,
+        completionContinuationObserver: enabledObserver,
+        logger: () => {},
+      })
       samples.push(Math.max(0, performance.now() - enabledAt - baselineMs))
     }
   } finally {
-    logSpy.mockRestore()
     enabledStore.shutdown()
     disabledStore.shutdown()
     await adapter.dispose()

@@ -1,6 +1,6 @@
 import { getSessionAgent } from "../../features/claude-code-session-state"
 import { getAgentConfigKey } from "../../shared/agent-display-names"
-import { log } from "../../shared/logger"
+import { log as defaultLog } from "../../shared/logger"
 
 import { acknowledgeCompactionGuard, isCompactionGuardActive } from "./compaction-guard"
 import { NOOP_COMPLETION_CONTINUATION_OBSERVER } from "./completion-continuation-observer"
@@ -21,6 +21,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     skipAgents = DEFAULT_SKIP_AGENTS,
     isContinuationStopped,
     completionContinuationObserver = NOOP_COMPLETION_CONTINUATION_OBSERVER,
+    logger = defaultLog,
   } = args
 
   const preflight = await runIdleEventPreflight({
@@ -31,6 +32,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     skipAgents,
     isContinuationStopped,
     completionContinuationObserver,
+    logger,
   })
   if (preflight.kind === "stop") return
 
@@ -65,11 +67,11 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     latestMessageWasCompaction = messageInfoResult.latestMessageWasCompaction
   } catch (error) {
     const loggedError = error instanceof Error ? { name: error.name, message: error.message } : String(error)
-    log(`[${HOOK_NAME}] Failed to fetch messages for agent check`, { sessionID, error: loggedError })
+    logger(`[${HOOK_NAME}] Failed to fetch messages for agent check`, { sessionID, error: loggedError })
   }
 
   if (latestMessageWasCompaction) {
-    log(`[${HOOK_NAME}] Skipped: latest message is a compaction marker`, { sessionID })
+    logger(`[${HOOK_NAME}] Skipped: latest message is a compaction marker`, { sessionID })
     finish("latest_compaction", null)
     return
   }
@@ -82,7 +84,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
   const acknowledgedCompaction = resolvedInfo?.agent ? acknowledgeCompactionGuard(state, observedCompactionEpoch) : false
   const compactionGuardActive = isCompactionGuardActive(state, Date.now())
 
-  log(`[${HOOK_NAME}] Agent check`, {
+  logger(`[${HOOK_NAME}] Agent check`, {
     sessionID,
     agentName: resolvedInfo?.agent,
     skipAgents,
@@ -94,23 +96,23 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
 
   const resolvedAgentName = resolvedInfo?.agent
   if (resolvedAgentName && skipAgents.some(s => getAgentConfigKey(s) === getAgentConfigKey(resolvedAgentName))) {
-    log(`[${HOOK_NAME}] Skipped: agent in skipAgents list`, { sessionID, agent: resolvedAgentName })
+    logger(`[${HOOK_NAME}] Skipped: agent in skipAgents list`, { sessionID, agent: resolvedAgentName })
     finish("agent_skipped", null)
     return
   }
   if ((compactionGuardActive || encounteredCompaction) && !resolvedInfo?.agent) {
-    log(`[${HOOK_NAME}] Skipped: compaction occurred but no agent info resolved`, { sessionID })
+    logger(`[${HOOK_NAME}] Skipped: compaction occurred but no agent info resolved`, { sessionID })
     finish("compaction_agent_unknown", null)
     return
   }
   if (compactionGuardActive) {
-    log(`[${HOOK_NAME}] Skipped: compaction guard still armed for current epoch`, { sessionID, observedCompactionEpoch, currentCompactionEpoch: state.recentCompactionEpoch })
+    logger(`[${HOOK_NAME}] Skipped: compaction guard still armed for current epoch`, { sessionID, observedCompactionEpoch, currentCompactionEpoch: state.recentCompactionEpoch })
     finish("compaction_guard", null)
     return
   }
 
   if (isContinuationStopped?.(sessionID)) {
-    log(`[${HOOK_NAME}] Skipped: continuation stopped for session`, { sessionID })
+    logger(`[${HOOK_NAME}] Skipped: continuation stopped for session`, { sessionID })
     finish("continuation_stopped", null)
     return
   }
@@ -121,7 +123,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     todos,
   )
   if (state.continuationBlockReason) {
-    log(`[${HOOK_NAME}] Skipped: continuation paused at turn boundary`, {
+    logger(`[${HOOK_NAME}] Skipped: continuation paused at turn boundary`, {
       sessionID,
       reason: state.continuationBlockReason,
       hasProgressed: progressUpdate.hasProgressed,
@@ -129,7 +131,7 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     finish("turn_boundary_block", progressUpdate.hasProgressed)
     return
   }
-  const stagnationStop = shouldStopForStagnation({ sessionID, incompleteCount, progressUpdate })
+  const stagnationStop = shouldStopForStagnation({ sessionID, incompleteCount, progressUpdate, logger })
   if (stagnationStop) {
     finish("stagnation_stop", progressUpdate.hasProgressed, true)
     return
@@ -145,5 +147,6 @@ export async function handleSessionIdle(args: HandleSessionIdleArgs): Promise<vo
     skipAgents,
     sessionStateStore,
     isContinuationStopped,
+    logger,
   })
 }

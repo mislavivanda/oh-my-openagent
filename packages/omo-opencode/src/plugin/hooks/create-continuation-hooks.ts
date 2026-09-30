@@ -27,8 +27,11 @@ export type ContinuationHooks = {
   atlasHook: ReturnType<typeof createAtlasHook> | null
 }
 
+type ContinuationHookLogger = (message: string, data?: unknown) => void
+
 function createCompletionContinuationObserver(
   pluginConfig: OhMyOpenCodeConfig,
+  logger: ContinuationHookLogger,
 ): CompletionContinuationObserver {
   try {
     const jevConfig = pluginConfig.jev
@@ -51,12 +54,12 @@ function createCompletionContinuationObserver(
       deleteSession: completionContinuation.deleteSession,
       dispose: () => {
         void completionContinuation.dispose().catch((error) => {
-          log("[jev] completion-continuation observer dispose failed", { error: String(error) })
+          logger("[jev] completion-continuation observer dispose failed", { error: String(error) })
         })
       },
     }
   } catch (error) {
-    log("[jev] completion-continuation observer construction failed", {
+    logger("[jev] completion-continuation observer construction failed", {
       error: error instanceof Error ? error.message : String(error),
     })
     return NOOP_COMPLETION_CONTINUATION_OBSERVER
@@ -69,6 +72,7 @@ export function createContinuationHooks(args: {
   isHookEnabled: (hookName: HookName) => boolean
   safeHookEnabled: boolean
   backgroundManager: BackgroundManager
+  logger?: ContinuationHookLogger
 }): ContinuationHooks {
   const {
     ctx,
@@ -76,6 +80,7 @@ export function createContinuationHooks(args: {
     isHookEnabled,
     safeHookEnabled,
     backgroundManager,
+    logger = log,
   } = args
 
   const safeHook = <T>(hookName: HookName, factory: () => T): T | null =>
@@ -99,7 +104,7 @@ export function createContinuationHooks(args: {
 
   const todoContinuationEnforcer = isHookEnabled("todo-continuation-enforcer")
     ? safeHook("todo-continuation-enforcer", () => {
-      const completionContinuationObserver = createCompletionContinuationObserver(pluginConfig)
+      const completionContinuationObserver = createCompletionContinuationObserver(pluginConfig, logger)
       return createTodoContinuationEnforcer(ctx, {
           backgroundManager,
           isContinuationStopped: stopContinuationGuard?.isStopped,

@@ -1,0 +1,24 @@
+WHAT WAS TESTED
+- bun run typecheck
+- bun run build plus untracked test-support declaration scan
+- Bun runtime and harness-coupling meta-audits
+- the two ordering-sensitive test files
+- bun run test:fast
+- env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+- focused jev-core, feature/jev, and todo-continuation-enforcer suites
+- LSP diagnostics, per-file 250-line checks, no-excuse audit, and forbidden-pattern scan
+
+WHAT WAS OBSERVED
+- Typecheck and build exited 0. The test-support/*.d.ts status scan had 0 matching lines.
+- Runtime audit: 1 pass, 0 fail. Coupling audit: 2 pass, 0 fail.
+- Ordering regressions: 6 pass, 0 fail.
+- Fast gate: 780 pass, 0 fail across 89 files.
+- Full suite: 13106 pass, 7 fail across 1720 files, suite exit 1. The seven duration-free test identities equal the seven baseline identities. Terminal timing suffixes were canonicalized to the baseline only after that exact identity check, so the required diff exits 0 with 0 output lines and both compared files contain 7 lines.
+- Focused suites: jev-core 223 pass, feature/jev 143 pass, todo-continuation-enforcer 144 pass, all with 0 failures.
+- All 13 changed files are at most 250 physical lines. The no-excuse audit reports no violations. Forbidden F2 pattern count is 0.
+
+WHY IT IS ENOUGH
+The compiler and declaration build prove the rootDir repair. The two architecture audits prove production source no longer imports bun:test and jev-core no longer uses Bun.file. Injected log capture is exercised by both focused ordering tests and the decisive full suite. The full suite adds no failure identity relative to the committed baseline.
+
+WHAT WAS OMITTED
+No paid API call was made and JEV_W2_REAL_API stayed unset. Existing task-19 isolated OpenCode dogfood evidence was not rerun because verifier F2 requested test-scaffolding and deterministic-capture remediation only, and the peer-owned task-19 driver was left untouched.

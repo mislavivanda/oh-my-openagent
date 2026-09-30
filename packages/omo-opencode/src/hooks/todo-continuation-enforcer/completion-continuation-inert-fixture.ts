@@ -5,7 +5,6 @@ import type {
   Questions,
 } from "@oh-my-opencode/jev-core"
 
-import { unsafeTestValue } from "../../../../../test-support/unsafe-test-value"
 import { createJevCompletionContinuation } from "../../features/jev/completion-continuation"
 import type {
   JevCompletionContinuation,
@@ -25,6 +24,12 @@ import type { ScheduleCompletionContinuationBoulderSnapshotInput } from "../../f
 import { createSessionStateStore } from "./session-state"
 import type { MessageWithInfo, Todo } from "./types"
 import type { InertTraceEntry } from "./completion-continuation-inert-trace"
+
+function unsafeTestValue<TValue extends PropertyKey>(value: TValue): TValue
+function unsafeTestValue<TValue>(value: unknown): TValue
+function unsafeTestValue<TValue>(value: unknown): TValue {
+  return value as TValue
+}
 
 export type InertBackendMode = "success" | "sync-throw" | "rejection" | "timeout"
 

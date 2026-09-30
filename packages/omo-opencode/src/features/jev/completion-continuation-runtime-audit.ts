@@ -1,5 +1,10 @@
-import { unsafeTestValue } from "../../../../../test-support/unsafe-test-value"
 import type { JevCompletionContinuationClock } from "./completion-continuation"
+
+function unsafeTestValue<TValue extends PropertyKey>(value: TValue): TValue
+function unsafeTestValue<TValue>(value: unknown): TValue
+function unsafeTestValue<TValue>(value: unknown): TValue {
+  return value as TValue
+}
 
 export type W2HandleCategory = "backend" | "outcome" | "sink"
 

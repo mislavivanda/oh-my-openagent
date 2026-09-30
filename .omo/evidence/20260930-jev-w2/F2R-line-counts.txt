@@ -1,0 +1,16 @@
+159	packages/jev-core/src/completion-continuation-accuracy-real-run.ts
+126	packages/omo-opencode/src/features/jev/completion-continuation-runtime-audit.ts
+231	packages/omo-opencode/src/features/jev/completion-continuation-runtime-fixture.ts
+242	packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert-fixture.ts
+43	packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-types.ts
+152	packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.ts
+202	packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-preflight.ts
+182	packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+68	packages/omo-opencode/src/hooks/todo-continuation-enforcer/pending-question-detection.ts
+38	packages/omo-opencode/src/hooks/todo-continuation-enforcer/stagnation-detection.ts
+89	packages/omo-opencode/src/hooks/todo-continuation-enforcer/countdown.ts
+146	packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.ts
+148	packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+command=per-file wc -l loop
+exit=0
+limit=250

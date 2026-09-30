@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises"
+
 import { isRecord } from "./answer-validation"
 import { selectDecisionBackend } from "./backend-selector"
 import { CONFIDENCE_THRESHOLD, REQUESTED_MODEL, RequestBudget, createCountingFetch,
@@ -50,9 +52,13 @@ export type RetainedRealBaselineFacts = {
  * so this on-disk check is what actually bounds total spend across repeated invocations.
  */
 export async function readRetainedRealBaseline(path: string): Promise<RetainedRealBaselineFacts | null> {
-  const file = Bun.file(path)
-  if (!(await file.exists())) return null
-  const raw = await file.text()
+  let raw: string
+  try {
+    raw = await readFile(path, "utf8")
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT") return null
+    throw error
+  }
   const parsed: unknown = JSON.parse(raw)
   if (!isRecord(parsed)) return null
   const { status, mode, callCount, networkCallCount, callCeiling, questionVersion, resolvedModel } = parsed

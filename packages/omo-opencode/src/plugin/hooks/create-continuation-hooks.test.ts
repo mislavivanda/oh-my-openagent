@@ -4,7 +4,7 @@ import { existsSync, mkdtempSync, readdirSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { describe, expect, spyOn, test } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import type { DecisionBackend, DecisionOutcome, Questions } from "@oh-my-opencode/jev-core"
 
 import { unsafeTestValue } from "../../../../../test-support/unsafe-test-value"
@@ -12,7 +12,6 @@ import type { OhMyOpenCodeConfig } from "../../config"
 import { JevConfigSchema } from "../../config/schema/jev"
 import type { BackgroundManager } from "../../features/background-agent"
 import { createJevCompletionContinuation } from "../../features/jev"
-import * as logger from "../../shared/logger"
 import type { PluginContext } from "../types"
 import { createContinuationHooks } from "./create-continuation-hooks"
 
@@ -112,7 +111,6 @@ describe("createContinuationHooks completion-continuation wiring", () => {
     // given
     const trace: string[] = []
     const logs: string[] = []
-    const logSpy = spyOn(logger, "log").mockImplementation((message: string) => { logs.push(message) })
     const originalSetTimeout = globalThis.setTimeout
     const originalSetInterval = globalThis.setInterval
     const originalClearTimeout = globalThis.clearTimeout
@@ -131,6 +129,7 @@ describe("createContinuationHooks completion-continuation wiring", () => {
         backgroundManager,
         isHookEnabled: (name) => name === "todo-continuation-enforcer",
         safeHookEnabled: true,
+        logger: (message) => { logs.push(message) },
       })
       await hooks.todoContinuationEnforcer?.handler({ event: { type: "session.idle", properties: { sessionID: "construction-failure" } } })
 
@@ -140,7 +139,6 @@ describe("createContinuationHooks completion-continuation wiring", () => {
       expect(trace).toEqual(expect.arrayContaining(["messages", "todos", "toast", "interval:1000", "timeout:2000"]))
       hooks.todoContinuationEnforcer?.dispose()
     } finally {
-      logSpy.mockRestore()
       globalThis.setTimeout = originalSetTimeout
       globalThis.setInterval = originalSetInterval
       globalThis.clearTimeout = originalClearTimeout

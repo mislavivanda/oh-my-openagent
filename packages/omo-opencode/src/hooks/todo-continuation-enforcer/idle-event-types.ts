@@ -6,6 +6,8 @@ import type { CompletionContinuationObserver } from "./completion-continuation-o
 import type { SessionStateStore } from "./session-state"
 import type { MessageWithInfo, SessionState, Todo } from "./types"
 
+export type IdleEventLogger = (message: string, data?: unknown) => void
+
 export type HandleSessionIdleArgs = {
   readonly ctx: PluginInput
   readonly sessionID: string
@@ -14,6 +16,7 @@ export type HandleSessionIdleArgs = {
   readonly skipAgents?: string[]
   readonly isContinuationStopped?: (sessionID: string) => boolean
   readonly completionContinuationObserver?: CompletionContinuationObserver
+  readonly logger?: IdleEventLogger
 }
 
 export type IdleEventContext = {
@@ -24,6 +27,7 @@ export type IdleEventContext = {
   readonly skipAgents: string[]
   readonly isContinuationStopped?: (sessionID: string) => boolean
   readonly completionContinuationObserver: CompletionContinuationObserver
+  readonly logger: IdleEventLogger
 }
 
 export type IdleEventPreflightResult =

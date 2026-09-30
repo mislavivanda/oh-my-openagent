@@ -1,0 +1,9 @@
+audit_test_command=GIT_MASTER=1 git diff --name-only -- opencode-adapter-bun-runtime-audit.test.ts opencode-coupling-audit.test.ts
+audit_test_matching_lines=0
+peer_report_command=GIT_MASTER=1 git diff --name-only -- script/jev-w2-report.ts script/jev-w2-report.test.ts
+peer_report_matching_lines=0
+peer_driver_command=GIT_MASTER=1 git diff --name-only -- .omo/evidence/20260930-jev-w2/task-19-drive.sh
+peer_driver_matching_lines=1
+peer_driver_ambient_path=.omo/evidence/20260930-jev-w2/task-19-drive.sh
+ownership=the peer-owned driver became dirty during this task and was neither edited nor staged by F2R
+generated_bundle_ownership=the five permanently dirty generated bundles remain ambient and excluded from staging

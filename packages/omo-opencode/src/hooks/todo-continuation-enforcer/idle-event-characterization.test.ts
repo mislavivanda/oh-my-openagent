@@ -3,12 +3,11 @@ import { readFileSync, writeFileSync } from "node:fs"
 import { resolve } from "node:path"
 
 import type { PluginInput } from "@opencode-ai/plugin"
-import { describe, expect, spyOn, test } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import { unsafeTestValue } from "../../../../../test-support/unsafe-test-value"
 import type { BackgroundManager } from "../../features/background-agent"
 import { handedBackSyncSessions } from "../../features/claude-code-session-state"
-import * as logger from "../../shared/logger"
 import { MAX_CONSECUTIVE_FAILURES, MAX_STAGNATION_COUNT } from "./constants"
 import { handleSessionIdle } from "./idle-event"
 import type { ContinuationProgressUpdate, SessionStateStore } from "./session-state"
@@ -91,7 +90,6 @@ async function runScenario(scenario: Scenario): Promise<TraceEntry[]> {
   const sessionID = `ses-${scenario.name}`
   const original = { now: Date.now, setTimeout, setInterval, clearTimeout, clearInterval }
   let timerID = 100
-  const logSpy = spyOn(logger, "log").mockImplementation((message: string, data?: unknown) => trace.push(["log", message, data ?? null]))
   Date.now = () => NOW
   globalThis.setTimeout = unsafeTestValue((_callback: TimerHandler, delay?: number) => { trace.push(["timer", "setTimeout", delay ?? 0]); return timerID++ })
   globalThis.setInterval = unsafeTestValue((_callback: TimerHandler, delay?: number) => { trace.push(["timer", "setInterval", delay ?? 0]); return timerID++ })
@@ -128,11 +126,20 @@ async function runScenario(scenario: Scenario): Promise<TraceEntry[]> {
   }, tui: { showToast: async () => { trace.push(["client", "tui.showToast"]); return {} } } } })
   trace.push(["snapshot", "before", { ...state }])
   try {
-    await handleSessionIdle({ ctx, sessionID, sessionStateStore: store, backgroundManager, isContinuationStopped: scenario.stopped ? () => { trace.push(["decision", "isContinuationStopped"]); return true } : undefined })
+    await handleSessionIdle({
+      ctx,
+      sessionID,
+      sessionStateStore: store,
+      backgroundManager,
+      isContinuationStopped: scenario.stopped ? () => {
+        trace.push(["decision", "isContinuationStopped"])
+        return true
+      } : undefined,
+      logger: (message, data) => trace.push(["log", message, data ?? null]),
+    })
   } finally {
     trace.push(["snapshot", "after", { ...state }])
     handedBackSyncSessions.delete(sessionID)
-    logSpy.mockRestore()
     Date.now = original.now
     globalThis.setTimeout = original.setTimeout
     globalThis.setInterval = original.setInterval
