@@ -1,0 +1,18 @@
+WHAT WAS TESTED
+Focused adapter test: bun test packages/omo-opencode/src/features/jev/completion-continuation.test.ts
+Focused cap test: bun test packages/omo-opencode/src/features/jev/completion-continuation.test.ts -t 'drops above max_inflight and persists the drop counter'
+Static gates, no-excuse audit, workspace typecheck, build, LSP diagnostics, seven adversarial filtered probes, and five stability runs were also executed.
+
+WHAT WAS OBSERVED
+The final focused run reported 15 pass, 0 fail, and Ran 15 tests across 1 file.
+The cap run reported Ran 1 test and ATTEMPTED_STARTS=20 MAX_INFLIGHT=8 IN_FLIGHT=8 PERSISTED_DROPS=12.
+Five consecutive stability runs each reported 15 pass and 0 fail.
+The runtime-key grep reported zero matching lines outside schema and tests.
+Runtime barrel inspection and source grep reported zero apply-style exports or declarations.
+Typecheck, build, and the TypeScript no-excuse audit exited 0.
+
+WHY IT IS ENOUGH
+The tests cover every acceptance path at the adapter boundary, including disabled absence, backend selection, base URL handling, immutable capture, deferred state building, bounded concurrency, persisted drops, throw/reject/timeout containment, sink failure, safe logging, disposal, timer unref, and unhandled-rejection detection. The adapter has no live hook consumer until todo 14.
+
+WHAT WAS OMITTED
+No full suite was run because the checkbox forbids it. No real provider call, OpenCode process, session database, port, TUI, or secret-bearing log was used.

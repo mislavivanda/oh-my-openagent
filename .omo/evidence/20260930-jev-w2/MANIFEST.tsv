@@ -225,3 +225,18 @@ todo	artifact	kind	description
 11	.omo/evidence/20260930-jev-w2/task-11-cleanup.txt	cleanup	Zero temp roots and no home process or port impact
 11	.omo/evidence/20260930-jev-w2/task-11-qa-summary.txt	qa-summary	Reviewer-readable QA scope and sufficiency
 11	.omo/evidence/20260930-jev-w2/task-11-staged-paths.txt	git-state	Exact cached paths after staging
+12	.omo/evidence/20260930-jev-w2/task-12-adapter-red.txt	test-red	Focused adapter test failed before implementation because the adapter module was absent
+12	.omo/evidence/20260930-jev-w2/task-12-adapter-green.txt	test	Final focused adapter suite with 15 passing tests
+12	.omo/evidence/20260930-jev-w2/task-12-inflight-drop.txt	manual-qa	Exact filtered cap test with 20 starts, cap 8, and 12 persisted drops
+12	.omo/evidence/20260930-jev-w2/task-12-flaky-tests.txt	stability	Five consecutive focused runs with identical pass counts
+12	.omo/evidence/20260930-jev-w2/task-12-adversarial-qa.txt	adversarial-qa	Filtered stale, timeout, disposal, malformed, disabled, and rejection probes
+12	.omo/evidence/20260930-jev-w2/task-12-static-gates.txt	static	Runtime-key, exported API, base URL, line count, and banned-pattern gates
+12	.omo/evidence/20260930-jev-w2/task-12-typecheck.txt	verification	Workspace typecheck exited zero
+12	.omo/evidence/20260930-jev-w2/task-12-build.txt	verification	Repository build exited zero
+12	.omo/evidence/20260930-jev-w2/task-12-no-excuse.txt	static	TypeScript no-excuse audit exited zero
+12	.omo/evidence/20260930-jev-w2/task-12-lsp-diagnostics.txt	diagnostics	Changed-file LSP results and final typecheck fallback receipt
+12	.omo/evidence/20260930-jev-w2/task-12-opencode-qa.txt	manual-qa	OpenCode QA impact mapping for the adapter before hook wiring
+12	.omo/evidence/20260930-jev-w2/task-12-cleanup.txt	cleanup	Eight temp roots removed, zero leftovers, real home unchanged
+12	.omo/evidence/20260930-jev-w2/task-12-qa-summary.txt	summary	Reviewer-readable test, QA, omission, and residual-risk summary
+12	.omo/evidence/20260930-jev-w2/task-12-dirty-worktree-before-staging.txt	dirty-worktree	Porcelain status before staging includes owned changes, repaired evidence, and five ambient bundles
+12	.omo/evidence/20260930-jev-w2/task-12-staged-paths.txt	staging	Exact cached path list after staging, including eleven repaired evidence files and excluding ambient bundles

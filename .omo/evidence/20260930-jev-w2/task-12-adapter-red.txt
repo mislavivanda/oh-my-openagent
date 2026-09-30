@@ -1,0 +1,17 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './completion-continuation' from '/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [124.00ms]
+
+RED_COMMAND=bun test packages/omo-opencode/src/features/jev/completion-continuation.test.ts
+RED_EXIT=1

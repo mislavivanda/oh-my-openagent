@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+The opencode-qa router was applied before and after the change. Todo 12 adds an adapter module and named exports, but todo 14 owns all lifecycle-hook construction and event wiring. The executable surface for this checkbox is the adapter factory, driven by the exact focused Bun commands in task-12-adapter-green.txt and task-12-inflight-drop.txt.
+
+WHAT WAS OBSERVED
+The focused run reported 15 passing tests and zero failures. It exercised disabled gates, real/mock/llm-adapter selection, base URL routing, one backend call for all three questions, bounded in-flight work, persisted drops, immutable snapshots, deferred state building, failure containment, disposal, and unrefed injected timers. The filtered cap run reported Ran 1 test and ATTEMPTED_STARTS=20 MAX_INFLIGHT=8 IN_FLIGHT=8 PERSISTED_DROPS=12.
+
+WHY IT IS ENOUGH
+No OpenCode hook imports or constructs this adapter in todo 12. Starting OpenCode or probing SSE would not execute the changed code and would be misleading evidence. The adapter is exercised through its only current runtime boundary with real sink files and the real backend selector. Todo 14 will add hook wiring and todo 19 owns isolated live OpenCode dogfood.
+
+WHAT WAS OMITTED
+No OpenCode process, port, TUI, session database, credential, or provider request was started. No secret-bearing output was captured.

@@ -128,3 +128,14 @@ export type {
   CompletionContinuationOutcomeStoreOptions,
   CompletionContinuationOutcomeTimer,
 } from "./completion-continuation-outcome-types"
+export { createJevCompletionContinuation } from "./completion-continuation"
+export type {
+  CreateJevCompletionContinuationOptions,
+  JevCompletionContinuation,
+  JevCompletionContinuationBeginInput,
+  JevCompletionContinuationClock,
+  JevCompletionContinuationDispatcher,
+  JevCompletionContinuationInspection,
+  JevCompletionContinuationScheduler,
+  JevCompletionContinuationSink,
+} from "./completion-continuation"
