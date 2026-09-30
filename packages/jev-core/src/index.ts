@@ -125,3 +125,11 @@ export {
   type CompletionContinuationTranscriptInputMessage,
 } from "./completion-continuation-state"
 export { applyCompletionContinuationStateBudget } from "./completion-continuation-state-budget"
+export {
+  decideCompletionContinuation,
+  type CompletionContinuationClock,
+  type CompletionContinuationDecisionArgs,
+  type CompletionContinuationDecisionResult,
+  type CompletionContinuationDecisionStatus,
+  type CompletionContinuationTimer,
+} from "./completion-continuation"

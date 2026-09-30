@@ -1,0 +1,7 @@
+LSP diagnostics were run on:
+- packages/jev-core/src/completion-continuation.ts
+- packages/jev-core/src/completion-continuation-answer-observation.ts
+- packages/jev-core/src/completion-continuation.test.ts
+- packages/jev-core/src/index.ts
+
+Observable: No diagnostics found for all four files after the final edit.

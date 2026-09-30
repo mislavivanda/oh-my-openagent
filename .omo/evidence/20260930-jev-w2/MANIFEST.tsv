@@ -151,3 +151,18 @@ todo	artifact	kind	description
 13	.omo/evidence/20260930-jev-w2/task-13-cleanup.txt	cleanup	Mutation temp and process cleanup receipt
 13	.omo/evidence/20260930-jev-w2/task-13-status-before-staging.txt	dirty-worktree	Shared worktree state before staging
 13	.omo/evidence/20260930-jev-w2/task-13-cached-paths.txt	dirty-worktree	Owned cached paths after staging
+6	.omo/evidence/20260930-jev-w2/task-6-decision-red.txt	red	Focused policy test fails before implementation
+6	.omo/evidence/20260930-jev-w2/task-6-decision-green.txt	test	Focused policy suite passes 27 tests
+6	.omo/evidence/20260930-jev-w2/task-6-rejecting-backend.txt	failure	Rejecting backend maps to transport failure in one matched test
+6	.omo/evidence/20260930-jev-w2/task-6-flaky-tests.txt	stability	Five focused runs have identical pass counts
+6	.omo/evidence/20260930-jev-w2/task-6-core-guard.txt	test	Harness-neutral core extraction guard passes
+6	.omo/evidence/20260930-jev-w2/task-6-typecheck.txt	typecheck	jev-core tsgo typecheck exits zero
+6	.omo/evidence/20260930-jev-w2/task-6-line-counts.txt	static	Owned TypeScript files stay at or below 250 lines
+6	.omo/evidence/20260930-jev-w2/task-6-accuracy-minimum-check.txt	static	No accuracy minimum assertion is present
+6	.omo/evidence/20260930-jev-w2/task-6-no-excuse.txt	static	TypeScript no-excuse audit reports no violations
+6	.omo/evidence/20260930-jev-w2/task-6-dirty-worktree-before-staging.txt	git	Dirty worktree snapshot distinguishes ambient and peer edits
+6	.omo/evidence/20260930-jev-w2/task-6-adversarial-qa.txt	adversarial	Applicable adversarial probes and rule-outs
+6	.omo/evidence/20260930-jev-w2/task-6-lsp-diagnostics.txt	lsp	Changed files have no LSP diagnostics
+6	.omo/evidence/20260930-jev-w2/task-6-qa-summary.txt	summary	Reviewer-readable test scope observations and sufficiency
+6	.omo/evidence/20260930-jev-w2/task-6-cleanup.txt	cleanup	No process port container or temporary residue
+6	.omo/evidence/20260930-jev-w2/task-6-staged-paths.txt	git	Cached paths after staging contain only todo-6 files
