@@ -1,0 +1,24 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/observation-process-identity.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './observation-process-identity' from '/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/observation-process-identity.test.ts'
+-------------------------------
+
+
+packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './observation-jsonl-files' from '/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 2 fail
+ 2 errors
+Ran 2 tests across 2 files. [118.00ms]
+
+red_exit=1

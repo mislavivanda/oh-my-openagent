@@ -1,4 +1,3 @@
-import { existsSync, readFileSync, readdirSync } from "fs"
 import { homedir } from "os"
 import { join } from "path"
 import type {
@@ -6,6 +5,7 @@ import type {
   IntentRoutingEntry,
   IntentRoutingObservationRecord,
 } from "@oh-my-opencode/jev-core"
+import { readObservationJsonlFiles } from "./observation-jsonl-files"
 import {
   selectLatestIntentRoutingCountersByProcess,
   validateIntentRoutingEntry,
@@ -42,27 +42,9 @@ function isObservation(
 export function readIntentRoutingSink(
   rootDir = join(homedir(), ".omo", "jev"),
 ): IntentRoutingSinkReadResult {
-  if (!existsSync(rootDir)) return emptyResult()
-  const files = readdirSync(rootDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.startsWith("w1-") && entry.name.endsWith(".jsonl"))
-    .map((entry) => entry.name)
-    .sort()
-  const entries: IntentRoutingEntry[] = []
-  let malformedLines = 0
-
-  for (const file of files) {
-    for (const line of readFileSync(join(rootDir, file), "utf8").split("\n")) {
-      if (line === "") continue
-      try {
-        const parsed: unknown = JSON.parse(line)
-        if (validateIntentRoutingEntry(parsed)) entries.push(parsed)
-        else malformedLines += 1
-      } catch (error) {
-        if (!(error instanceof SyntaxError)) throw error
-        malformedLines += 1
-      }
-    }
-  }
+  const corpus = readObservationJsonlFiles(rootDir, "w1-", validateIntentRoutingEntry)
+  if (corpus.filesRead === 0) return emptyResult()
+  const entries = corpus.entries
 
   const latestCountersByProcess = selectLatestIntentRoutingCountersByProcess(entries)
   let recordsLostToCap = 0
@@ -75,9 +57,9 @@ export function readIntentRoutingSink(
     entries,
     observations: entries.filter(isObservation),
     latestCountersByProcess,
-    malformedLines,
+    malformedLines: corpus.malformedLines,
     recordsLostToCap,
     sinkTruncations,
-    filesRead: files.length,
+    filesRead: corpus.filesRead,
   }
 }

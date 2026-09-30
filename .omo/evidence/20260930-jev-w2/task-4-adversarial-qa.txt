@@ -1,0 +1,34 @@
+malformed_input: APPLIES
+- Empty line: skipped; no entry and no malformed count.
+- Invalid UTF-8 line: counted malformed; the following valid entry survived.
+- Malformed trailing line: counted malformed; prior valid entry survived.
+- Exact UTF-8 byte cap: complete JSONL line returned unchanged.
+- One byte above cap: whole line rejected with null; no truncation and no file write.
+- Evidence: observation-jsonl-files.test.ts, task-4-oversize-reject.txt (1 pass, 3 filtered out).
+
+stale_state: APPLIES
+- Pre-extraction fixture was created before task-4 TypeScript edits at HEAD 9cf67bef6e0b214bd46db25bfca8ea5211ec19cc.
+- Creation used write flag wx, so later commands could not regenerate the pre fixture.
+- Pre corpus checksum: 17660ca7c9ac452ec395fcc799e2f8c61e909b7a0503d46198e498141a867531.
+- Post corpus checksum: 17660ca7c9ac452ec395fcc799e2f8c61e909b7a0503d46198e498141a867531.
+- Reader checksum before and after: 1f03f9269ede2fd4fafe276f118afb6a202be6bf223ac02f109c806f6c0e7b49.
+- Evidence: task-4-w1-golden-pre-provenance.txt and task-4-w1-golden-compat.txt.
+
+dirty_worktree: APPLIES
+- Before staging, task-4-dirty-worktree-before-staging.txt records eight owned TypeScript paths and the five named ambient generated bundles.
+- No peer-owned config, schema asset, completion-continuation, or jev-core barrel path is owned by todo 4.
+- Staged-name proof is recorded separately after exact-path staging.
+
+misleading_success_output: APPLIES
+- Oversize filter matched 1 passing test, with 3 filtered out.
+- Golden filter matched 1 passing test, with 8 filtered out.
+- Golden cmp compared non-empty files: corpus 3479 bytes each and reader result 10344 bytes each.
+
+flaky_tests: APPLIES
+- Three consecutive combined runs each reported 6 pass, 0 fail, and 19 assertions.
+- Evidence: task-4-flaky-tests.txt.
+
+prompt_injection: NOT APPLICABLE; no prompt or untrusted instruction is consumed.
+cancel_resume: NOT APPLICABLE; synchronous filesystem primitives have no resumable state.
+hung_or_long_commands: NOT APPLICABLE; focused local filesystem tests complete in under one second.
+repeated_interruptions: NOT APPLICABLE; atomic replace is one synchronous rename and no interrupt recovery protocol was added.

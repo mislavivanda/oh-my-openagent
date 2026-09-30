@@ -36,3 +36,28 @@ todo	artifact	kind	description
 3	.omo/evidence/20260930-jev-w2/task-3-staged-paths.txt	staged-paths	Exact staged allowlist excludes peer and ambient paths
 3	.omo/evidence/20260930-jev-w2/task-3-cleanup.txt	cleanup	No runtime or temporary resources created
 3	.omo/evidence/20260930-jev-w2/task-3-qa-summary.txt	summary	Reviewer-readable test observation sufficiency and omission summary
+4	.omo/evidence/20260930-jev-w2/task-4-real-home-before.tsv	isolation-baseline	Recursive real-home Jev manifest before task tests
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-pre.jsonl	golden-fixture	Pre-extraction deterministic W1 JSONL bytes
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-pre-reader.json	golden-fixture	Pre-extraction normalized W1 reader result
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-pre-provenance.txt	stale-state	Creation order, source checksums, HEAD, byte sizes, and fixture checksums
+4	.omo/evidence/20260930-jev-w2/task-4-w1-jsonl-red.txt	tdd-red	Focused RED before primitive implementation, 0 pass and 2 missing-module failures
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-post.jsonl	golden-output	Post-extraction deterministic W1 JSONL bytes
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-post-reader.json	golden-output	Post-extraction normalized W1 reader result
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-post-provenance.txt	cleanup	Post-extraction fixture temp-root provenance
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-compat.txt	compatibility	Non-empty corpus and reader cmp plus deep-equal golden test
+4	.omo/evidence/20260930-jev-w2/task-4-oversize-reject.txt	failure-qa	Exact oversize filter matched 1 passing test and rejects whole line
+4	.omo/evidence/20260930-jev-w2/task-4-flaky-tests.txt	flaky-tests	Three identical 6-pass filesystem and identity test runs
+4	.omo/evidence/20260930-jev-w2/task-4-w1-jsonl-green.txt	green	Exact W1 sink and report happy command, 17 pass
+4	.omo/evidence/20260930-jev-w2/task-4-test-home-reference-grep.txt	isolation	Empty grep output proves tests contain no homedir or HOME references
+4	.omo/evidence/20260930-jev-w2/task-4-new-file-line-counts.txt	static	New production modules are 112 and 34 physical lines
+4	.omo/evidence/20260930-jev-w2/task-4-all-edited-line-counts.txt	static	Every edited TypeScript file remains at most 250 lines
+4	.omo/evidence/20260930-jev-w2/task-4-banned-pattern-grep.txt	static	Empty banned-pattern grep output
+4	.omo/evidence/20260930-jev-w2/task-4-no-excuse.txt	static	No-excuse TypeScript audit reports no violations in 8 files
+4	.omo/evidence/20260930-jev-w2/task-4-real-home-after.tsv	isolation-result	Recursive real-home Jev manifest after focused tests
+4	.omo/evidence/20260930-jev-w2/task-4-real-home-isolation.txt	isolation-result	Before and after real-home manifests compare byte-identical
+4	.omo/evidence/20260930-jev-w2/task-4-dirty-worktree-before-staging.txt	dirty-worktree	Pre-staging status distinguishes owned paths from five ambient bundles
+4	.omo/evidence/20260930-jev-w2/task-4-temp-root-check.txt	cleanup	No matching task temp roots remain
+4	.omo/evidence/20260930-jev-w2/task-4-adversarial-qa.txt	adversarial	Applicable malformed, stale, dirty, misleading, and flaky probes plus ruleouts
+4	.omo/evidence/20260930-jev-w2/task-4-manual-qa.txt	summary	Reviewer-readable tested, observed, sufficient, and omitted summary
+4	.omo/evidence/20260930-jev-w2/task-4-cleanup.txt	cleanup	Temp roots, processes, ports, and real-home cleanup receipt
+4	.omo/evidence/20260930-jev-w2/task-4-staged-paths.txt	staged-paths	Final cached path allowlist excludes peer paths and five ambient bundles

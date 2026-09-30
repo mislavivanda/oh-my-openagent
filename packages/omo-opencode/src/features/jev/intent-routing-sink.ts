@@ -1,4 +1,3 @@
-import { randomBytes } from "crypto"
 import { homedir } from "os"
 import { join } from "path"
 import {
@@ -25,16 +24,17 @@ import {
   replaceIntentRoutingSinkFile,
   serializeIntentRoutingEntry,
 } from "./intent-routing-sink-files"
+import {
+  createObservationProcessIdentity,
+  observationProcessId,
+  type ObservationProcessIdentity,
+} from "./observation-process-identity"
 
 export const DEFAULT_INTENT_ROUTING_COUNTER_FLUSH_INTERVAL_MS = 5 * 60 * 1000
 export const DEFAULT_INTENT_ROUTING_MAX_LINE_BYTES = 64 * 1024
 export const DEFAULT_INTENT_ROUTING_SINK_SIZE_CAP_BYTES = 32 * 1024 * 1024
 
-export type IntentRoutingProcessIdentity = {
-  readonly pid: number
-  readonly processStartEpochNanos: string
-  readonly randomSuffix: string
-}
+export type IntentRoutingProcessIdentity = ObservationProcessIdentity
 
 export type IntentRoutingSinkOptions = {
   readonly rootDir?: string
@@ -59,19 +59,6 @@ function positiveInteger(value: number | undefined, fallback: number): number {
   return value !== undefined && Number.isSafeInteger(value) && value > 0 ? value : fallback
 }
 
-function processStartEpochNanos(): string {
-  const epochMilliseconds = Date.now() - (process.uptime() * 1000)
-  return BigInt(Math.floor(epochMilliseconds * 1_000_000)).toString()
-}
-
-function createProcessIdentity(): IntentRoutingProcessIdentity {
-  return {
-    pid: process.pid,
-    processStartEpochNanos: processStartEpochNanos(),
-    randomSuffix: randomBytes(6).toString("hex"),
-  }
-}
-
 function dateStamp(epochMilliseconds: number): string {
   return new Date(epochMilliseconds).toISOString().slice(0, 10).replaceAll("-", "")
 }
@@ -94,8 +81,8 @@ export function createIntentRoutingSink(
   options: IntentRoutingSinkOptions = {},
 ): IntentRoutingSink {
   const now = options.now ?? Date.now
-  const identity = options.processIdentity ?? createProcessIdentity()
-  const processId = `${identity.pid}-${identity.processStartEpochNanos}-${identity.randomSuffix}`
+  const identity = options.processIdentity ?? createObservationProcessIdentity()
+  const processId = observationProcessId(identity)
   const rootDir = options.rootDir ?? join(homedir(), ".omo", "jev")
   const path = join(rootDir, `w1-${dateStamp(now())}-${processId}.jsonl`)
   const maxLineBytes = positiveInteger(options.maxLineBytes, DEFAULT_INTENT_ROUTING_MAX_LINE_BYTES)
@@ -174,7 +161,7 @@ export function createIntentRoutingSink(
   const interval = setInterval(() => {
     try {
       flushCounters()
-    } catch (error) {
+    } catch (error) { // no-excuse-ok: catch
       warn("[jev] intent-routing counter flush failed", { error: String(error) })
     }
   }, flushIntervalMs)
