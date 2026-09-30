@@ -322,13 +322,13 @@ todo	artifact	kind	description
 17	.omo/evidence/20260930-jev-w2/task-17-dirty-worktree-before-staging.txt	git-state	git status --porcelain immediately before staging, showing the 5 ambient generated bundles, zero credential files, zero dirty assets, and zero dirty TypeScript
 17	.omo/evidence/20260930-jev-w2/task-17-qa-summary.txt	summary	Reviewer-readable what was tested, what was observed, why it is enough, and what was omitted
 17	.omo/evidence/20260930-jev-w2/task-17-cleanup.txt	cleanup	Cleanup receipt: 16 temp files removed and verified gone, 3 shared locks preserved, real ~/.omo manifest unchanged at 1013 entries, no process or port, credentials untouched, markdown probe reverted
-19	.omo/evidence/20260930-jev-w2/task-19-drive.sh	driver	Bounded isolated long-lived OpenCode W2 live-proof driver
+19	.omo/evidence/20260930-jev-w2/task-19-drive.sh	driver	Bounded isolated long-lived OpenCode W2 live-proof driver with F13R failure propagation heartbeat exclusion and real sink assertions
 19	.omo/evidence/20260930-jev-w2/task-19-turn-script.jsonl	fixture	Deterministic 28-turn complete progress promise multilingual boulder diff and censor corpus
 19	.omo/evidence/20260930-jev-w2/task-19-fake-jev-server.ts	driver	Local zero-cost Jev endpoint with filled and malformed responses
 19	.omo/evidence/20260930-jev-w2/task-19-fake-model-provider.ts	driver	Local scripted OpenAI Responses provider
-19	.omo/evidence/20260930-jev-w2/task-19-enabled.txt	manual-qa	Exact enabled command output with 31 one-session and 544 total W2 records
-19	.omo/evidence/20260930-jev-w2/task-19-disabled.txt	failure-qa	Exact disabled command output with zero W2 files
-19	.omo/evidence/20260930-jev-w2/task-19-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted sections
+19	.omo/evidence/20260930-jev-w2/task-19-enabled.txt	manual-qa	Exact enabled command output exit 0 with 31 one-session and 533 total W2 records diff 532/1 boulder 21/512
+19	.omo/evidence/20260930-jev-w2/task-19-disabled.txt	failure-qa	Exact disabled command output exit 0 with zero W2 files and absent real sink
+19	.omo/evidence/20260930-jev-w2/task-19-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted sections for the F13R re-run
 19	.omo/evidence/20260930-jev-w2/task-19-adversarial-qa.txt	adversarial	Applicable probes and prompt-injection ruleout
 19	.omo/evidence/20260930-jev-w2/task-19-cleanup.txt	cleanup	PID port DB and recursive home cleanup receipt
 19	.omo/evidence/20260930-jev-w2/task-19-focused-tests.txt	verification	Focused W2 input adapter and continuation tests pass
@@ -378,3 +378,10 @@ F5R	.omo/evidence/20260930-jev-w2/F5R-preserved-properties.txt	verification	All 
 F5R	.omo/evidence/20260930-jev-w2/F5R-static.txt	static	Per-file line counts under 250 via loop, zero banned patterns, zero hardcoded 120000 in report source, three owned files byte-unchanged
 F5R	.omo/evidence/20260930-jev-w2/F5R-qa-summary.txt	qa-summary	What was tested, observed, why it is enough, remaining risk, what was omitted
 F5R	.omo/evidence/20260930-jev-w2/F5R-dirty-worktree.txt	git-state	Pre-staging status disclaiming peer-owned packages and task-19-drive.sh changes
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-secret-gate.txt	static	Mandated evidence secret gate re-run after the fix command exit 1 and zero matching lines
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-masking-demo.txt	adversarial	Deliberately inverted driver assertion turns both mandated commands from exit 0 into exit 1 with revert digest
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-manifest-narrowing.txt	verification	Ambient heartbeat survey stated exclusion and lifted-function probe proving the narrowed manifest check still bites
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-isolation.txt	acceptance	Every original acceptance criterion with its observed number from the fresh re-run plus 261 ids zero real-DB matches
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-line-counts.txt	static	Per-file 250 line cap loop shell syntax zero process matchers and final secret gate each with command exit and count
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-dirty-worktree.txt	git-state	Pre-staging porcelain with peer ownership disclaimer and untracked artifact list
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-staged-paths.txt	git-state	Exact 12 path staging allowlist with the explicit not-staged list and the commit subject

@@ -1,0 +1,108 @@
+F13R REAL ~/.omo MANIFEST NARROWING AND THE SHARPER SINK INVARIANT
+
+WHAT WAS TESTED
+
+Verifier F3 measured an 11-line real `~/.omo` manifest diff on an enabled run. Every one
+of those lines belonged to `codegraph/worker-sweep.stamp`, a heartbeat file that
+background CodeGraph tooling rewrites on a timer and that also showed up as ambient noise
+during the W1 work. The isolation claim that matters is that W2 never writes to the real
+`~/.omo`, and in particular that the real `~/.omo/jev` sink is never created. A recursive
+byte-for-byte comparison of a directory that a foreign background sweeper is actively
+rewriting cannot express that claim.
+
+Two things were therefore checked. First, which paths under the real `~/.omo` actually
+rotate with no W2 activity at all. Second, whether narrowing the comparison to exclude
+exactly those paths still lets the check detect a real change.
+
+WHAT WAS OBSERVED
+
+AMBIENT ROTATION SURVEY. A read-only survey of the real `~/.omo` was taken twice, 240
+seconds apart, with no driver running, recording relative path, size, and mtime for every
+file and directory:
+
+  --- omo-a.tsv  2026-09-30 15:42:48
+  +++ omo-b.tsv  2026-09-30 15:46:50
+  -codegraph/worker-sweep.stamp   25  1790782103
+  -codegraph/zombie-sweep.stamp   25  1790781808
+  +codegraph/worker-sweep.stamp   25  1790783066
+  +codegraph/zombie-sweep.stamp   25  1790783010
+
+  total differing lines = 13, all of them the two stamps plus diff headers
+  nothing else under the real ~/.omo moved in that window
+
+A full enumeration of heartbeat stamps under the real `~/.omo` found exactly three, all 25
+bytes, all timer-driven, none related to this work:
+
+  codegraph/worker-sweep.stamp
+  codegraph/zombie-sweep.stamp
+  lsp-daemon/lsp-proxy-sweep.stamp
+
+THE EXCLUSION IS STATED, NOT SILENT. `AMBIENT_HEARTBEAT_PATHS` in task-19-drive.sh names
+those three paths and nothing else. It is enumerated, not a wildcard, so no future stamp
+is excluded by accident. It is recorded in three places a reviewer will see:
+
+  1. the first line of every before/after manifest file:
+     `# excluded-ambient-heartbeat<TAB>codegraph/worker-sweep.stamp codegraph/zombie-sweep.stamp lsp-daemon/lsp-proxy-sweep.stamp`
+  2. driver stdout, next to the result, in task-19-enabled.txt and task-19-disabled.txt:
+     `real_omo_manifest_excluded_ambient=codegraph/worker-sweep.stamp codegraph/zombie-sweep.stamp lsp-daemon/lsp-proxy-sweep.stamp`
+  3. this artifact.
+
+THE NARROWED CHECK STILL BITES. The two shipped functions were lifted verbatim out of the
+committed driver and exercised against a throwaway fixture root, so the code under test is
+the code that ships:
+
+  sed -n '/^AMBIENT_HEARTBEAT_PATHS=/,/^}$/p' task-19-drive.sh
+  sed -n '/^manifest() {/,/^}$/p'             task-19-drive.sh
+
+The fixture holds the three heartbeat stamps plus one ordinary file, takes a baseline
+manifest, then mutates in three stages. Observed:
+
+  heartbeat_only_rotation_diff_lines = 0    all three stamps rewritten, diff stays empty
+  non_excluded_file_change_diff_lines = 9   one ordinary file rewritten, diff is non-empty
+  new_directory_diff_lines = 10             one new directory created, diff is non-empty
+  header_line = # excluded-ambient-heartbeat  codegraph/worker-sweep.stamp codegraph/zombie-sweep.stamp lsp-daemon/lsp-proxy-sweep.stamp
+  probe verdict = PROBE PASS, exit status 0
+
+The probe fails itself if a heartbeat rotation leaks into the diff, if an ordinary file
+change is swallowed, or if a new directory is swallowed. The check was narrowed, not
+deleted or weakened into a no-op.
+
+THE SHARPER INVARIANT. Narrowing costs coverage, so the driver now also asserts the thing
+the manifest was a proxy for, and this assertion has no exclusions at all:
+
+  line 104  if [ -e "$REAL_JEV" ]; then REAL_JEV_BEFORE=present; else REAL_JEV_BEFORE=absent; fi
+  line 105  [ "$REAL_JEV_BEFORE" = absent ] || fail "real ~/.omo/jev exists before the run"
+  line 248  [ "$REAL_JEV_AFTER" = absent ]  || fail "real ~/.omo/jev exists after the run"
+
+`REAL_JEV` is derived from `REAL_HOME`, captured before `HOME` is redirected into the
+sandbox, so it always points at the true home. Both outcomes are printed together:
+
+  real_omo_jev_before=absent real_omo_jev_after=absent
+
+RESULT OF THE PRODUCTION RE-RUNS. Both mandated channels were re-driven after the change:
+
+  enabled   real_omo_manifest_diff_lines=0   real_omo_jev_before=absent real_omo_jev_after=absent
+  disabled  real_omo_manifest_diff_lines=0   real_omo_jev_before=absent real_omo_jev_after=absent
+
+A concurrent read-only survey ran for the whole enabled window and recorded zero ambient
+changes, so on this particular run the exclusion removed nothing that existed: the diff
+would have been empty with or without it. The exclusion is carried for the case F3 hit,
+where the host sweeper is active, and the survey above is the measurement that identifies
+which paths qualify.
+
+WHY IT IS ENOUGH
+
+The exclusion is enumerated, minimal, empirically derived from a no-driver observation
+window, and printed with every result rather than applied behind the reviewer's back. The
+lifted-function probe proves the remaining comparison still detects an ordinary file
+change and a new directory, so the narrowing did not turn the check into decoration. The
+unexcluded `~/.omo/jev` assertion covers the exact surface W2 would touch if it leaked,
+and it is checked on both sides of every run in both wire modes.
+
+WHAT WAS OMITTED
+
+The full before/after manifests are large enumerations of the host's CodeGraph index and
+were not copied into the evidence tree; they live in the run receipt directories and are
+summarised here by their diff line counts. Fixture roots created by the probe were removed
+by the probe itself on success. No host file under the real `~/.omo` was modified by any
+step described here: every survey and manifest pass is stat and read only.

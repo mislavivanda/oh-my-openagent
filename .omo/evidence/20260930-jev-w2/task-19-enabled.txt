@@ -1,20 +1,27 @@
 wire=enabled
 turns=29
-session_id=ses_f0d2143c4ffecFbiHd3hsRKu0i
+session_id=ses_f0cfc5611ffeZjN4iTZHMk72Af
 main_session_observations=31
-observations=535
-filled_three=532
+observations=533
+filled_three=530
 fake-model attempts=2 elapsed_ms=112
-fake-jev attempts=1 elapsed_ms=7
-opencode attempts=10 elapsed_ms=1969
-real_db_before=485 real_db_after=485
+fake-jev attempts=1 elapsed_ms=6
+opencode attempts=9 elapsed_ms=1860
+real_db_before=493 real_db_after=493
+real_omo_manifest_excluded_ambient=codegraph/worker-sweep.stamp codegraph/zombie-sweep.stamp lsp-daemon/lsp-proxy-sweep.stamp
 real_omo_manifest_diff_lines=0
+real_omo_jev_before=absent real_omo_jev_after=absent
 JEV W2 COMPLETION-CONTINUATION AGREEMENT REPORT
 
+MEASUREMENT WINDOW
+outcome_window_ms: 120000 (config schema default)
+every censored count and outcome rate below is conditioned on this finite observation window
+observation records carry no window value, so a run configured with a different outcome_window_ms is not reflected here
+
 DENOMINATORS
-starts: 1070
-records: 535
-prediction_status_filled: 532
+starts: 1066
+records: 533
+prediction_status_filled: 530
 prediction_status_failed: 3
 prediction_status_timeout: 0
 prediction_status_not_dispatched: 0
@@ -24,29 +31,29 @@ gauntlet_outcome_no_todos: 1
 gauntlet_outcome_all_todos_complete: 3
 gauntlet_outcome_injection_in_flight: 0
 gauntlet_outcome_max_failures: 0
-gauntlet_outcome_cooldown: 19
+gauntlet_outcome_cooldown: 14
 gauntlet_outcome_latest_compaction: 0
 gauntlet_outcome_agent_skipped: 0
 gauntlet_outcome_compaction_agent_unknown: 0
 gauntlet_outcome_compaction_guard: 0
 gauntlet_outcome_continuation_stopped: 0
-gauntlet_outcome_turn_boundary_block: 242
+gauntlet_outcome_turn_boundary_block: 245
 gauntlet_outcome_stagnation_stop: 0
 gauntlet_outcome_continuation_scheduled: 270
 outcome_status_pending: 0
 outcome_status_observed: 6
-outcome_status_censored: 529
+outcome_status_censored: 527
 outcome_closure_pending: 0
 outcome_closure_tracked_work_complete: 4
 outcome_closure_tracked_work_progressed: 1
 outcome_closure_unchanged_next_idle: 1
 outcome_closure_timeout: 2
-outcome_closure_dispose: 501
+outcome_closure_dispose: 499
 outcome_closure_session_deleted: 1
 outcome_closure_human_intervention: 23
 outcome_closure_evicted: 2
 censor_reason_timeout: 2
-censor_reason_dispose: 501
+censor_reason_dispose: 499
 censor_reason_session_deleted: 1
 censor_reason_human_intervention: 23
 censor_reason_evicted: 2
@@ -64,7 +71,7 @@ pre_input_skip_messagesUnavailable: 0
 pre_input_skip_todosUnavailable: 0
 dispatches_dropped: 0
 records_evicted: 4
-censored_windows: 1058
+censored_windows: 1054
 malformed_lines: 0
 malformed_write_rejections: 0
 records_lost_to_cap: 0
@@ -77,186 +84,186 @@ truncation_flag_diff_paths: 0
 truncation_flag_diff_content: 0
 truncation_flag_boulder_content: 0
 truncation_flag_state: 0
-transcript_available: 534
+transcript_available: 532
 transcript_unavailable: 1
-diff_available: 534
+diff_available: 532
 diff_unavailable: 1
 boulder_available: 21
-boulder_unavailable: 514
-continuation_fixture_cohort_candidate: 531
+boulder_unavailable: 512
+continuation_fixture_cohort_candidate: 529
 continuation_fixture_cohort_non_candidate: 4
-in_flight: 535
-in_flight_identity: starts=1070 records=535 in_flight=535 balanced=yes
+in_flight: 533
+in_flight_identity: starts=1066 records=533 in_flight=533 balanced=yes
 
 HEURISTIC PROXY AGREEMENT
 eligible denominator: confident prediction + known heuristic proxy
-todo_complete overall: 400/531 (75.33%); coverage=531/535
+todo_complete overall: 398/529 (75.24%); coverage=529/533
 todo_complete cross-tab by closure_reason
 closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
 closure_reason=tracked_work_complete: 1/2 (50.00%); coverage=2/4
 closure_reason=tracked_work_progressed: 1/1 (100.00%); coverage=1/1
 closure_reason=unchanged_next_idle: 0/1 (0.00%); coverage=1/1
 closure_reason=timeout: 2/2 (100.00%); coverage=2/2
-closure_reason=dispose: 376/501 (75.05%); coverage=501/501
+closure_reason=dispose: 374/499 (74.95%); coverage=499/499
 closure_reason=session_deleted: 1/1 (100.00%); coverage=1/1
 closure_reason=human_intervention: 17/21 (80.95%); coverage=21/23
 closure_reason=evicted: 2/2 (100.00%); coverage=2/2
 todo_complete cross-tab by transcript_present
-transcript_present=present: 400/531 (75.33%); coverage=531/534
+transcript_present=present: 398/529 (75.24%); coverage=529/532
 transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/1
 todo_complete cross-tab by boulder_present
 boulder_present=present: 16/21 (76.19%); coverage=21/21
-boulder_present=absent: 384/510 (75.29%); coverage=510/514
+boulder_present=absent: 382/508 (75.20%); coverage=508/512
 todo_complete cross-tab by diff_present
-diff_present=present: 400/531 (75.33%); coverage=531/534
+diff_present=present: 398/529 (75.24%); coverage=529/532
 diff_present=absent: insufficient data (eligible denominator=0); coverage=0/1
 todo_complete cross-tab by continuation_fixture_cohort
-continuation_fixture_cohort=candidate: 399/529 (75.43%); coverage=529/531
+continuation_fixture_cohort=candidate: 397/527 (75.33%); coverage=527/529
 continuation_fixture_cohort=non_candidate: 1/2 (50.00%); coverage=2/4
 
-promise_complete overall: 386/532 (72.56%); coverage=532/535
+promise_complete overall: 384/530 (72.45%); coverage=530/533
 promise_complete cross-tab by closure_reason
 closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
 closure_reason=tracked_work_complete: 1/3 (33.33%); coverage=3/4
 closure_reason=tracked_work_progressed: 0/1 (0.00%); coverage=1/1
 closure_reason=unchanged_next_idle: 1/1 (100.00%); coverage=1/1
 closure_reason=timeout: 0/2 (0.00%); coverage=2/2
-closure_reason=dispose: 376/501 (75.05%); coverage=501/501
+closure_reason=dispose: 374/499 (74.95%); coverage=499/499
 closure_reason=session_deleted: 0/1 (0.00%); coverage=1/1
 closure_reason=human_intervention: 6/21 (28.57%); coverage=21/23
 closure_reason=evicted: 2/2 (100.00%); coverage=2/2
 promise_complete cross-tab by transcript_present
-transcript_present=present: 386/531 (72.69%); coverage=531/534
+transcript_present=present: 384/529 (72.59%); coverage=529/532
 transcript_present=absent: 0/1 (0.00%); coverage=1/1
 promise_complete cross-tab by boulder_present
 boulder_present=present: 7/21 (33.33%); coverage=21/21
-boulder_present=absent: 379/511 (74.17%); coverage=511/514
+boulder_present=absent: 377/509 (74.07%); coverage=509/512
 promise_complete cross-tab by diff_present
-diff_present=present: 386/531 (72.69%); coverage=531/534
+diff_present=present: 384/529 (72.59%); coverage=529/532
 diff_present=absent: 0/1 (0.00%); coverage=1/1
 promise_complete cross-tab by continuation_fixture_cohort
-continuation_fixture_cohort=candidate: 385/529 (72.78%); coverage=529/531
+continuation_fixture_cohort=candidate: 383/527 (72.68%); coverage=527/529
 continuation_fixture_cohort=non_candidate: 1/3 (33.33%); coverage=3/4
 
-todo_progress overall: 383/512 (74.80%); coverage=512/535
+todo_progress overall: 384/515 (74.56%); coverage=515/533
 todo_progress cross-tab by closure_reason
 closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
 closure_reason=tracked_work_complete: insufficient data (eligible denominator=0); coverage=0/4
 closure_reason=tracked_work_progressed: 1/1 (100.00%); coverage=1/1
 closure_reason=unchanged_next_idle: 1/1 (100.00%); coverage=1/1
 closure_reason=timeout: 1/1 (100.00%); coverage=1/2
-closure_reason=dispose: 374/495 (75.56%); coverage=495/501
+closure_reason=dispose: 375/498 (75.30%); coverage=498/499
 closure_reason=session_deleted: 1/1 (100.00%); coverage=1/1
 closure_reason=human_intervention: 5/11 (45.45%); coverage=11/23
 closure_reason=evicted: 0/2 (0.00%); coverage=2/2
 todo_progress cross-tab by transcript_present
-transcript_present=present: 383/512 (74.80%); coverage=512/534
+transcript_present=present: 384/515 (74.56%); coverage=515/532
 transcript_present=absent: insufficient data (eligible denominator=0); coverage=0/1
 todo_progress cross-tab by boulder_present
 boulder_present=present: 6/10 (60.00%); coverage=10/21
-boulder_present=absent: 377/502 (75.10%); coverage=502/514
+boulder_present=absent: 378/505 (74.85%); coverage=505/512
 todo_progress cross-tab by diff_present
-diff_present=present: 383/512 (74.80%); coverage=512/534
+diff_present=present: 384/515 (74.56%); coverage=515/532
 diff_present=absent: insufficient data (eligible denominator=0); coverage=0/1
 todo_progress cross-tab by continuation_fixture_cohort
-continuation_fixture_cohort=candidate: 383/512 (74.80%); coverage=512/531
+continuation_fixture_cohort=candidate: 384/515 (74.56%); coverage=515/529
 continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/4
 
-stagnation_stop overall: 398/532 (74.81%); coverage=532/535
+stagnation_stop overall: 397/530 (74.91%); coverage=530/533
 stagnation_stop cross-tab by closure_reason
 closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
 closure_reason=tracked_work_complete: 3/3 (100.00%); coverage=3/4
 closure_reason=tracked_work_progressed: 0/1 (0.00%); coverage=1/1
 closure_reason=unchanged_next_idle: 1/1 (100.00%); coverage=1/1
 closure_reason=timeout: 1/2 (50.00%); coverage=2/2
-closure_reason=dispose: 375/501 (74.85%); coverage=501/501
+closure_reason=dispose: 374/499 (74.95%); coverage=499/499
 closure_reason=session_deleted: 1/1 (100.00%); coverage=1/1
 closure_reason=human_intervention: 15/21 (71.43%); coverage=21/23
 closure_reason=evicted: 2/2 (100.00%); coverage=2/2
 stagnation_stop cross-tab by transcript_present
-transcript_present=present: 397/531 (74.76%); coverage=531/534
+transcript_present=present: 396/529 (74.86%); coverage=529/532
 transcript_present=absent: 1/1 (100.00%); coverage=1/1
 stagnation_stop cross-tab by boulder_present
 boulder_present=present: 16/21 (76.19%); coverage=21/21
-boulder_present=absent: 382/511 (74.76%); coverage=511/514
+boulder_present=absent: 381/509 (74.85%); coverage=509/512
 stagnation_stop cross-tab by diff_present
-diff_present=present: 397/531 (74.76%); coverage=531/534
+diff_present=present: 396/529 (74.86%); coverage=529/532
 diff_present=absent: 1/1 (100.00%); coverage=1/1
 stagnation_stop cross-tab by continuation_fixture_cohort
-continuation_fixture_cohort=candidate: 395/529 (74.67%); coverage=529/531
+continuation_fixture_cohort=candidate: 394/527 (74.76%); coverage=527/529
 continuation_fixture_cohort=non_candidate: 3/3 (100.00%); coverage=3/4
 
 OUTCOME AGREEMENT (observed non-censored labels only)
 eligible denominator: confident prediction + observed non-censored outcome label
-actually_complete overall: 3/5 (60.00%); coverage=5/535
+actually_complete overall: 3/5 (60.00%); coverage=5/533
 actually_complete cross-tab by closure_reason
 closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
 closure_reason=tracked_work_complete: 2/3 (66.67%); coverage=3/4
 closure_reason=tracked_work_progressed: 1/1 (100.00%); coverage=1/1
 closure_reason=unchanged_next_idle: 0/1 (0.00%); coverage=1/1
 closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/2
-closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/501
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/499
 closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/1
 closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/23
 closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/2
 actually_complete cross-tab by transcript_present
-transcript_present=present: 2/4 (50.00%); coverage=4/534
+transcript_present=present: 2/4 (50.00%); coverage=4/532
 transcript_present=absent: 1/1 (100.00%); coverage=1/1
 actually_complete cross-tab by boulder_present
 boulder_present=present: 2/4 (50.00%); coverage=4/21
-boulder_present=absent: 1/1 (100.00%); coverage=1/514
+boulder_present=absent: 1/1 (100.00%); coverage=1/512
 actually_complete cross-tab by diff_present
-diff_present=present: 2/4 (50.00%); coverage=4/534
+diff_present=present: 2/4 (50.00%); coverage=4/532
 diff_present=absent: 1/1 (100.00%); coverage=1/1
 actually_complete cross-tab by continuation_fixture_cohort
-continuation_fixture_cohort=candidate: 1/2 (50.00%); coverage=2/531
+continuation_fixture_cohort=candidate: 1/2 (50.00%); coverage=2/529
 continuation_fixture_cohort=non_candidate: 2/3 (66.67%); coverage=3/4
 
-progressing overall: 2/5 (40.00%); coverage=5/535
+progressing overall: 2/5 (40.00%); coverage=5/533
 progressing cross-tab by closure_reason
 closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
 closure_reason=tracked_work_complete: 1/3 (33.33%); coverage=3/4
 closure_reason=tracked_work_progressed: 0/1 (0.00%); coverage=1/1
 closure_reason=unchanged_next_idle: 1/1 (100.00%); coverage=1/1
 closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/2
-closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/501
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/499
 closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/1
 closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/23
 closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/2
 progressing cross-tab by transcript_present
-transcript_present=present: 2/4 (50.00%); coverage=4/534
+transcript_present=present: 2/4 (50.00%); coverage=4/532
 transcript_present=absent: 0/1 (0.00%); coverage=1/1
 progressing cross-tab by boulder_present
 boulder_present=present: 2/4 (50.00%); coverage=4/21
-boulder_present=absent: 0/1 (0.00%); coverage=1/514
+boulder_present=absent: 0/1 (0.00%); coverage=1/512
 progressing cross-tab by diff_present
-diff_present=present: 2/4 (50.00%); coverage=4/534
+diff_present=present: 2/4 (50.00%); coverage=4/532
 diff_present=absent: 0/1 (0.00%); coverage=1/1
 progressing cross-tab by continuation_fixture_cohort
-continuation_fixture_cohort=candidate: 1/2 (50.00%); coverage=2/531
+continuation_fixture_cohort=candidate: 1/2 (50.00%); coverage=2/529
 continuation_fixture_cohort=non_candidate: 1/3 (33.33%); coverage=3/4
 
-stuck overall: 3/5 (60.00%); coverage=5/535
+stuck overall: 3/5 (60.00%); coverage=5/533
 stuck cross-tab by closure_reason
 closure_reason=pending: insufficient data (eligible denominator=0); coverage=0/0
 closure_reason=tracked_work_complete: 3/3 (100.00%); coverage=3/4
 closure_reason=tracked_work_progressed: 0/1 (0.00%); coverage=1/1
 closure_reason=unchanged_next_idle: 0/1 (0.00%); coverage=1/1
 closure_reason=timeout: insufficient data (eligible denominator=0); coverage=0/2
-closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/501
+closure_reason=dispose: insufficient data (eligible denominator=0); coverage=0/499
 closure_reason=session_deleted: insufficient data (eligible denominator=0); coverage=0/1
 closure_reason=human_intervention: insufficient data (eligible denominator=0); coverage=0/23
 closure_reason=evicted: insufficient data (eligible denominator=0); coverage=0/2
 stuck cross-tab by transcript_present
-transcript_present=present: 2/4 (50.00%); coverage=4/534
+transcript_present=present: 2/4 (50.00%); coverage=4/532
 transcript_present=absent: 1/1 (100.00%); coverage=1/1
 stuck cross-tab by boulder_present
 boulder_present=present: 2/4 (50.00%); coverage=4/21
-boulder_present=absent: 1/1 (100.00%); coverage=1/514
+boulder_present=absent: 1/1 (100.00%); coverage=1/512
 stuck cross-tab by diff_present
-diff_present=present: 2/4 (50.00%); coverage=4/534
+diff_present=present: 2/4 (50.00%); coverage=4/532
 diff_present=absent: 1/1 (100.00%); coverage=1/1
 stuck cross-tab by continuation_fixture_cohort
-continuation_fixture_cohort=candidate: 0/2 (0.00%); coverage=2/531
+continuation_fixture_cohort=candidate: 0/2 (0.00%); coverage=2/529
 continuation_fixture_cohort=non_candidate: 3/3 (100.00%); coverage=3/4
 
