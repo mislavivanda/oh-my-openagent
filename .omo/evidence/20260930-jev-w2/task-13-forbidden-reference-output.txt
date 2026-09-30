@@ -7,3 +7,13 @@ verdict: PASS - zero matching lines is the expected result
 why_this_file_is_not_empty: a zero-byte artifact cannot be distinguished from a command that never ran, so the command, its exit status and its observed line count are recorded here. The proof remains the absence of output.
 --- captured output (expected empty) ---
 
+
+SCOPE NOTE ADDED BY ROOT AFTER THE FINAL VERIFICATION WAVE
+This artifact is a POINT-IN-TIME proof for todo 13 ONLY. It was true at todo 13's
+commit 322250db5, where the grep returned exit 1 with 0 matching lines.
+It is DELIBERATELY SUPERSEDED by todo 14, whose entire mandate was to add the W2
+observer calls (beginIdle, finishHeuristic) to exactly these idle files. Re-running
+the recorded command at HEAD therefore returns exit 0 with 28 matching lines, and
+that is the CORRECT and INTENDED result, not a regression and not a false record.
+Verifier F15-RV independently confirmed the timeline: 0 matches at 322250db5,
+matches present at 3fb89dc26 (todo 14), and this artifact's timestamp predates todo 14.

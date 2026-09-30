@@ -249,3 +249,11 @@ stuck cross-tab by continuation_fixture_cohort
 continuation_fixture_cohort=candidate: insufficient data (eligible denominator=0); coverage=0/0
 continuation_fixture_cohort=non_candidate: insufficient data (eligible denominator=0); coverage=0/0
 
+
+STALENESS NOTE ADDED BY ROOT AFTER THE FINAL VERIFICATION WAVE
+This rendering PREDATES the F5 remediation commit 65d06861a, which added the
+MEASUREMENT WINDOW block. It therefore does NOT contain the outcome_window_ms line.
+That is expected: the plan's commit strategy forbids rewriting prior commits, so this
+artifact was left as the honest record of what todo 16 produced at its own commit.
+For the CURRENT rendering including the window, see the F5R-* artifacts and
+F15RV-compliance-integrity.txt.
