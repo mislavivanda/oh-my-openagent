@@ -61,3 +61,16 @@ export type {
   IntentRoutingSealCoordinatorOptions,
   IntentRoutingSealSink,
 } from "./intent-routing-seal"
+export {
+  DEFAULT_COMPLETION_CONTINUATION_COUNTER_FLUSH_INTERVAL_MS,
+  DEFAULT_COMPLETION_CONTINUATION_MAX_LINE_BYTES,
+  DEFAULT_COMPLETION_CONTINUATION_SINK_SIZE_CAP_BYTES,
+  createCompletionContinuationSink,
+} from "./completion-continuation-sink"
+export type {
+  CompletionContinuationProcessIdentity,
+  CompletionContinuationSink,
+  CompletionContinuationSinkOptions,
+} from "./completion-continuation-sink"
+export { readCompletionContinuationSink } from "./completion-continuation-reader"
+export type { CompletionContinuationSinkReadResult } from "./completion-continuation-reader"
