@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+lsp_diagnostics severity=all ran on each of the seven created TypeScript files after the final edits. The programming skill no-excuse audit also ran over the same explicit path list.
+
+WHAT WAS OBSERVED
+All seven lsp_diagnostics calls returned "No diagnostics found" after the TimerInput type fix. task-15-no-excuse-audit.txt records exit 0. task-15-line-counts.txt records every physical line count independently.
+
+WHY IT IS ENOUGH
+The checks cover TypeScript syntax and type diagnostics, banned escape hatches, empty catches, suppression directives, and the 250-line ceiling without scanning or modifying peer-owned files.
+
+WHAT WAS OMITTED
+The canonical full suite belongs to F2 and was not run. No production source changed, so a production bundle build is not an applicable todo-15 gate.

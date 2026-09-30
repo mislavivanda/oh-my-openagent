@@ -1,0 +1,24 @@
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/completion-continuation-accuracy-harness.ts
+?? packages/jev-core/src/completion-continuation-accuracy-real-run.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-runtime-audit.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-runtime-fixture.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-unref-child.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert-fixture.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert-trace.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts
+?? script/jev-w2-report-analysis.ts
+?? script/jev-w2-report-render.ts
+?? script/jev-w2-report-scoring.ts
+?? script/jev-w2-report-types.ts
+?? script/jev-w2-report.fixtures.ts
+?? script/jev-w2-report.test.ts
+?? script/jev-w2-report.ts
+
+COMMAND: GIT_MASTER=1 git status --porcelain
+OBSERVED: captured before staging; generated bundles and peer-owned files remain ambient and must stay unstaged.

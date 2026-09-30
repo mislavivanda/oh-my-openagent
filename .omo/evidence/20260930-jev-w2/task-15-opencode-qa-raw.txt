@@ -1,0 +1,24 @@
+OPENCODE_VERSION=1.18.32
+ROOT=/tmp/opencode/jev-w2-task15.kbYxEi
+REAL_DB_BEFORE=[
+  {
+    "session_count": 477
+  }
+]
+HOME_OVERRIDE=no
+PURE_MODE=yes
+PORT=54261
+SERVER_PID=2030840
+SERVER_READY=yes
+HEALTH={"healthy":true,"version":"1.18.32"}
+CURL_PID=2030878
+SERVER_CONNECTED_MATCH_COUNT=1
+EVENTS=data: {"id":"evt_0f2586f69001CZLkjzF22Zb2PE","type":"server.connected","properties":{}}
+REAL_DB_AFTER=[
+  {
+    "session_count": 477
+  }
+]
+SERVER_PID_GONE=yes
+CURL_PID_GONE=yes
+EXIT_STATUS=0

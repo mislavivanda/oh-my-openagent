@@ -1,0 +1,15 @@
+OPENCODE QA HANG DEBUG JOURNAL
+
+Observed failure: the project opencode-qa SSE self-test produced only "Terminated" and exceeded 120000 ms. No source file was changed. The tool timeout ended the shell invocation.
+
+Hypothesis 1: the self-test HOME sandbox interacts with the installed opencode shim and prevents server readiness. Distinguishing evidence is whether opencode starts with isolated XDG variables while HOME remains unchanged.
+
+Hypothesis 2: the server starts but the SSE watch does not receive server.connected. Distinguishing evidence is a healthy /global/health response followed by the first bounded /event bytes.
+
+Hypothesis 3: the self-test cleanup waits on a child that ignores its first signal. Distinguishing evidence is whether an explicitly recorded server PID exits after targeted TERM/KILL cleanup.
+
+Safety: the replacement probe will not set HOME, will use a fresh /tmp root and empty project directory, will record the exact server and curl PIDs, will use only those PIDs for cleanup, and will not load the repository plugin or read real ~/.omo.
+
+Observed resolution: opencode 1.18.32 started in 0 to 5 seconds with isolated XDG variables, unchanged HOME, and --pure. /global/health returned healthy and /event emitted one server.connected event. The targeted server PID 2030840 and curl PID 2030878 were gone after cleanup. The real DB session count remained 477 before and after.
+
+Conclusion: Hypothesis 1 is the only distinguishing environmental change supported by runtime evidence. The project self-test rewrites HOME, which this todo forbids, while the no-HOME replacement passed. Hypotheses 2 and 3 were refuted by the observed event and successful targeted PID cleanup. The timed-out self-test was not retried.

@@ -273,3 +273,17 @@ todo	artifact	kind	description
 16	.omo/evidence/20260930-jev-w2/task-16-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted summary
 16	.omo/evidence/20260930-jev-w2/task-16-cleanup.txt	cleanup	Two temporary corpus roots removed real omo unchanged and no processes or ports expected
 16	.omo/evidence/20260930-jev-w2/task-16-staged-paths.txt	staged-paths	Final cached allowlist contains only todo 16 owned paths and the shared manifest
+15	.omo/evidence/20260930-jev-w2/task-15-inert-red.txt	tdd-red	Focused RED records two intended missing proof assertion failures and exit one
+15	.omo/evidence/20260930-jev-w2/task-15-inert-green.txt	manual-qa	Exact happy command passes both inert and runtime-effects suites with all thresholds printed
+15	.omo/evidence/20260930-jev-w2/task-15-unref-proof.txt	failure-qa	Exact named child test detects removed unref then reverts and reports Ran 1 test
+15	.omo/evidence/20260930-jev-w2/task-15-flaky-runs.txt	stability	Five complete measurement sets pass with wall times and no suite timeout kills
+15	.omo/evidence/20260930-jev-w2/task-15-adversarial.txt	adversarial	All applicable adversarial classes and one-line ruleouts with observed failures
+15	.omo/evidence/20260930-jev-w2/task-15-dirty-worktree.txt	dirty-worktree	Pre-staging status distinguishes todo 15 paths from peer and generated ambient files
+15	.omo/evidence/20260930-jev-w2/task-15-line-counts.txt	static	Per-file loop proves all seven created TypeScript files are at most 250 lines
+15	.omo/evidence/20260930-jev-w2/task-15-no-excuse-audit.txt	static	TypeScript no-excuse audit exits zero for every created source file
+15	.omo/evidence/20260930-jev-w2/task-15-diagnostics.txt	diagnostics	All created TypeScript files report clean LSP diagnostics
+15	.omo/evidence/20260930-jev-w2/task-15-opencode-qa-raw.txt	harness-qa	Isolated no-HOME pure OpenCode server emits server.connected and preserves real DB count
+15	.omo/evidence/20260930-jev-w2/task-15-opencode-debug-journal.txt	debug	Bounded investigation and resolution of the HOME-setting bundled QA hang
+15	.omo/evidence/20260930-jev-w2/task-15-opencode-qa.txt	qa-summary	Reviewer-readable real-harness QA scope observations sufficiency and omissions
+15	.omo/evidence/20260930-jev-w2/task-15-cleanup.txt	cleanup	All recorded PIDs and port gone owned temp roots zero and real omo hash unchanged
+15	.omo/evidence/20260930-jev-w2/task-15-staged-paths.txt	staged-paths	Final cached allowlist contains only todo 15 source evidence and shared manifest paths
