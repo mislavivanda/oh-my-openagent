@@ -36,3 +36,6 @@ todo	artifact	kind	description
 2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-file-lines.log	limit-proof	Per-file physical line loop, changed TypeScript files have 110 and 88 lines
 2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-no-excuse.log	static-audit	TypeScript no-excuse audit found zero violations in two files
 2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-anti-circularity.log	empty-proof	Command recorded grep exit 1 and matching-line count 0 for fixture-source heuristic references
+4	.omo/evidence/20260930-jev-w2-validity/task-4-question-text-and-scope.md	question-proof	Version 2 full delta-question text, exact previous-field guidance, first-idle wording, independent-probability framing, and no-op barrel review
+4	.omo/evidence/20260930-jev-w2-validity/task-4-actually-complete-byte-identity.txt	empty-proof	Restricted actually_complete diff command recorded with exit 0, matching-line count 0, and empty output
+4	.omo/evidence/20260930-jev-w2-validity/task-4-verification.txt	gate-summary	Focused test 5 pass, jev-core 232 pass, neutrality guard 3 pass, root typecheck and build exit 0, test:fast 789 pass, diagnostics clean, and per-file limits clean
