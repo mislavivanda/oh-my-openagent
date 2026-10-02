@@ -141,3 +141,8 @@ export {
   type CompletionContinuationFixtureLabel,
   type CompletionContinuationFixtureTruth,
 } from "./completion-continuation-fixtures"
+export {
+  type CompletionContinuationPreviousAvailable,
+  type CompletionContinuationPreviousState,
+  type CompletionContinuationPreviousUnavailable,
+} from "./completion-continuation-previous-state"

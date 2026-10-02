@@ -1,0 +1,38 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+interrupted status=partial completed=1 failedFixtureId=complete-boulder-without-todos
+missing-key probe skipped realApiRequested=false keyPresent=true
+real-api baseline skipped realApiRequested=false keyPresent=true
+
+packages/jev-core/src/completion-continuation-state.test.ts:
+protectedReductionPreBytes=59122
+protectedReductionPostBytes=24063
+preReductionBytes=86386
+postReductionBytes=24125
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+accuracy backend=mock paidApi=false fixtures=15 networkCalls=0 resolvedModel=mock questionVersion=1
+dry-run verified fixtures=15 callCount=0 networkCalls=0
+ceiling-abort name=IntentRoutingCallCeilingError ceiling=15 backendCalls=1
+
+packages/jev-core/src/completion-continuation-real-run.test.ts:
+A orchestrated status=complete reserved=3 clientCount=3 serverCount=3 perCallRequests=[1,1,1] tokensIn=33 tokensOut=9 resolvedModel=fake-jev-9.9.9
+A verdict clientEqualsServer=true oneRequestPerThreeQuestionCall=true
+B forcedExtraCall counter=1 serverCount=1 rose=true
+B secondForcedCall counter=2 serverCount=2 rose=true
+C ceilingAbort error=PaidCallCeilingError nextOrdinal=3 serverCount=2 retainedStatus=partial retainedCallCount=2
+D hardTimeout status=partial failureReason=timeout elapsedMs=301 timeoutMs=300 serverCount=1
+E malformedResponse status=partial failureReason=malformed_response completed=[] serverCount=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+ 229 pass
+ 0 fail
+ 705 expect() calls
+Ran 229 tests across 20 files. [616.00ms]
+
+exit_status=0

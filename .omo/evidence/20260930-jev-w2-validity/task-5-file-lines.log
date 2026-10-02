@@ -1,0 +1,12 @@
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts","physical_lines":246,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.ts","physical_lines":249,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation-outcome-types.ts","physical_lines":221,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation-previous.ts","physical_lines":40,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation-previous.test.ts","physical_lines":194,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts","physical_lines":244,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation.test-support.ts","physical_lines":178,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/completion-continuation-sink.test-support.ts","physical_lines":127,"limit":250,"pass":true}
+{"file":"packages/omo-opencode/src/features/jev/index.ts","physical_lines":142,"limit":250,"pass":true}
+{"file":"packages/jev-core/src/completion-continuation-fixtures-primary.ts","physical_lines":144,"limit":250,"pass":true}
+{"file":"packages/jev-core/src/completion-continuation-fixtures-edge.ts","physical_lines":168,"limit":250,"pass":true}
+{"file":"packages/jev-core/src/completion-continuation-fixtures-previous.test.ts","physical_lines":25,"limit":250,"pass":true}

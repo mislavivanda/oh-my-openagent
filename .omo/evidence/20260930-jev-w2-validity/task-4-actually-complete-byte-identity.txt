@@ -1,0 +1,16 @@
+WHAT WAS TESTED
+The actually_complete object was extracted from HEAD and from the edited worktree file, then compared with diff -u.
+
+COMMAND
+set +e; restricted_diff=$(diff -u <(GIT_MASTER=1 git show HEAD:packages/jev-core/src/completion-continuation-questions.ts | perl -0ne 'print $1 if /(  actually_complete: \{.*?\n  \},)(?=\n  progressing:)/s') <(perl -0ne 'print $1 if /(  actually_complete: \{.*?\n  \},)(?=\n  progressing:)/s' packages/jev-core/src/completion-continuation-questions.ts)); status=$?; set -e; matching_line_count=0; if [[ -n "$restricted_diff" ]]; then matching_line_count=$(printf '%s\n' "$restricted_diff" | grep -Ec '^[+-][^+-]' || true); fi
+
+WHAT WAS OBSERVED
+exit_status: 0
+matching_line_count: 0
+restricted_diff: <empty>
+
+WHY IT IS ENOUGH
+Both extracted blocks are compared byte for byte by diff. Exit 0 and zero changed lines prove the actually_complete question text and criteria are unchanged.
+
+WHAT WAS OMITTED
+No secret-bearing output or environment data was read or recorded.

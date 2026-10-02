@@ -1,0 +1,12 @@
+TODO 3 EMPTY-PROOF HARNESS NEUTRALITY AUDIT
+
+COMMAND
+grep -nE '(^|[[:space:]])(import|export).*(@opencode-ai|omo-opencode)|Bun\.' packages/jev-core/src/completion-continuation-previous-state.ts packages/jev-core/src/completion-continuation-state.ts packages/jev-core/src/completion-continuation-state-budget.ts packages/jev-core/src/completion-continuation-state.test.ts packages/jev-core/src/index.ts
+
+RESULT
+exit_status=1
+matching_line_count=0
+
+INTERPRETATION
+- grep exit 1 means no matching line was found.
+- The todo 3 production, test, budget, and barrel files contain no OpenCode import and no raw Bun API use.

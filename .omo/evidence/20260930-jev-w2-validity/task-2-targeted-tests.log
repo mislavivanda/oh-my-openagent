@@ -1,0 +1,18 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+interrupted status=partial completed=1 failedFixtureId=complete-boulder-without-todos
+missing-key probe skipped realApiRequested=false keyPresent=true
+real-api baseline skipped realApiRequested=false keyPresent=true
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+ 14 pass
+ 0 fail
+ 69 expect() calls
+Ran 14 tests across 2 files. [166.00ms]
+
+exit_status=0

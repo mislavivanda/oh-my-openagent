@@ -1,0 +1,23 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-fixture-consistency.test.ts:
+54 |
+55 |       // when
+56 |       const progressing = fixture.label.progressing
+57 |
+58 |       // then
+59 |       if (claimsCompletion) expect(progressing, fixture.id).not.toBeFalse()
+                                                                     ^
+error: stale-todos-after-shipped-fix
+
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2v/packages/jev-core/src/completion-continuation-fixture-consistency.test.ts:59:65)
+(fail) completion-continuation fixture line-45 consistency > #given a label claims completion #when label coherence is audited #then progressing cannot be false [0.26ms]
+
+ 3 pass
+ 1 fail
+ 52 expect() calls
+Ran 4 tests across 1 file. [124.00ms]
+
+exit_status=1

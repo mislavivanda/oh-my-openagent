@@ -1,0 +1,14 @@
+{
+  "command": "isolated opencode serve --pure; GET /global/health; GET /event",
+  "opencode_version": "1.18.32",
+  "health": {
+    "healthy": true,
+    "version": "1.18.32"
+  },
+  "server_connected_match_count": 1,
+  "real_db_session_count_before": "504",
+  "real_db_session_count_after": "504",
+  "real_db_unchanged": true,
+  "server_process_gone": true,
+  "exit_status": 0
+}

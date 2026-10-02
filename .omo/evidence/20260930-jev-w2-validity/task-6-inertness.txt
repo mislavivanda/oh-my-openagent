@@ -1,0 +1,80 @@
+TODO 6 - PART A: W2 INERTNESS RE-PROVED AFTER THE WIRE INPUT CHANGED
+
+WHAT WAS TESTED
+  command: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts \
+                    packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts
+  cwd: /home/opencode/projects/oh-my-openagent-jev-w2v
+  env: JEV_W2_REAL_API=<unset>  JEV_W2_REAL_API_REARM=<unset>
+  exit status: 0     result: 5 pass, 0 fail, 36 expect() calls, 2 files
+  surface: todo 15 Part A byte-identity trace of the live continuation gauntlet, and Part B runtime budgets
+  behavior proved: the W2 observer still adds NO behavior to the live gauntlet now that the state
+                   carries a previous block and the questions are at version 2
+
+WHY RE-RUNNING THIS MATTERS
+  The parent W2 branch's entire safety claim is that the observer is inert. This plan changed the
+  wire input, so that claim had to be re-established rather than assumed.
+
+OBSERVED: PART A BYTE IDENTITY
+  Four dispatch modes each produced TRACE_COUNT=16 with an identical ordered trace:
+    PART_A_MODE=success TRACE_COUNT=16
+    PART_A_MODE=sync-throw TRACE_COUNT=16
+    PART_A_MODE=rejection TRACE_COUNT=16
+    PART_A_MODE=timeout TRACE_COUNT=16
+  In every mode the W2-owned effects were REMOVED from the live path, i.e. the gauntlet never saw them:
+    PART_A_W2_REMOVED_success=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+    PART_A_W2_REMOVED_sync-throw=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+    PART_A_W2_REMOVED_rejection=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+    PART_A_W2_REMOVED_timeout=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+
+OBSERVED: SIX ANTI-VACUITY PROBES, ALL STILL FIRING (verbatim)
+    ANTI_VACUITY_UNREF_HANDLE=FAIL_DETECTED W2 handle unref audit failed: missing_or_duplicate=1
+    ANTI_VACUITY_UNREF_CHILD=FAIL_DETECTED timed_out=true pid=3196337 elapsed_ms=754.47
+    ANTI_VACUITY_PROMPT_BYTE=FAIL_DETECTED existing trace byte mismatch
+    ANTI_VACUITY_COUNTDOWN_DELAY=FAIL_DETECTED existing trace byte mismatch
+    ANTI_VACUITY_SIDE_EFFECT_ORDER=FAIL_DETECTED existing trace byte mismatch
+    ANTI_VACUITY_W2_OWNED_INJECTION=FAIL_DETECTED W2-owned effect leaked into Part A: backend_call
+  Each probe deliberately breaks one invariant and asserts the proof CATCHES the break. All six
+  fired, so the guarantee is non-vacuous: the test would fail if inertness regressed.
+  The revert lines confirm each probe restored normal state afterwards:
+    ANTI_VACUITY_UNREF_HANDLE_REVERT=PASS normal audit restored
+    ANTI_VACUITY_UNREF_CHILD_REVERT=PASS unref restored
+    ANTI_VACUITY_PART_A_REVERT=PASS intended trace restored
+
+OBSERVED: PART B RUNTIME NUMBERS AGAINST THEIR BUDGETS
+  MEASUREMENT                        OBSERVED           BUDGET                 VERDICT
+  active W2 timer handles            73                 <= 73                  within budget (at the cap)
+  unref-missing count                0                  == 0                   within budget
+  in-flight max                      8                  <= 8                   within budget (at the cap)
+  persisted drop count               992                == attempted_excess 992 exact match, no silent loss
+  heap delta bytes                   2987792            < 16777216             within budget, 17.8 percent of cap
+  child exit ms                      100.03             < 2000                 within budget, 5.0 percent of cap
+  sync seam p99 ms                   0.099854           < 1                    within budget
+  idle handler added p99 ms          0.012262           < 5                    within budget
+  raw emitted lines:
+    w2_active_timer_handles<=73 actual=73
+    w2_unref_missing=0 actual=0
+    in_flight_max<=8 actual=8
+    dispatches_dropped_persisted=992 attempted_excess=992
+    heap_delta_bytes=2987792 threshold<16777216
+    sync_seam_p99_ms=0.099854 threshold<1
+    idle_handler_added_p99_ms=0.012262 threshold<5
+    child_exit_ms=100.03 threshold<2000 pid=3196361 exit=0
+  budget sources: packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts
+    line 65 expect(measurements.activeHandles).toBeLessThanOrEqual(73)
+    lines 59, 61, 63, 77, 78, 96 emit the remaining measurements with their thresholds inline
+
+OBSERVED: WIDER CONTINUATION REGRESSION SUITE
+  command: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer \
+                    packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+  exit status: 0     result: 147 pass, 0 fail, 355 expect() calls, 21 files
+
+WHY IT IS ENOUGH
+  Inertness is proved two ways at once. The byte-identity trace shows the live gauntlet's observable
+  effects are unchanged across all four dispatch modes including sync-throw, rejection, and timeout.
+  The runtime budgets show the observer leaks no handle, no unref, no heap, and no child process.
+  The six anti-vacuity probes show the proof itself still bites, so a regression could not pass
+  silently. The 147-test regression suite covers the surrounding continuation hook wiring.
+
+WHAT WAS OMITTED
+  No environment dump, no credential, no auth header. No real API call: the inert test uses a stub
+  backend and the runtime-effects test counts handles rather than calling out.

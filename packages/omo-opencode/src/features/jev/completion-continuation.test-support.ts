@@ -1,4 +1,5 @@
 import {
+  COMPLETION_CONTINUATION_QUESTION_VERSION,
   validateCompletionContinuationEntry,
   type CompletionContinuationDecisionResult,
   type CompletionContinuationEntry,
@@ -39,7 +40,7 @@ export const FILLED_RESULT: CompletionContinuationDecisionResult = {
   },
   invalidAnswerCount: 0,
   threshold: 0.8,
-  questionVersion: 1,
+  questionVersion: COMPLETION_CONTINUATION_QUESTION_VERSION,
 }
 
 export function enabledConfig(
