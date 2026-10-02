@@ -4,6 +4,7 @@ import type {
   CompletionContinuationInputTruncations,
 } from "./completion-continuation-record-types"
 import { COMPLETION_CONTINUATION_QUESTION_KEYS } from "./completion-continuation-questions"
+import type { CompletionContinuationPreviousState } from "./completion-continuation-previous-state"
 import {
   COMPLETION_CONTINUATION_BOULDER_TITLE_MAX_BYTES,
   COMPLETION_CONTINUATION_DIFF_PATH_LIMIT,
@@ -70,12 +71,14 @@ export type CompletionContinuationStateInput = {
   readonly transcript: readonly CompletionContinuationTranscriptInputMessage[]
   readonly diff: { readonly files: readonly CompletionContinuationDiffInputFile[] } | null
   readonly boulder: CompletionContinuationBoulderInput | null
+  readonly previous?: CompletionContinuationPreviousState
 }
 
 export type CompletionContinuationTodoItem = CompletionContinuationTodoInputItem
 
 export type CompletionContinuationState = {
   readonly questionKeys: typeof COMPLETION_CONTINUATION_QUESTION_KEYS
+  readonly previous: CompletionContinuationPreviousState
   readonly todo: {
     readonly total: number
     readonly pending: number
@@ -209,6 +212,7 @@ export function buildCompletionContinuationState(
     : truncateUtf8(input.boulder.nextTaskTitle, COMPLETION_CONTINUATION_BOULDER_TITLE_MAX_BYTES)
   const state: CompletionContinuationState = {
     questionKeys: COMPLETION_CONTINUATION_QUESTION_KEYS,
+    previous: input.previous ?? { available: false, reason: "first_idle" },
     todo: { total: input.todos.length, ...countTodoStatuses(input.todos), statusDigest, items: todoItems },
     transcript: { messages: transcript.messages },
     diff: diff.state,

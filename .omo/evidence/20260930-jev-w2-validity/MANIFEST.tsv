@@ -1,0 +1,12 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gates-before.txt	gate-summary	Pre-change root gates: typecheck exit 0, build exit 0, test:fast exit 0 with 780 pass 0 fail; bun install exit 0; stack confirmed on jev/w2-validity over jev/w2
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gate-typecheck.log	gate-log	Raw stdout and stderr of bun run typecheck, exit 0, zero diagnostics
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gate-build.log	gate-log	Raw stdout and stderr of bun run build, exit 0, final line build: all steps completed
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gate-testfast.log	gate-log	Raw stdout and stderr of bun run test:fast, exit 0, 780 pass 0 fail across 89 files
+1	.omo/evidence/20260930-jev-w2-validity/task-1-mock-before.txt	measurement	Mock-path before-state at threshold 0.8: per-question confusion matrix, would_true/would_false/uncertain band counts, and the full sorted probability distribution with min median max; networkCallCount 0
+1	.omo/evidence/20260930-jev-w2-validity/task-1-real-api-reference.txt	reference	Read-only recomputation of the retained W2 real-API artifact: per-question max probability and uncertain count; confirms progressing max 0.77 and 14 of 18 uncertain, stuck max 0.96, actually_complete 15 of 16
+1	.omo/evidence/20260930-jev-w2-validity/task-1-contradictory-labels-before.txt	before-image	Verbatim current label and labelBasis lines for the four fixtures todo 2 corrects, with file sha256 and the W2 plan line 45 rule they contradict
+1	.omo/evidence/20260930-jev-w2-validity/task-1-delta-gap-proof.txt	proof	Independent proof of the delta-input gap: grep on completion-continuation-state.ts exit 1 with 0 matching lines, against quoted advanced() and unchanged() delta computation in the outcome classifier
+3	.omo/evidence/20260930-jev-w2-validity/task-3-previous-state-proof.txt	proof	Available and first-idle previous block shapes, genuine protected reduction byte counts, multibyte cap result, and no-real-API statement
+3	.omo/evidence/20260930-jev-w2-validity/task-3-verification.txt	gate-summary	Focused and package tests, neutrality guard, root typecheck and build, test:fast with 782 pass 0 fail, diagnostics, no-excuse audit, and per-file line counts
+3	.omo/evidence/20260930-jev-w2-validity/task-3-harness-neutrality.txt	empty-proof	Import and raw Bun grep command recorded with exit 1 and matching-line count 0

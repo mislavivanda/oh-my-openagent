@@ -1,0 +1,21 @@
+TODO 3 VERIFICATION SUMMARY
+
+WHAT WAS TESTED AND OBSERVED
+- bun test packages/jev-core/src/completion-continuation-state.test.ts: exit 0, 10 pass, 0 fail, 50 expect calls.
+- bun test packages/jev-core: exit 0, 225 pass, 0 fail, 650 expect calls across 19 files. Mock accuracy reported networkCalls=0 and the real-API baseline path was skipped.
+- bun test script/shared-core-extraction-guard.test.ts: exit 0, 3 pass, 0 fail, 4 expect calls.
+- bun run typecheck: exit 0, including the root tsconfig, script tsconfig, and every package tsconfig.
+- bun run build: exit 0, final line "build: all steps completed".
+- bun run test:fast: exit 0, 782 pass, 0 fail, 2327 expect calls across 89 files.
+- LSP diagnostics on completion-continuation-previous-state.ts, completion-continuation-state.ts, completion-continuation-state.test.ts, and index.ts: no diagnostics in all four files.
+- TypeScript no-excuse audit on the same four files: exit 0, no violations.
+- Per-file physical line loop: completion-continuation-previous-state.ts 24, completion-continuation-state.ts 238, completion-continuation-state.test.ts 239, index.ts 148. Every file is at most 250 lines.
+
+WHY IT IS ENOUGH
+- Focused behavior, package regressions, harness-neutral layering, root type safety, production build, and the W2 fast gate all passed.
+- The fast gate exceeds the required minimum of 780 tests with 782 passing tests.
+- The state budget tests pin the unchanged reduction order: diff paths from the end, oldest transcript messages, todo content, then todo items from the end.
+
+WHAT WAS OMITTED
+- No OpenCode or Codex live QA was run because only harness-neutral jev-core state types and pure reduction behavior changed. No adapter component changed.
+- Raw environment output and credentials were not captured.

@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test"
+import { readFile } from "node:fs/promises"
 import {
   COMPLETION_CONTINUATION_DIFF_PATHS_MAX_BYTES,
   COMPLETION_CONTINUATION_MAX_STATE_BYTES,
@@ -16,7 +17,28 @@ const EMPTY_INPUT = {
   boulder: { total: 0, completed: 0, remaining: 0, nextTaskTitle: null },
 } as const
 
+const AVAILABLE_PREVIOUS = {
+  available: true,
+  todoStatusDigest: `sha256:${"a".repeat(64)}`,
+  boulderDigest: `sha256:${"b".repeat(64)}`,
+  todo: { total: 4, completed: 1 },
+  boulder: { total: 3, completed: 1, remaining: 2 },
+  continuationDispatched: true,
+} as const
+
 describe("buildCompletionContinuationState", () => {
+  test("#given a prior idle snapshot #when building state #then previous retains every grader input", () => {
+    const result = buildCompletionContinuationState({ ...EMPTY_INPUT, previous: AVAILABLE_PREVIOUS })
+
+    expect(result.state.previous).toEqual(AVAILABLE_PREVIOUS)
+  })
+
+  test("#given a first idle #when building state #then previous absence is explicit", () => {
+    const result = buildCompletionContinuationState(EMPTY_INPUT)
+
+    expect(result.state.previous).toEqual({ available: false, reason: "first_idle" })
+  })
+
   test("#given inputs above every component cap #when building state #then exact item message path and byte caps apply", () => {
     const todos = Array.from({ length: 40 }, (_, index) => ({
       id: `todo-${index}`,
@@ -88,9 +110,12 @@ describe("buildCompletionContinuationState", () => {
       path: `${index}:`.padEnd(128, "p"), additions: 1, deletions: 1,
     })) }
 
-    const result = buildCompletionContinuationState({ todos, transcript, diff, boulder: null })
+    const result = buildCompletionContinuationState({ todos, transcript, diff, boulder: null, previous: AVAILABLE_PREVIOUS })
 
+    console.log(`protectedReductionPreBytes=${result.preReductionBytes}`)
+    console.log(`protectedReductionPostBytes=${result.serializedBytes}`)
     expect(result.preReductionBytes).toBeGreaterThan(COMPLETION_CONTINUATION_MAX_STATE_BYTES)
+    expect(result.serializedBytes).toBeLessThan(result.preReductionBytes)
     expect(result.state.diff?.paths).toEqual([])
     expect(result.state.transcript.messages).toEqual([])
     expect(result.state.todo.items.length).toBeLessThan(32)
@@ -100,6 +125,7 @@ describe("buildCompletionContinuationState", () => {
     )
     expect(result.state.todo.statusDigest).toBe(buildCompletionContinuationTodoStatusDigest(todos))
     expect(result.state.inputDigests.todoStatus).toBe(result.state.todo.statusDigest)
+    expect(result.state.previous).toEqual(AVAILABLE_PREVIOUS)
     expect(result.state.inputTruncations).toMatchObject({
       diffPaths: true, transcriptMessages: true, todoContent: true, todoItems: true, state: true,
     })
@@ -144,6 +170,7 @@ describe("buildCompletionContinuationState", () => {
     const result = buildCompletionContinuationState({
       todos, transcript, diff,
       boulder: { total: 2, completed: 1, remaining: 1, nextTaskTitle: multilingual.repeat(100) },
+      previous: AVAILABLE_PREVIOUS,
     })
 
     // then
@@ -151,6 +178,7 @@ describe("buildCompletionContinuationState", () => {
     console.log(`postReductionBytes=${result.serializedBytes}`)
     expect(Buffer.byteLength(result.serialized, "utf8")).toBeLessThanOrEqual(24576)
     expect(result.serializedBytes).toBeLessThanOrEqual(COMPLETION_CONTINUATION_MAX_STATE_BYTES)
+    expect(result.state.previous).toEqual(AVAILABLE_PREVIOUS)
     expect(result.serialized).not.toContain("�")
     expect(JSON.stringify(JSON.parse(result.serialized))).toBe(result.serialized)
     expect(result.state.todo.items.every((item) => utf8ByteLength(item.content) <= COMPLETION_CONTINUATION_TODO_CONTENT_MAX_BYTES)).toBe(true)
@@ -201,9 +229,9 @@ describe("buildCompletionContinuationState", () => {
 
   test("#given core state sources #when auditing imports #then no OpenCode dependency is present", async () => {
     const sources = await Promise.all([
-      Bun.file(new URL("completion-continuation-state.ts", import.meta.url)).text(),
-      Bun.file(new URL("completion-continuation-state-budget.ts", import.meta.url)).text(),
-      Bun.file(new URL("completion-continuation-questions.ts", import.meta.url)).text(),
+      readFile(new URL("completion-continuation-state.ts", import.meta.url), "utf8"),
+      readFile(new URL("completion-continuation-state-budget.ts", import.meta.url), "utf8"),
+      readFile(new URL("completion-continuation-questions.ts", import.meta.url), "utf8"),
     ])
 
     expect(sources.join("\n")).not.toMatch(/@opencode-ai|omo-opencode/)
