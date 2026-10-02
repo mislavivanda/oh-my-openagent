@@ -10,3 +10,16 @@ todo	artifact	kind	description
 3	.omo/evidence/20260930-jev-w2-validity/task-3-previous-state-proof.txt	proof	Available and first-idle previous block shapes, genuine protected reduction byte counts, multibyte cap result, and no-real-API statement
 3	.omo/evidence/20260930-jev-w2-validity/task-3-verification.txt	gate-summary	Focused and package tests, neutrality guard, root typecheck and build, test:fast with 782 pass 0 fail, diagnostics, no-excuse audit, and per-file line counts
 3	.omo/evidence/20260930-jev-w2-validity/task-3-harness-neutrality.txt	empty-proof	Import and raw Bun grep command recorded with exit 1 and matching-line count 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-audit-and-qa.md	audit-summary	Full 18-fixture rule audit, corrected bases, bite proof, verification results, and no-further-contradiction conclusion
+2	.omo/evidence/20260930-jev-w2-validity/task-2-mock-after.txt	measurement	Mock after-state with progressing shift from 8/7/3 to 12/3/3 and zero network calls
+2	.omo/evidence/20260930-jev-w2-validity/task-2-consistency-bite-fail.log	red-proof	Temporary bad label made the named consistency test fail with exit 1
+2	.omo/evidence/20260930-jev-w2-validity/task-2-consistency-pass.log	green-proof	Consistency test passed after reverting the temporary defect, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-targeted-tests.log	test-log	Requested fixture and accuracy tests, 14 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-jev-core-tests.log	test-log	Full jev-core suite, 228 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-shared-core-guard.log	guard-log	Shared-core extraction guard, 3 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-typecheck.log	gate-log	Root typecheck, exit 0 with zero diagnostics
+2	.omo/evidence/20260930-jev-w2-validity/task-2-build.log	gate-log	Root build, exit 0 with all steps completed
+2	.omo/evidence/20260930-jev-w2-validity/task-2-test-fast.log	gate-log	Fast suite, 785 pass 0 fail across 90 files, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-file-lines.log	limit-proof	Per-file physical line loop, all three changed TypeScript files at most 250 lines
+2	.omo/evidence/20260930-jev-w2-validity/task-2-no-excuse.log	static-audit	TypeScript no-excuse audit found zero violations in three files
+2	.omo/evidence/20260930-jev-w2-validity/task-2-anti-circularity.log	empty-proof	Command recorded grep exit 1 and matching-line count 0 for decideCompletionContinuation fixture-source references

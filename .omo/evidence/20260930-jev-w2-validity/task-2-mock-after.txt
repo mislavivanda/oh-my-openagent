@@ -1,0 +1,30 @@
+TASK 2 - MOCK-PATH AFTER-STATE
+
+command: bun test packages/jev-core/src/completion-continuation-fixtures.test.ts packages/jev-core/src/completion-continuation-accuracy.test.ts
+exit_status=0
+mode=mock
+fixtureCount=18
+networkCallCount=0
+confidenceThreshold=0.8
+
+actually_complete:
+  true -> would_true: 5
+  false -> would_false: 11
+  unknown -> uncertain: 2
+
+progressing:
+  true -> would_true: 12
+  false -> would_false: 3
+  unknown -> uncertain: 3
+
+stuck:
+  true -> would_true: 2
+  false -> would_false: 13
+  unknown -> uncertain: 3
+
+progressing shift from task 1:
+  would_true: 8 -> 12
+  would_false: 7 -> 3
+  uncertain: 3 -> 3
+
+No real API call was made. The mock backend maps labels directly to 0.95, 0.05, and 0.50 probabilities.
