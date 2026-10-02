@@ -23,3 +23,16 @@ todo	artifact	kind	description
 2	.omo/evidence/20260930-jev-w2-validity/task-2-file-lines.log	limit-proof	Per-file physical line loop, all three changed TypeScript files at most 250 lines
 2	.omo/evidence/20260930-jev-w2-validity/task-2-no-excuse.log	static-audit	TypeScript no-excuse audit found zero violations in three files
 2	.omo/evidence/20260930-jev-w2-validity/task-2-anti-circularity.log	empty-proof	Command recorded grep exit 1 and matching-line count 0 for decideCompletionContinuation fixture-source references
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-tracker-followup.md	audit-summary	Semantic-versus-mechanical distinction, corrected stale label, full 18-fixture re-audit, bite proof, matrix shift, and verification
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-mock-after.txt	measurement	Mock progressing matrix moved from 12/3/3 to 13/2/3 with zero network calls
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-consistency-bite-fail.log	red-proof	Label-keyed rule failed on stale-todos-after-shipped-fix with exit 1
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-consistency-pass.log	green-proof	Sharpened consistency test passed after stale label correction, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-targeted-tests.log	test-log	Consistency, fixture, and mock accuracy tests, 18 pass 0 fail and zero network calls
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-jev-core-tests.log	test-log	Full jev-core suite, 229 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-shared-core-guard.log	guard-log	Shared-core extraction guard, 3 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-typecheck.log	gate-log	Root typecheck, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-build.log	gate-log	Root build, exit 0 with all steps completed
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-test-fast.log	gate-log	Fast suite, 786 pass 0 fail across 90 files, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-file-lines.log	limit-proof	Per-file physical line loop, changed TypeScript files have 110 and 88 lines
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-no-excuse.log	static-audit	TypeScript no-excuse audit found zero violations in two files
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-anti-circularity.log	empty-proof	Command recorded grep exit 1 and matching-line count 0 for fixture-source heuristic references

@@ -1,0 +1,30 @@
+TASK 2 - STALE-TRACKER FOLLOW-UP MOCK RESULT
+
+command: bun test packages/jev-core/src/completion-continuation-fixture-consistency.test.ts packages/jev-core/src/completion-continuation-fixtures.test.ts packages/jev-core/src/completion-continuation-accuracy.test.ts
+exit_status=0
+mode=mock
+fixtureCount=18
+networkCallCount=0
+confidenceThreshold=0.8
+
+progressing after the first todo-2 commit:
+  would_true=12
+  would_false=3
+  uncertain=3
+
+progressing after stale-tracker correction:
+  would_true=13
+  would_false=2
+  uncertain=3
+
+additional shift:
+  would_true: 12 -> 13
+  would_false: 3 -> 2
+  uncertain: 3 -> 3
+
+original todo-1 baseline to final:
+  would_true: 8 -> 13
+  would_false: 7 -> 2
+  uncertain: 3 -> 3
+
+No real API call was made. The mock backend maps semantic labels directly to 0.95, 0.05, and 0.50 probabilities.

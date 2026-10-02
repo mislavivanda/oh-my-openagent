@@ -47,6 +47,19 @@ describe("completion-continuation fixture line-45 consistency", () => {
     }
   })
 
+  test("#given a label claims completion #when label coherence is audited #then progressing cannot be false", () => {
+    for (const fixture of COMPLETION_CONTINUATION_FIXTURES) {
+      // given
+      const claimsCompletion = fixture.label.actuallyComplete === true
+
+      // when
+      const progressing = fixture.label.progressing
+
+      // then
+      if (claimsCompletion) expect(progressing, fixture.id).not.toBeFalse()
+    }
+  })
+
   test("#given the unchanged-next-idle shape #when stuck labels are audited #then the shape maps exactly to false false true", () => {
     for (const fixture of COMPLETION_CONTINUATION_FIXTURES) {
       // given

@@ -67,9 +67,9 @@ export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
       transcript: [{ role: "assistant", content: "The fix shipped and production verification passed; the todo was not updated.", synthetic: false }],
       diff: { files: [{ path: "src/fix.ts", additions: 5, deletions: 1 }] }, boulder: null,
     },
-    label: { actuallyComplete: true, progressing: false, stuck: false },
+    label: { actuallyComplete: true, progressing: true, stuck: false },
     cohorts: ["actually-complete", "stale-todos"], groundTruthSource: "hand-assigned",
-    labelBasis: "A reviewer hand-marked the verified shipped outcome as complete despite the explicitly stale todo snapshot.",
+    labelBasis: "A reviewer hand-marked the verified shipped outcome as semantically complete and progressing despite the explicitly stale todo snapshot. The accuracy fixture follows the shipped fix and passed production verification; the unchanged todo digest belongs to the live outcome store's mechanical mapping and does not govern this hand-assigned semantic label.",
   },
   {
     id: "promise-done-after-full-verification",
