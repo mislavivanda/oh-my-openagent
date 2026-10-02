@@ -86,6 +86,11 @@ export type CompletionContinuationOutcomeRecordSnapshot = {
   readonly appended: boolean
 }
 
+export type CompletionContinuationOutcomePreviousSnapshot = {
+  readonly snapshot: CompletionContinuationInputSnapshot
+  readonly continuationDispatched: boolean
+}
+
 export type CompletionContinuationOutcomeStoreInspection = {
   readonly sessionCount: number
   readonly recordCount: number
@@ -126,6 +131,9 @@ export type CompletionContinuationOutcomeStore = {
     handle: CompletionContinuationOutcomeHandle,
   ): CompletionContinuationOutcomeRecordSnapshot | undefined
   getSessionRecords(sessionID: string): readonly CompletionContinuationOutcomeRecordSnapshot[]
+  getLatestPreviousSnapshot(
+    sessionID: string,
+  ): CompletionContinuationOutcomePreviousSnapshot | undefined
   getCounters(): CompletionContinuationCounters
   inspect(): CompletionContinuationOutcomeStoreInspection
   dispose(): Promise<void>

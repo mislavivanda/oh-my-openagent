@@ -1,0 +1,5 @@
+{"check":"fixture anti-circularity","command":"grep -n decideCompletionContinuation packages/jev-core/src/completion-continuation-fixtures-primary.ts packages/jev-core/src/completion-continuation-fixtures-edge.ts","grep_exit_status":1,"matching_line_count":0}
+{"check":"literal question version","command":"grep -nE questionVersion:<literal> <todo-5 completion files>","grep_exit_status":1,"matching_line_count":0}
+{"check":"fixture label changes","command":"GIT_MASTER=1 git diff --unified=0 -- <fixture modules> | grep changed label lines","grep_exit_status":1,"matching_line_count":0}
+{"check":"confidence threshold changes","command":"GIT_MASTER=1 git diff --unified=0 -- <todo-5 files> | grep changed confidence_threshold lines","grep_exit_status":1,"matching_line_count":0}
+{"check":"forbidden added TypeScript patterns","command":"GIT_MASTER=1 git diff --unified=0 -- <todo-5 files> | grep added forbidden patterns","grep_exit_status":1,"matching_line_count":0}

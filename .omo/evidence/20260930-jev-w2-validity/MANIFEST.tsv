@@ -39,3 +39,17 @@ todo	artifact	kind	description
 4	.omo/evidence/20260930-jev-w2-validity/task-4-question-text-and-scope.md	question-proof	Version 2 full delta-question text, exact previous-field guidance, first-idle wording, independent-probability framing, and no-op barrel review
 4	.omo/evidence/20260930-jev-w2-validity/task-4-actually-complete-byte-identity.txt	empty-proof	Restricted actually_complete diff command recorded with exit 0, matching-line count 0, and empty output
 4	.omo/evidence/20260930-jev-w2-validity/task-4-verification.txt	gate-summary	Focused test 5 pass, jev-core 232 pass, neutrality guard 3 pass, root typecheck and build exit 0, test:fast 789 pass, diagnostics clean, and per-file limits clean
+5	.omo/evidence/20260930-jev-w2-validity/task-5-verification.md	gate-summary	Previous-idle wiring behavior, fixture coverage, all requested results, isolated OpenCode QA, and no-real-API statement
+5	.omo/evidence/20260930-jev-w2-validity/task-5-features-jev-tests.log	test-log	Full JEV adapter feature suite, 147 pass and 0 fail across 20 files
+5	.omo/evidence/20260930-jev-w2-validity/task-5-jev-core-tests.log	test-log	Full jev-core suite, 234 pass and 0 fail across 21 files with zero mock network calls
+5	.omo/evidence/20260930-jev-w2-validity/task-5-continuation-hook-tests.log	test-log	Continuation-hook regression suite, 147 pass and 0 fail across 21 files
+5	.omo/evidence/20260930-jev-w2-validity/task-5-inertness-proof.log	inertness-proof	Unchanged Part A byte trace and Part B runtime effects, 5 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2-validity/task-5-bun-runtime-audit.log	guard-log	OpenCode adapter Bun runtime audit, 1 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2-validity/task-5-opencode-coupling-audit.log	guard-log	OpenCode coupling audit, 2 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2-validity/task-5-typecheck.log	gate-log	Root typecheck exited 0
+5	.omo/evidence/20260930-jev-w2-validity/task-5-build.log	gate-log	Root build exited 0 with all steps completed
+5	.omo/evidence/20260930-jev-w2-validity/task-5-test-fast.log	gate-log	Fast suite, 795 pass and 0 fail across 92 files
+5	.omo/evidence/20260930-jev-w2-validity/task-5-file-lines.log	limit-proof	Per-file physical line loop kept all 12 changed TypeScript files at or below 250 lines
+5	.omo/evidence/20260930-jev-w2-validity/task-5-empty-proofs.log	empty-proof	Commands, grep statuses, and zero matching-line counts for labels, anti-circularity, question literals, threshold changes, and forbidden additions
+5	.omo/evidence/20260930-jev-w2-validity/task-5-opencode-qa.log	opencode-qa	Isolated OpenCode 1.18.32 health and SSE proof with host DB unchanged at 504 sessions
+5	.omo/evidence/20260930-jev-w2-validity/task-5-no-excuse.log	static-audit-warning	Optional audit reported seven inherited catch-narrowing warnings and no todo-5 introduced escape hatch

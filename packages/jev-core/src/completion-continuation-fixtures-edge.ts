@@ -1,4 +1,23 @@
 import type { CompletionContinuationFixture } from "./completion-continuation-fixtures"
+import type { CompletionContinuationPreviousState } from "./completion-continuation-previous-state"
+import {
+  buildCompletionContinuationState,
+  type CompletionContinuationStateInput,
+} from "./completion-continuation-state"
+
+function previous(
+  todos: CompletionContinuationStateInput["todos"],
+): CompletionContinuationPreviousState {
+  const state = buildCompletionContinuationState({ todos, transcript: [], diff: null, boulder: null }).state
+  return {
+    available: true,
+    todoStatusDigest: state.todo.statusDigest,
+    boulderDigest: null,
+    todo: { total: state.todo.total, completed: state.todo.completed },
+    boulder: null,
+    continuationDispatched: true,
+  }
+}
 
 export const COMPLETION_CONTINUATION_EDGE_FIXTURES = [
   {
@@ -10,6 +29,9 @@ export const COMPLETION_CONTINUATION_EDGE_FIXTURES = [
         { role: "user", content: "go on", synthetic: false },
       ],
       diff: null, boulder: null,
+      previous: previous([
+        { id: "t1", status: "pending", content: "Finish source review and report" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["go-on", "transcript-tail", "progressing"], groundTruthSource: "hand-assigned",
@@ -35,6 +57,10 @@ export const COMPLETION_CONTINUATION_EDGE_FIXTURES = [
       ],
       transcript: [{ role: "assistant", content: "La corrección está lista; ahora estoy ejecutando las pruebas restantes.", synthetic: false }],
       diff: { files: [{ path: "src/analizador.ts", additions: 13, deletions: 3 }] }, boulder: null,
+      previous: previous([
+        { id: "t1", status: "in_progress", content: "Corregir el analizador" },
+        { id: "t2", status: "pending", content: "Ejecutar las pruebas" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["multilingual", "progressing"], groundTruthSource: "hand-assigned",
@@ -49,6 +75,9 @@ export const COMPLETION_CONTINUATION_EDGE_FIXTURES = [
         { role: "assistant", content: "Authorization tests still fail and no patch has been applied.", synthetic: false },
       ],
       diff: { files: [] }, boulder: null,
+      previous: previous([
+        { id: "t1", status: "pending", content: "Fix the authorization defect" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: false, stuck: true },
     cohorts: ["adversarial", "stuck"], groundTruthSource: "hand-assigned",
@@ -66,6 +95,10 @@ export const COMPLETION_CONTINUATION_EDGE_FIXTURES = [
         { role: "assistant", content: "The patch is complete; the regression test is being added now.", synthetic: false },
       ],
       diff: { files: [{ path: "src/path-security.ts", additions: 19, deletions: 6 }] }, boulder: null,
+      previous: previous([
+        { id: "t1", status: "in_progress", content: "Patch path traversal" },
+        { id: "t2", status: "pending", content: "Add security regression test" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["adversarial", "progressing"], groundTruthSource: "hand-assigned",
@@ -122,6 +155,11 @@ export const COMPLETION_CONTINUATION_EDGE_FIXTURES = [
         path: `src/${"deep/".repeat(80)}file-${index}.ts`, additions: 2, deletions: 1,
       })) },
       boulder: { total: 40, completed: 10, remaining: 30, nextTaskTitle: "界".repeat(400) },
+      previous: previous(Array.from({ length: 40 }, (_, index) => ({
+        id: `oversized-${index}`,
+        status: index < 9 ? "completed" as const : index === 9 ? "in_progress" as const : "pending" as const,
+        content: `Task ${index}`,
+      }))),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["oversized-content", "progressing"], groundTruthSource: "hand-assigned",

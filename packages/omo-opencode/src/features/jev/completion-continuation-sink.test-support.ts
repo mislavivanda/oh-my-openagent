@@ -1,8 +1,9 @@
-import type {
-  CompletionContinuationCounterDelta,
-  CompletionContinuationCounters,
-  CompletionContinuationObservation,
-  CompletionContinuationPreInputSkips,
+import {
+  COMPLETION_CONTINUATION_QUESTION_VERSION,
+  type CompletionContinuationCounterDelta,
+  type CompletionContinuationCounters,
+  type CompletionContinuationObservation,
+  type CompletionContinuationPreInputSkips,
 } from "@oh-my-opencode/jev-core"
 import type { CompletionContinuationProcessIdentity } from "./completion-continuation-sink"
 import { observationProcessId } from "./observation-process-identity"
@@ -49,7 +50,7 @@ export function completionContinuationObservation(
   return {
     kind: "observation",
     schemaVersion: 1,
-    questionVersion: 1,
+    questionVersion: COMPLETION_CONTINUATION_QUESTION_VERSION,
     recordedAt: "2026-09-30T12:00:00.000Z",
     sessionID: "ses_w2",
     ordinal: 1,

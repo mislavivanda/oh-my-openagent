@@ -1,4 +1,23 @@
 import type { CompletionContinuationFixture } from "./completion-continuation-fixtures"
+import type { CompletionContinuationPreviousState } from "./completion-continuation-previous-state"
+import {
+  buildCompletionContinuationState,
+  type CompletionContinuationStateInput,
+} from "./completion-continuation-state"
+
+function previous(
+  todos: CompletionContinuationStateInput["todos"],
+): CompletionContinuationPreviousState {
+  const state = buildCompletionContinuationState({ todos, transcript: [], diff: null, boulder: null }).state
+  return {
+    available: true,
+    todoStatusDigest: state.todo.statusDigest,
+    boulderDigest: null,
+    todo: { total: state.todo.total, completed: state.todo.completed },
+    boulder: null,
+    continuationDispatched: true,
+  }
+}
 
 export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
   {
@@ -7,6 +26,7 @@ export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
       todos: [{ id: "t1", status: "completed", content: "Run release verification" }],
       transcript: [{ role: "assistant", content: "Verification passed and the requested change is complete.", synthetic: false }],
       diff: { files: [{ path: "src/release.ts", additions: 8, deletions: 2 }] }, boulder: null,
+      previous: { available: false, reason: "first_idle" },
     },
     label: { actuallyComplete: true, progressing: true, stuck: false },
     cohorts: ["actually-complete"], groundTruthSource: "hand-assigned",
@@ -31,6 +51,10 @@ export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
       ],
       transcript: [{ role: "assistant", content: "The parser is implemented; I am adding the remaining tests now.", synthetic: false }],
       diff: { files: [{ path: "src/parser.ts", additions: 22, deletions: 4 }] }, boulder: null,
+      previous: previous([
+        { id: "t1", status: "in_progress", content: "Implement parser" },
+        { id: "t2", status: "pending", content: "Add parser regression tests" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["progressing"], groundTruthSource: "hand-assigned",
@@ -45,6 +69,9 @@ export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
         { role: "assistant", content: "No tracked state changed before idle.", synthetic: false },
       ],
       diff: { files: [] }, boulder: null,
+      previous: previous([
+        { id: "t1", status: "in_progress", content: "Repair the flaky test" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: false, stuck: true },
     cohorts: ["stuck"], groundTruthSource: "hand-assigned",
@@ -55,6 +82,7 @@ export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
     input: {
       todos: [], transcript: [{ role: "assistant", content: "I found the cause and am preparing the patch next.", synthetic: false }],
       diff: null, boulder: null,
+      previous: previous([]),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["no-todos", "progressing"], groundTruthSource: "hand-assigned",
@@ -88,6 +116,9 @@ export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
       todos: [{ id: "t1", status: "in_progress", content: "Finish completion parser tests" }],
       transcript: [{ role: "assistant", content: "The string <promise>DONE</promise> in documentation is an example, not a completion claim. Tests remain.", synthetic: false }],
       diff: { files: [{ path: "docs/example.md", additions: 4, deletions: 0 }] }, boulder: null,
+      previous: previous([
+        { id: "t1", status: "pending", content: "Finish completion parser tests" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["false-promise-text", "progressing"], groundTruthSource: "hand-assigned",
@@ -102,6 +133,9 @@ export const COMPLETION_CONTINUATION_PRIMARY_FIXTURES = [
         { role: "user", content: "continue", synthetic: false },
       ],
       diff: { files: [{ path: "src/regression.test.ts", additions: 18, deletions: 0 }] }, boulder: null,
+      previous: previous([
+        { id: "t1", status: "pending", content: "Implement the failing regression" },
+      ]),
     },
     label: { actuallyComplete: false, progressing: true, stuck: false },
     cohorts: ["continue", "transcript-tail", "progressing"], groundTruthSource: "hand-assigned",
