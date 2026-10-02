@@ -1,0 +1,40 @@
+TODO 6 - PER-FILE PHYSICAL LINE LIMIT (250), PER-FILE LOOP
+command: for each path from 'git diff --name-only jev/w2...HEAD' plus each todo-6 artifact,
+         run exactly one 'wc -l < <file>'. No multi-file wc, no awk aggregation.
+
+SECTION 1: SOURCE AND TEST FILES (the 250-line architectural ceiling applies here)
+  packages/jev-core/src/completion-continuation-fixture-consistency.test.ts                                88 ok
+  packages/jev-core/src/completion-continuation-fixtures-edge.ts                                          168 ok
+  packages/jev-core/src/completion-continuation-fixtures-previous.test.ts                                  25 ok
+  packages/jev-core/src/completion-continuation-fixtures-primary.ts                                       144 ok
+  packages/jev-core/src/completion-continuation-previous-state.ts                                          24 ok
+  packages/jev-core/src/completion-continuation-questions.test.ts                                          80 ok
+  packages/jev-core/src/completion-continuation-questions.ts                                               49 ok
+  packages/jev-core/src/completion-continuation-state.test.ts                                             239 ok
+  packages/jev-core/src/completion-continuation-state.ts                                                  238 ok
+  packages/jev-core/src/index.ts                                                                          148 ok
+  packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts                              246 ok
+  packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts                    244 ok
+  packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.ts                         249 ok
+  packages/omo-opencode/src/features/jev/completion-continuation-outcome-types.ts                         221 ok
+  packages/omo-opencode/src/features/jev/completion-continuation-previous.test.ts                         194 ok
+  packages/omo-opencode/src/features/jev/completion-continuation-previous.ts                               40 ok
+  packages/omo-opencode/src/features/jev/completion-continuation-sink.test-support.ts                     127 ok
+  packages/omo-opencode/src/features/jev/completion-continuation.test-support.ts                          178 ok
+  packages/omo-opencode/src/features/jev/index.ts                                                         142 ok
+  sourceFilesChecked=19
+  sourceViolations=0
+
+SECTION 2: TODO-6 ARTIFACTS I AM ADDING IN THIS COMMIT
+  .omo/evidence/20260930-jev-w2-validity/task-6-mock-after.txt                                            179 ok
+  todo6ArtifactsChecked=1
+  todo6ArtifactViolations=0
+
+SECTION 3: PRE-EXISTING EVIDENCE LOGS ABOVE 250 LINES (reported, not introduced by todo 6)
+  .omo/evidence/20260930-jev-w2-validity/task-2-build.log                                                 300 committed-by-earlier-todo
+  .omo/evidence/20260930-jev-w2-validity/task-2-stale-build.log                                           300 committed-by-earlier-todo
+  .omo/evidence/20260930-jev-w2-validity/task-5-build.log                                                 298 committed-by-earlier-todo
+  preExistingOver250=3
+  note: these are verbatim captured 'bun run build' stdout logs landed by todos 2 and 5.
+  They are raw tool output, not authored code. Truncating them would destroy the evidence they are.
+  Todo 6 introduces none and authors no file above 250 lines.

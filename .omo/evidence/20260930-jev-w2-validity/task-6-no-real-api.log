@@ -1,0 +1,40 @@
+TODO 6 - NO REAL API CALL: EMPTY PROOFS
+Each check records the exact command, its exit status, and its matching-line count.
+A no-match grep exits 1, and exit 1 with 0 matching lines IS the proof.
+
+CHECK: the real-API env var is absent from this process environment
+  command: bash -c env | grep -E "^JEV_W2_REAL_API="
+  exit=1 matchingLines=0
+    (no output)
+
+CHECK: the re-arm env var is absent from this process environment
+  command: bash -c env | grep -E "^JEV_W2_REAL_API_REARM="
+  exit=1 matchingLines=0
+    (no output)
+
+CHECK: neither name appears anywhere in the environment under any prefix
+  command: bash -c env | grep -i "JEV_W2_REAL"
+  exit=1 matchingLines=0
+    (no output)
+
+CHECK: the mock after-state artifact records zero network calls
+  command: bash -c grep -c "networkCallCount=0" .omo/evidence/20260930-jev-w2-validity/task-6-mock-after.txt
+  exit=0 matchingLines=1
+    2
+
+CHECK: no todo-6 artifact contains a would-be API key, token, or auth header
+  command: bash -c grep -rniE "api[_-]?key|bearer |authorization:|sk-[A-Za-z0-9]{10}" .omo/evidence/20260930-jev-w2-validity/task-6-* 2>/dev/null
+  exit=1 matchingLines=0
+    (no output)
+
+CHECK: the harness reported mode and network count in the todo-6 run
+  command: grep -nE 'mode=|networkCallCount=' .omo/evidence/20260930-jev-w2-validity/task-6-mock-after.txt
+    13:  mode=mock
+    18:  networkCallCount=0 (zero proves no API call left the process)
+    179:  networkCallCount=0.
+
+CONCLUSION
+  Todo 6 made ZERO real API calls. The accuracy harness ran mode=mock with networkCallCount=0,
+  which is enforced inside runAccuracy() by a counting fetch that throws UnexpectedNetworkCallError
+  on any outbound request. JEV_W2_REAL_API stayed unset and JEV_W2_REAL_API_REARM was never set.
+  The real-API re-measure is todo 7, which is BLOCKED pending explicit user authorization.

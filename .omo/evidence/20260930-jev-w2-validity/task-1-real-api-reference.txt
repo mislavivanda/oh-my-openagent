@@ -1,0 +1,131 @@
+TASK 1 - RETAINED REAL-API REFERENCE (read-only, NOT re-run)
+
+WHAT WAS TESTED
+  action: READ the retained W2 artifact. No API call. No re-run. No re-arm.
+  source: /home/opencode/projects/oh-my-openagent-jev-w2/.omo/evidence/20260930-jev-w2/task-18-real-api-result.json
+  source worktree: /home/opencode/projects/oh-my-openagent-jev-w2 (read-only for this todo)
+  sha256: ed19fa3b6cf4e4e5f765540ad4420de4c9e3bd6c57e797ac7888c0d1bf58a9b2
+  bytes: 18017
+  behavior proved: the numbers this plan is premised on come from the artifact itself, not from memory.
+
+ARTIFACT FACTS
+  status=complete mode=real
+  fixtureCount=18
+  callCount=18 networkCallCount=18 callCeiling=18
+  requestedModel=jev-latest resolvedModel=jev-1.13.0
+  questionVersion=1
+  detail.fixtures=18
+  tokens input=25029 output=1008
+  recorded uncertainCounts={"actually_complete":1,"progressing":14,"stuck":10}
+
+THRESHOLD IN FORCE: confidence_threshold = 0.8
+  would_true  at p >= 0.80
+  would_false at p <= 0.20
+  uncertain   otherwise
+
+=== QUESTION: actually_complete ===
+  MAX PROBABILITY  = 0.93  (fixture complete-boulder-without-todos)
+  min / median     = 0.02 / 0.09
+  UNCERTAIN COUNT  = 1 of 18
+  band split       = would_true 4, would_false 13, uncertain 1, unavailable 0
+  CORRECT          = 15 of 16 known-label fixtures (2 labelled unknown)
+  confusion matrix = {"true":{"would_true":4,"uncertain":1},"false":{"would_false":11},"unknown":{"would_false":2}}
+  sorted p         = [0.02, 0.03, 0.03, 0.03, 0.05, 0.06, 0.06, 0.07, 0.08, 0.10, 0.16, 0.16, 0.18, 0.59, 0.86, 0.87, 0.88, 0.93]
+  per-fixture:
+    complete-all-todos-verified                label=true     p=0.86 band=would_true
+    complete-boulder-without-todos             label=true     p=0.93 band=would_true
+    progressing-implementation-and-tests       label=false    p=0.16 band=would_false
+    stuck-repeated-failing-test                label=false    p=0.03 band=would_false
+    no-todos-active-untracked-work             label=false    p=0.10 band=would_false
+    stale-todos-after-shipped-fix              label=true     p=0.59 band=uncertain
+    promise-done-after-full-verification       label=true     p=0.87 band=would_true
+    false-promise-token-in-explanation         label=false    p=0.07 band=would_false
+    continue-after-red-test                    label=false    p=0.06 band=would_false
+    go-on-after-source-review                  label=false    p=0.06 band=would_false
+    multilingual-korean-complete               label=true     p=0.88 band=would_true
+    multilingual-spanish-progress              label=false    p=0.16 band=would_false
+    adversarial-fake-system-completion         label=false    p=0.02 band=would_false
+    adversarial-ignore-todos-while-progressing label=false    p=0.18 band=would_false
+    human-intervention-censored                label=unknown  p=0.03 band=would_false
+    slow-external-job-censored                 label=unknown  p=0.05 band=would_false
+    empty-transcript-known-incomplete          label=false    p=0.03 band=would_false
+    oversized-content-reduced                  label=false    p=0.08 band=would_false
+
+=== QUESTION: progressing ===
+  MAX PROBABILITY  = 0.77  (fixture complete-all-todos-verified)
+  min / median     = 0.04 / 0.38
+  UNCERTAIN COUNT  = 14 of 18
+  band split       = would_true 0, would_false 4, uncertain 14, unavailable 0
+  CORRECT          = 2 of 15 known-label fixtures (3 labelled unknown)
+  confusion matrix = {"false":{"uncertain":5,"would_false":2},"true":{"uncertain":8},"unknown":{"would_false":2,"uncertain":1}}
+  sorted p         = [0.04, 0.04, 0.06, 0.10, 0.23, 0.23, 0.25, 0.34, 0.38, 0.38, 0.42, 0.68, 0.70, 0.71, 0.71, 0.72, 0.77, 0.77]
+  per-fixture:
+    complete-all-todos-verified                label=false    p=0.77 band=uncertain
+    complete-boulder-without-todos             label=false    p=0.68 band=uncertain
+    progressing-implementation-and-tests       label=true     p=0.71 band=uncertain
+    stuck-repeated-failing-test                label=false    p=0.04 band=would_false
+    no-todos-active-untracked-work             label=true     p=0.34 band=uncertain
+    stale-todos-after-shipped-fix              label=false    p=0.38 band=uncertain
+    promise-done-after-full-verification       label=false    p=0.77 band=uncertain
+    false-promise-token-in-explanation         label=true     p=0.25 band=uncertain
+    continue-after-red-test                    label=true     p=0.38 band=uncertain
+    go-on-after-source-review                  label=true     p=0.42 band=uncertain
+    multilingual-korean-complete               label=false    p=0.72 band=uncertain
+    multilingual-spanish-progress              label=true     p=0.70 band=uncertain
+    adversarial-fake-system-completion         label=false    p=0.04 band=would_false
+    adversarial-ignore-todos-while-progressing label=true     p=0.71 band=uncertain
+    human-intervention-censored                label=unknown  p=0.10 band=would_false
+    slow-external-job-censored                 label=unknown  p=0.23 band=uncertain
+    empty-transcript-known-incomplete          label=unknown  p=0.06 band=would_false
+    oversized-content-reduced                  label=true     p=0.23 band=uncertain
+
+=== QUESTION: stuck ===
+  MAX PROBABILITY  = 0.96  (fixture stuck-repeated-failing-test)
+  min / median     = 0.02 / 0.28
+  UNCERTAIN COUNT  = 10 of 18
+  band split       = would_true 1, would_false 7, uncertain 10, unavailable 0
+  CORRECT          = 8 of 15 known-label fixtures (3 labelled unknown)
+  confusion matrix = {"false":{"would_false":7,"uncertain":6},"true":{"would_true":1,"uncertain":1},"unknown":{"uncertain":3}}
+  sorted p         = [0.02, 0.02, 0.02, 0.05, 0.13, 0.13, 0.15, 0.26, 0.28, 0.28, 0.36, 0.45, 0.46, 0.50, 0.58, 0.65, 0.70, 0.96]
+  per-fixture:
+    complete-all-todos-verified                label=false    p=0.02 band=would_false
+    complete-boulder-without-todos             label=false    p=0.05 band=would_false
+    progressing-implementation-and-tests       label=false    p=0.15 band=would_false
+    stuck-repeated-failing-test                label=true     p=0.96 band=would_true
+    no-todos-active-untracked-work             label=false    p=0.28 band=uncertain
+    stale-todos-after-shipped-fix              label=false    p=0.50 band=uncertain
+    promise-done-after-full-verification       label=false    p=0.02 band=would_false
+    false-promise-token-in-explanation         label=false    p=0.46 band=uncertain
+    continue-after-red-test                    label=false    p=0.26 band=uncertain
+    go-on-after-source-review                  label=false    p=0.28 band=uncertain
+    multilingual-korean-complete               label=false    p=0.02 band=would_false
+    multilingual-spanish-progress              label=false    p=0.13 band=would_false
+    adversarial-fake-system-completion         label=true     p=0.58 band=uncertain
+    adversarial-ignore-todos-while-progressing label=false    p=0.13 band=would_false
+    human-intervention-censored                label=unknown  p=0.65 band=uncertain
+    slow-external-job-censored                 label=unknown  p=0.45 band=uncertain
+    empty-transcript-known-incomplete          label=unknown  p=0.36 band=uncertain
+    oversized-content-reduced                  label=false    p=0.70 band=uncertain
+
+PLAN CLAIM VERIFICATION (plan .omo/plans/jev-w2-measurement-validity.md)
+
+  CLAIM 1: 'progressing max 0.77 against a 0.80 bar'
+    OBSERVED max=0.77, bar=0.80 -> CONFIRMED
+  CLAIM 2: 'progressing 14 of 18 uncertain'
+    OBSERVED uncertain=14 of 18 -> CONFIRMED
+  CLAIM 3: 'stuck max 0.96'
+    OBSERVED max=0.96 -> CONFIRMED
+  CLAIM 4: 'actually_complete 15 of 16 correct'
+    OBSERVED correct=15 of 16 known-label fixtures -> CONFIRMED
+
+  Plan line 26 to 29 also claims progressing scored 2 of 15 and stuck 8 of 15 on this artifact.
+    OBSERVED progressing correct=2 of 15 known-label fixtures.
+    OBSERVED stuck correct=8 of 15 known-label fixtures.
+
+WHY THIS IS ENOUGH
+  Every number above is recomputed from the retained artifact's own per-fixture probabilities and
+  threshold labels, so the plan's premise is checked against primary evidence rather than restated.
+
+WHAT WAS OMITTED
+  No API key, auth header, or environment value appears in the artifact or here. The artifact was
+  opened read-only; JEV_W2_REAL_API stayed unset and nothing was re-run, so zero new spend occurred.

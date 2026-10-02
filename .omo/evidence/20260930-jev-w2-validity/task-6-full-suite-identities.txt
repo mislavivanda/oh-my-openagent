@@ -1,0 +1,55 @@
+TODO 6 - FULL SUITE FAILING IDENTITIES, BASELINE vs OBSERVED
+
+OBSERVED RUN
+  command: env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+  cwd: /home/opencode/projects/oh-my-openagent-jev-w2v   branch: jev/w2-validity
+  exit status: 1   totals: 13121 pass, 3 skip, 7 fail, 1 snapshot, 80050 expect() calls
+  scope: Ran 13131 tests across 1723 files. [124.73s]
+
+BASELINE
+  file: oh-my-openagent-jev-w2/.omo/evidence/20260930-jev-w2/task-1-full-suite-failures.txt
+  (read-only from the parent W2 worktree; nothing there was modified)
+
+NORMALIZATION APPLIED TO BOTH SIDES
+  sed -E 's/ \[[0-9.]+m?s\]$//' <file> | sort -u
+  Rationale: bun's per-test durations are non-deterministic, so a literal byte diff could only
+  pass by luck. Durations are stripped from BOTH sides; no baseline duration is pasted onto the
+  observed output.
+
+SECTION A: OBSERVED RAW FAIL LINES WITH THIS RUN'S OWN DURATIONS (7 lines)
+  (fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance [0.46ms]
+  (fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter [0.29ms]
+  (fail) auto-update-checker/checker > getLatestVersion > accepts latest channel [0.14ms]
+  (fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest) [0.13ms]
+  (fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing [0.09ms]
+  (fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status [0.11ms]
+  (fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing [0.35ms]
+
+SECTION B: OBSERVED IDENTITIES, DURATION-STRIPPED AND SORTED (7 lines)
+  (fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter
+  (fail) auto-update-checker/checker > getLatestVersion > accepts latest channel
+  (fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+  (fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+  (fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+  (fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+  (fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+
+SECTION C: BASELINE IDENTITIES, DURATION-STRIPPED AND SORTED (7 lines)
+  (fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter
+  (fail) auto-update-checker/checker > getLatestVersion > accepts latest channel
+  (fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+  (fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+  (fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+  (fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+  (fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+
+SECTION D: THE DIFF
+  command: diff <baseline identities> <observed identities>
+  exit status: 0
+  output lines: 0
+  (no output: the two identity sets are equal)
+
+VERDICT
+  baselineIdentities=7  observedIdentities=7  identityDiffLines=0
+  Requirement was exactly 7 on each side and an empty diff. Met. This branch adds no failure
+  and fixes none, across 13131 tests in 1723 files.
