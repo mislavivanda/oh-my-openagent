@@ -1,0 +1,21 @@
+TASK 7 - POST-RUN GUARD RE-ARM PROOF (no new spend)
+
+WHAT WAS TESTED
+  command: JEV_W2_REAL_API=1 bun test packages/jev-core/src/completion-continuation-accuracy.test.ts
+  env: JEV_W2_REAL_API_REARM deliberately UNSET
+  behavior proved: with the version-2 artifact now on disk, the persistent guard reports it and spends nothing
+
+OBSERVED
+  exit=0
+  real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1 artifact=/home/opencode/projects/oh-my-openagent-jev-w2v/.omo/evidence/20260930-jev-w2-validity/task-7-real-api-result-v2.json
+  real-api status=complete callCount=18 httpRequests=18 ceiling=18 resolvedModel=jev-1.13.0 questionVersion=2 completed=18
+  8 pass
+  0 fail
+  the guard now points at the version-2 artifact, so the version-2 budget is also spend-protected
+
+WHY IT IS ENOUGH
+  Re-arming is the only route to another paid call, and it requires JEV_W2_REAL_API_REARM=1 explicitly.
+  The version-1 artifact remains the fallback guard, so neither version can be re-spent by accident.
+
+WHAT WAS OMITTED
+  No credential, env dump, or auth header is printed; only the harness summary lines are copied.

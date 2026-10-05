@@ -9,7 +9,8 @@ import { PAID_CALL_CEILING, PaidCallCeilingError, RequestBudget, UnexpectedNetwo
 import { readRetainedRealBaseline, runMissingKeyProbe, runRealCompletionContinuationBaseline } from "./completion-continuation-accuracy-real-run"
 import { createMockDecisionBackend } from "./mock-backend"
 const ARTIFACT_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-7-accuracy-result.json")
-const REAL_ARTIFACT_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-18-real-api-result.json")
+const REAL_ARTIFACT_V1_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-18-real-api-result.json")
+const REAL_ARTIFACT_PATH = join(process.cwd(), `.omo/evidence/20260930-jev-w2-validity/task-7-real-api-result-v${COMPLETION_CONTINUATION_QUESTION_VERSION}.json`)
 const REAL_API_REQUESTED = process.env.JEV_W2_REAL_API === "1"
 const REAL_API_KEY = process.env.TYPESAFE_API_KEY?.trim() ?? ""
 const REAL_TIMEOUT_MS = 15_000
@@ -128,13 +129,15 @@ describe("completion-continuation accuracy harness", () => {
       console.log(`real-api baseline skipped realApiRequested=${REAL_API_REQUESTED} keyPresent=${REAL_API_KEY !== ""}`)
       return
     }
-    const retained = await readRetainedRealBaseline(REAL_ARTIFACT_PATH)
+    const currentVersion = await readRetainedRealBaseline(REAL_ARTIFACT_PATH)
+    const retainedPath = currentVersion !== null ? REAL_ARTIFACT_PATH : REAL_ARTIFACT_V1_PATH
+    const retained = currentVersion ?? await readRetainedRealBaseline(REAL_ARTIFACT_V1_PATH)
     if (retained !== null && retained.mode === "real" && process.env.JEV_W2_REAL_API_REARM !== "1") {
       expect(["complete", "partial"]).toContain(retained.status)
       expect(retained.callCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
       expect(retained.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
       expect(retained.resolvedModel).not.toBe("jev-latest")
-      console.log(`real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1 artifact=${REAL_ARTIFACT_PATH}`)
+      console.log(`real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1 artifact=${retainedPath}`)
       console.log(`real-api status=${retained.status} callCount=${retained.callCount} httpRequests=${retained.networkCallCount} ceiling=${retained.callCeiling} resolvedModel=${retained.resolvedModel} questionVersion=${retained.questionVersion} completed=${retained.completedCount}`)
       console.log(retained.raw)
       return

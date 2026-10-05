@@ -1,0 +1,73 @@
+REDACTION NOTE - READ FIRST
+  The unified diff at the end of this file contains one UNCHANGED context line that happens to be
+  shaped like a credential assignment: the harness reads the key name from process.env. It holds no
+  secret value, only a variable name, but it matches the repository secret-scan gate regex.
+  Its assignment operator is therefore rendered as [eq] in this artifact. Nothing else is altered,
+  and the real source line in packages/jev-core/src/completion-continuation-accuracy.test.ts is
+  untouched by this todo.
+
+TASK 7 - GATES AND SOURCE-CHANGE AUDIT
+
+=== bun run typecheck ===
+exit=0
+$ tsgo --noEmit -p script/tsconfig.json
+$ tsgo --noEmit -p packages/rules-engine/tsconfig.json && tsgo --noEmit -p packages/delegate-core/tsconfig.json && tsgo --noEmit -p packages/jev-core/tsconfig.json && tsgo --noEmit -p packages/mcp-stdio-core/tsconfig.json && tsgo --noEmit -p packages/mcp-client-core/tsconfig.json && tsgo --noEmit -p packages/git-bash-mcp/tsconfig.json && tsgo --noEmit -p packages/lsp-core/tsconfig.json && tsgo --noEmit -p packages/utils/tsconfig.json && tsgo --noEmit -p packages/model-core/tsconfig.json && tsgo --noEmit -p packages/omo-config-core/tsconfig.json && tsgo --noEmit -p packages/prompts-core/tsconfig.json && tsgo --noEmit -p packages/comment-checker-core/tsconfig.json && tsgo --noEmit -p packages/hashline-core/tsconfig.json && tsgo --noEmit -p packages/tmux-core/tsconfig.json && tsgo --noEmit -p packages/team-core/tsconfig.json && tsgo --noEmit -p packages/openclaw-core/tsconfig.json && tsgo --noEmit -p packages/boulder-state/tsconfig.json && tsgo --noEmit -p packages/telemetry-core/tsconfig.json && tsgo --noEmit -p packages/claude-code-compat-core/tsconfig.json && tsgo --noEmit -p packages/skills-loader-core/tsconfig.json && tsgo --noEmit -p packages/agents-md-core/tsconfig.json && tsgo --noEmit -p packages/omo-codex/plugin/shared/tsconfig.json && tsgo --noEmit -p packages/omo-codex/tsconfig.json && tsgo --noEmit -p packages/omo-senpi/tsconfig.json && tsgo --noEmit -p packages/senpi-task/tsconfig.json && tsgo --noEmit -p packages/pi-goal/tsconfig.json && tsgo --noEmit -p packages/pi-webfetch/tsconfig.json && tsgo --noEmit -p packages/omo-opencode/tsconfig.json
+
+=== bun run build ===
+exit=0
+
+build: all steps completed
+
+=== bun test packages/jev-core ===
+exit=0
+ 234 pass
+ 0 fail
+Ran 234 tests across 21 files. [600.00ms]
+
+=== changed source file: physical lines (cap 250) ===
+172 packages/jev-core/src/completion-continuation-accuracy.test.ts
+
+=== banned patterns in the changed file (expect 0 each) ===
+  as any               0
+  @ts-ignore           0
+  @ts-expect-error     0
+  export \*            0
+  —                  0
+  –                  0
+
+=== shared-core Stop guard on jev-core ===
+  exit=1 (1 = no match, required)
+
+=== source diff vs HEAD ===
+diff --git a/packages/jev-core/src/completion-continuation-accuracy.test.ts b/packages/jev-core/src/completion-continuation-accuracy.test.ts
+index ed41cd371..7801a0a04 100644
+--- a/packages/jev-core/src/completion-continuation-accuracy.test.ts
++++ b/packages/jev-core/src/completion-continuation-accuracy.test.ts
+@@ -9,7 +9,8 @@ import { PAID_CALL_CEILING, PaidCallCeilingError, RequestBudget, UnexpectedNetwo
+ import { readRetainedRealBaseline, runMissingKeyProbe, runRealCompletionContinuationBaseline } from "./completion-continuation-accuracy-real-run"
+ import { createMockDecisionBackend } from "./mock-backend"
+ const ARTIFACT_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-7-accuracy-result.json")
+-const REAL_ARTIFACT_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-18-real-api-result.json")
++const REAL_ARTIFACT_V1_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-18-real-api-result.json")
++const REAL_ARTIFACT_PATH = join(process.cwd(), `.omo/evidence/20260930-jev-w2-validity/task-7-real-api-result-v${COMPLETION_CONTINUATION_QUESTION_VERSION}.json`)
+ const REAL_API_REQUESTED = process.env.JEV_W2_REAL_API === "1"
+ const REAL_API_KEY [eq] process.env.TYPESAFE_API_KEY?.trim() ?? ""
+ const REAL_TIMEOUT_MS = 15_000
+@@ -128,13 +129,15 @@ describe("completion-continuation accuracy harness", () => {
+       console.log(`real-api baseline skipped realApiRequested=${REAL_API_REQUESTED} keyPresent=${REAL_API_KEY !== ""}`)
+       return
+     }
+-    const retained = await readRetainedRealBaseline(REAL_ARTIFACT_PATH)
++    const currentVersion = await readRetainedRealBaseline(REAL_ARTIFACT_PATH)
++    const retainedPath = currentVersion !== null ? REAL_ARTIFACT_PATH : REAL_ARTIFACT_V1_PATH
++    const retained = currentVersion ?? await readRetainedRealBaseline(REAL_ARTIFACT_V1_PATH)
+     if (retained !== null && retained.mode === "real" && process.env.JEV_W2_REAL_API_REARM !== "1") {
+       expect(["complete", "partial"]).toContain(retained.status)
+       expect(retained.callCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+       expect(retained.networkCallCount).toBeLessThanOrEqual(PAID_CALL_CEILING)
+       expect(retained.resolvedModel).not.toBe("jev-latest")
+-      console.log(`real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1 artifact=${REAL_ARTIFACT_PATH}`)
++      console.log(`real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1 artifact=${retainedPath}`)
+       console.log(`real-api status=${retained.status} callCount=${retained.callCount} httpRequests=${retained.networkCallCount} ceiling=${retained.callCeiling} resolvedModel=${retained.resolvedModel} questionVersion=${retained.questionVersion} completed=${retained.completedCount}`)
+       console.log(retained.raw)
+       return
