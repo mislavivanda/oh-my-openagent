@@ -1,0 +1,6 @@
+COMMAND: per-receipt exact PID kill -0 and per-port /dev/tcp checks; no global process matcher
+TOTAL_PID_RECEIPTS: 551
+ALIVE_MATCHING_LINE_COUNT: 0
+TOTAL_PORT_RECEIPTS: 6
+OPEN_MATCHING_LINE_COUNT: 0
+EXIT_STATUS: 0

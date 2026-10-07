@@ -1,0 +1,21 @@
+COMMAND: bun env guard; bash .omo/evidence/20260930-jev-w2/task-19-drive.sh --drive interactive --wire enabled --sandbox /tmp/opencode/jev-w2c-task6-interactive-sandbox --receipts /tmp/opencode/jev-w2c-task6-interactive-receipts --keep
+JEV_W2_REAL_API=UNSET
+JEV_W2_REAL_API_REARM=UNSET
+wire=enabled
+drive=interactive
+turns=29
+session_id=ses_eec12bcc1ffe6YWmzrhwGNgqIy
+main_session_observations=31
+observed=5
+censored=26
+closure_partition={"human_intervention":23,"session_deleted":1,"timeout":2,"tracked_work_complete":3,"tracked_work_progressed":1,"unchanged_next_idle":1}
+observations=545
+filled_three=542
+fake-model attempts=2 elapsed_ms=112
+fake-jev attempts=1 elapsed_ms=6
+opencode attempts=9 elapsed_ms=1861
+real_db_before=558 real_db_after=558
+real_omo_manifest_excluded_ambient=codegraph/worker-sweep.stamp codegraph/zombie-sweep.stamp lsp-daemon/lsp-proxy-sweep.stamp
+real_omo_manifest_diff_lines=0
+real_omo_jev_before=absent real_omo_jev_after=absent
+EXIT_STATUS: 0

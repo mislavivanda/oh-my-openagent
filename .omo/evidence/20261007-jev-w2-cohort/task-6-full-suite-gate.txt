@@ -1,0 +1,18 @@
+COMMAND: env -u OPENCODE_SERVER_PASSWORD -u JEV_W2_REAL_API -u JEV_W2_REAL_API_REARM bun --no-env-file test --timeout 20000 > /tmp/opencode/jev-w2c-task6-full-suite-isolated.txt 2>&1
+SUITE_EXIT_STATUS: 1
+FAIL_GREP_COMMAND: grep '^(fail)' /tmp/opencode/jev-w2c-task6-full-suite-isolated.txt
+FAIL_GREP_EXIT_STATUS: 0
+RAW_FAIL_MATCHING_LINE_COUNT: 7
+NORMALIZER: sed -E 's/ \[[0-9.]+m?s\]$/' | sort -u
+BASELINE: .omo/evidence/20260930-jev-w2/F2R-full-suite-failures.txt (canonical seven-identity baseline; the plan-named task-1 alias is absent)
+NORMALIZED_IDENTITY_COUNT: 7
+DIFF_EXIT_STATUS: 0
+DIFF_MATCHING_LINE_COUNT: 0
+NORMALIZED IDENTITIES:
+(fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter
+(fail) auto-update-checker/checker > getLatestVersion > accepts latest channel
+(fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+(fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+(fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+(fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+(fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance

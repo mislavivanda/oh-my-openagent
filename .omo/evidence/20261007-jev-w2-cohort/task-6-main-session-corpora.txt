@@ -1,0 +1,3 @@
+path=/tmp/opencode/jev-w2c-task6-auto-main/w2-main.jsonl rows=28 foreign_session_rows=0
+path=/tmp/opencode/jev-w2c-task6-interactive-main/w2-main.jsonl rows=31 foreign_session_rows=0
+EXIT_STATUS: 0

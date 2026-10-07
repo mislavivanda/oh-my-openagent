@@ -1,0 +1,20 @@
+COMMAND: per-file loop using wc -l < "$f"; fail if any physical line count exceeds 250
+21	.omo/evidence/20261007-jev-w2-cohort/task-6-autonomous-drive.txt
+12	.omo/evidence/20261007-jev-w2-cohort/task-6-autonomous-report-block.txt
+4	.omo/evidence/20261007-jev-w2-cohort/task-6-build.txt
+4	.omo/evidence/20261007-jev-w2-cohort/task-6-file-lines.txt
+18	.omo/evidence/20261007-jev-w2-cohort/task-6-full-suite-gate.txt
+27	.omo/evidence/20261007-jev-w2-cohort/task-6-inertness.txt
+21	.omo/evidence/20261007-jev-w2-cohort/task-6-interactive-drive.txt
+12	.omo/evidence/20261007-jev-w2-cohort/task-6-interactive-report-block.txt
+6	.omo/evidence/20261007-jev-w2-cohort/task-6-lsp-diagnostics.txt
+3	.omo/evidence/20261007-jev-w2-cohort/task-6-main-session-corpora.txt
+6	.omo/evidence/20261007-jev-w2-cohort/task-6-process-cleanup.txt
+23	.omo/evidence/20261007-jev-w2-cohort/task-6-runtime-effects.txt
+98	.omo/evidence/20261007-jev-w2-cohort/task-6-test-fast.txt
+5	.omo/evidence/20261007-jev-w2-cohort/task-6-typecheck.txt
+154	.omo/evidence/20261007-jev-w2-cohort/task-6-verification.md
+46	.omo/evidence/20261007-jev-w2-cohort/MANIFEST.tsv
+FILES_CHECKED: 16
+OVER_LIMIT_MATCHING_LINE_COUNT: 0
+EXIT_STATUS: 0
