@@ -1,0 +1,106 @@
+TODO 6 - MOCK-PATH BEFORE/AFTER COMPARISON (threshold 0.8, both sides)
+
+SOURCES (both read mechanically, no hand transcription)
+  before: .omo/evidence/20260930-jev-w2-validity/task-1-mock-before.txt   (questionVersion=1, pre todo-2 labels)
+  after : .omo/evidence/20260930-jev-w2-validity/task-6-mock-after.txt    (questionVersion=2, post todo-2..5)
+  extraction: awk on the two artifacts, keyed by question and metric; see the tables below
+
+TABLE 1: CONFUSION MATRIX, BAND COUNTS, AND DISTRIBUTION, BEFORE vs AFTER
+  QUESTION           METRIC                 BEFORE                                       AFTER                                        DELTA
+  actually_complete  band.uncertain         2                                            2                                            unchanged
+  actually_complete  band.would_false       11                                           11                                           unchanged
+  actually_complete  band.would_true        5                                            5                                            unchanged
+  actually_complete  dist.max               0.95                                         0.95                                         unchanged
+  actually_complete  dist.median            0.05                                         0.05                                         unchanged
+  actually_complete  dist.min               0.05                                         0.05                                         unchanged
+  actually_complete  dist.n                 18                                           18                                           unchanged
+  actually_complete  matrix.TOTAL           uncertain=2 would_false=11 would_true=5 total=18 uncertain=2 would_false=11 would_true=5 total=18 unchanged
+  actually_complete  matrix.label_false     uncertain=0 would_false=11 would_true=0 total=11 uncertain=0 would_false=11 would_true=0 total=11 unchanged
+  actually_complete  matrix.label_true      uncertain=0 would_false=0 would_true=5 total=5 uncertain=0 would_false=0 would_true=5 total=5 unchanged
+  actually_complete  matrix.label_unknown   uncertain=2 would_false=0 would_true=0 total=2 uncertain=2 would_false=0 would_true=0 total=2 unchanged
+  progressing        band.uncertain         3                                            3                                            unchanged
+  progressing        band.would_false       7                                            2                                            CHANGED
+  progressing        band.would_true        8                                            13                                           CHANGED
+  progressing        dist.max               0.95                                         0.95                                         unchanged
+  progressing        dist.median            0.50                                         0.95                                         CHANGED
+  progressing        dist.min               0.05                                         0.05                                         unchanged
+  progressing        dist.n                 18                                           18                                           unchanged
+  progressing        matrix.TOTAL           uncertain=3 would_false=7 would_true=8 total=18 uncertain=3 would_false=2 would_true=13 total=18 CHANGED
+  progressing        matrix.label_false     uncertain=0 would_false=7 would_true=0 total=7 uncertain=0 would_false=2 would_true=0 total=2 CHANGED
+  progressing        matrix.label_true      uncertain=0 would_false=0 would_true=8 total=8 uncertain=0 would_false=0 would_true=13 total=13 CHANGED
+  progressing        matrix.label_unknown   uncertain=3 would_false=0 would_true=0 total=3 uncertain=3 would_false=0 would_true=0 total=3 unchanged
+  stuck              band.uncertain         3                                            3                                            unchanged
+  stuck              band.would_false       13                                           13                                           unchanged
+  stuck              band.would_true        2                                            2                                            unchanged
+  stuck              dist.max               0.95                                         0.95                                         unchanged
+  stuck              dist.median            0.05                                         0.05                                         unchanged
+  stuck              dist.min               0.05                                         0.05                                         unchanged
+  stuck              dist.n                 18                                           18                                           unchanged
+  stuck              matrix.TOTAL           uncertain=3 would_false=13 would_true=2 total=18 uncertain=3 would_false=13 would_true=2 total=18 unchanged
+  stuck              matrix.label_false     uncertain=0 would_false=13 would_true=0 total=13 uncertain=0 would_false=13 would_true=0 total=13 unchanged
+  stuck              matrix.label_true      uncertain=0 would_false=0 would_true=2 total=2 uncertain=0 would_false=0 would_true=2 total=2 unchanged
+  stuck              matrix.label_unknown   uncertain=3 would_false=0 would_true=0 total=3 uncertain=3 would_false=0 would_true=0 total=3 unchanged
+
+TABLE 2: PER-FIXTURE LABEL DELTA (only rows that moved)
+  QUESTION           FIXTURE                                      BEFORE           AFTER
+  progressing        complete-all-todos-verified                  label=false      label=true
+  progressing        complete-boulder-without-todos               label=false      label=true
+  progressing        multilingual-korean-complete                 label=false      label=true
+  progressing        promise-done-after-full-verification         label=false      label=true
+  progressing        stale-todos-after-shipped-fix                label=false      label=true
+  changedRows=5 out of 54 question-by-fixture rows
+
+TABLE 3: QUESTION VERSION
+  before questionVersion=1
+  after  questionVersion=2
+  The bump is todo 4's, so old records stay distinguishable from new ones in the report.
+
+READ THIS BEFORE READING ANY NUMBER ABOVE: THE MOCK PATH ECHOES LABELS, IT DOES NOT REASON.
+
+  The mock backend in completion-continuation-accuracy-harness.ts maps the hand label straight to a
+  probability: true -> 0.95, false -> 0.05, unknown -> 0.50. It never looks at the state, so it never
+  looks at the new previous block either. The after-state above is therefore a readout of the labels
+  plus the plumbing that carries them, nothing more.
+
+  WHAT THE MOCK PATH DOES ESTABLISH
+    1. All five label corrections are wired through end to end: exactly 5 of 54 question-by-fixture
+       rows moved, all on progressing, all false -> true, and they are precisely the five fixtures
+       todos 2 and 2-followup corrected.
+    2. The consistency guard holds: the fixture-label consistency test is green, so no label
+       contradicts the W2 plan line-45 ground-truth rule.
+    3. Nothing else drifted: actually_complete and stuck are unchanged in every single metric,
+       which is the expected blast radius of a progressing-only label correction.
+    4. The threshold is untouched at 0.8 on both sides, and no accuracy gate was introduced.
+
+  WHAT THE MOCK PATH CANNOT ESTABLISH, AND MUST NOT BE READ AS ESTABLISHING
+    The progressing band moving from 8 would_true to 13 would_true is NOT evidence that the
+    delta-input fix works. A label-echoing backend has no ceiling to lift, so the improvement is
+    arithmetic from the corrected labels, not reasoning from the previous block. The root cause this
+    plan identified, that we asked a delta question while withholding the delta, remains UNMEASURED.
+    Only a real-API run can measure it, and that run is deliberately deferred to the blocked todo 7.
+
+REAL-API REFERENCE NUMBERS (read-only from the retained W2 artifact; nothing was re-run)
+  source: .omo/evidence/20260930-jev-w2-validity/task-1-real-api-reference.txt
+  upstream artifact: oh-my-openagent-jev-w2/.omo/evidence/20260930-jev-w2/task-18-real-api-result.json
+  questionVersion=1 mode=real callCount=18 networkCallCount=18
+
+  progressing         max probability 0.77 against the 0.80 would_true bar, so would_true = 0
+                      uncertain 14 of 18
+                      correct 2 of 15 known-label fixtures
+  stuck               max probability 0.96, uncertain 10 of 18, correct 8 of 15
+  actually_complete   max probability 0.93, uncertain 1 of 18, correct 15 of 16
+
+THE FALSIFIABLE PREDICTION THIS PLAN MAKES (UNTESTED HYPOTHESIS, NOT A RESULT)
+  Hypothesis: supplying the previous block, so the model can see the prior idle's todoStatusDigest,
+  boulderDigest, todo total and completed, boulder total, completed and remaining, and whether a
+  continuation was dispatched between the two idles, will let progressing EXCEED 0.80 on
+  genuinely-progressing fixtures, where the version-1 run never exceeded 0.77 on any of the 18.
+
+  Falsification condition: a real-API run at questionVersion=2 in which progressing still never
+  exceeds 0.80 on the genuinely-progressing fixtures falsifies it. In that case the delta-input
+  theory is wrong and the cause lies elsewhere, for instance in the question wording or in model
+  capability, and this plan's premise would need revisiting.
+
+  Status: UNTESTED. No real-API call was made by todo 6. JEV_W2_REAL_API stayed unset and
+  JEV_W2_REAL_API_REARM was never set. Todo 18 of the parent plan spent its full 18-call budget and
+  a persistent on-disk guard protects it. Re-arming spends real money and is not authorized.

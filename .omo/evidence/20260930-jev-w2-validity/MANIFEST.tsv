@@ -1,0 +1,72 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gates-before.txt	gate-summary	Pre-change root gates: typecheck exit 0, build exit 0, test:fast exit 0 with 780 pass 0 fail; bun install exit 0; stack confirmed on jev/w2-validity over jev/w2
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gate-typecheck.log	gate-log	Raw stdout and stderr of bun run typecheck, exit 0, zero diagnostics
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gate-build.log	gate-log	Raw stdout and stderr of bun run build, exit 0, final line build: all steps completed
+1	.omo/evidence/20260930-jev-w2-validity/task-1-gate-testfast.log	gate-log	Raw stdout and stderr of bun run test:fast, exit 0, 780 pass 0 fail across 89 files
+1	.omo/evidence/20260930-jev-w2-validity/task-1-mock-before.txt	measurement	Mock-path before-state at threshold 0.8: per-question confusion matrix, would_true/would_false/uncertain band counts, and the full sorted probability distribution with min median max; networkCallCount 0
+1	.omo/evidence/20260930-jev-w2-validity/task-1-real-api-reference.txt	reference	Read-only recomputation of the retained W2 real-API artifact: per-question max probability and uncertain count; confirms progressing max 0.77 and 14 of 18 uncertain, stuck max 0.96, actually_complete 15 of 16
+1	.omo/evidence/20260930-jev-w2-validity/task-1-contradictory-labels-before.txt	before-image	Verbatim current label and labelBasis lines for the four fixtures todo 2 corrects, with file sha256 and the W2 plan line 45 rule they contradict
+1	.omo/evidence/20260930-jev-w2-validity/task-1-delta-gap-proof.txt	proof	Independent proof of the delta-input gap: grep on completion-continuation-state.ts exit 1 with 0 matching lines, against quoted advanced() and unchanged() delta computation in the outcome classifier
+3	.omo/evidence/20260930-jev-w2-validity/task-3-previous-state-proof.txt	proof	Available and first-idle previous block shapes, genuine protected reduction byte counts, multibyte cap result, and no-real-API statement
+3	.omo/evidence/20260930-jev-w2-validity/task-3-verification.txt	gate-summary	Focused and package tests, neutrality guard, root typecheck and build, test:fast with 782 pass 0 fail, diagnostics, no-excuse audit, and per-file line counts
+3	.omo/evidence/20260930-jev-w2-validity/task-3-harness-neutrality.txt	empty-proof	Import and raw Bun grep command recorded with exit 1 and matching-line count 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-audit-and-qa.md	audit-summary	Full 18-fixture rule audit, corrected bases, bite proof, verification results, and no-further-contradiction conclusion
+2	.omo/evidence/20260930-jev-w2-validity/task-2-mock-after.txt	measurement	Mock after-state with progressing shift from 8/7/3 to 12/3/3 and zero network calls
+2	.omo/evidence/20260930-jev-w2-validity/task-2-consistency-bite-fail.log	red-proof	Temporary bad label made the named consistency test fail with exit 1
+2	.omo/evidence/20260930-jev-w2-validity/task-2-consistency-pass.log	green-proof	Consistency test passed after reverting the temporary defect, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-targeted-tests.log	test-log	Requested fixture and accuracy tests, 14 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-jev-core-tests.log	test-log	Full jev-core suite, 228 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-shared-core-guard.log	guard-log	Shared-core extraction guard, 3 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-typecheck.log	gate-log	Root typecheck, exit 0 with zero diagnostics
+2	.omo/evidence/20260930-jev-w2-validity/task-2-build.log	gate-log	Root build, exit 0 with all steps completed
+2	.omo/evidence/20260930-jev-w2-validity/task-2-test-fast.log	gate-log	Fast suite, 785 pass 0 fail across 90 files, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-file-lines.log	limit-proof	Per-file physical line loop, all three changed TypeScript files at most 250 lines
+2	.omo/evidence/20260930-jev-w2-validity/task-2-no-excuse.log	static-audit	TypeScript no-excuse audit found zero violations in three files
+2	.omo/evidence/20260930-jev-w2-validity/task-2-anti-circularity.log	empty-proof	Command recorded grep exit 1 and matching-line count 0 for decideCompletionContinuation fixture-source references
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-tracker-followup.md	audit-summary	Semantic-versus-mechanical distinction, corrected stale label, full 18-fixture re-audit, bite proof, matrix shift, and verification
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-mock-after.txt	measurement	Mock progressing matrix moved from 12/3/3 to 13/2/3 with zero network calls
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-consistency-bite-fail.log	red-proof	Label-keyed rule failed on stale-todos-after-shipped-fix with exit 1
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-consistency-pass.log	green-proof	Sharpened consistency test passed after stale label correction, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-targeted-tests.log	test-log	Consistency, fixture, and mock accuracy tests, 18 pass 0 fail and zero network calls
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-jev-core-tests.log	test-log	Full jev-core suite, 229 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-shared-core-guard.log	guard-log	Shared-core extraction guard, 3 pass 0 fail, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-typecheck.log	gate-log	Root typecheck, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-build.log	gate-log	Root build, exit 0 with all steps completed
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-test-fast.log	gate-log	Fast suite, 786 pass 0 fail across 90 files, exit 0
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-file-lines.log	limit-proof	Per-file physical line loop, changed TypeScript files have 110 and 88 lines
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-no-excuse.log	static-audit	TypeScript no-excuse audit found zero violations in two files
+2	.omo/evidence/20260930-jev-w2-validity/task-2-stale-anti-circularity.log	empty-proof	Command recorded grep exit 1 and matching-line count 0 for fixture-source heuristic references
+4	.omo/evidence/20260930-jev-w2-validity/task-4-question-text-and-scope.md	question-proof	Version 2 full delta-question text, exact previous-field guidance, first-idle wording, independent-probability framing, and no-op barrel review
+4	.omo/evidence/20260930-jev-w2-validity/task-4-actually-complete-byte-identity.txt	empty-proof	Restricted actually_complete diff command recorded with exit 0, matching-line count 0, and empty output
+4	.omo/evidence/20260930-jev-w2-validity/task-4-verification.txt	gate-summary	Focused test 5 pass, jev-core 232 pass, neutrality guard 3 pass, root typecheck and build exit 0, test:fast 789 pass, diagnostics clean, and per-file limits clean
+5	.omo/evidence/20260930-jev-w2-validity/task-5-verification.md	gate-summary	Previous-idle wiring behavior, fixture coverage, all requested results, isolated OpenCode QA, and no-real-API statement
+5	.omo/evidence/20260930-jev-w2-validity/task-5-features-jev-tests.log	test-log	Full JEV adapter feature suite, 147 pass and 0 fail across 20 files
+5	.omo/evidence/20260930-jev-w2-validity/task-5-jev-core-tests.log	test-log	Full jev-core suite, 234 pass and 0 fail across 21 files with zero mock network calls
+5	.omo/evidence/20260930-jev-w2-validity/task-5-continuation-hook-tests.log	test-log	Continuation-hook regression suite, 147 pass and 0 fail across 21 files
+5	.omo/evidence/20260930-jev-w2-validity/task-5-inertness-proof.log	inertness-proof	Unchanged Part A byte trace and Part B runtime effects, 5 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2-validity/task-5-bun-runtime-audit.log	guard-log	OpenCode adapter Bun runtime audit, 1 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2-validity/task-5-opencode-coupling-audit.log	guard-log	OpenCode coupling audit, 2 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2-validity/task-5-typecheck.log	gate-log	Root typecheck exited 0
+5	.omo/evidence/20260930-jev-w2-validity/task-5-build.log	gate-log	Root build exited 0 with all steps completed
+5	.omo/evidence/20260930-jev-w2-validity/task-5-test-fast.log	gate-log	Fast suite, 795 pass and 0 fail across 92 files
+5	.omo/evidence/20260930-jev-w2-validity/task-5-file-lines.log	limit-proof	Per-file physical line loop kept all 12 changed TypeScript files at or below 250 lines
+5	.omo/evidence/20260930-jev-w2-validity/task-5-empty-proofs.log	empty-proof	Commands, grep statuses, and zero matching-line counts for labels, anti-circularity, question literals, threshold changes, and forbidden additions
+5	.omo/evidence/20260930-jev-w2-validity/task-5-opencode-qa.log	opencode-qa	Isolated OpenCode 1.18.32 health and SSE proof with host DB unchanged at 504 sessions
+5	.omo/evidence/20260930-jev-w2-validity/task-5-no-excuse.log	static-audit-warning	Optional audit reported seven inherited catch-narrowing warnings and no todo-5 introduced escape hatch
+6	.omo/evidence/20260930-jev-w2-validity/task-6-verification.md	gate-summary	Reviewer-readable todo-6 summary with what was tested, what was observed, why it is enough, and what was omitted including the deferred real-API re-measure
+6	.omo/evidence/20260930-jev-w2-validity/task-6-inertness.txt	inertness-proof	Part A byte identity at TRACE_COUNT 16 across four dispatch modes, all six anti-vacuity FAIL_DETECTED probes verbatim, and every Part B runtime number against its budget; 5 pass 0 fail exit 0
+6	.omo/evidence/20260930-jev-w2-validity/task-6-mock-after.txt	measurement	Mock-path after-state at threshold 0.8 with questionVersion 2: per-question confusion matrix, band counts, full probability distribution, 11 of 18 fixtures carrying a previous block, networkCallCount 0
+6	.omo/evidence/20260930-jev-w2-validity/task-6-mock-before-after.txt	comparison	Mechanically extracted before/after tables against task-1-mock-before.txt, the five moved label rows, the label-echo limitation stated prominently, the retained real-API reference numbers, and the falsifiable untested prediction
+6	.omo/evidence/20260930-jev-w2-validity/task-6-gates.txt	gate-summary	Part C sweep: typecheck exit 0, build exit 0, test:fast 795 pass 0 fail, full suite 13121 pass 7 fail with an empty identity diff, audits 3 pass, line limit and threshold results
+6	.omo/evidence/20260930-jev-w2-validity/task-6-full-suite-identities.txt	baseline-comparison	Observed 7 raw fail lines with this run's own durations, 7 duration-stripped observed identities, 7 baseline identities, and diff exit 0 with 0 output lines
+6	.omo/evidence/20260930-jev-w2-validity/task-6-file-lines.log	limit-proof	Per-file wc -l loop over the branch diff: 19 source files at or below 250 with 0 violations, 1 todo-6 artifact at 179, and 3 pre-existing build logs above 250 reported not rewritten
+6	.omo/evidence/20260930-jev-w2-validity/task-6-threshold-audit.log	empty-proof	Six threshold checks with commands, exit statuses, and matching-line counts; confidence_threshold is 0.8 with 0 removed threshold lines, and two accuracy-gate greps exited 1 with 0 matches
+6	.omo/evidence/20260930-jev-w2-validity/task-6-no-real-api.log	empty-proof	Five no-real-API checks with commands, exit statuses, and matching-line counts; three env greps exited 1 with 0 matches and the secret-shaped grep exited 1 with 0 matches
+7	.omo/evidence/20260930-jev-w2-validity/task-7-verification.md	verification	Four-section record of the authorized question-version-2 paid run: what was tested, what was observed, why it is enough, what was omitted, including the CONFIRMED verdict and its honest limits
+7	.omo/evidence/20260930-jev-w2-validity/task-7-real-api-result-v2.json	measurement	Raw version-2 real-API artifact written to a NEW path: status complete, mode real, questionVersion 2, callCeiling 18, callCount 18, networkCallCount 18, resolvedModel jev-1.13.0, per-fixture probabilities and threshold labels
+7	.omo/evidence/20260930-jev-w2-validity/task-7-real-api-v2.txt	analysis	Recomputation from both retained artifacts: v1 vs v2 progressing min 0.04/0.06 median 0.38/0.37 max 0.77/0.86, per-fixture v1 to v2 table for all 18 fixtures and 3 questions, previous-block split, v2 confusion matrices with the non-comparability caveat
+7	.omo/evidence/20260930-jev-w2-validity/task-7-preflight-counter-ceiling.txt	proof	Pre-spend full-scale probe on a local fake endpoint: client counter 18 equals server count 18, 19 entries at ceiling 18 throw PaidCallCeilingError nextOrdinal 19 with the server still at 18, forced extra attempt moves a counter 18 to 19
+7	.omo/evidence/20260930-jev-w2-validity/task-7-paid-run-console.log	run-log	Verbatim console output of the single paid invocation, 8 pass 0 fail, 18 reserved calls and 18 HTTP requests, per-fixture probabilities and the two transcript-tail lines
+7	.omo/evidence/20260930-jev-w2-validity/task-7-guard-after.txt	proof	Post-run persistent-guard check with JEV_W2_REAL_API_REARM unset: newSpend=0, the guard now reports the version-2 artifact, so version 2 is spend-protected too
+7	.omo/evidence/20260930-jev-w2-validity/task-7-gates.txt	gate-log	Root typecheck exit 0, build exit 0, jev-core 234 pass 0 fail, changed file 172 lines, zero banned patterns, Stop guard exit 1, and the unified diff of the one source change with a redaction note
+7	.omo/evidence/20260930-jev-w2-validity/task-7-secret-scan.txt	empty-proof	Acceptance-gate grep over the whole evidence root recorded with exit status 1 and matching-line count 0, plus the first-attempt trip in task-7-gates.txt and how it was rendered safe

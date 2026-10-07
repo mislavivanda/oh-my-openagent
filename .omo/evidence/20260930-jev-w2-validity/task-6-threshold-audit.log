@@ -1,0 +1,124 @@
+TODO 6 - CONFIDENCE THRESHOLD AND ACCURACY-GATE AUDIT
+Every check below records the exact command, its exit status, and its matching-line count.
+A no-match grep exits 1 and that exit-1-with-0-matches IS the proof.
+
+CHECK 1: the declared value of CONFIDENCE_THRESHOLD in the harness
+  command: grep -n 'CONFIDENCE_THRESHOLD' packages/jev-core/src/completion-continuation-accuracy-harness.ts
+  exit=0 matchingLines=2
+    13:export const CONFIDENCE_THRESHOLD = 0.8
+    195:      backend: options.backendFor(fixture), state: built.state, confidenceThreshold: CONFIDENCE_THRESHOLD,
+
+CHECK 2: every confidence_threshold / confidenceThreshold occurrence in the branch, with its value
+  command: grep -rn 'confidence_threshold|confidenceThreshold|CONFIDENCE_THRESHOLD' packages/jev-core/src packages/omo-opencode/src/features/jev
+  exit=0 matchingLines=76
+    packages/jev-core/src/model-error-triage.test.ts:73:      confidenceThreshold: 0.8,
+    packages/jev-core/src/model-error-triage.test.ts:96:      confidenceThreshold: 0.8,
+    packages/jev-core/src/model-error-triage.test.ts:117:      confidenceThreshold: 0.8,
+    packages/jev-core/src/model-error-triage.test.ts:134:      confidenceThreshold: 0.8,
+    packages/jev-core/src/model-error-triage.test.ts:159:      confidenceThreshold: 0.8,
+    packages/jev-core/src/model-error-triage.test.ts:183:      confidenceThreshold: 0.8,
+    packages/jev-core/src/model-error-triage.test.ts:214:      confidenceThreshold: 0.8,
+    packages/jev-core/src/model-error-triage.test.ts:246:          confidenceThreshold: 0.8,
+    packages/jev-core/src/intent-routing.test.ts:182:      confidenceThreshold: 0.8, model: "jev-latest", maxPromptChars: 200,
+    packages/jev-core/src/intent-routing.test.ts:198:      vocab: VALID_VOCAB, confidenceThreshold: 0.8, maxPromptChars: 200,
+    packages/jev-core/src/intent-routing.test.ts:211:      confidenceThreshold: 0.8, maxPromptChars: 200,
+    packages/jev-core/src/intent-routing.test.ts:222:      vocab: VALID_VOCAB, confidenceThreshold: 0.8, maxPromptChars: 200,
+    packages/jev-core/src/intent-routing.test.ts:238:      confidenceThreshold: 0.8, maxPromptChars: 200,
+    packages/jev-core/src/intent-routing.test.ts:260:      confidenceThreshold: 0.8, maxPromptChars: 12,
+    packages/jev-core/src/completion-continuation-accuracy-real-run.ts:5:import { CONFIDENCE_THRESHOLD, REQUESTED_MODEL, RequestBudget, createCountingFetch,
+    packages/jev-core/src/completion-continuation-accuracy-real-run.ts:152:      confidenceThreshold: CONFIDENCE_THRESHOLD,
+    packages/jev-core/src/model-error-triage.ts:63:  readonly confidenceThreshold: number
+    packages/jev-core/src/model-error-triage.ts:71:    threshold: args.confidenceThreshold,
+    packages/jev-core/src/model-error-triage.ts:99:    if (answer.confidence < args.confidenceThreshold) {
+    packages/jev-core/src/model-error-triage.ts:108:      threshold: args.confidenceThreshold,
+    packages/jev-core/src/intent-routing.ts:185:  readonly confidenceThreshold: number
+    packages/jev-core/src/intent-routing.ts:204:        threshold: args.confidenceThreshold,
+    packages/jev-core/src/intent-routing.ts:218:        threshold: args.confidenceThreshold,
+    packages/jev-core/src/intent-routing.ts:225:      intent: readChoiceDecision(questions.intent, answerRecord.intent, args.confidenceThreshold),
+    packages/jev-core/src/intent-routing.ts:226:      category: readChoiceDecision(questions.category, answerRecord.category, args.confidenceThreshold),
+    packages/jev-core/src/intent-routing.ts:227:      subagent: readChoiceDecision(questions.subagent, answerRecord.subagent, args.confidenceThreshold),
+    packages/jev-core/src/intent-routing.ts:244:      threshold: args.confidenceThreshold,
+    packages/jev-core/src/intent-routing.ts:252:      threshold: args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation-record-validation.test.ts:44:  confidenceThreshold: 0.8,
+    packages/jev-core/src/completion-continuation-accuracy-harness.ts:13:export const CONFIDENCE_THRESHOLD = 0.8
+    packages/jev-core/src/completion-continuation-accuracy-harness.ts:195:      backend: options.backendFor(fixture), state: built.state, confidenceThreshold: CONFIDENCE_THRESHOLD,
+    packages/jev-core/src/completion-continuation-record-types.ts:137:  readonly confidenceThreshold: number
+    packages/jev-core/src/intent-routing-accuracy.test.ts:27:const CONFIDENCE_THRESHOLD = 0.8
+    packages/jev-core/src/intent-routing-accuracy.test.ts:289:      confidenceThreshold: CONFIDENCE_THRESHOLD, model: REQUESTED_MODEL,
+    packages/jev-core/src/intent-routing-accuracy.test.ts:391:          confidenceThreshold: CONFIDENCE_THRESHOLD, model: REQUESTED_MODEL,
+    packages/jev-core/src/completion-continuation.test.ts:66:    confidenceThreshold: 0.8,
+    packages/jev-core/src/completion-continuation-record-validation.ts:24:  "thresholdLabels", "confidenceThreshold", "heuristicFacts", "outcomeFacts", "outcomeStatus",
+    packages/jev-core/src/completion-continuation-record-validation.ts:186:    isUnitNumber(value.confidenceThreshold) && validateHeuristicFacts(value.heuristicFacts) &&
+    packages/jev-core/src/completion-continuation.ts:49:  readonly confidenceThreshold: number
+    packages/jev-core/src/completion-continuation.ts:133:      threshold: args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation.ts:157:        threshold: args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation.ts:167:        threshold: args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation.ts:177:        args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation.ts:182:        args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation.ts:187:        args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation.ts:204:      threshold: args.confidenceThreshold,
+    packages/jev-core/src/completion-continuation.ts:213:      threshold: args.confidenceThreshold,
+    packages/jev-core/src/intent-routing-answer-observation.ts:28:  confidenceThreshold: number,
+    packages/jev-core/src/intent-routing-answer-observation.ts:41:    label: confidence !== null && confidence >= confidenceThreshold
+    packages/omo-opencode/src/features/jev/model-error-triage.test.ts:33:    wires: { model_error_triage: { enabled: true, confidence_threshold: 0.8 } },
+    packages/omo-opencode/src/features/jev/model-error-triage.ts:85:          confidenceThreshold:
+    packages/omo-opencode/src/features/jev/model-error-triage.ts:86:            jevConfig.wires.model_error_triage.confidence_threshold,
+    packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.ts:150:      isContinuationCandidate: input.isContinuationCandidate, confidenceThreshold: input.confidenceThreshold,
+    packages/omo-opencode/src/features/jev/intent-routing.ts:33:  readonly confidenceThreshold: number
+    packages/omo-opencode/src/features/jev/intent-routing.ts:134:        confidenceThreshold: wireConfig.confidence_threshold,
+    packages/omo-opencode/src/features/jev/intent-routing.ts:193:      confidenceThreshold: wireConfig.confidence_threshold,
+    packages/omo-opencode/src/features/jev/intent-routing-turn-eviction.ts:130:    confidenceThreshold: input.confidenceThreshold,
+    packages/omo-opencode/src/features/jev/intent-routing-turn-keys.ts:27:  readonly confidenceThreshold: number
+    packages/omo-opencode/src/features/jev/intent-routing-turn-keys.ts:35:    input.confidenceThreshold,
+    packages/omo-opencode/src/features/jev/intent-routing-turn-prediction.ts:20:    threshold: turn.confidenceThreshold,
+    packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:99:        confidenceThreshold: options.wireConfig.confidence_threshold,
+    packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:111:            options.wireConfig.confidence_threshold,
+    packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:136:        confidenceThreshold: options.wireConfig.confidence_threshold,
+    packages/omo-opencode/src/features/jev/completion-continuation-dispatch.ts:142:          options.wireConfig.confidence_threshold,
+    packages/omo-opencode/src/features/jev/completion-continuation-outcome-classification.ts:176:    thresholdLabels: prediction.thresholdLabels, confidenceThreshold: record.confidenceThreshold,
+    packages/omo-opencode/src/features/jev/intent-routing-turn-store.ts:125:      confidenceThreshold: input.confidenceThreshold,
+    packages/omo-opencode/src/features/jev/completion-continuation-sink.test-support.ts:81:    confidenceThreshold: 0.8,
+    packages/omo-opencode/src/features/jev/completion-continuation-previous.test.ts:68:    confidenceThreshold: 0.8,
+    packages/omo-opencode/src/features/jev/intent-routing-turn-types.ts:72:  readonly confidenceThreshold: number
+    packages/omo-opencode/src/features/jev/intent-routing-turn-types.ts:133:  readonly confidenceThreshold: number
+    packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts:81:    confidenceThreshold: 0.8,
+    packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts:243:  return { sessionID, snapshot: current, inputTruncations: TRUNCATIONS, heuristicFacts: HEURISTIC, isContinuationCandidate: true, confidenceThreshold: 0.8 }
+    packages/omo-opencode/src/features/jev/completion-continuation-outcome-types.ts:68:  readonly confidenceThreshold: number
+    packages/omo-opencode/src/features/jev/completion-continuation-outcome-types.ts:174:  readonly confidenceThreshold: number
+    packages/omo-opencode/src/features/jev/intent-routing-turn-store.test.ts:196:    ["confidenceThreshold", { confidenceThreshold: 0.9 }],
+    packages/omo-opencode/src/features/jev/intent-routing-turn-store.test-support.ts:106:    confidenceThreshold: 0.8,
+
+CHECK 3: the branch diff must contain ZERO change to any threshold value
+  command: git diff jev/w2...HEAD -- packages script | grep -nE '^[+-].*(confidence_threshold|confidenceThreshold|CONFIDENCE_THRESHOLD)'
+  exit=0 matchingLines=1
+    812:+    confidenceThreshold: 0.8,
+
+CHECK 4: the branch diff must introduce NO accuracy threshold, minimum, floor, or gate
+  command: git diff jev/w2...HEAD -- packages script | grep -nEi '^\+.*(accuracy[_ ]?(threshold|minimum|min|floor|gate|bar)|min[_ ]?accuracy|required[_ ]?accuracy|ACCURACY_(THRESHOLD|MIN|FLOOR|GATE))'
+  exit=1 matchingLines=0
+    (no output: no added line introduces an accuracy threshold, minimum, floor, gate, or bar)
+
+CHECK 5: no accuracy assertion was added that would fail the suite on a low score
+  command: git diff jev/w2...HEAD -- packages | grep -nEi '^\+.*(correct|accuracy|matrix|would_true).*(toBeGreaterThan|toBeGreaterThanOrEqual|toBeLessThan)'
+  exit=1 matchingLines=0
+    (no output: no added assertion gates on an accuracy or matrix magnitude)
+
+CHECK 6: the observed threshold at measurement time, read back out of the todo-6 artifact
+  command: grep -n 'confidenceThreshold=' .omo/evidence/20260930-jev-w2-validity/task-6-mock-after.txt
+  exit=0 matchingLines=1
+    22:  confidenceThreshold=0.8 (unchanged; would_true at p>=0.8, would_false at p<=0.20)
+
+CONCLUSION: confidence_threshold is 0.8, unchanged by this branch, and no accuracy threshold exists.
+
+CHECK 3a: REFINEMENT OF CHECK 3 (the one match is not a threshold change)
+  command: git diff jev/w2...HEAD -- packages script | grep -E '^-.*(confidence_threshold|confidenceThreshold|CONFIDENCE_THRESHOLD)'
+  exit=1 matchingLines=0
+    (no output: this branch REMOVES no threshold line at all, so no existing threshold was altered)
+  command: git diff jev/w2...HEAD -- packages script | grep -E '^\+.*(confidence_threshold|confidenceThreshold|CONFIDENCE_THRESHOLD)'
+  exit=0 matchingLines=1
+    +    confidenceThreshold: 0.8,
+  provenance of that single added line:
+    packages/omo-opencode/src/features/jev/completion-continuation-previous.test.ts:68
+    It is a new test fixture that PASSES the already-existing 0.8 value into a record under test.
+    It does not declare, redefine, widen, narrow, or parameterize the threshold.
+  Net: 0 removals and 1 addition whose value is 0.8, so the effective threshold is identical to jev/w2.

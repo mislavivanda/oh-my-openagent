@@ -11,6 +11,7 @@ import {
   type CompletionContinuationInputSnapshot,
 } from "./completion-continuation-input"
 import type { CompletionContinuationOutcomeHandle } from "./completion-continuation-outcome-types"
+import { readCompletionContinuationPreviousState } from "./completion-continuation-previous"
 import type {
   CompletionContinuationDispatchController,
   CompletionContinuationDispatchOptions,
@@ -159,6 +160,7 @@ export function createCompletionContinuationDispatchController(
     if (disposing) return false
     try {
       pending.get(input.sessionID)?.task?.cancel()
+      const previous = readCompletionContinuationPreviousState(options.outcomes, input.sessionID)
       const snapshot = captureCompletionContinuationInput({
         todos: input.todos,
         transcript: input.transcript,
@@ -178,7 +180,7 @@ export function createCompletionContinuationDispatchController(
           try {
             if (disposing || pending.get(input.sessionID) !== decision) return
             const finalizedSnapshot = finalizeCompletionContinuationInput(snapshot, boulder)
-            const state = buildCompletionContinuationState(finalizedSnapshot.input)
+            const state = buildCompletionContinuationState({ ...finalizedSnapshot.input, previous })
             decision.finalized = {
               snapshot: finalizedSnapshot,
               state,

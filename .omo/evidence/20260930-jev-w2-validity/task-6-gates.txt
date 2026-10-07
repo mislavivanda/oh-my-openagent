@@ -1,0 +1,91 @@
+TODO 6 - PART C: FULL GATE SWEEP
+
+All commands ran in /home/opencode/projects/oh-my-openagent-jev-w2v on branch jev/w2-validity
+with JEV_W2_REAL_API and JEV_W2_REAL_API_REARM both unset. No real API call was made.
+
+GATE 9a: root typecheck
+  command: bun run typecheck
+  exit status: 0
+  covers: tsgo --noEmit on the root tsconfig, then script/tsconfig.json, then 28 workspace packages
+  observed: zero diagnostics emitted
+
+GATE 9b: root build
+  command: bun run build
+  exit status: 0
+  observed final line: build: all steps completed
+
+GATE 10: fast suite
+  command: bun run test:fast
+  exit status: 0
+  observed: 795 pass  0 fail
+  observed: Ran 795 tests across 92 files. [8.57s]
+  count movement across this plan: 780 at todo 1 -> 795 at todo 6, a rise of 15 from the
+  consistency, previous-state, question, and wiring tests todos 2 to 5 added. 0 fail throughout.
+
+GATE 11: baseline-relative full suite
+  command: env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+  exit status: 1  (nonzero is EXPECTED: the baseline itself has 7 pre-existing failures)
+  observed totals: 13121 pass  3 skip  7 fail
+  observed scope:  Ran 13131 tests across 1723 files. [124.73s]
+
+  Comparison method: DURATION-STRIPPED IDENTITIES on BOTH sides, because bun's per-test
+  durations are non-deterministic and a literal byte diff could only pass by luck.
+    normalization: sed -E 's/ \[[0-9.]+m?s\]$//' <file> | sort -u
+    baseline file: oh-my-openagent-jev-w2/.omo/evidence/20260930-jev-w2/task-1-full-suite-failures.txt
+    baseline identity count: 7
+    observed identity count: 7
+    command: diff <baseline identities> <observed identities>
+    diff exit status: 0     diff output lines: 0
+    verdict: EXACTLY 7 identities on each side and an EMPTY identity diff. Requirement met.
+
+  THE 7 OBSERVED FAILURE LINES, VERBATIM, WITH THEIR OWN OBSERVED DURATIONS
+  (these are this run's durations; no baseline duration was pasted onto them)
+    (fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance [0.46ms]
+    (fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter [0.29ms]
+    (fail) auto-update-checker/checker > getLatestVersion > accepts latest channel [0.14ms]
+    (fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest) [0.13ms]
+    (fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing [0.09ms]
+    (fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status [0.11ms]
+    (fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing [0.35ms]
+
+  THE 7 BASELINE IDENTITIES (durations already stripped, so none appear)
+    (fail) auto-update-checker/checker > getLatestVersion > accepts channel parameter
+    (fail) auto-update-checker/checker > getLatestVersion > accepts latest channel
+    (fail) auto-update-checker/checker > getLatestVersion > falls back to latest when the channel is missing
+    (fail) auto-update-checker/checker > getLatestVersion > returns null when the registry responds with an error status
+    (fail) auto-update-checker/checker > getLatestVersion > works without channel (defaults to latest)
+    (fail) dependencies check > findCommentCheckerPackageBinary > #given a zero-dependency install where require.resolve throws Bun's non-Error ResolveMessage #when resolving package binary #then returns null instead of crashing
+    (fail) isModuleResolutionFailure > #given a real Bun dynamic-import failure #when classifying #then it is a resolution failure even though it is not an Error instance
+
+  All 7 are pre-existing and unrelated to this branch: 5 auto-update-checker registry-fetch
+  tests, 1 comment-checker binary resolution test, and 1 module-resolution classification test.
+
+GATE 12: per-file 250-line loop over the branch diff
+  artifact: task-6-file-lines.log
+  sourceFilesChecked=19  sourceViolations=0
+  todo6ArtifactsChecked=1 todo6ArtifactViolations=0
+  preExistingOver250=3, all of them verbatim 'bun run build' stdout logs landed by todos 2 and 5
+
+GATE 13: adapter and coupling audits
+  command: bun test packages/omo-opencode/src/shared/opencode-adapter-bun-runtime-audit.test.ts \
+                    packages/omo-opencode/src/shared/opencode-coupling-audit.test.ts
+  exit status: 0     observed: 3 pass, 0 fail, 3 expect() calls, 2 files
+
+GATE 14: confidence threshold and accuracy gate
+  artifact: task-6-threshold-audit.log
+  confidence_threshold is 0.8 and the branch changes it nowhere:
+    0 removed lines mention any threshold, and the single added mention is a new test fixture
+    passing the existing 0.8 into a record under test.
+  No accuracy threshold, minimum, floor, gate, or bar exists anywhere in the branch diff:
+    two independent greps exited 1 with 0 matching lines.
+
+WHY IT IS ENOUGH
+  The three gates test:fast cannot see are all green: the root tsconfig typecheck, the real build,
+  and the repo meta-audits inside the full suite. The full suite is compared against the parent
+  branch's own recorded baseline on normalized identities, so an added failure anywhere in 13131
+  tests would show up as a nonempty diff. It did not.
+
+WHAT WAS OMITTED
+  Raw gate stdout is not reproduced in full here; the measured values and the exact commands are.
+  No environment dump, credential, token, or auth header appears. OPENCODE_SERVER_PASSWORD is
+  removed from the full-suite environment by the command itself and its value is never printed.

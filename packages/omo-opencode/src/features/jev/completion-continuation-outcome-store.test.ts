@@ -1,11 +1,12 @@
 /// <reference types="bun-types" />
 
 import { describe, expect, test } from "bun:test"
-import type {
-  CompletionContinuationDecisionResult,
-  CompletionContinuationEntry,
-  CompletionContinuationHeuristicFacts,
-  CompletionContinuationInputTruncations,
+import {
+  COMPLETION_CONTINUATION_QUESTION_VERSION,
+  type CompletionContinuationDecisionResult,
+  type CompletionContinuationEntry,
+  type CompletionContinuationHeuristicFacts,
+  type CompletionContinuationInputTruncations,
 } from "@oh-my-opencode/jev-core"
 import { classifyCompletionContinuationOutcome } from "./completion-continuation-outcome-classification"
 import { captureCompletionContinuationInput } from "./completion-continuation-input"
@@ -31,7 +32,7 @@ const PREDICTION: CompletionContinuationDecisionResult = {
   thresholdLabels: { actuallyComplete: "would_false", progressing: "would_true", stuck: "would_false" },
   invalidAnswerCount: 0,
   threshold: 0.8,
-  questionVersion: 1,
+  questionVersion: COMPLETION_CONTINUATION_QUESTION_VERSION,
 }
 
 function snapshot(statuses: readonly string[], tag = "same", boulder: { total: number; completed: number; remaining: number } | null = null) {

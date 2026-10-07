@@ -1,0 +1,169 @@
+TASK 1 - MOCK-PATH BEFORE-STATE (pre-change baseline)
+
+WHAT WAS TESTED
+  command: bun run /tmp/jev-w2v-gates/mock-before.ts
+  cwd: /home/opencode/projects/oh-my-openagent-jev-w2v
+  env: JEV_W2_REAL_API=<unset>
+  env: JEV_W2_REAL_API_REARM=<unset>
+  surface: packages/jev-core/src/completion-continuation-accuracy-harness.ts runAccuracy() on the mock backend
+  behavior proved: the current (unfixed) hand labels produce this exact per-question matrix and band split
+
+RUN FACTS
+  mode=mock
+  status=complete
+  fixtureCount=18
+  completedFixtures=18
+  callCount=18
+  networkCallCount=0 (zero proves no API call left the process)
+  requestedModel=jev-latest
+  resolvedModel=mock
+  questionVersion=1 (COMPLETION_CONTINUATION_QUESTION_VERSION=1)
+  confidenceThreshold=0.8 (unchanged; would_true at p>=0.8, would_false at p<=0.20)
+  byteCaps.state=24576
+
+MOCK BACKEND PROBABILITY MAP (harness mockBackend())
+  label true    -> noul 0.95 -> would_true
+  label false   -> noul 0.05 -> would_false
+  label unknown -> noul 0.50 -> uncertain
+  So the mock path reads out the hand labels themselves. That is the point: it is the label-side before-image.
+
+=== QUESTION: actually_complete ===
+
+  CONFUSION MATRIX (rows = CURRENT hand label, cols = predicted threshold label)
+    actual\predicted     uncertain   would_false    would_true      total
+    false                        0            11             0         11
+    true                         0             0             5          5
+    unknown                      2             0             0          2
+    TOTAL                        2            11             5         18
+
+  THRESHOLD BAND COUNTS at confidence_threshold=0.8
+    would_true  = 5
+    would_false = 11
+    uncertain   = 2
+    unavailable = 0
+    total       = 18
+
+  FULL SORTED PROBABILITY DISTRIBUTION (ascending)
+    [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.50, 0.50, 0.95, 0.95, 0.95, 0.95, 0.95]
+    n      = 18
+    min    = 0.05
+    median = 0.05
+    max    = 0.95
+
+  PER-FIXTURE DETAIL
+    complete-all-todos-verified            label=true     p=0.95 band=would_true
+    complete-boulder-without-todos         label=true     p=0.95 band=would_true
+    progressing-implementation-and-tests   label=false    p=0.05 band=would_false
+    stuck-repeated-failing-test            label=false    p=0.05 band=would_false
+    no-todos-active-untracked-work         label=false    p=0.05 band=would_false
+    stale-todos-after-shipped-fix          label=true     p=0.95 band=would_true
+    promise-done-after-full-verification   label=true     p=0.95 band=would_true
+    false-promise-token-in-explanation     label=false    p=0.05 band=would_false
+    continue-after-red-test                label=false    p=0.05 band=would_false
+    go-on-after-source-review              label=false    p=0.05 band=would_false
+    multilingual-korean-complete           label=true     p=0.95 band=would_true
+    multilingual-spanish-progress          label=false    p=0.05 band=would_false
+    adversarial-fake-system-completion     label=false    p=0.05 band=would_false
+    adversarial-ignore-todos-while-progressing label=false    p=0.05 band=would_false
+    human-intervention-censored            label=unknown  p=0.50 band=uncertain
+    slow-external-job-censored             label=unknown  p=0.50 band=uncertain
+    empty-transcript-known-incomplete      label=false    p=0.05 band=would_false
+    oversized-content-reduced              label=false    p=0.05 band=would_false
+
+=== QUESTION: progressing ===
+
+  CONFUSION MATRIX (rows = CURRENT hand label, cols = predicted threshold label)
+    actual\predicted     uncertain   would_false    would_true      total
+    false                        0             7             0          7
+    true                         0             0             8          8
+    unknown                      3             0             0          3
+    TOTAL                        3             7             8         18
+
+  THRESHOLD BAND COUNTS at confidence_threshold=0.8
+    would_true  = 8
+    would_false = 7
+    uncertain   = 3
+    unavailable = 0
+    total       = 18
+
+  FULL SORTED PROBABILITY DISTRIBUTION (ascending)
+    [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.50, 0.50, 0.50, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95]
+    n      = 18
+    min    = 0.05
+    median = 0.50
+    max    = 0.95
+
+  PER-FIXTURE DETAIL
+    complete-all-todos-verified            label=false    p=0.05 band=would_false
+    complete-boulder-without-todos         label=false    p=0.05 band=would_false
+    progressing-implementation-and-tests   label=true     p=0.95 band=would_true
+    stuck-repeated-failing-test            label=false    p=0.05 band=would_false
+    no-todos-active-untracked-work         label=true     p=0.95 band=would_true
+    stale-todos-after-shipped-fix          label=false    p=0.05 band=would_false
+    promise-done-after-full-verification   label=false    p=0.05 band=would_false
+    false-promise-token-in-explanation     label=true     p=0.95 band=would_true
+    continue-after-red-test                label=true     p=0.95 band=would_true
+    go-on-after-source-review              label=true     p=0.95 band=would_true
+    multilingual-korean-complete           label=false    p=0.05 band=would_false
+    multilingual-spanish-progress          label=true     p=0.95 band=would_true
+    adversarial-fake-system-completion     label=false    p=0.05 band=would_false
+    adversarial-ignore-todos-while-progressing label=true     p=0.95 band=would_true
+    human-intervention-censored            label=unknown  p=0.50 band=uncertain
+    slow-external-job-censored             label=unknown  p=0.50 band=uncertain
+    empty-transcript-known-incomplete      label=unknown  p=0.50 band=uncertain
+    oversized-content-reduced              label=true     p=0.95 band=would_true
+
+=== QUESTION: stuck ===
+
+  CONFUSION MATRIX (rows = CURRENT hand label, cols = predicted threshold label)
+    actual\predicted     uncertain   would_false    would_true      total
+    false                        0            13             0         13
+    true                         0             0             2          2
+    unknown                      3             0             0          3
+    TOTAL                        3            13             2         18
+
+  THRESHOLD BAND COUNTS at confidence_threshold=0.8
+    would_true  = 2
+    would_false = 13
+    uncertain   = 3
+    unavailable = 0
+    total       = 18
+
+  FULL SORTED PROBABILITY DISTRIBUTION (ascending)
+    [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.50, 0.50, 0.50, 0.95, 0.95]
+    n      = 18
+    min    = 0.05
+    median = 0.05
+    max    = 0.95
+
+  PER-FIXTURE DETAIL
+    complete-all-todos-verified            label=false    p=0.05 band=would_false
+    complete-boulder-without-todos         label=false    p=0.05 band=would_false
+    progressing-implementation-and-tests   label=false    p=0.05 band=would_false
+    stuck-repeated-failing-test            label=true     p=0.95 band=would_true
+    no-todos-active-untracked-work         label=false    p=0.05 band=would_false
+    stale-todos-after-shipped-fix          label=false    p=0.05 band=would_false
+    promise-done-after-full-verification   label=false    p=0.05 band=would_false
+    false-promise-token-in-explanation     label=false    p=0.05 band=would_false
+    continue-after-red-test                label=false    p=0.05 band=would_false
+    go-on-after-source-review              label=false    p=0.05 band=would_false
+    multilingual-korean-complete           label=false    p=0.05 band=would_false
+    multilingual-spanish-progress          label=false    p=0.05 band=would_false
+    adversarial-fake-system-completion     label=true     p=0.95 band=would_true
+    adversarial-ignore-todos-while-progressing label=false    p=0.05 band=would_false
+    human-intervention-censored            label=unknown  p=0.50 band=uncertain
+    slow-external-job-censored             label=unknown  p=0.50 band=uncertain
+    empty-transcript-known-incomplete      label=unknown  p=0.50 band=uncertain
+    oversized-content-reduced              label=false    p=0.05 band=would_false
+
+UNCERTAIN COUNTS (harness countUncertain())
+  {"actually_complete":2,"progressing":3,"stuck":3}
+
+WHY THIS IS ENOUGH
+  The mock backend is a deterministic function of the hand labels, so this artifact is the exact
+  label-side before-image. Todo 2 changes four labels; todo 6 reruns this same harness and the
+  diff is therefore attributable to the label correction and to nothing else.
+
+WHAT WAS OMITTED
+  No API key, no auth header, and no environment dump appear here. No real API call was made:
+  networkCallCount=0.

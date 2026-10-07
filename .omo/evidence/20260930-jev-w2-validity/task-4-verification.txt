@@ -1,0 +1,34 @@
+WHAT WAS TESTED
+
+1. bun test packages/jev-core/src/completion-continuation-questions.test.ts
+2. lsp_diagnostics on completion-continuation-questions.ts and completion-continuation-questions.test.ts
+3. bun test packages/jev-core
+4. bun test script/shared-core-extraction-guard.test.ts
+5. bun run typecheck
+6. bun run build
+7. bun run test:fast
+8. Per-file physical line loop over both changed TypeScript files
+9. TypeScript no-excuse audit over both changed TypeScript files
+
+WHAT WAS OBSERVED
+
+- Failing-first focused run before the source edit: exit 1, 2 pass, 3 fail, 25 expect calls. Failures named version 1, missing previous field guidance, and missing first-idle behavior.
+- Focused green run: exit 0, 5 pass, 0 fail, 58 expect calls across 1 file.
+- LSP diagnostics: no diagnostics in either changed TypeScript file.
+- jev-core package: exit 0, 232 pass, 0 fail, 750 expect calls across 20 files.
+- Shared-core extraction guard: exit 0, 3 pass, 0 fail, 4 expect calls across 1 file.
+- Root typecheck: exit 0.
+- Root build: exit 0, final result `build: all steps completed`.
+- test:fast: exit 0, 789 pass, 0 fail, 2427 expect calls across 90 files.
+- Mock-path output during package and fast tests: `questionVersion=2`, `realApiRequested=false`, and `networkCalls=0`.
+- Physical line loop: 49 lines for completion-continuation-questions.ts and 80 lines for completion-continuation-questions.test.ts. Both are at most 250.
+- TypeScript no-excuse audit: no violations in 2 files.
+- Restricted actually_complete diff: exit 0, matching-line count 0, empty diff.
+
+WHY IT IS ENOUGH
+
+The focused test locks the requested question contract. Package tests and the harness-neutrality guard cover jev-core integration. Typecheck, build, and test:fast cover the root configuration and consumers. LSP and the static audit cover changed-file diagnostics and forbidden TypeScript escape hatches. The line loop proves the physical size limit per file.
+
+WHAT WAS OMITTED
+
+Raw environment data, API keys, tokens, auth headers, and private credentials were not captured. Build dependency audit warnings were not treated as failures because the required build exited 0 and this todo changes no dependency. No real API path was enabled or called.

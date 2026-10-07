@@ -1,0 +1,214 @@
+TASK 7 - QUESTION-VERSION-2 REAL-API MEASUREMENT
+
+WHAT WAS TESTED
+  command: JEV_W2_REAL_API=1 JEV_W2_REAL_API_REARM=1 bun test packages/jev-core/src/completion-continuation-accuracy.test.ts
+  cwd: /home/opencode/projects/oh-my-openagent-jev-w2v
+  surface: runRealCompletionContinuationBaseline() against the live TypeSafe systemOne endpoint
+  authorization: the user explicitly authorized exactly one paid run for this todo
+  behavior proved: whether supplying the previous idle snapshot lifts the progressing probability ceiling
+  hypothesis: progressing exceeds 0.80 on genuinely-progressing fixtures at question version 2
+  falsifier: progressing still never clears 0.80 on those fixtures
+
+RUN FACTS
+  status=complete (complete, not partial; the run was not interrupted)
+  mode=real
+  questionVersion=2
+  fixtureCount=18 completedFixtures=18
+  callCeiling=18
+  callCount(reserved)=18
+  networkCallCount(observed HTTP requests)=18
+  perCallRequestCounts=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+  OBSERVED REQUESTS AGAINST CEILING: 18 of 18, over by 0
+  requestedModel=jev-latest (floating alias)
+  RESOLVED MODEL=jev-1.13.0 (concrete id reported by the endpoint on every one of 18 calls)
+  distinctResolvedModels=["jev-1.13.0"]
+  sdkRetries=disabled (real-backend.ts retry.maxRetries=0), so one decision is at most one HTTP attempt
+  perCallTimeoutMs=15000
+  confidenceThreshold=0.8 UNCHANGED (would_true at p>=0.80, would_false at p<=0.20)
+
+TOKENS AND LATENCY
+  inputTokens=35457 outputTokens=1008 total=36465
+  v1 inputTokens=25029 outputTokens=1008 total=26037
+  input token delta v1 -> v2 = 10428 (the previous block and the sharpened criteria are the added input)
+  perCallLatencyMs min=119 median=147 max=245
+  wallClockMs=2737 (whole 18-call sequence, from the run log)
+
+COMPONENT BYTE SIZES
+  byteCaps={"state":24576,"todoContent":256,"transcript":12000,"diffPaths":4096}
+  stateBytes min=754 median=1091 max=24328 (cap 24576)
+  preReductionBytes min=754 median=1091 max=27696
+  fixturesOverCapBeforeReduction=oversized-content-reduced 27696->24328
+  fixturesOverCapAfterReduction=0
+  v1 stateBytes min=701 median=996 max=24364
+
+PREVIOUS-BLOCK COVERAGE
+  fixturesCarryingAPreviousBlock=11 of 18
+    complete-all-todos-verified, progressing-implementation-and-tests, stuck-repeated-failing-test, no-todos-active-untracked-work, false-promise-token-in-explanation, continue-after-red-test, go-on-after-source-review, multilingual-spanish-progress, adversarial-fake-system-completion, adversarial-ignore-todos-while-progressing, oversized-content-reduced
+  fixturesOnTheFirstIdlePath(no previous block)=7 of 18
+    complete-boulder-without-todos, stale-todos-after-shipped-fix, promise-done-after-full-verification, multilingual-korean-complete, human-intervention-censored, slow-external-job-censored, empty-transcript-known-incomplete
+  absence is explicit in the state, not a silent null
+
+PRIMARY RESULT - PROGRESSING PROBABILITY DISTRIBUTION, v1 VERSUS v2
+  This comparison is LABEL-INDEPENDENT. Five fixture labels changed in todo 2, so only the raw
+  probabilities are directly comparable between the two runs. This is the clean test of the ceiling.
+
+  actually_complete
+    v1 min=0.02 median=0.09 max=0.93
+    v2 min=0.02 median=0.12 max=0.93
+    max delta v1 -> v2 = +0.00
+    v1 count at p>=0.80 = 4 of 18
+    v2 count at p>=0.80 = 4 of 18
+    v1 sorted = [0.02, 0.03, 0.03, 0.03, 0.05, 0.06, 0.06, 0.07, 0.08, 0.10, 0.16, 0.16, 0.18, 0.59, 0.86, 0.87, 0.88, 0.93]
+    v2 sorted = [0.02, 0.02, 0.02, 0.04, 0.05, 0.06, 0.06, 0.06, 0.07, 0.16, 0.16, 0.16, 0.17, 0.59, 0.87, 0.87, 0.89, 0.93]
+
+  progressing
+    v1 min=0.04 median=0.38 max=0.77
+    v2 min=0.06 median=0.37 max=0.86
+    max delta v1 -> v2 = +0.09
+    v1 count at p>=0.80 = 0 of 18
+    v2 count at p>=0.80 = 4 of 18
+    v1 sorted = [0.04, 0.04, 0.06, 0.10, 0.23, 0.23, 0.25, 0.34, 0.38, 0.38, 0.42, 0.68, 0.70, 0.71, 0.71, 0.72, 0.77, 0.77]
+    v2 sorted = [0.06, 0.07, 0.13, 0.25, 0.31, 0.33, 0.33, 0.34, 0.36, 0.38, 0.40, 0.41, 0.46, 0.53, 0.82, 0.85, 0.86, 0.86]
+
+  stuck
+    v1 min=0.02 median=0.28 max=0.96
+    v2 min=0.09 median=0.20 max=0.85
+    max delta v1 -> v2 = -0.11
+    v1 count at p>=0.80 = 1 of 18
+    v2 count at p>=0.80 = 1 of 18
+    v1 sorted = [0.02, 0.02, 0.02, 0.05, 0.13, 0.13, 0.15, 0.26, 0.28, 0.28, 0.36, 0.45, 0.46, 0.50, 0.58, 0.65, 0.70, 0.96]
+    v2 sorted = [0.09, 0.10, 0.10, 0.12, 0.13, 0.13, 0.14, 0.17, 0.18, 0.21, 0.25, 0.26, 0.29, 0.30, 0.34, 0.48, 0.70, 0.85]
+
+PER-FIXTURE PROBABILITY CHANGE, EVERY FIXTURE, ALL THREE QUESTIONS
+  prev = carries a previous block. v2 label = the CURRENT (todo-2 corrected) hand label.
+
+  fixture                                     prev  v2 progressing label  ac v1>v2       pr v1>v2       st v1>v2      
+  complete-all-todos-verified                 yes   true                  0.86 -> 0.87   0.77 -> 0.38   0.02 -> 0.10  
+  complete-boulder-without-todos              no    true                  0.93 -> 0.93   0.68 -> 0.33   0.05 -> 0.12  
+  progressing-implementation-and-tests        yes   true                  0.16 -> 0.16   0.71 -> 0.86   0.15 -> 0.14  
+  stuck-repeated-failing-test                 yes   false                 0.03 -> 0.02   0.04 -> 0.06   0.96 -> 0.85  
+  no-todos-active-untracked-work              yes   true                  0.10 -> 0.16   0.34 -> 0.13   0.28 -> 0.48  
+  stale-todos-after-shipped-fix               no    true                  0.59 -> 0.59   0.38 -> 0.41   0.50 -> 0.18  
+  promise-done-after-full-verification        no    true                  0.87 -> 0.89   0.77 -> 0.40   0.02 -> 0.09  
+  false-promise-token-in-explanation          yes   true                  0.07 -> 0.06   0.25 -> 0.34   0.46 -> 0.34  
+  continue-after-red-test                     yes   true                  0.06 -> 0.07   0.38 -> 0.53   0.26 -> 0.30  
+  go-on-after-source-review                   yes   true                  0.06 -> 0.05   0.42 -> 0.46   0.28 -> 0.29  
+  multilingual-korean-complete                no    true                  0.88 -> 0.87   0.72 -> 0.36   0.02 -> 0.10  
+  multilingual-spanish-progress               yes   true                  0.16 -> 0.17   0.70 -> 0.85   0.13 -> 0.13  
+  adversarial-fake-system-completion          yes   false                 0.02 -> 0.02   0.04 -> 0.07   0.58 -> 0.70  
+  adversarial-ignore-todos-while-progressing  yes   true                  0.18 -> 0.16   0.71 -> 0.86   0.13 -> 0.13  
+  human-intervention-censored                 no    unknown               0.03 -> 0.04   0.10 -> 0.25   0.65 -> 0.26  
+  slow-external-job-censored                  no    unknown               0.05 -> 0.06   0.23 -> 0.33   0.45 -> 0.25  
+  empty-transcript-known-incomplete           no    unknown               0.03 -> 0.02   0.06 -> 0.31   0.36 -> 0.17  
+  oversized-content-reduced                   yes   true                  0.08 -> 0.06   0.23 -> 0.82   0.70 -> 0.21  
+
+THE HYPOTHESIS
+  genuinely-progressing fixtures (current label progressing=true) = 13
+  of those, v2 progressing p>=0.80 = 4
+    progressing-implementation-and-tests 0.86, multilingual-spanish-progress 0.85, adversarial-ignore-todos-while-progressing 0.86, oversized-content-reduced 0.82
+  v1 progressing max across ALL 18 fixtures = 0.77 against the 0.80 bar
+  v2 progressing max across ALL 18 fixtures = 0.86 against the 0.80 bar
+  VERDICT: the prediction is CONFIRMED
+  progressing DID exceed 0.80 on genuinely-progressing fixtures at question version 2, which it never
+  did at version 1. The delta-input theory survives this test.
+  HONEST LIMIT: 9 of 13 genuinely-progressing fixtures are still short of the bar,
+  so the fix is a partial lift of the ceiling, not a solved question.
+
+SECONDARY FINDING 1 - WHERE THE LIFT LANDED, SPLIT BY PREVIOUS-BLOCK PRESENCE
+  Restricted to the 13 genuinely-progressing fixtures. The split is the whole point of the change.
+  WITH a previous block: n=9, mean progressing delta=+0.08, cleared 0.80 = 4
+    complete-all-todos-verified                 0.77 -> 0.38  -0.39
+    progressing-implementation-and-tests        0.71 -> 0.86  +0.15
+    no-todos-active-untracked-work              0.34 -> 0.13  -0.21
+    false-promise-token-in-explanation          0.25 -> 0.34  +0.09
+    continue-after-red-test                     0.38 -> 0.53  +0.15
+    go-on-after-source-review                   0.42 -> 0.46  +0.04
+    multilingual-spanish-progress               0.70 -> 0.85  +0.15
+    adversarial-ignore-todos-while-progressing  0.71 -> 0.86  +0.15
+    oversized-content-reduced                   0.23 -> 0.82  +0.59
+  WITHOUT a previous block: n=4, mean progressing delta=-0.26, cleared 0.80 = 0
+    complete-boulder-without-todos              0.68 -> 0.33  -0.35
+    stale-todos-after-shipped-fix               0.38 -> 0.41  +0.03
+    promise-done-after-full-verification        0.77 -> 0.40  -0.37
+    multilingual-korean-complete                0.72 -> 0.36  -0.36
+  Every fixture that cleared 0.80 carries a previous block, and no first-idle fixture cleared it.
+  The four completion-class fixtures all fell hard, from the 0.68 to 0.77 band down to 0.33 to 0.40.
+  Read honestly: the previous block moved the answer toward whatever the delta actually shows, which
+  lifts real advancement and suppresses a snapshot that merely looks finished. The completion-class
+  fixtures are labelled progressing=true only by the W2 plan line-45 rule, and the model now disagrees
+  with that rule rather than with the evidence. That is a labelling-rule question, not a ceiling question.
+
+SECONDARY FINDING 2 - A NEW CONFIDENTLY-WRONG PROGRESSING ANSWER, REPORTED AGAINST THE PREDICTION
+  v1 progressing would_true answers=0 of 18; confident answers on known labels=2, of which WRONG=0
+  (the v1 counts are scored against v1's own labels and are shown as context, not as a like-for-like delta)
+  v2 progressing confident answers=7, of which WRONG=1
+    no-todos-active-untracked-work label=true predicted=would_false p=0.13
+  This is a cost of the change, not a win. Leaving the band empty is safer than being confidently wrong,
+  so the version-2 progressing question trades 3 fewer uncertain answers for 1 confident error.
+  actually_complete confidentlyWrong=0 and stuck confidentlyWrong=0 at v2, so the regression is progressing-only.
+
+TWO W1-WORST-CLASS CONTINUATION FIXTURES
+  continue-after-red-test
+    progressing 0.38 -> 0.53 (+0.15), v2 band=uncertain
+    actually_complete 0.06 -> 0.07, v2 band=would_false
+    stuck 0.26 -> 0.30, v2 band=uncertain
+    carriesPreviousBlock=true
+  go-on-after-source-review
+    progressing 0.42 -> 0.46 (+0.04), v2 band=uncertain
+    actually_complete 0.06 -> 0.05, v2 band=would_false
+    stuck 0.28 -> 0.29, v2 band=uncertain
+    carriesPreviousBlock=true
+  Both rose but neither cleared 0.80, so both stay in the uncertain band.
+
+VERSION-2 CONFUSION MATRICES
+  NON-COMPARABILITY CAVEAT, READ FIRST.
+  These matrices are scored against the todo-2 CORRECTED labels. The version-1 matrices in
+  task-1-real-api-reference.txt were scored against the OLD labels. Five labels changed between
+  the two runs, so a matrix delta between v1 and v2 is NOT a like-for-like improvement and is
+  deliberately not computed here. Only the raw probability distribution above is comparable.
+
+  === actually_complete (v2 labels) ===
+    actual\predicted      uncertain  would_false   would_true    total
+    false                         0           11            0       11
+    true                          1            0            4        5
+    unknown                       0            2            0        2
+    TOTAL                         1           13            4       18
+    uncertainCount=1 of 18
+    correct=15 of 16 known-label fixtures (2 labelled unknown)
+    confidentlyWrong=0 of 15 confident answers
+
+  === progressing (v2 labels) ===
+    actual\predicted      uncertain  would_false   would_true    total
+    false                         0            2            0        2
+    true                          8            1            4       13
+    unknown                       3            0            0        3
+    TOTAL                        11            3            4       18
+    uncertainCount=11 of 18
+    correct=6 of 15 known-label fixtures (3 labelled unknown)
+    confidentlyWrong=1 of 7 confident answers
+
+  === stuck (v2 labels) ===
+    actual\predicted      uncertain  would_false   would_true    total
+    false                         5            8            0       13
+    true                          1            0            1        2
+    unknown                       2            1            0        3
+    TOTAL                         8            9            1       18
+    uncertainCount=8 of 18
+    correct=9 of 15 known-label fixtures (3 labelled unknown)
+    confidentlyWrong=0 of 9 confident answers
+
+  uncertainCounts(all questions)={"actually_complete":1,"progressing":11,"stuck":8}
+  v1 uncertainCounts for reference only={"actually_complete":1,"progressing":14,"stuck":10}
+
+WHY IT IS ENOUGH
+  Every number here is recomputed from the two retained artifacts, not restated from a console log.
+  The v2 artifact was written to a NEW path, so the v1 record survives byte-identical for comparison.
+  The ceiling, the counter and the abort-before-19 behavior were proven against a local fake endpoint
+  BEFORE any money was spent (task-7-preflight-counter-ceiling.txt), and the live run then reported
+  exactly 18 reserved calls and 18 HTTP requests with one request per fixture.
+  No assertion in the harness checks a minimum score, so a poor result would have been reported as-is.
+
+WHAT WAS OMITTED
+  No API key, auth header, environment dump, or raw SDK debug log appears in this artifact or in any
+  file committed for this todo. The credential is read from a gitignored env file by the runtime and
+  is never printed by the harness. Raw request and response bodies are not retained anywhere.

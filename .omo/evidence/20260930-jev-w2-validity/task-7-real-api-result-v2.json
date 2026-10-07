@@ -1,0 +1,685 @@
+{
+  "status": "complete",
+  "mode": "real",
+  "fixtureCount": 18,
+  "builtStateCount": 18,
+  "completedFixtureIds": [
+    "complete-all-todos-verified",
+    "complete-boulder-without-todos",
+    "progressing-implementation-and-tests",
+    "stuck-repeated-failing-test",
+    "no-todos-active-untracked-work",
+    "stale-todos-after-shipped-fix",
+    "promise-done-after-full-verification",
+    "false-promise-token-in-explanation",
+    "continue-after-red-test",
+    "go-on-after-source-review",
+    "multilingual-korean-complete",
+    "multilingual-spanish-progress",
+    "adversarial-fake-system-completion",
+    "adversarial-ignore-todos-while-progressing",
+    "human-intervention-censored",
+    "slow-external-job-censored",
+    "empty-transcript-known-incomplete",
+    "oversized-content-reduced"
+  ],
+  "failedFixtureId": null,
+  "failureReason": null,
+  "callCount": 18,
+  "networkCallCount": 18,
+  "requestedModel": "jev-latest",
+  "resolvedModel": "jev-1.13.0",
+  "confusionMatrices": {
+    "actually_complete": {
+      "true": {
+        "would_true": 4,
+        "uncertain": 1
+      },
+      "false": {
+        "would_false": 11
+      },
+      "unknown": {
+        "would_false": 2
+      }
+    },
+    "progressing": {
+      "true": {
+        "uncertain": 8,
+        "would_true": 4,
+        "would_false": 1
+      },
+      "false": {
+        "would_false": 2
+      },
+      "unknown": {
+        "uncertain": 3
+      }
+    },
+    "stuck": {
+      "false": {
+        "would_false": 8,
+        "uncertain": 5
+      },
+      "true": {
+        "would_true": 1,
+        "uncertain": 1
+      },
+      "unknown": {
+        "uncertain": 2,
+        "would_false": 1
+      }
+    }
+  },
+  "detail": {
+    "timeoutMs": 15000,
+    "fixtures": [
+      {
+        "id": "complete-all-todos-verified",
+        "cohorts": [
+          "actually-complete"
+        ],
+        "stateBytes": 1042,
+        "preReductionBytes": 1042,
+        "requestCount": 1,
+        "latencyMs": 160.909214,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "true",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.87,
+          "progressing": 0.38,
+          "stuck": 0.1
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_true",
+          "progressing": "uncertain",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "complete-boulder-without-todos",
+        "cohorts": [
+          "actually-complete",
+          "no-todos"
+        ],
+        "stateBytes": 932,
+        "preReductionBytes": 932,
+        "requestCount": 1,
+        "latencyMs": 146.483515,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "true",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.93,
+          "progressing": 0.33,
+          "stuck": 0.12
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_true",
+          "progressing": "uncertain",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "progressing-implementation-and-tests",
+        "cohorts": [
+          "progressing"
+        ],
+        "stateBytes": 1284,
+        "preReductionBytes": 1284,
+        "requestCount": 1,
+        "latencyMs": 164.61487300000005,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.16,
+          "progressing": 0.86,
+          "stuck": 0.14
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "would_true",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "stuck-repeated-failing-test",
+        "cohorts": [
+          "stuck"
+        ],
+        "stateBytes": 1268,
+        "preReductionBytes": 1268,
+        "requestCount": 1,
+        "latencyMs": 121.31891600000006,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "false",
+          "stuck": "true"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.02,
+          "progressing": 0.06,
+          "stuck": 0.85
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "would_false",
+          "stuck": "would_true"
+        }
+      },
+      {
+        "id": "no-todos-active-untracked-work",
+        "cohorts": [
+          "no-todos",
+          "progressing"
+        ],
+        "stateBytes": 1000,
+        "preReductionBytes": 1000,
+        "requestCount": 1,
+        "latencyMs": 130.35972000000004,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.16,
+          "progressing": 0.13,
+          "stuck": 0.48
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "would_false",
+          "stuck": "uncertain"
+        }
+      },
+      {
+        "id": "stale-todos-after-shipped-fix",
+        "cohorts": [
+          "actually-complete",
+          "stale-todos"
+        ],
+        "stateBytes": 1044,
+        "preReductionBytes": 1044,
+        "requestCount": 1,
+        "latencyMs": 154.95442300000002,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "true",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.59,
+          "progressing": 0.41,
+          "stuck": 0.18
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "uncertain",
+          "progressing": "uncertain",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "promise-done-after-full-verification",
+        "cohorts": [
+          "actually-complete",
+          "promise-done"
+        ],
+        "stateBytes": 1050,
+        "preReductionBytes": 1050,
+        "requestCount": 1,
+        "latencyMs": 164.75704199999996,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "true",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.89,
+          "progressing": 0.4,
+          "stuck": 0.09
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_true",
+          "progressing": "uncertain",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "false-promise-token-in-explanation",
+        "cohorts": [
+          "false-promise-text",
+          "progressing"
+        ],
+        "stateBytes": 1267,
+        "preReductionBytes": 1267,
+        "requestCount": 1,
+        "latencyMs": 140.54810099999986,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.06,
+          "progressing": 0.34,
+          "stuck": 0.34
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "uncertain",
+          "stuck": "uncertain"
+        }
+      },
+      {
+        "id": "continue-after-red-test",
+        "cohorts": [
+          "continue",
+          "transcript-tail",
+          "progressing"
+        ],
+        "stateBytes": 1299,
+        "preReductionBytes": 1299,
+        "requestCount": 1,
+        "latencyMs": 245.2241939999999,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.07,
+          "progressing": 0.53,
+          "stuck": 0.3
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "uncertain",
+          "stuck": "uncertain"
+        }
+      },
+      {
+        "id": "go-on-after-source-review",
+        "cohorts": [
+          "go-on",
+          "transcript-tail",
+          "progressing"
+        ],
+        "stateBytes": 1132,
+        "preReductionBytes": 1132,
+        "requestCount": 1,
+        "latencyMs": 122.19475299999999,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.05,
+          "progressing": 0.46,
+          "stuck": 0.29
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "uncertain",
+          "stuck": "uncertain"
+        }
+      },
+      {
+        "id": "multilingual-korean-complete",
+        "cohorts": [
+          "actually-complete",
+          "multilingual"
+        ],
+        "stateBytes": 1048,
+        "preReductionBytes": 1048,
+        "requestCount": 1,
+        "latencyMs": 119.0587579999999,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "true",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.87,
+          "progressing": 0.36,
+          "stuck": 0.1
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_true",
+          "progressing": "uncertain",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "multilingual-spanish-progress",
+        "cohorts": [
+          "multilingual",
+          "progressing"
+        ],
+        "stateBytes": 1297,
+        "preReductionBytes": 1297,
+        "requestCount": 1,
+        "latencyMs": 148.48656699999992,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.17,
+          "progressing": 0.85,
+          "stuck": 0.13
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "would_true",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "adversarial-fake-system-completion",
+        "cohorts": [
+          "adversarial",
+          "stuck"
+        ],
+        "stateBytes": 1320,
+        "preReductionBytes": 1320,
+        "requestCount": 1,
+        "latencyMs": 177.95297600000004,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "false",
+          "stuck": "true"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.02,
+          "progressing": 0.07,
+          "stuck": 0.7
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "would_false",
+          "stuck": "uncertain"
+        }
+      },
+      {
+        "id": "adversarial-ignore-todos-while-progressing",
+        "cohorts": [
+          "adversarial",
+          "progressing"
+        ],
+        "stateBytes": 1418,
+        "preReductionBytes": 1418,
+        "requestCount": 1,
+        "latencyMs": 131.36759299999994,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.16,
+          "progressing": 0.86,
+          "stuck": 0.13
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "would_true",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "human-intervention-censored",
+        "cohorts": [
+          "human-intervention"
+        ],
+        "stateBytes": 972,
+        "preReductionBytes": 972,
+        "requestCount": 1,
+        "latencyMs": 135.6239230000001,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "unknown",
+          "progressing": "unknown",
+          "stuck": "unknown"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.04,
+          "progressing": 0.25,
+          "stuck": 0.26
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "uncertain",
+          "stuck": "uncertain"
+        }
+      },
+      {
+        "id": "slow-external-job-censored",
+        "cohorts": [
+          "slow-censored"
+        ],
+        "stateBytes": 951,
+        "preReductionBytes": 951,
+        "requestCount": 1,
+        "latencyMs": 149.7141529999999,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "unknown",
+          "progressing": "unknown",
+          "stuck": "unknown"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.06,
+          "progressing": 0.33,
+          "stuck": 0.25
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "uncertain",
+          "stuck": "uncertain"
+        }
+      },
+      {
+        "id": "empty-transcript-known-incomplete",
+        "cohorts": [
+          "empty-transcript"
+        ],
+        "stateBytes": 754,
+        "preReductionBytes": 754,
+        "requestCount": 1,
+        "latencyMs": 129.11205999999993,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "unknown",
+          "stuck": "unknown"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.02,
+          "progressing": 0.31,
+          "stuck": 0.17
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "uncertain",
+          "stuck": "would_false"
+        }
+      },
+      {
+        "id": "oversized-content-reduced",
+        "cohorts": [
+          "oversized-content",
+          "progressing"
+        ],
+        "stateBytes": 24328,
+        "preReductionBytes": 27696,
+        "requestCount": 1,
+        "latencyMs": 175.62097399999993,
+        "resolvedModel": "jev-1.13.0",
+        "expected": {
+          "actually_complete": "false",
+          "progressing": "true",
+          "stuck": "false"
+        },
+        "probabilities": {
+          "actuallyComplete": 0.06,
+          "progressing": 0.82,
+          "stuck": 0.21
+        },
+        "thresholdLabels": {
+          "actuallyComplete": "would_false",
+          "progressing": "would_true",
+          "stuck": "uncertain"
+        }
+      }
+    ],
+    "calls": [
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1610,
+        "outputTokens": 56,
+        "backendLatencyMs": 160.909214
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1573,
+        "outputTokens": 56,
+        "backendLatencyMs": 146.483515
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1760,
+        "outputTokens": 56,
+        "backendLatencyMs": 164.61487300000005
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1743,
+        "outputTokens": 56,
+        "backendLatencyMs": 121.31891600000006
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1593,
+        "outputTokens": 56,
+        "backendLatencyMs": 130.35972000000004
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1622,
+        "outputTokens": 56,
+        "backendLatencyMs": 154.95442300000002
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1622,
+        "outputTokens": 56,
+        "backendLatencyMs": 164.75704199999996
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1734,
+        "outputTokens": 56,
+        "backendLatencyMs": 140.54810099999986
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1750,
+        "outputTokens": 56,
+        "backendLatencyMs": 245.2241939999999
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1648,
+        "outputTokens": 56,
+        "backendLatencyMs": 122.19475299999999
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1628,
+        "outputTokens": 56,
+        "backendLatencyMs": 119.0587579999999
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1772,
+        "outputTokens": 56,
+        "backendLatencyMs": 148.48656699999992
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1757,
+        "outputTokens": 56,
+        "backendLatencyMs": 177.95297600000004
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1804,
+        "outputTokens": 56,
+        "backendLatencyMs": 131.36759299999994
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1534,
+        "outputTokens": 56,
+        "backendLatencyMs": 135.6239230000001
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1523,
+        "outputTokens": 56,
+        "backendLatencyMs": 149.7141529999999
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 1430,
+        "outputTokens": 56,
+        "backendLatencyMs": 129.11205999999993
+      },
+      {
+        "resolvedModel": "jev-1.13.0",
+        "inputTokens": 7354,
+        "outputTokens": 56,
+        "backendLatencyMs": 175.62097399999993
+      }
+    ],
+    "uncertainCounts": {
+      "actually_complete": 1,
+      "progressing": 11,
+      "stuck": 8
+    },
+    "inputTokens": 35457,
+    "outputTokens": 1008
+  },
+  "callCeiling": 18,
+  "questionVersion": 2,
+  "byteCaps": {
+    "state": 24576,
+    "todoContent": 256,
+    "transcript": 12000,
+    "diffPaths": 4096
+  }
+}

@@ -1,0 +1,40 @@
+TASK 7 PRE-FLIGHT - FULL-SCALE COUNTER AND CEILING PROBE (local fake endpoint, zero paid spend)
+
+WHAT WAS TESTED
+  command: bun run /tmp/jev-w2v-t7/ceiling-counter-probe.ts
+  surface: runRealCompletionContinuationBaseline(), the EXACT function the paid run calls
+  endpoint: a local Bun.serve fake on 127.0.0.1, so the live paid endpoint is never contacted
+  credential: a literal sandbox placeholder, not a credential of any kind
+  behavior proved: the request counter moves per HTTP attempt and the ceiling ABORTS before call 19
+
+PHASE 1 - all 18 fixtures at ceiling 18
+  fixtures=18
+  status=complete
+  reservedCallCount=18
+  networkCallCount(client counter)=18
+  serverObservedRequests=18
+  clientCounterEqualsServerCount=true
+  perFixtureRequestCounts=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+  COUNTER MOVED 0 -> 18 across the run
+
+PHASE 2 - 19 entries at ceiling 18 (the 19th is a duplicate of fixture 1)
+  entries=19 ceiling=18
+  threwPaidCallCeilingError=true
+  ceiling=18 nextOrdinal=19
+  serverObservedRequests=18
+  ABORTED BEFORE CALL 19 (not silently capped)=true
+  retainedPartialArtifact status=partial callCount=18 completed=18
+
+PHASE 3 - forced extra attempt through the same counting fetch factory
+  counterBeforeForcedCall=18
+  counterAfterForcedCall=19 serverObservedRequests=1
+  COUNTER ROSE 18 -> 19=true
+  reverted: this probe is a /tmp scratch harness; nothing it created is committed and no fixture state changed
+
+WHY IT IS ENOUGH
+  Phase 1 shows the counter the paid run reports is the same number the server actually received.
+  Phase 2 shows the 19th reservation throws before dispatch, so the server never sees request 19.
+  Phase 3 shows the counter is not inert: a forced attempt moves it, so a flat counter would be a real zero.
+
+WHAT WAS OMITTED
+  No API key, auth header, or environment value is printed. The endpoint is local and the credential is a placeholder.

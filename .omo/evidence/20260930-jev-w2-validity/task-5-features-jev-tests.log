@@ -1,0 +1,34 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+SYNC_P99_US=17.75
+
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts:
+w2_active_timer_handles<=73 actual=73
+w2_unref_missing=0 actual=0
+in_flight_max<=8 actual=8
+dispatches_dropped_persisted=992 attempted_excess=992
+heap_delta_bytes=2782713 threshold<16777216
+sync_seam_p99_ms=0.084542 threshold<1
+idle_handler_added_p99_ms=0.019529 threshold<5
+ANTI_VACUITY_UNREF_HANDLE=FAIL_DETECTED W2 handle unref audit failed: missing_or_duplicate=1
+ANTI_VACUITY_UNREF_HANDLE_REVERT=PASS normal audit restored
+ANTI_VACUITY_UNREF_CHILD=FAIL_DETECTED timed_out=true pid=3185229 elapsed_ms=755.85
+child_exit_ms=101.92 threshold<2000 pid=3185257 exit=0
+ANTI_VACUITY_UNREF_CHILD_REVERT=PASS unref restored
+
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts:
+preCapTodos=40 preCapTranscript=12 preCapDiff=40
+preCapBoulderTitleBytes=303
+
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts:
+ATTEMPTED_STARTS=20 MAX_INFLIGHT=8 IN_FLIGHT=8 PERSISTED_DROPS=12
+
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts:
+preEvictionSessions=256
+preEvictionRecordsPerSession=64
+
+ 147 pass
+ 0 fail
+ 616 expect() calls
+Ran 147 tests across 20 files. [1489.00ms]

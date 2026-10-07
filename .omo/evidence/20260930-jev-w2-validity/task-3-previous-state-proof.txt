@@ -1,0 +1,26 @@
+TODO 3 PREVIOUS SNAPSHOT PROOF
+
+WHAT WAS TESTED
+- bun test packages/jev-core/src/completion-continuation-state.test.ts
+- The focused suite covers an available previous snapshot, explicit first-idle absence, genuine size reduction, deterministic reduction order, and the UTF-8 cap with multibyte content.
+
+EXACT PREVIOUS TYPE
+- Available: { available: true, todoStatusDigest: string, boulderDigest: string | null, todo: { total: number, completed: number }, boulder: { total: number, completed: number, remaining: number } | null, continuationDispatched: boolean }
+- Unavailable: { available: false, reason: "first_idle" }
+- CompletionContinuationPreviousState is the discriminated union of those variants.
+
+WHAT WAS OBSERVED
+- Initial red run: 6 pass, 4 fail. Every failure received undefined for state.previous, proving the tests exercised the missing behavior.
+- Green run: exit 0, 10 pass, 0 fail, 50 expect calls.
+- Protected reduction: preReductionBytes=59122 and postReductionBytes=24063. Diff paths were empty, transcript messages were empty, todo content was empty, and todo items were removed from the end. The complete available previous value remained equal after reduction.
+- Multibyte state: preReductionBytes=86386 and postReductionBytes=24125. The serialized UTF-8 byte count remained below the 24576-byte cap, contained no replacement character, parsed as JSON, and retained the complete previous value.
+- First idle produced { available: false, reason: "first_idle" } instead of null or an absent key.
+
+WHY IT IS ENOUGH
+- The protected reduction begins more than twice above the cap and finishes below it, so reduction genuinely ran through every declared stage before previous was checked.
+- The available and unavailable variants make a missing predecessor distinguishable from a predecessor whose boulderDigest or boulder value is null. This removes the ambiguity between no prior idle and known null prior data.
+- The multibyte case measures encoded UTF-8 bytes rather than JavaScript character count.
+
+WHAT WAS OMITTED
+- No real API path was enabled or called. JEV_W2_REAL_API remained unset.
+- No adapter wiring or previous-snapshot lookup was tested because those belong to todo 5.

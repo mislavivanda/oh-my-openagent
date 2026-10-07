@@ -139,3 +139,4 @@ export type {
   JevCompletionContinuationScheduler,
   JevCompletionContinuationSink,
 } from "./completion-continuation"
+export type { CompletionContinuationOutcomePreviousSnapshot } from "./completion-continuation-outcome-types"

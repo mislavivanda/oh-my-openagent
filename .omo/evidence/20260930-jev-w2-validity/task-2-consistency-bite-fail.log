@@ -1,0 +1,23 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-fixture-consistency.test.ts:
+40 |
+41 |     // then
+42 |     expect(labels).toHaveLength(4)
+43 |     for (const { id, label } of labels) {
+44 |       expect(label.actuallyComplete, id).toBeTrue()
+45 |       expect(label.progressing, id).toBeTrue()
+                                         ^
+error: complete-all-todos-verified
+
+Received: false
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2v/packages/jev-core/src/completion-continuation-fixture-consistency.test.ts:45:37)
+(fail) completion-continuation fixture line-45 consistency > #given complete tracked work #when line 45 is applied #then progressing is true and stuck is false [0.79ms]
+
+ 2 pass
+ 1 fail
+ 38 expect() calls
+Ran 3 tests across 1 file. [124.00ms]
+
+exit_status=1

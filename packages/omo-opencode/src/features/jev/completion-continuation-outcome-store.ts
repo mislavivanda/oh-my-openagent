@@ -20,9 +20,7 @@ const DEFAULT_CLOCK = {
     return { cancel: () => clearTimeout(timer), unref: () => timer.unref() }
   },
 }
-function positive(value: number | undefined, fallback: number): number {
-  return value !== undefined && Number.isSafeInteger(value) && value > 0 ? value : fallback
-}
+function positive(value: number | undefined, fallback: number): number { return value !== undefined && Number.isSafeInteger(value) && value > 0 ? value : fallback }
 function signature(snapshot: CompletionContinuationOutcomeSnapshot): string {
   return JSON.stringify(snapshot.inputDigests ?? snapshot.input ?? null)
 }
@@ -226,6 +224,7 @@ export function createCompletionContinuationOutcomeStore(options: CompletionCont
       return record === undefined ? undefined : snapshotCompletionContinuationOutcomeRecord(record)
     },
     getSessionRecords: (sessionID) => [...(state.sessions.get(sessionID)?.records.values() ?? [])].map(snapshotCompletionContinuationOutcomeRecord),
+    getLatestPreviousSnapshot: (sessionID) => { const record = [...(state.sessions.get(sessionID)?.records.values() ?? [])].at(-1); return record === undefined ? undefined : { snapshot: record.current, continuationDispatched: record.continuationActivity } },
     getCounters: () => ({ ...state.counters, preInputSkips: { ...state.counters.preInputSkips } }),
     inspect: () => ({
       sessionCount: state.sessions.size,
