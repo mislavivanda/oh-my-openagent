@@ -1,0 +1,19 @@
+ M docs/jev/HANDOFF.md
+ M docs/jev/dogfood-log.md
+ M docs/reference/configuration.md
+ M package.json
+ M packages/jev-core/AGENTS.md
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+
+--- interpretation ---
+command: git status --porcelain (captured immediately before staging)
+total_lines=10
+ambient generated bundles (must be 5, never staged): 5
+credential files visible to git (must be 0): 0
+assets/ schema files dirty (must be 0, todo 2 already committed them): 0
+TypeScript files dirty (must be 0): 0
+this-todo files: package.json plus the four allowed docs.

@@ -1,0 +1,24 @@
+WHAT WAS TESTED
+- Focused RED: the unimplemented harness returned partial instead of complete.
+- Focused GREEN: both new test files passed 11 tests with 66 assertions.
+- Exact mock channel: JEV_W2_REAL_API= bun test packages/jev-core/src/completion-continuation-accuracy.test.ts.
+- Exact ceiling channel: the named test aborts before exceeding the paid call ceiling.
+- Package typecheck, shared-core extraction guard, LSP diagnostics, no-excuse audit, line caps, and three repeated focused runs.
+
+WHAT WAS OBSERVED
+- 18 hand-assigned fixtures completed in mock mode with calls=18, networkCalls=0, resolvedModel=mock, and questionVersion=1.
+- The counting fetch remained at zero in the mock run. A forced invocation raised UnexpectedNetworkCallError and made the selected test fail with exit 1.
+- Ceiling 18 aborted before call 19. The targeted run reported Ran 1 test and retained one completed fixture in a partial artifact.
+- Per-question confusion matrices were emitted without any accuracy threshold or minimum.
+- Every serialized state was at most 24576 UTF-8 bytes. The oversized fixture recorded reductions.
+- Label totals: actually_complete true=5 false=11 unknown=2; progressing true=8 false=7 unknown=3; stuck true=2 false=13 unknown=3.
+- Cohorts: actually-complete=5, progressing=8, stuck=2, no-todos=2, stale-todos=1, promise-done=1, false-promise-text=1, continue=1, go-on=1, transcript-tail=2, multilingual=2, adversarial=2, human-intervention=1, slow-censored=1, empty-transcript=1, oversized-content=1.
+
+WHY IT IS ENOUGH
+- Tests enumerate every required cohort, reject duplicate fixture IDs, audit hand-assigned provenance, and prove fixture modules never call decideCompletionContinuation.
+- The mock backend exercises all three questions in one request per fixture while the injected fetch makes accidental network access fail.
+- Partial persistence, malformed answers, byte caps, and pre-dispatch ceiling reservation cover the harness failure boundaries.
+
+WHAT WAS OMITTED
+- No real API run was attempted. Todo 18 owns that opt-in path behind JEV_W2_REAL_API.
+- No secrets, environment dumps, tokens, auth headers, or private user transcripts were captured.

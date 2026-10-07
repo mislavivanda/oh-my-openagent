@@ -1,0 +1,4 @@
+No processes, ports, containers, tmux sessions, or browser sessions were started for todo 9.
+The golden runner created worktree-local task-9-golden-runtime-* directories and removed each in a finally block.
+No task-9-golden-runtime-* directory remains after the pre-edit or post-edit run.
+No external temporary file or directory was created.

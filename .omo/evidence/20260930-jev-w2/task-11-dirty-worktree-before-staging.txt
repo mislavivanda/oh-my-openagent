@@ -1,0 +1,48 @@
+MM .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+ M .omo/evidence/20260930-jev-w2/task-10-forbidden-call-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-10-home-reference-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-13-forbidden-reference-output.txt
+ M .omo/evidence/20260930-jev-w2/task-3-typecheck.txt
+ M .omo/evidence/20260930-jev-w2/task-4-banned-pattern-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-4-test-home-reference-grep.txt
+ M .omo/evidence/20260930-jev-w2/task-5-typecheck.txt
+ M .omo/evidence/20260930-jev-w2/task-6-typecheck.txt
+A  .omo/evidence/20260930-jev-w2/task-7-accuracy-mock.txt
+A  .omo/evidence/20260930-jev-w2/task-7-accuracy-red.txt
+A  .omo/evidence/20260930-jev-w2/task-7-accuracy-result.json
+A  .omo/evidence/20260930-jev-w2/task-7-adversarial-qa.txt
+A  .omo/evidence/20260930-jev-w2/task-7-call-ceiling.txt
+A  .omo/evidence/20260930-jev-w2/task-7-cleanup.txt
+A  .omo/evidence/20260930-jev-w2/task-7-cohort-tripwire.txt
+A  .omo/evidence/20260930-jev-w2/task-7-core-guard.txt
+A  .omo/evidence/20260930-jev-w2/task-7-dirty-worktree-before-staging.txt
+A  .omo/evidence/20260930-jev-w2/task-7-dry-run.txt
+A  .omo/evidence/20260930-jev-w2/task-7-flaky-tests.txt
+A  .omo/evidence/20260930-jev-w2/task-7-line-counts.txt
+A  .omo/evidence/20260930-jev-w2/task-7-lsp-diagnostics.txt
+A  .omo/evidence/20260930-jev-w2/task-7-malformed-input.txt
+A  .omo/evidence/20260930-jev-w2/task-7-network-failure-proof.txt
+A  .omo/evidence/20260930-jev-w2/task-7-network-tripwire.txt
+A  .omo/evidence/20260930-jev-w2/task-7-no-excuse.txt
+A  .omo/evidence/20260930-jev-w2/task-7-prompt-injection.txt
+A  .omo/evidence/20260930-jev-w2/task-7-qa-summary.txt
+A  .omo/evidence/20260930-jev-w2/task-7-typecheck.txt
+ M .omo/evidence/20260930-jev-w2/task-8-real-home-diff.txt
+ M .omo/evidence/20260930-jev-w2/task-9-golden-diff.txt
+ M .omo/evidence/20260930-jev-w2/task-9-ralph-registration.txt
+A  packages/jev-core/src/completion-continuation-accuracy.test.ts
+A  packages/jev-core/src/completion-continuation-fixtures-edge.ts
+A  packages/jev-core/src/completion-continuation-fixtures-primary.ts
+A  packages/jev-core/src/completion-continuation-fixtures.test.ts
+A  packages/jev-core/src/completion-continuation-fixtures.ts
+M  packages/jev-core/src/index.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/features/jev/index.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/omo-opencode/src/features/jev/completion-continuation-outcome-classification.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-outcome-types.ts

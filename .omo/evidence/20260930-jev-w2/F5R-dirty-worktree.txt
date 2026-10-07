@@ -1,0 +1,38 @@
+F5R - worktree state immediately before staging
+COMMAND: git status --porcelain
+EXIT: 0
+ M .omo/evidence/20260930-jev-w2/task-19-drive.sh
+ M packages/jev-core/src/completion-continuation-accuracy-real-run.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/features/jev/completion-continuation-runtime-audit.ts
+ M packages/omo-opencode/src/features/jev/completion-continuation-runtime-fixture.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert-fixture.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/countdown.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-preflight.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-types.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/pending-question-detection.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/stagnation-detection.ts
+ M packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+ M packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+ M script/jev-w2-report-analysis.ts
+ M script/jev-w2-report-render.ts
+ M script/jev-w2-report-types.ts
+ M script/jev-w2-report.test.ts
+
+MATCHING LINES TOTAL: 23
+
+OWNERSHIP NOTE
+  Mine (staged by this commit): script/jev-w2-report-types.ts, script/jev-w2-report-analysis.ts,
+    script/jev-w2-report-render.ts, script/jev-w2-report.test.ts, .omo/evidence/20260930-jev-w2/F5R-*.txt,
+    .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+  Peer-owned, NOT staged: everything under packages/ and
+    .omo/evidence/20260930-jev-w2/task-19-drive.sh
+  Permanently-dirty generated bundles, NOT staged: packages/omo-codex/plugin/components/codegraph/dist/cli.js,
+    packages/omo-codex/plugin/components/codegraph/dist/serve.js, packages/omo-codex/scripts/install-dist/install-local.mjs,
+    packages/omo-senpi/plugin/extensions/omo-member.js, packages/omo-senpi/plugin/extensions/omo.js

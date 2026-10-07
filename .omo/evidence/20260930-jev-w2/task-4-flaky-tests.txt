@@ -1,0 +1,22 @@
+run=1
+bun test v1.4.0 (34cbb9a40)
+
+ 6 pass
+ 0 fail
+ 19 expect() calls
+Ran 6 tests across 2 files. [129.00ms]
+run=2
+bun test v1.4.0 (34cbb9a40)
+
+ 6 pass
+ 0 fail
+ 19 expect() calls
+Ran 6 tests across 2 files. [125.00ms]
+run=3
+bun test v1.4.0 (34cbb9a40)
+
+ 6 pass
+ 0 fail
+ 19 expect() calls
+Ran 6 tests across 2 files. [125.00ms]
+normalized_counts_identical=true

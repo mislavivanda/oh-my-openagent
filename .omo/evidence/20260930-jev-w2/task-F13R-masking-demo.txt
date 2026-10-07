@@ -1,0 +1,106 @@
+F13R DELIBERATE-FAILURE DEMONSTRATION: DRIVER ASSERTIONS NOW FAIL THE RUN
+
+WHAT WAS TESTED
+
+Verifier F3 observed that an enabled-channel driver assertion failed (`FAIL: real omo
+manifest changed`) while the mandated QA command still exited 0. The mandated commands
+separate the driver from their own trailing probes with `;`, so the driver's exit status
+is discarded and the status of the LAST trailing probe becomes the status of the whole
+command. Every driver assertion was therefore unable to fail anything.
+
+The fix is `propagate_failure()` in task-19-drive.sh, invoked from the EXIT trap whenever
+the driver's status is nonzero. It plants sentinels in the exact artifacts the mandated
+trailing probes read:
+
+- enabled channel: one real localhost listener. Its pid is appended to the receipt pid
+  list so the survivor probe prints, and its port is appended to the receipt port list so
+  the bound probe prints. The bound probe is the LAST command of the mandated enabled
+  shell, which is why a pid-only sentinel is not sufficient (measured below). The listener
+  is recorded in both receipt lists and exits by itself after 60 seconds.
+- disabled channel: a DIRECTORY under the sandbox sink whose name matches the control
+  probe's glob. It is not a W2 record file, so the driver's own `find -type f` count stays
+  authoritative, and it only ever exists inside a throwaway sandbox.
+
+Because the hook is the shared EXIT trap and not `fail()` itself, it covers every `fail`
+call and every `set -e` death in the driver by the same path.
+
+To prove the mechanism is real rather than asserted, one driver assertion was deliberately
+inverted and three runs were compared. The inverted assertion was the new real-home sink
+check at line 105, changed from
+
+  [ "$REAL_JEV_BEFORE" = absent ] || fail "real ~/.omo/jev exists before the run"
+
+to
+
+  [ "$REAL_JEV_BEFORE" = present ] || fail "DELIBERATE-FAILURE-DEMO inverted jev-absent assertion"
+
+It fires seconds into the run, before any server starts, so the demonstration is cheap and
+the failing path is identical to a late failure: both reach the same EXIT trap.
+
+WHAT WAS OBSERVED
+
+RUN 1 - MASKED CONTROL. Inverted assertion in place, propagation disabled by replacing
+`if [ "$status" -ne 0 ]; then propagate_failure; fi` with `if false; then propagate_failure; fi`.
+Exact mandated enabled command, verbatim:
+
+  bash -lc 'S=$(mktemp -d); R=$(mktemp -d); bash .omo/evidence/20260930-jev-w2/task-19-drive.sh --sandbox "$S" --receipts "$R" --wire enabled --keep && bun run script/jev-w2-report.ts --root "$S/home/.omo/jev"; test -z "$(while read -r p; do kill -0 "$p" 2>/dev/null && printf "SURVIVED %s\n" "$p"; done < "$R/pids")"; test -z "$(while read -r p; do (exec 3<>/dev/tcp/127.0.0.1/"$p") 2>/dev/null && printf "BOUND %s\n" "$p"; done < "$R/ports")"'
+
+  observed exit status = 0          <-- the F3 defect, reproduced on demand
+  captured output:
+    FAIL: DELIBERATE-FAILURE-DEMO inverted jev-absent assertion
+
+RUN 2 - ENABLED CHANNEL, PROPAGATION ENABLED. Same inverted assertion, propagation
+restored, same verbatim mandated enabled command.
+
+  observed exit status = 1          <-- NONZERO, the defect is fixed
+  captured output:
+    FAIL: DELIBERATE-FAILURE-DEMO inverted jev-absent assertion
+    FAIL-PROPAGATION: planted self-expiring sentinel listener pid=2738405 port=40329
+
+RUN 3 - DISABLED CHANNEL, PROPAGATION ENABLED. Same inverted assertion. Exact mandated
+disabled control command, verbatim:
+
+  bash -lc 'S=$(mktemp -d); R=$(mktemp -d); bash .omo/evidence/20260930-jev-w2/task-19-drive.sh --sandbox "$S" --receipts "$R" --wire disabled --keep; test ! -e "$S/home/.omo/jev" || ! compgen -G "$S/home/.omo/jev/w2-*.jsonl" >/dev/null'
+
+  observed exit status = 1          <-- NONZERO
+  captured output:
+    FAIL: DELIBERATE-FAILURE-DEMO inverted jev-absent assertion
+    FAIL-PROPAGATION: planted self-expiring sentinel listener pid=2738585 port=35785
+    FAIL-PROPAGATION: planted sentinel dir under /tmp/tmp.HYnPQMlEV1/home/.omo/jev
+
+INTERMEDIATE NEGATIVE RESULT WORTH RECORDING. A first version of the fix appended only a
+sentinel pid. The mandated enabled command still exited 0, because the pid probe is the
+second-to-last command and the port probe that follows it resets the status. Measured:
+exit 0 with output `FAIL-PROPAGATION: appended sentinel pid 0 to /tmp/tmp.XUNPW7cC3J/pids`.
+That is why the shipped sentinel is a real listener recorded in BOTH receipt lists.
+
+REVERT CONFIRMATION. Both temporary edits were reverted by restoring a byte copy taken
+before the demonstration, and the result was checked by digest rather than by eye:
+
+  sha256 before demo   18b80181bc0b6578b3c893916a1fba70789be74360d5ccd2b0397090b034f1d8
+  sha256 after revert  18b80181bc0b6578b3c893916a1fba70789be74360d5ccd2b0397090b034f1d8
+  command: grep -c 'DELIBERATE-FAILURE-DEMO\|if false; then propagate_failure' task-19-drive.sh
+  exit status = 1 (1 means no match), matching-line count = 0
+  line 62  reads  `  if [ "$status" -ne 0 ]; then propagate_failure; fi`
+  line 105 reads  `[ "$REAL_JEV_BEFORE" = absent ] || fail "real ~/.omo/jev exists before the run"`
+
+The committed driver therefore contains no demonstration scaffolding.
+
+WHY IT IS ENOUGH
+
+Runs 1 and 2 differ only in whether the propagation hook is reachable, so the change from
+exit 0 to exit 1 is attributable to the fix and to nothing else. Run 3 shows the second
+channel, whose trailing probe reads a different artifact, also turns nonzero. The hook
+lives in the shared EXIT trap, so an assertion that fires late in the run (for example the
+real-home manifest comparison that F3 caught) propagates through exactly the same code
+path as the early assertion demonstrated here. The revert is proven by digest equality.
+
+WHAT WAS OMITTED
+
+Sandboxes and receipt directories from the three demonstration runs were left in the
+system temp area and are not copied into the evidence tree; they hold ephemeral pids,
+ports, and session ids only. No real API call was made, no real credential was read or
+printed, and the real `~/.omo`, the real OpenCode database, and `~/.config/opencode` were
+neither read for mutation nor written. The sentinel listeners bind an ephemeral loopback
+port for at most 60 seconds and terminate themselves; both were confirmed gone before the
+production re-runs recorded in task-19-enabled.txt and task-19-disabled.txt.

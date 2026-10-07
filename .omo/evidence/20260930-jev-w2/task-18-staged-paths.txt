@@ -1,0 +1,35 @@
+EXACT CACHED PATHS AFTER STAGING, todo 18
+COMMAND: git diff --cached --name-only
+
+.omo/evidence/20260930-jev-w2/MANIFEST.tsv
+.omo/evidence/20260930-jev-w2/task-18-adversarial-qa.txt
+.omo/evidence/20260930-jev-w2/task-18-budget-incident.txt
+.omo/evidence/20260930-jev-w2/task-18-cleanup.txt
+.omo/evidence/20260930-jev-w2/task-18-dirty-worktree.txt
+.omo/evidence/20260930-jev-w2/task-18-dry-run.txt
+.omo/evidence/20260930-jev-w2/task-18-lsp-diagnostics.txt
+.omo/evidence/20260930-jev-w2/task-18-measurement-analysis.txt
+.omo/evidence/20260930-jev-w2/task-18-missing-key.txt
+.omo/evidence/20260930-jev-w2/task-18-mock-path.txt
+.omo/evidence/20260930-jev-w2/task-18-no-minimum-score.txt
+.omo/evidence/20260930-jev-w2/task-18-qa-summary.txt
+.omo/evidence/20260930-jev-w2/task-18-real-api-first-run.txt
+.omo/evidence/20260930-jev-w2/task-18-real-api-result.json
+.omo/evidence/20260930-jev-w2/task-18-real-api.txt
+.omo/evidence/20260930-jev-w2/task-18-regression.txt
+.omo/evidence/20260930-jev-w2/task-18-sandbox-probe.txt
+.omo/evidence/20260930-jev-w2/task-18-secret-grep.txt
+.omo/evidence/20260930-jev-w2/task-18-static-gates.txt
+packages/jev-core/src/completion-continuation-accuracy-harness.ts
+packages/jev-core/src/completion-continuation-accuracy-real-run.ts
+packages/jev-core/src/completion-continuation-accuracy.test.ts
+packages/jev-core/src/completion-continuation-real-run.test.ts
+
+This snapshot is taken before it adds itself; task-18-staged-paths.txt is the single
+path staged after this line was written, and it appears in the committed tree.
+
+NEGATIVE CHECKS on the cached set:
+  credential files staged? (must print nothing)
+  permanently dirty generated bundles staged? (must print nothing)
+  peer-owned paths staged? (must print nothing)
+  end of negative checks

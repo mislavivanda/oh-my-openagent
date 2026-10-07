@@ -1,0 +1,4 @@
+Command: bun run build
+Exit: 0
+Observed: build: all steps completed
+Omitted: repetitive dependency build output; it contained no secret-bearing data.

@@ -1,0 +1,10 @@
+ M .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-preflight.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-types.ts

@@ -10,6 +10,11 @@ import { resolveSessionEventID } from "../../shared/event-session-id"
 
 import { DEFAULT_SKIP_AGENTS, HOOK_NAME } from "./constants"
 import { armCompactionGuard } from "./compaction-guard"
+import {
+  NOOP_COMPLETION_CONTINUATION_OBSERVER,
+  type CompletionContinuationObserver,
+} from "./completion-continuation-observer"
+import { observeCompletionContinuationNonIdleEvent } from "./completion-continuation-observer-events"
 import type { SessionStateStore } from "./session-state"
 import { handleSessionIdle } from "./idle-event"
 import { handleNonIdleEvent } from "./non-idle-events"
@@ -60,6 +65,7 @@ export function createTodoContinuationHandler(args: {
   backgroundManager?: BackgroundManager
   skipAgents?: string[]
   isContinuationStopped?: (sessionID: string) => boolean
+  completionContinuationObserver?: CompletionContinuationObserver
 }): (input: { event: { type: string; properties?: unknown } }) => Promise<void> {
   const {
     ctx,
@@ -67,10 +73,12 @@ export function createTodoContinuationHandler(args: {
     backgroundManager,
     skipAgents = DEFAULT_SKIP_AGENTS,
     isContinuationStopped,
+    completionContinuationObserver = NOOP_COMPLETION_CONTINUATION_OBSERVER,
   } = args
 
   return async ({ event }: { event: { type: string; properties?: unknown } }): Promise<void> => {
     const props = event.properties as Record<string, unknown> | undefined
+    completionContinuationObserver.observeEvent(event)
 
     if (event.type === "session.error") {
       const sessionID = resolveSessionEventID(props)
@@ -118,6 +126,7 @@ export function createTodoContinuationHandler(args: {
         backgroundManager,
         skipAgents,
         isContinuationStopped,
+        completionContinuationObserver,
       })
       return
     }
@@ -137,6 +146,7 @@ export function createTodoContinuationHandler(args: {
       if (sessionID) {
         clearContinuationMarker(ctx.directory, sessionID)
         handedBackSyncSessions.delete(sessionID)
+        completionContinuationObserver.deleteSession(sessionID)
       }
     }
 
@@ -144,6 +154,11 @@ export function createTodoContinuationHandler(args: {
       eventType: event.type,
       properties: props,
       sessionStateStore,
+    })
+    observeCompletionContinuationNonIdleEvent({
+      eventType: event.type,
+      properties: props,
+      observer: completionContinuationObserver,
     })
   }
 }

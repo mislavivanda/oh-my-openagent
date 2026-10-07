@@ -1,0 +1,40 @@
+Todo 9 adversarial QA
+
+malformed_input: APPLIES
+- empty text with DONE returned false.
+- empty promise with empty promise tags returned true, preserving the pre-extraction regex behavior.
+- whitespace-only promise with matching whitespace returned true.
+- partial promise markup returned false.
+- malformed transcript JSON alone returned false without a crash.
+- malformed transcript JSON before a valid assistant entry returned true for the later valid entry.
+- a lone backslash promise matched literally without throwing Regex SyntaxError.
+- an unterminated character class promise matched literally without throwing Regex SyntaxError.
+
+stale_state: APPLIES
+- task-9-pre-capture-order.txt records status, detector source checksum, baseline execution, then baseline checksum before any product edit.
+- Pre-edit detector checksum: 32d68d395f2da00e24e3bf5cd37c2f2164262b0754f6e2cd0c107004f9680286.
+- Pre-edit golden checksum: 7b873242ff55f20e213e7272ef80017ef19d34b0a9e795e476786238ee785e33.
+- Post-edit golden checksum is identical and task-9-golden-diff.txt has zero lines.
+
+misleading_success_output: APPLIES
+- The filtered regex test reported 1 pass and 2 filtered out, so the named test ran.
+- The golden table contains 14 data rows: 7 true and 7 false.
+- The golden table is not empty or all-true.
+
+dirty_worktree: APPLIES
+- task-9-status-pre-edit.txt records ambient generated changes and peer-owned in-progress files.
+- task-9-status-before-staging.txt records the state immediately before staging.
+- task-9-staged-paths.txt records cached paths immediately after staging.
+
+flaky_tests: APPLIES
+- Three consecutive helper-test runs each reported 3 pass, 0 fail, and 12 expect calls.
+
+prompt_injection: NOT APPLICABLE. The helper matches local strings and does not consume or emit prompts.
+cancel_resume: NOT APPLICABLE. The pure matcher has no resumable state.
+hung_or_long_commands: NOT APPLICABLE. Matcher tests are synchronous and completed in under one second.
+repeated_interruptions: NOT APPLICABLE. The extraction has no interruptible transaction or recovery path.
+
+Acceptance caveat
+- The required export-star grep is nonempty because shared/index.ts already had 71 export-star lines at HEAD.
+- Todo 9 ownership permits only an append-only barrel line, so those pre-existing lines were not rewritten.
+- The new completion-promise export is named and does not add an export-star line.

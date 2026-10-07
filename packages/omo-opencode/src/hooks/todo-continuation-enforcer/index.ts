@@ -3,10 +3,20 @@ import type { PluginInput } from "@opencode-ai/plugin"
 import { log } from "../../shared/logger"
 
 import { DEFAULT_SKIP_AGENTS, HOOK_NAME } from "./constants"
+import {
+  createSafeCompletionContinuationObserver,
+  NOOP_COMPLETION_CONTINUATION_OBSERVER,
+} from "./completion-continuation-observer"
 import { createTodoContinuationHandler } from "./handler"
 import { createSessionStateStore } from "./session-state"
 import type { TodoContinuationEnforcer, TodoContinuationEnforcerOptions } from "./types"
 
+export type {
+  CompletionContinuationObserver,
+  CompletionContinuationObserverEvent,
+  CompletionContinuationObserverIdleInput,
+} from "./completion-continuation-observer"
+export { NOOP_COMPLETION_CONTINUATION_OBSERVER } from "./completion-continuation-observer"
 export type { TodoContinuationEnforcer, TodoContinuationEnforcerOptions } from "./types"
 
 export function createTodoContinuationEnforcer(
@@ -17,9 +27,11 @@ export function createTodoContinuationEnforcer(
     backgroundManager,
     skipAgents = DEFAULT_SKIP_AGENTS,
     isContinuationStopped,
+    completionContinuationObserver = NOOP_COMPLETION_CONTINUATION_OBSERVER,
   } = options
 
   const sessionStateStore = createSessionStateStore()
+  const observer = createSafeCompletionContinuationObserver(completionContinuationObserver)
 
   const markRecovering = (sessionID: string): void => {
     const state = sessionStateStore.getState(sessionID)
@@ -42,6 +54,7 @@ export function createTodoContinuationEnforcer(
     backgroundManager,
     skipAgents,
     isContinuationStopped,
+    completionContinuationObserver: observer,
   })
 
   const cancelAllCountdowns = (): void => {
@@ -54,6 +67,9 @@ export function createTodoContinuationEnforcer(
     markRecovering,
     markRecoveryComplete,
     cancelAllCountdowns,
-    dispose: () => sessionStateStore.shutdown(),
+    dispose: () => {
+      observer.dispose()
+      sessionStateStore.shutdown()
+    },
   }
 }

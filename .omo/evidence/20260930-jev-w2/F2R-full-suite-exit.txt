@@ -1,0 +1,2 @@
+command=env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000
+exit=1

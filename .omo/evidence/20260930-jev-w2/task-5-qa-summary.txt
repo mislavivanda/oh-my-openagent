@@ -1,0 +1,18 @@
+WHAT WAS TESTED
+- Focused state and question tests exercised exact question keys, UTF-8 component caps, final serialization cap, deterministic final-budget order, aggregate and digest retention, malformed edge cases, and harness-neutral imports.
+- The filtered multibyte test exercised Korean, Japanese, emoji, and a four-byte astral codepoint.
+- Package typecheck and the shared-core extraction guard exercised strict types and the harness-neutral package boundary.
+
+WHAT WAS OBSERVED
+- Focused suite: 10 pass, 0 fail, 55 expectations.
+- Filtered multibyte test: 1 pass, 7 filtered out, preReductionBytes=86060, postReductionBytes=23799.
+- Shared-core guard: 3 pass, 0 fail. Package typecheck exited 0.
+- Every created TypeScript file is at most 235 physical lines. No export-star or harness-specific import matched.
+
+WHY IT IS ENOUGH
+- The tests force every component cap and all four final reduction stages, assert the final serialized byte count, retain immutable aggregates/digests/roles/flags/question keys, and validate byte-safe cuts with multibyte data.
+- Three normalized repeat runs rule out order or state leakage in the new pure tests.
+
+WHAT WAS OMITTED
+- No live OpenCode or Codex QA applies because todo 5 changes only harness-neutral pure jev-core data builders and questions.
+- No secrets, environment dumps, auth headers, ports, processes, containers, or external services were used.

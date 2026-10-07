@@ -1,0 +1,17 @@
+WHAT WAS TESTED
+functions.lsp_diagnostics was run with severity=all for all six changed TypeScript files.
+
+WHAT WAS OBSERVED
+completion-continuation-dispatch.ts: No diagnostics found.
+completion-continuation.test.ts: No diagnostics found.
+completion-continuation-adversarial.test.ts: No diagnostics found.
+completion-continuation.test-support.ts: No diagnostics found.
+index.ts: No diagnostics found.
+completion-continuation.ts: One clean response was obtained before the final bounded-state cleanup. Fresh requests after the cleanup timed out after 3000ms without reporting a diagnostic. The final repository typecheck exited 0 in task-12-typecheck.txt.
+completion-continuation.test.ts: A clean response was obtained after its type-reference fix. A fresh request after adding deterministic temp-root cleanup timed out after 3000ms without reporting a diagnostic. The final repository typecheck exited 0.
+
+WHY IT IS ENOUGH
+The final edits removed an unused injected field and added deterministic test-root cleanup. The project typechecker validated the final bytes across the workspace.
+
+WHAT WAS OMITTED
+No diagnostic was suppressed. The two LSP timeout responses contained no compiler finding to redact.

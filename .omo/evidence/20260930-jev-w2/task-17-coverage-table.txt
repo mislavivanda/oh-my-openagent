@@ -1,0 +1,75 @@
+TODO 17 - W2 TEST COVERAGE TABLE UNDER test:fast (before vs after)
+=================================================================
+
+Source of the file list: git diff --name-only jev/foundation...HEAD, filtered to *.test.ts.
+A target covers a file when the file equals the target or sits under it as a directory.
+
+=== BEFORE (exit 1, 7 uncovered) ===
+w2 test file                                                                                                status     covered by test:fast target
+----------------------------------------------------------------------------------------------------------  ---------  ----------------------------
+packages/jev-core/src/completion-continuation-accuracy.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-fixtures.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-questions.test.ts                                             covered    packages/jev-core
+packages/jev-core/src/completion-continuation-real-run.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-record-validation.test.ts                                     covered    packages/jev-core
+packages/jev-core/src/completion-continuation-state.test.ts                                                 covered    packages/jev-core
+packages/jev-core/src/completion-continuation.test.ts                                                       covered    packages/jev-core
+packages/omo-opencode/src/config/schema/jev.test.ts                                                         covered    packages/omo-opencode/src/config/schema
+packages/omo-opencode/src/features/jev/completion-continuation-adversarial.test.ts                          covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts                                covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts                        covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts                                 covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts                                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts                                          covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts                                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/observation-process-identity.test.ts                                 covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts            UNCOVERED  -
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts  UNCOVERED  -
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts         UNCOVERED  -
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts              UNCOVERED  -
+packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts                                    UNCOVERED  -
+packages/omo-opencode/src/shared/completion-promise-pattern.test.ts                                         UNCOVERED  -
+script/jev-w2-report.test.ts                                                                                UNCOVERED  -
+
+total W2 test files: 24
+covered:             17
+uncovered:           7
+
+=== AFTER (exit 0, 0 uncovered) ===
+w2 test file                                                                                                status     covered by test:fast target
+----------------------------------------------------------------------------------------------------------  ---------  ----------------------------
+packages/jev-core/src/completion-continuation-accuracy.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-fixtures.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-questions.test.ts                                             covered    packages/jev-core
+packages/jev-core/src/completion-continuation-real-run.test.ts                                              covered    packages/jev-core
+packages/jev-core/src/completion-continuation-record-validation.test.ts                                     covered    packages/jev-core
+packages/jev-core/src/completion-continuation-state.test.ts                                                 covered    packages/jev-core
+packages/jev-core/src/completion-continuation.test.ts                                                       covered    packages/jev-core
+packages/omo-opencode/src/config/schema/jev.test.ts                                                         covered    packages/omo-opencode/src/config/schema
+packages/omo-opencode/src/features/jev/completion-continuation-adversarial.test.ts                          covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts                                covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts                        covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts                                 covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts                                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts                                          covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts                                      covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/features/jev/observation-process-identity.test.ts                                 covered    packages/omo-opencode/src/features/jev
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts            covered    packages/omo-opencode/src/hooks/todo-continuation-enforcer
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts  covered    packages/omo-opencode/src/hooks/todo-continuation-enforcer
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts         covered    packages/omo-opencode/src/hooks/todo-continuation-enforcer
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-characterization.test.ts              covered    packages/omo-opencode/src/hooks/todo-continuation-enforcer
+packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts                                    covered    packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts
+packages/omo-opencode/src/shared/completion-promise-pattern.test.ts                                         covered    packages/omo-opencode/src/shared/completion-promise-pattern.test.ts
+script/jev-w2-report.test.ts                                                                                covered    script/jev-w2-report.test.ts
+
+total W2 test files: 24
+covered:             24
+uncovered:           0
+
+=== TEST COUNT DELTA ===
+before: Ran 621 tests across 66 files. [7.95s]
+after:  Ran 778 tests across 89 files. [8.44s]
+newly covered subset run alone: Ran 157 tests across 23 files. [696.00ms]
+arithmetic: 621 + 157 = 778 tests, 66 + 23 = 89 files

@@ -1,0 +1,388 @@
+todo	artifact	kind	description
+1	.omo/evidence/20260930-jev-w2/task-1-bun-install.txt	command-output	bun install in the W2 worktree, full output with exit=0 and 72s duration
+1	.omo/evidence/20260930-jev-w2/task-1-test-fast.txt	verification	bun run test:fast mid-loop gate baseline, 484 pass 0 fail, exit 0
+1	.omo/evidence/20260930-jev-w2/task-1-test-fast-exit.txt	verification	recorded exit status and wall clock for the exact test:fast QA invocation
+1	.omo/evidence/20260930-jev-w2/task-1-typecheck.txt	verification	bun run typecheck across root, script and all workspace packages, exit 0
+1	.omo/evidence/20260930-jev-w2/task-1-typecheck-exit.txt	verification	recorded exit status and wall clock for bun run typecheck
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite.txt	baseline	raw log of env -u OPENCODE_SERVER_PASSWORD bun test --timeout 20000, 12954 tests across 1698 files
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite-exit.txt	baseline	canonical full-suite process exit status, expected nonzero, recorded as exit=1
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite-failures.txt	baseline	the load-bearing 7 unique normalized (fail) identities F2 must match byte for byte
+1	.omo/evidence/20260930-jev-w2/task-1-full-suite-duration.txt	verification	full-suite wall clock 123s and proof the run terminated on its own without a kill
+1	.omo/evidence/20260930-jev-w2/task-1-third-party-notices.txt	baseline	plain-mode node scripts/check-third-party-notices.mjs output, 4 missing upstream entries
+1	.omo/evidence/20260930-jev-w2/task-1-third-party-notices-exit.txt	baseline	third-party notices plain-mode exit status exit=1 with the exact command recorded
+1	.omo/evidence/20260930-jev-w2/planned-commit-subjects.txt	baseline	18 planned commit subjects extracted from the plan with the plan's own awk command
+1	.omo/evidence/20260930-jev-w2/task-1-worktree-verify.txt	verification	worktree record: branch jev/w2, HEAD sha, both ancestor checks, porcelain status, churn provenance
+1	.omo/evidence/20260930-jev-w2/task-1-tree-state-pre.txt	verification	git status --porcelain captured immediately before the full suite for the stale_state probe
+1	.omo/evidence/20260930-jev-w2/task-1-tree-state-post.txt	verification	git status --porcelain captured immediately after the full suite, identical to the pre capture
+1	.omo/evidence/20260930-jev-w2/task-1-adversarial-qa.txt	verification	ultraqa probe results for 5 applicable classes and ruled-out reasons for the other 4
+1	.omo/evidence/20260930-jev-w2/task-1-cleanup.txt	verification	cleanup receipt listing every started resource and its verified-gone status
+2	.omo/evidence/20260930-jev-w2/task-2-schema-red.txt	red	TDD RED before implementation: wires keys lack completion_continuation, observe_only:false is ACCEPTED, and the JevCompletionContinuationWireConfigSchema export is missing
+2	.omo/evidence/20260930-jev-w2/task-2-schema-green.txt	green	plan happy QA verbatim, exit 0: 17 jev schema tests pass then both generators prove separate-omo-output and second-run byte identity
+2	.omo/evidence/20260930-jev-w2/task-2-observe-only-reject.txt	failure-qa	plan failure QA verbatim, exit 0: observe_only:false rejected with the apply-phase message matching not yet implemented|apply phase
+2	.omo/evidence/20260930-jev-w2/task-2-two-schema-proof.txt	verification	deliberate first-generator nonzero omo diff: build:schema alone changes assets/omo.schema.json separately, +146/-2 lines, 868291 to 873995 bytes
+2	.omo/evidence/20260930-jev-w2/task-2-gate-output.txt	verification	raw stdout of the plan decisive two-generator plus idempotence acceptance gate, observed exit 0 with both cmp checks silent
+2	.omo/evidence/20260930-jev-w2/task-2-adversarial-qa.txt	verification	adversarial probes for malformed_input, stale_state, misleading_success_output plus one-line ruleouts for the 5 inapplicable classes
+2	.omo/evidence/20260930-jev-w2/task-2-cleanup.txt	verification	cleanup receipt: all 7 /tmp/jev-w2-* artifacts verified gone via test -e exit 1, no processes ports or containers started
+2	.omo/evidence/20260930-jev-w2/task-2-dirty-worktree.txt	verification	dirty_worktree probe: porcelain status before staging and git diff --cached --name-only after staging, proving only todo-2-owned paths were staged
+3	.omo/evidence/20260930-jev-w2/task-3-record-red.txt	tdd-red	Focused validator suite fails before implementation
+3	.omo/evidence/20260930-jev-w2/task-3-record-green.txt	qa	Focused validator suite passes 17 tests
+3	.omo/evidence/20260930-jev-w2/task-3-circular-label-reject.txt	failure-qa	Filtered anti-circularity test matches and passes one test
+3	.omo/evidence/20260930-jev-w2/task-3-core-guard.txt	guard	Harness-neutral core extraction guard passes
+3	.omo/evidence/20260930-jev-w2/task-3-typecheck.txt	typecheck	jev-core tsgo package typecheck exits zero
+3	.omo/evidence/20260930-jev-w2/task-3-static-checks.txt	static	Line cap named-export and banned-pattern checks
+3	.omo/evidence/20260930-jev-w2/task-3-lsp.txt	lsp	Changed files have no LSP diagnostics
+3	.omo/evidence/20260930-jev-w2/task-3-adversarial.txt	adversarial	Applicable probes and ruled-out classes
+3	.omo/evidence/20260930-jev-w2/task-3-dirty-before-staging.txt	dirty-worktree	Pre-staging status distinguishes own peer and ambient paths
+3	.omo/evidence/20260930-jev-w2/task-3-staged-paths.txt	staged-paths	Exact staged allowlist excludes peer and ambient paths
+3	.omo/evidence/20260930-jev-w2/task-3-cleanup.txt	cleanup	No runtime or temporary resources created
+3	.omo/evidence/20260930-jev-w2/task-3-qa-summary.txt	summary	Reviewer-readable test observation sufficiency and omission summary
+4	.omo/evidence/20260930-jev-w2/task-4-real-home-before.tsv	isolation-baseline	Recursive real-home Jev manifest before task tests
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-pre.jsonl	golden-fixture	Pre-extraction deterministic W1 JSONL bytes
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-pre-reader.json	golden-fixture	Pre-extraction normalized W1 reader result
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-pre-provenance.txt	stale-state	Creation order, source checksums, HEAD, byte sizes, and fixture checksums
+4	.omo/evidence/20260930-jev-w2/task-4-w1-jsonl-red.txt	tdd-red	Focused RED before primitive implementation, 0 pass and 2 missing-module failures
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-post.jsonl	golden-output	Post-extraction deterministic W1 JSONL bytes
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-post-reader.json	golden-output	Post-extraction normalized W1 reader result
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-post-provenance.txt	cleanup	Post-extraction fixture temp-root provenance
+4	.omo/evidence/20260930-jev-w2/task-4-w1-golden-compat.txt	compatibility	Non-empty corpus and reader cmp plus deep-equal golden test
+4	.omo/evidence/20260930-jev-w2/task-4-oversize-reject.txt	failure-qa	Exact oversize filter matched 1 passing test and rejects whole line
+4	.omo/evidence/20260930-jev-w2/task-4-flaky-tests.txt	flaky-tests	Three identical 6-pass filesystem and identity test runs
+4	.omo/evidence/20260930-jev-w2/task-4-w1-jsonl-green.txt	green	Exact W1 sink and report happy command, 17 pass
+4	.omo/evidence/20260930-jev-w2/task-4-test-home-reference-grep.txt	isolation	Empty grep output proves tests contain no homedir or HOME references
+4	.omo/evidence/20260930-jev-w2/task-4-new-file-line-counts.txt	static	New production modules are 112 and 34 physical lines
+4	.omo/evidence/20260930-jev-w2/task-4-all-edited-line-counts.txt	static	Every edited TypeScript file remains at most 250 lines
+4	.omo/evidence/20260930-jev-w2/task-4-banned-pattern-grep.txt	static	Empty banned-pattern grep output
+4	.omo/evidence/20260930-jev-w2/task-4-no-excuse.txt	static	No-excuse TypeScript audit reports no violations in 8 files
+4	.omo/evidence/20260930-jev-w2/task-4-real-home-after.tsv	isolation-result	Recursive real-home Jev manifest after focused tests
+4	.omo/evidence/20260930-jev-w2/task-4-real-home-isolation.txt	isolation-result	Before and after real-home manifests compare byte-identical
+4	.omo/evidence/20260930-jev-w2/task-4-dirty-worktree-before-staging.txt	dirty-worktree	Pre-staging status distinguishes owned paths from five ambient bundles
+4	.omo/evidence/20260930-jev-w2/task-4-temp-root-check.txt	cleanup	No matching task temp roots remain
+4	.omo/evidence/20260930-jev-w2/task-4-adversarial-qa.txt	adversarial	Applicable malformed, stale, dirty, misleading, and flaky probes plus ruleouts
+4	.omo/evidence/20260930-jev-w2/task-4-manual-qa.txt	summary	Reviewer-readable tested, observed, sufficient, and omitted summary
+4	.omo/evidence/20260930-jev-w2/task-4-cleanup.txt	cleanup	Temp roots, processes, ports, and real-home cleanup receipt
+4	.omo/evidence/20260930-jev-w2/task-4-staged-paths.txt	staged-paths	Final cached path allowlist excludes peer paths and five ambient bundles
+4	.omo/evidence/20260930-jev-w2/task-4-test-fast.txt	checkpoint	Locked post-commit test:fast checkpoint, 515 pass and 0 fail
+5	.omo/evidence/20260930-jev-w2/task-5-state-red.txt	red	Focused tests fail before state and question modules exist
+5	.omo/evidence/20260930-jev-w2/task-5-state-green.txt	test	Focused state and question suite passes with byte measurements
+5	.omo/evidence/20260930-jev-w2/task-5-utf8-cap.txt	manual-qa	Filtered multibyte cap test matches one passing test
+5	.omo/evidence/20260930-jev-w2/task-5-malformed-input.txt	adversarial	Filtered malformed and boundary probe passes
+5	.omo/evidence/20260930-jev-w2/task-5-flaky-tests.txt	adversarial	Three normalized focused runs are identical
+5	.omo/evidence/20260930-jev-w2/task-5-adversarial-qa.txt	adversarial	Applicable and ruled-out adversarial classes with observables
+5	.omo/evidence/20260930-jev-w2/task-5-typecheck.txt	typecheck	jev-core tsgo package check exits zero
+5	.omo/evidence/20260930-jev-w2/task-5-core-guard.txt	test	Shared core extraction guard passes
+5	.omo/evidence/20260930-jev-w2/task-5-no-excuse.txt	static	TypeScript no-excuse audit finds no violations
+5	.omo/evidence/20260930-jev-w2/task-5-line-counts.txt	static	Created TypeScript files remain under 250 lines
+5	.omo/evidence/20260930-jev-w2/task-5-export-star.txt	static	Barrel has zero export-star matches
+5	.omo/evidence/20260930-jev-w2/task-5-harness-imports.txt	static	New core modules have zero harness imports
+5	.omo/evidence/20260930-jev-w2/task-5-lsp.txt	lsp	All changed TypeScript files have clean diagnostics
+5	.omo/evidence/20260930-jev-w2/task-5-qa-summary.txt	summary	Reviewer-readable QA scope observations and sufficiency
+5	.omo/evidence/20260930-jev-w2/task-5-dirty-worktree-before-staging.txt	git	Shared dirty worktree recorded before exact staging
+5	.omo/evidence/20260930-jev-w2/task-5-staged-paths.txt	git	Exact cached path list after staging
+5	.omo/evidence/20260930-jev-w2/task-5-cleanup.txt	cleanup	No processes ports containers or temp paths remain
+9	.omo/evidence/20260930-jev-w2/task-9-golden-runner.ts	golden-runner	Shared pre-edit and post-edit detector corpus runner with worktree-local cleanup
+9	.omo/evidence/20260930-jev-w2/task-9-status-pre-edit.txt	dirty-worktree	Porcelain status captured before product edits
+9	.omo/evidence/20260930-jev-w2/task-9-detector-pre.sha256	stale-state	Pre-edit detector source checksum
+9	.omo/evidence/20260930-jev-w2/task-9-golden-pre.tsv	golden-baseline	Fourteen pre-extraction detector booleans
+9	.omo/evidence/20260930-jev-w2/task-9-pre-capture-order.txt	stale-state	Trace proving baseline and checksum creation order before edits
+9	.omo/evidence/20260930-jev-w2/task-9-golden-pre.sha256	stale-state	Immutable pre-extraction golden checksum
+9	.omo/evidence/20260930-jev-w2/task-9-promise-red.txt	tdd-red	Focused RED fails because the helper module does not exist
+9	.omo/evidence/20260930-jev-w2/task-9-promise-green.txt	green	Exact happy QA passes eleven tests
+9	.omo/evidence/20260930-jev-w2/task-9-regex-escape.txt	failure-qa	Exact filtered regex-literal test reports one pass
+9	.omo/evidence/20260930-jev-w2/task-9-flaky-run-1.txt	flaky-tests	Helper test repetition one passes three tests
+9	.omo/evidence/20260930-jev-w2/task-9-flaky-run-2.txt	flaky-tests	Helper test repetition two passes three tests
+9	.omo/evidence/20260930-jev-w2/task-9-flaky-run-3.txt	flaky-tests	Helper test repetition three passes three tests
+9	.omo/evidence/20260930-jev-w2/task-9-golden-post.tsv	golden-output	Fourteen post-extraction detector booleans
+9	.omo/evidence/20260930-jev-w2/task-9-golden-post.sha256	golden-output	Post-extraction checksum identical to baseline
+9	.omo/evidence/20260930-jev-w2/task-9-golden-diff.txt	compatibility	Empty diff proves zero golden mismatches
+9	.omo/evidence/20260930-jev-w2/task-9-all-completion-tests.txt	verification	All sixteen completion tests pass
+9	.omo/evidence/20260930-jev-w2/task-9-ralph-registration.txt	dormancy	Empty grep proves ralph remains unregistered
+9	.omo/evidence/20260930-jev-w2/task-9-export-star-check.txt	static	Required grep records pre-existing shared barrel export-star lines
+9	.omo/evidence/20260930-jev-w2/task-9-export-star-preexisting.txt	static	HEAD comparison proves all export-star lines predate todo 9
+9	.omo/evidence/20260930-jev-w2/task-9-single-matcher-check.txt	static	Only the shared helper owns escaping and pattern construction
+9	.omo/evidence/20260930-jev-w2/task-9-line-counts.txt	static	Every edited TypeScript file remains under 250 lines
+9	.omo/evidence/20260930-jev-w2/task-9-no-excuse-audit.txt	static	TypeScript no-excuse audit reports no violations
+9	.omo/evidence/20260930-jev-w2/task-9-adversarial-qa.txt	adversarial	Applicable probes and ruled-out classes with observables
+9	.omo/evidence/20260930-jev-w2/task-9-build.txt	build	bun run build exits zero
+9	.omo/evidence/20260930-jev-w2/task-9-lsp.txt	lsp	All changed TypeScript files have clean diagnostics
+9	.omo/evidence/20260930-jev-w2/task-9-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted summary
+9	.omo/evidence/20260930-jev-w2/task-9-cleanup.txt	cleanup	No runtime resources or temporary paths remain
+9	.omo/evidence/20260930-jev-w2/task-9-status-before-staging.txt	dirty-worktree	Porcelain status captured immediately before exact staging
+8	.omo/evidence/20260930-jev-w2/task-8-real-home-before.txt	isolation	Recursive real Jev home manifest before todo 8 tests
+8	.omo/evidence/20260930-jev-w2/task-8-sink-red.txt	tdd-red	Focused sink test fails against the explicit unimplemented scaffold
+8	.omo/evidence/20260930-jev-w2/task-8-sink-green.txt	test	Exact focused happy command with 13 passing tests
+8	.omo/evidence/20260930-jev-w2/task-8-malformed-line.txt	manual-qa	Exact malformed-tail filter with one matched passing test
+8	.omo/evidence/20260930-jev-w2/task-8-adversarial-malformed.txt	adversarial	Six malformed-input observables including oversized and invalid UTF-8 lines
+8	.omo/evidence/20260930-jev-w2/task-8-stale-state.txt	adversarial	Counter epoch truncation and tuple ordering probe
+8	.omo/evidence/20260930-jev-w2/task-8-repeated-interruptions.txt	adversarial	Reentrant and repeated dispose probe
+8	.omo/evidence/20260930-jev-w2/task-8-flaky-tests.txt	stability	Five identical focused runs with 13 passes each
+8	.omo/evidence/20260930-jev-w2/task-8-dirty-worktree-before-staging.txt	git	Dirty worktree receipt before staging preserves peer and ambient changes
+8	.omo/evidence/20260930-jev-w2/task-8-adversarial-summary.txt	adversarial	Applicable probes and ruled-out classes with observables
+8	.omo/evidence/20260930-jev-w2/task-8-real-home-after.txt	isolation	Recursive real Jev home manifest after all todo 8 tests
+8	.omo/evidence/20260930-jev-w2/task-8-real-home-diff.txt	isolation	Empty before and after real-home manifest diff
+8	.omo/evidence/20260930-jev-w2/task-8-cleanup.txt	cleanup	Eight RED-run roots removed with zero remaining and no process or port assets
+8	.omo/evidence/20260930-jev-w2/task-8-no-excuse-audit.txt	static-analysis	Strict TypeScript rule audit reports no violations
+8	.omo/evidence/20260930-jev-w2/task-8-acceptance.txt	acceptance	Line counts, forbidden-pattern checks, filename pattern, modes, and isolation byte sizes
+8	.omo/evidence/20260930-jev-w2/task-8-lsp-diagnostics.txt	static-analysis	LSP and compensating final TypeScript verification receipt
+8	.omo/evidence/20260930-jev-w2/task-8-dirty-worktree-after-staging.txt	git	Exact cached path list after staging
+9	.omo/evidence/20260930-jev-w2/task-9-staged-paths.txt	staged-paths	Exact cached path allowlist after staging excludes peer and ambient paths
+9	.omo/evidence/20260930-jev-w2/task-9-test-fast.txt	checkpoint	Locked post-commit test-fast checkpoint exits zero
+13	.omo/evidence/20260930-jev-w2/task-13-pre-extraction-golden.json	golden	No-clobber ordered trace captured from the original idle gauntlet
+13	.omo/evidence/20260930-jev-w2/task-13-pre-extraction-golden.sha256	checksum	SHA-256 recorded before extraction
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-red.txt	test-red	Characterization RED before extraction
+13	.omo/evidence/20260930-jev-w2/task-13-characterization-baseline.txt	test-baseline	Original-code golden comparison pass
+13	.omo/evidence/20260930-jev-w2/task-13-characterization-post-extraction.txt	test-green	Post-extraction golden comparison pass
+13	.omo/evidence/20260930-jev-w2/task-13-order-guard-mutation.txt	mutation-red	Deliberate guard reorder detected
+13	.omo/evidence/20260930-jev-w2/task-13-order-guard.txt	mutation-green	Restored guard order filtered pass
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-green.txt	test-green	Required todo-continuation suite pass
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-green-run2.txt	flaky-probe	Second identical suite result
+13	.omo/evidence/20260930-jev-w2/task-13-refactor-green-run3.txt	flaky-probe	Third identical suite result
+13	.omo/evidence/20260930-jev-w2/task-13-line-limit.txt	static-check	Physical line counts for all idle-event TypeScript files
+13	.omo/evidence/20260930-jev-w2/task-13-line-limit-command.txt	static-check	Exact wc command total-row defect and corrected per-file pass
+13	.omo/evidence/20260930-jev-w2/task-13-forbidden-reference-output.txt	static-check	Empty output from forbidden-reference grep
+13	.omo/evidence/20260930-jev-w2/task-13-forbidden-reference-check.txt	static-check	Expected no-match grep status
+13	.omo/evidence/20260930-jev-w2/task-13-golden-checksum-verify.txt	checksum	Post-extraction golden checksum verification
+13	.omo/evidence/20260930-jev-w2/task-13-trace-counts.txt	adversarial-qa	Nonempty trace-entry counts for 24 guards and 3 fallthroughs
+13	.omo/evidence/20260930-jev-w2/task-13-repeated-interruption.txt	adversarial-qa	In-flight countdown handle preservation
+13	.omo/evidence/20260930-jev-w2/task-13-mutation-revert.txt	cleanup-proof	Restored max-failures-before-cooldown source order
+13	.omo/evidence/20260930-jev-w2/task-13-idle-event-final-diff.txt	diff	Final tracked idle-event extraction diff
+13	.omo/evidence/20260930-jev-w2/task-13-lsp-diagnostics.txt	diagnostics	Changed-file LSP diagnostic summary
+13	.omo/evidence/20260930-jev-w2/task-13-qa-summary.txt	qa-summary	Reviewer-readable test scope observations and omissions
+13	.omo/evidence/20260930-jev-w2/task-13-adversarial-qa.txt	adversarial-qa	Applicable probes and ruled-out classes
+13	.omo/evidence/20260930-jev-w2/task-13-cleanup.txt	cleanup	Mutation temp and process cleanup receipt
+13	.omo/evidence/20260930-jev-w2/task-13-status-before-staging.txt	dirty-worktree	Shared worktree state before staging
+13	.omo/evidence/20260930-jev-w2/task-13-cached-paths.txt	dirty-worktree	Owned cached paths after staging
+6	.omo/evidence/20260930-jev-w2/task-6-decision-red.txt	red	Focused policy test fails before implementation
+6	.omo/evidence/20260930-jev-w2/task-6-decision-green.txt	test	Focused policy suite passes 27 tests
+6	.omo/evidence/20260930-jev-w2/task-6-rejecting-backend.txt	failure	Rejecting backend maps to transport failure in one matched test
+6	.omo/evidence/20260930-jev-w2/task-6-flaky-tests.txt	stability	Five focused runs have identical pass counts
+6	.omo/evidence/20260930-jev-w2/task-6-core-guard.txt	test	Harness-neutral core extraction guard passes
+6	.omo/evidence/20260930-jev-w2/task-6-typecheck.txt	typecheck	jev-core tsgo typecheck exits zero
+6	.omo/evidence/20260930-jev-w2/task-6-line-counts.txt	static	Owned TypeScript files stay at or below 250 lines
+6	.omo/evidence/20260930-jev-w2/task-6-accuracy-minimum-check.txt	static	No accuracy minimum assertion is present
+6	.omo/evidence/20260930-jev-w2/task-6-no-excuse.txt	static	TypeScript no-excuse audit reports no violations
+6	.omo/evidence/20260930-jev-w2/task-6-dirty-worktree-before-staging.txt	git	Dirty worktree snapshot distinguishes ambient and peer edits
+6	.omo/evidence/20260930-jev-w2/task-6-adversarial-qa.txt	adversarial	Applicable adversarial probes and rule-outs
+6	.omo/evidence/20260930-jev-w2/task-6-lsp-diagnostics.txt	lsp	Changed files have no LSP diagnostics
+6	.omo/evidence/20260930-jev-w2/task-6-qa-summary.txt	summary	Reviewer-readable test scope observations and sufficiency
+6	.omo/evidence/20260930-jev-w2/task-6-cleanup.txt	cleanup	No process port container or temporary residue
+6	.omo/evidence/20260930-jev-w2/task-6-staged-paths.txt	git	Cached paths after staging contain only todo-6 files
+10	.omo/evidence/20260930-jev-w2/task-10-input-red.txt	tdd-red	Focused input snapshot test fails before implementation
+10	.omo/evidence/20260930-jev-w2/task-10-input-green.txt	test	Focused bounded snapshot suite passes
+10	.omo/evidence/20260930-jev-w2/task-10-no-diff-content.txt	manual-qa	Exact sentinel retention test matches one test and passes
+10	.omo/evidence/20260930-jev-w2/task-10-forbidden-call-grep.txt	static-audit	Empty forbidden shell and client diff call audit
+10	.omo/evidence/20260930-jev-w2/task-10-malformed-stale.txt	adversarial	Malformed and stale availability probe
+10	.omo/evidence/20260930-jev-w2/task-10-boulder-unavailable.txt	adversarial	Unavailable boulder plan variants probe
+10	.omo/evidence/20260930-jev-w2/task-10-lru.txt	adversarial	LRU 256-session eviction probe
+10	.omo/evidence/20260930-jev-w2/task-10-flaky-run-1.txt	stability	Focused suite stability run 1
+10	.omo/evidence/20260930-jev-w2/task-10-flaky-run-2.txt	stability	Focused suite stability run 2
+10	.omo/evidence/20260930-jev-w2/task-10-flaky-run-3.txt	stability	Focused suite stability run 3
+10	.omo/evidence/20260930-jev-w2/task-10-dirty-worktree-before-staging.txt	git-state	Dirty worktree receipt before staging
+10	.omo/evidence/20260930-jev-w2/task-10-real-home-before.txt	isolation	Real home omo digest before final QA
+10	.omo/evidence/20260930-jev-w2/task-10-real-home-after.txt	isolation	Real home omo digest after final QA
+10	.omo/evidence/20260930-jev-w2/task-10-home-reference-grep.txt	static-audit	Empty HOME mutation audit for boulder tests
+10	.omo/evidence/20260930-jev-w2/task-10-adversarial-qa.txt	adversarial-summary	Applicable and ruled-out adversarial classes
+10	.omo/evidence/20260930-jev-w2/task-10-qa-summary.txt	qa-summary	Reviewer-readable test observations and sufficiency
+10	.omo/evidence/20260930-jev-w2/task-10-line-counts.txt	line-count	Per-file physical line count gate
+10	.omo/evidence/20260930-jev-w2/task-10-no-excuse.txt	static-audit	TypeScript no-excuse rules pass
+10	.omo/evidence/20260930-jev-w2/task-10-typecheck.txt	typecheck	omo-opencode package typecheck passes
+10	.omo/evidence/20260930-jev-w2/task-10-build.txt	build	Repository build passes
+10	.omo/evidence/20260930-jev-w2/task-10-lsp-diagnostics.txt	lsp	Changed files report no diagnostics
+10	.omo/evidence/20260930-jev-w2/task-10-cleanup.txt	cleanup	Temp roots, home isolation, process and port receipt
+10	.omo/evidence/20260930-jev-w2/task-10-staged-paths.txt	git	Cached paths after staging contain only todo 10 files
+7	.omo/evidence/20260930-jev-w2/task-7-accuracy-red.txt	tdd-red	Focused harness RED: partial received instead of complete
+7	.omo/evidence/20260930-jev-w2/task-7-accuracy-result.json	benchmark	Mock accuracy artifact with model, versions, caps, and confusion matrices
+7	.omo/evidence/20260930-jev-w2/task-7-accuracy-mock.txt	manual-qa	Exact default mock channel with zero network calls
+7	.omo/evidence/20260930-jev-w2/task-7-call-ceiling.txt	failure-qa	Named ceiling test matched one test and aborted before call 19
+7	.omo/evidence/20260930-jev-w2/task-7-prompt-injection.txt	adversarial	Embedded directive remains inert state data
+7	.omo/evidence/20260930-jev-w2/task-7-malformed-input.txt	adversarial	No-todo, empty-transcript, oversized, and malformed-answer probes
+7	.omo/evidence/20260930-jev-w2/task-7-network-tripwire.txt	adversarial	Injected counting fetch raises on invocation
+7	.omo/evidence/20260930-jev-w2/task-7-network-failure-proof.txt	mutation-proof	Forced fetch made default test fail before revert
+7	.omo/evidence/20260930-jev-w2/task-7-cohort-tripwire.txt	mutation-proof	Removed cohort made enumeration fail before restore
+7	.omo/evidence/20260930-jev-w2/task-7-flaky-tests.txt	stability	Three identical focused test runs
+7	.omo/evidence/20260930-jev-w2/task-7-core-guard.txt	regression	Shared core extraction guard
+7	.omo/evidence/20260930-jev-w2/task-7-typecheck.txt	typecheck	jev-core tsgo noEmit passed
+7	.omo/evidence/20260930-jev-w2/task-7-line-counts.txt	static	Per-file physical line counts at or below 250
+7	.omo/evidence/20260930-jev-w2/task-7-no-excuse.txt	static	TypeScript no-excuse audit
+7	.omo/evidence/20260930-jev-w2/task-7-dry-run.txt	dry-run	Dry-run test builds all fixture states with zero reserved calls
+7	.omo/evidence/20260930-jev-w2/task-7-dirty-worktree-before-staging.txt	git-state	Worktree status before staging
+7	.omo/evidence/20260930-jev-w2/task-7-lsp-diagnostics.txt	diagnostics	Changed TypeScript files have no LSP diagnostics
+7	.omo/evidence/20260930-jev-w2/task-7-qa-summary.txt	summary	Reviewer-readable QA summary
+7	.omo/evidence/20260930-jev-w2/task-7-adversarial-qa.txt	adversarial	Applicable probes and ruled-out classes
+7	.omo/evidence/20260930-jev-w2/task-7-cleanup.txt	cleanup	No leaked processes, ports, containers, or temp files
+7	.omo/evidence/20260930-jev-w2/task-7-staged-paths.txt	git-state	Exact cached paths after staging
+11	.omo/evidence/20260930-jev-w2/task-11-outcome-red.txt	test-red	Focused pre-implementation failure
+11	.omo/evidence/20260930-jev-w2/task-11-outcome-green.txt	test-green	Focused store suite with real LRU bounds
+11	.omo/evidence/20260930-jev-w2/task-11-timeout-censored.txt	manual-failure	Filtered timeout censorship proof with Ran 1 test
+11	.omo/evidence/20260930-jev-w2/task-11-flaky-tests.txt	stability	Five deterministic focused runs
+11	.omo/evidence/20260930-jev-w2/task-11-dirty-worktree-before-staging.txt	git-state	Porcelain state before staging
+11	.omo/evidence/20260930-jev-w2/task-11-adversarial-qa.txt	adversarial-qa	Applicable probes and exclusions
+11	.omo/evidence/20260930-jev-w2/task-11-typecheck.txt	typecheck	Root strict typecheck
+11	.omo/evidence/20260930-jev-w2/task-11-build.txt	build	Successful root build summary
+11	.omo/evidence/20260930-jev-w2/task-11-line-counts.txt	line-counts	Per-file physical line bounds
+11	.omo/evidence/20260930-jev-w2/task-11-no-excuse.txt	static-audit	TypeScript no-excuse audit
+11	.omo/evidence/20260930-jev-w2/task-11-static-audit.txt	static-audit	Forbidden pattern and sleep audit
+11	.omo/evidence/20260930-jev-w2/task-11-lsp-diagnostics.txt	lsp	Clean diagnostics on every changed TypeScript file
+11	.omo/evidence/20260930-jev-w2/task-11-cleanup.txt	cleanup	Zero temp roots and no home process or port impact
+11	.omo/evidence/20260930-jev-w2/task-11-qa-summary.txt	qa-summary	Reviewer-readable QA scope and sufficiency
+11	.omo/evidence/20260930-jev-w2/task-11-staged-paths.txt	git-state	Exact cached paths after staging
+12	.omo/evidence/20260930-jev-w2/task-12-adapter-red.txt	test-red	Focused adapter test failed before implementation because the adapter module was absent
+12	.omo/evidence/20260930-jev-w2/task-12-adapter-green.txt	test	Final focused adapter suite with 15 passing tests
+12	.omo/evidence/20260930-jev-w2/task-12-inflight-drop.txt	manual-qa	Exact filtered cap test with 20 starts, cap 8, and 12 persisted drops
+12	.omo/evidence/20260930-jev-w2/task-12-flaky-tests.txt	stability	Five consecutive focused runs with identical pass counts
+12	.omo/evidence/20260930-jev-w2/task-12-adversarial-qa.txt	adversarial-qa	Filtered stale, timeout, disposal, malformed, disabled, and rejection probes
+12	.omo/evidence/20260930-jev-w2/task-12-static-gates.txt	static	Runtime-key, exported API, base URL, line count, and banned-pattern gates
+12	.omo/evidence/20260930-jev-w2/task-12-typecheck.txt	verification	Workspace typecheck exited zero
+12	.omo/evidence/20260930-jev-w2/task-12-build.txt	verification	Repository build exited zero
+12	.omo/evidence/20260930-jev-w2/task-12-no-excuse.txt	static	TypeScript no-excuse audit exited zero
+12	.omo/evidence/20260930-jev-w2/task-12-lsp-diagnostics.txt	diagnostics	Changed-file LSP results and final typecheck fallback receipt
+12	.omo/evidence/20260930-jev-w2/task-12-opencode-qa.txt	manual-qa	OpenCode QA impact mapping for the adapter before hook wiring
+12	.omo/evidence/20260930-jev-w2/task-12-cleanup.txt	cleanup	Eight temp roots removed, zero leftovers, real home unchanged
+12	.omo/evidence/20260930-jev-w2/task-12-qa-summary.txt	summary	Reviewer-readable test, QA, omission, and residual-risk summary
+12	.omo/evidence/20260930-jev-w2/task-12-dirty-worktree-before-staging.txt	dirty-worktree	Porcelain status before staging includes owned changes, repaired evidence, and five ambient bundles
+12	.omo/evidence/20260930-jev-w2/task-12-staged-paths.txt	staging	Exact cached path list after staging, including eleven repaired evidence files and excluding ambient bundles
+14	.omo/evidence/20260930-jev-w2/task-14-wiring-red.txt	red	focused wiring tests fail before implementation
+14	.omo/evidence/20260930-jev-w2/task-14-wiring-green.txt	test	focused wiring suite green
+14	.omo/evidence/20260930-jev-w2/task-14-observer-throw.txt	test	all throwing observer methods preserve continuation trace
+14	.omo/evidence/20260930-jev-w2/task-14-test-fast.txt	checkpoint	mid-loop test fast gate
+14	.omo/evidence/20260930-jev-w2/task-14-adversarial-probes.txt	qa	repeated interruption stale malformed and cancel probes
+14	.omo/evidence/20260930-jev-w2/task-14-mutation-proof.txt	mutation	deliberate countdown perturbation fails then reverts
+14	.omo/evidence/20260930-jev-w2/task-14-flaky-five-runs.txt	stability	five identical todo continuation suite results
+14	.omo/evidence/20260930-jev-w2/task-14-line-counts.txt	static	per-file physical line limits
+14	.omo/evidence/20260930-jev-w2/task-14-no-excuse.txt	static	typescript no-excuse audit
+14	.omo/evidence/20260930-jev-w2/task-14-typecheck.txt	typecheck	repository typecheck
+14	.omo/evidence/20260930-jev-w2/task-14-build.txt	build	repository build
+14	.omo/evidence/20260930-jev-w2/task-14-w3-atlas-unchanged.txt	diff	protected W3 and Atlas paths unchanged
+14	.omo/evidence/20260930-jev-w2/task-14-dirty-worktree-before-staging.txt	status	pre-staging dirty worktree receipt
+14	.omo/evidence/20260930-jev-w2/task-14-cleanup.txt	cleanup	home isolation temp cleanup and process receipt
+14	.omo/evidence/20260930-jev-w2/task-14-ownership-filter.txt	trace	nonempty gauntlet trace and exact W2 ownership removal list
+14	.omo/evidence/20260930-jev-w2/task-14-lsp-diagnostics.txt	diagnostics	changed-file diagnostics and compiler backstop
+14	.omo/evidence/20260930-jev-w2/task-14-qa-summary.txt	summary	manual and adversarial QA summary
+14	.omo/evidence/20260930-jev-w2/task-14-staged-paths.txt	status	exact staged path receipt excluding ambient bundles
+16	.omo/evidence/20260930-jev-w2/task-16-report-red.txt	tdd-red	Focused report suite fails before the W2 report modules exist
+16	.omo/evidence/20260930-jev-w2/task-16-report.txt	manual-qa	Exact populated-root CLI report with denominators before separate agreement blocks
+16	.omo/evidence/20260930-jev-w2/task-16-empty-report.txt	failure-qa	Exact empty-root CLI report exits zero and renders insufficient data
+16	.omo/evidence/20260930-jev-w2/task-16-divergence-mutation.txt	misleading-success	Temporary shared-conditioning regression fails the divergent-corpus test and is reverted
+16	.omo/evidence/20260930-jev-w2/task-16-censored-leak-mutation.txt	censor-integrity	Temporary censored stuck leak changes denominator one to two fails and is reverted
+16	.omo/evidence/20260930-jev-w2/task-16-malformed-input.txt	adversarial	Malformed unknown missing-facts and truncated JSONL probe passes
+16	.omo/evidence/20260930-jev-w2/task-16-stale-state.txt	adversarial	Highest counter epoch and sequence wins without double addition
+16	.omo/evidence/20260930-jev-w2/task-16-flaky-tests.txt	stability	Three identical focused runs each report 7 pass 0 fail and 96 expectations
+16	.omo/evidence/20260930-jev-w2/task-16-dirty-worktree.txt	dirty-worktree	Porcelain status before staging preserves peer and generated paths
+16	.omo/evidence/20260930-jev-w2/task-16-line-counts.txt	static	Per-file physical counts prove every report file is at most 250 lines
+16	.omo/evidence/20260930-jev-w2/task-16-forbidden-source-scan.txt	static	No-match scan records command exit one and zero forbidden pattern matches
+16	.omo/evidence/20260930-jev-w2/task-16-adversarial-summary.txt	adversarial	Applicable probes and one-line ruled-out classes with observations
+16	.omo/evidence/20260930-jev-w2/task-16-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted summary
+16	.omo/evidence/20260930-jev-w2/task-16-cleanup.txt	cleanup	Two temporary corpus roots removed real omo unchanged and no processes or ports expected
+16	.omo/evidence/20260930-jev-w2/task-16-staged-paths.txt	staged-paths	Final cached allowlist contains only todo 16 owned paths and the shared manifest
+15	.omo/evidence/20260930-jev-w2/task-15-inert-red.txt	tdd-red	Focused RED records two intended missing proof assertion failures and exit one
+15	.omo/evidence/20260930-jev-w2/task-15-inert-green.txt	manual-qa	Exact happy command passes both inert and runtime-effects suites with all thresholds printed
+15	.omo/evidence/20260930-jev-w2/task-15-unref-proof.txt	failure-qa	Exact named child test detects removed unref then reverts and reports Ran 1 test
+15	.omo/evidence/20260930-jev-w2/task-15-flaky-runs.txt	stability	Five complete measurement sets pass with wall times and no suite timeout kills
+15	.omo/evidence/20260930-jev-w2/task-15-adversarial.txt	adversarial	All applicable adversarial classes and one-line ruleouts with observed failures
+15	.omo/evidence/20260930-jev-w2/task-15-dirty-worktree.txt	dirty-worktree	Pre-staging status distinguishes todo 15 paths from peer and generated ambient files
+15	.omo/evidence/20260930-jev-w2/task-15-line-counts.txt	static	Per-file loop proves all seven created TypeScript files are at most 250 lines
+15	.omo/evidence/20260930-jev-w2/task-15-no-excuse-audit.txt	static	TypeScript no-excuse audit exits zero for every created source file
+15	.omo/evidence/20260930-jev-w2/task-15-diagnostics.txt	diagnostics	All created TypeScript files report clean LSP diagnostics
+15	.omo/evidence/20260930-jev-w2/task-15-opencode-qa-raw.txt	harness-qa	Isolated no-HOME pure OpenCode server emits server.connected and preserves real DB count
+15	.omo/evidence/20260930-jev-w2/task-15-opencode-debug-journal.txt	debug	Bounded investigation and resolution of the HOME-setting bundled QA hang
+15	.omo/evidence/20260930-jev-w2/task-15-opencode-qa.txt	qa-summary	Reviewer-readable real-harness QA scope observations sufficiency and omissions
+15	.omo/evidence/20260930-jev-w2/task-15-cleanup.txt	cleanup	All recorded PIDs and port gone owned temp roots zero and real omo hash unchanged
+15	.omo/evidence/20260930-jev-w2/task-15-staged-paths.txt	staged-paths	Final cached allowlist contains only todo 15 source evidence and shared manifest paths
+18	.omo/evidence/20260930-jev-w2/task-18-dry-run.txt	dry-run	Dry-run channel before any spend, 1 pass exit 0, all 18 fixture states built with 0 reserved calls and 0 requests
+18	.omo/evidence/20260930-jev-w2/task-18-mock-path.txt	verification	Default mock channel before any spend, 8 pass exit 0, 0 network calls, todo-7 artifact sha256 unchanged
+18	.omo/evidence/20260930-jev-w2/task-18-sandbox-probe.txt	adversarial	Zero-cost paid-path proof against a local fake systemOne endpoint: 1 request per 3-question call, counter rises on forced calls, ceiling aborts, hard timeout fires, malformed classified
+18	.omo/evidence/20260930-jev-w2/task-18-real-api-first-run.txt	benchmark	Raw log of the one and only paid run, 18 real calls, resolvedModel jev-1.13.0, full per-fixture matrix and probability dump
+18	.omo/evidence/20260930-jev-w2/task-18-real-api-result.json	benchmark	Retained real baseline labelled complete: resolved model, question version, ceiling, request count, tokens, latency, byte caps, per-question confusion matrices, uncertain counts
+18	.omo/evidence/20260930-jev-w2/task-18-real-api.txt	manual-qa	Plan happy command verbatim, exit 0, reports the retained complete artifact with zero additional spend
+18	.omo/evidence/20260930-jev-w2/task-18-missing-key.txt	failure-qa	Missing-key channel: the plan command cannot unset the key under Bun, the corrected keyless command gives 18 missing_api_key results with 0 requests, exit 0
+18	.omo/evidence/20260930-jev-w2/task-18-budget-incident.txt	incident	Why the paid run executed under the failure command, the 18 of 18 ceiling accounting, and the persistent cross-process budget guard added as the remedy
+18	.omo/evidence/20260930-jev-w2/task-18-measurement-analysis.txt	benchmark	Derived measurement report: model identity, budget, latency, tokens, component byte sizes, per-question matrices, uncertain counts, and the two transcript-tail cases read plainly
+18	.omo/evidence/20260930-jev-w2/task-18-no-minimum-score.txt	static	Complete expect() inventory proving no assertion checks a minimum score, only upper bounds on the call ceiling
+18	.omo/evidence/20260930-jev-w2/task-18-regression.txt	verification	jev-core package suite plus the core-extraction guard and package-registration audit, 232 pass 0 fail exit 0
+18	.omo/evidence/20260930-jev-w2/task-18-static-gates.txt	static	Per-file line counts at or under 250, no export star, no suppression, no empty catch, no dash or filler, no global process matcher, Stop-word guard clean, tsgo exit 0
+18	.omo/evidence/20260930-jev-w2/task-18-lsp-diagnostics.txt	diagnostics	No diagnostics found on all four owned files plus an independent tsgo backstop
+18	.omo/evidence/20260930-jev-w2/task-18-adversarial-qa.txt	adversarial	Probes for misleading success output, long commands, cancel resume, malformed input, stale state and dirty worktree, plus one-line rule-outs for the other three classes
+18	.omo/evidence/20260930-jev-w2/task-18-dirty-worktree.txt	git-state	Porcelain status immediately before staging, separating owned paths from peer work and the five permanently dirty generated bundles
+18	.omo/evidence/20260930-jev-w2/task-18-secret-grep.txt	security	Plan acceptance secret grep prints nothing (exit 1, 0 matching lines), plus a literal-value search and a credential-shape search that both find nothing
+18	.omo/evidence/20260930-jev-w2/task-18-qa-summary.txt	summary	Reviewer-readable what was tested, what was observed, why it is enough, and what was omitted
+18	.omo/evidence/20260930-jev-w2/task-18-cleanup.txt	cleanup	Recorded PIDs confirmed gone, recorded port closed, zero leftover temp roots, credential files unmodified and unstaged, real home untouched
+18	.omo/evidence/20260930-jev-w2/task-18-staged-paths.txt	git-state	Exact cached path list after staging, proving no peer path, no generated bundle, and no credential file was staged
+17	.omo/evidence/20260930-jev-w2/task-17-test-fast-red.txt	red	RED scope proof that the pre-change test:fast target list never reached the W2 enforcer tests, with the pre-change target list, absence greps by matching-line count, and the 621-test before baseline
+17	.omo/evidence/20260930-jev-w2/task-17-test-fast-target-delta.txt	static-proof	Append-only proof of the test:fast target delta: unified diff with 4 added and 0 removed, comm showing zero before-only targets, and cmp proving the old 17 targets are a byte-exact leading prefix
+17	.omo/evidence/20260930-jev-w2/task-17-test-fast.txt	green	bun run test:fast GREEN after the change, exit 0, 778 tests across 89 files, up from 621 across 66
+17	.omo/evidence/20260930-jev-w2/task-17-test-fast-w2-named.txt	green	All 157 newly covered W2 tests listed by name from a junit report, since bun 1.4.0 prints no per-test pass lines
+17	.omo/evidence/20260930-jev-w2/task-17-coverage-table.txt	static-proof	Full W2 test-file coverage table before and after, 17 of 24 covered to 24 of 24, with the 621 + 157 = 778 arithmetic
+17	.omo/evidence/20260930-jev-w2/task-17-schema-idempotence.txt	checkpoint	Both schema generators run plus the mandated cmp idempotence pair at exit 0, with identical sha256 and byte sizes before and after and an empty assets/ git status
+17	.omo/evidence/20260930-jev-w2/task-17-dogfood-config-parse.txt	adversarial	malformed_input probe: the documented W2 dogfood block read back out of both docs and parsed with the committed JevConfigSchema, 39 assertions 0 failures, including observe_only false and outcome_window_ms equal to timeout_ms both rejected
+17	.omo/evidence/20260930-jev-w2/task-17-markdown-audit-red.txt	red	Markdown audit failure probe: an injected machine-local absolute path caught at docs/jev/dogfood-log.md:20 with exit 1, then the byte-identical revert
+17	.omo/evidence/20260930-jev-w2/task-17-markdown-audit.txt	green	Markdown link audit exit 0 with 16 pass after the revert, plus confirmation the probe marker is absent from every tracked markdown file
+17	.omo/evidence/20260930-jev-w2/task-17-notices-diff.txt	checkpoint	Third-party notices comparison: byte-identical to the todo-1 baseline at 118 bytes with the same exit 1 and the same four missing entries
+17	.omo/evidence/20260930-jev-w2/task-17-static-audits.txt	static-proof	250-line gate over 82 changed TypeScript files at exit 0, shared/index.ts still exactly 71 export * lines with zero star exports added anywhere, zero banned punctuation or filler on added doc lines, and no README
+17	.omo/evidence/20260930-jev-w2/task-17-doc-set-gate.txt	static-proof	F4 exact-doc-set gate at exit 0: exactly docs/jev/HANDOFF.md, docs/jev/dogfood-log.md, docs/reference/configuration.md, and packages/jev-core/AGENTS.md
+17	.omo/evidence/20260930-jev-w2/task-17-adversarial-qa.txt	adversarial	misleading_success_output, stale_state, dirty_worktree, and malformed_input all probed, with prompt_injection, cancel_resume, hung_or_long_commands, flaky_tests, and repeated_interruptions ruled out one line each
+17	.omo/evidence/20260930-jev-w2/task-17-dirty-worktree-before-staging.txt	git-state	git status --porcelain immediately before staging, showing the 5 ambient generated bundles, zero credential files, zero dirty assets, and zero dirty TypeScript
+17	.omo/evidence/20260930-jev-w2/task-17-qa-summary.txt	summary	Reviewer-readable what was tested, what was observed, why it is enough, and what was omitted
+17	.omo/evidence/20260930-jev-w2/task-17-cleanup.txt	cleanup	Cleanup receipt: 16 temp files removed and verified gone, 3 shared locks preserved, real ~/.omo manifest unchanged at 1013 entries, no process or port, credentials untouched, markdown probe reverted
+19	.omo/evidence/20260930-jev-w2/task-19-drive.sh	driver	Bounded isolated long-lived OpenCode W2 live-proof driver with F13R failure propagation heartbeat exclusion and real sink assertions
+19	.omo/evidence/20260930-jev-w2/task-19-turn-script.jsonl	fixture	Deterministic 28-turn complete progress promise multilingual boulder diff and censor corpus
+19	.omo/evidence/20260930-jev-w2/task-19-fake-jev-server.ts	driver	Local zero-cost Jev endpoint with filled and malformed responses
+19	.omo/evidence/20260930-jev-w2/task-19-fake-model-provider.ts	driver	Local scripted OpenAI Responses provider
+19	.omo/evidence/20260930-jev-w2/task-19-enabled.txt	manual-qa	Exact enabled command output exit 0 with 31 one-session and 533 total W2 records diff 532/1 boulder 21/512
+19	.omo/evidence/20260930-jev-w2/task-19-disabled.txt	failure-qa	Exact disabled command output exit 0 with zero W2 files and absent real sink
+19	.omo/evidence/20260930-jev-w2/task-19-qa-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted sections for the F13R re-run
+19	.omo/evidence/20260930-jev-w2/task-19-adversarial-qa.txt	adversarial	Applicable probes and prompt-injection ruleout
+19	.omo/evidence/20260930-jev-w2/task-19-cleanup.txt	cleanup	PID port DB and recursive home cleanup receipt
+19	.omo/evidence/20260930-jev-w2/task-19-focused-tests.txt	verification	Focused W2 input adapter and continuation tests pass
+19	.omo/evidence/20260930-jev-w2/task-19-build.txt	build	Repository build exits zero
+19	.omo/evidence/20260930-jev-w2/task-19-static.txt	static	Line caps shell syntax and zero forbidden process matcher bytes
+19	.omo/evidence/20260930-jev-w2/task-19-no-excuse.txt	static	Strict TypeScript no-excuse audit exits zero
+19	.omo/evidence/20260930-jev-w2/task-19-dirty-worktree.txt	git-state	Porcelain status before exact staging
+19	.omo/evidence/20260930-jev-w2/task-19-staged-paths.txt	git-state	Exact cached path allowlist excludes generated bundles and credentials
+19	.omo/evidence/20260930-jev-w2/task-19-remediation.txt	remediation	Rejecting-verification rationale fresh-session fix and extra-commit accounting
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-input-test.txt	regression	Completion-continuation input suite 8 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-continuation-tests.txt	regression	Continuation hook and construction suites 147 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-inert-runtime.txt	regression	Inertness and runtime-effects suites 5 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-test-fast.txt	regression	Fast gate 779 pass 0 fail
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-acceptance.txt	acceptance	All live W2 acceptance buckets and isolation checks pass
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-static.txt	static	Line limits shell syntax and zero forbidden process matcher bytes
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-dirty-worktree.txt	git-state	Remediation pre-staging status excludes ownership of ambient generated bundles
+19	.omo/evidence/20260930-jev-w2/task-19-remediation-staged-paths.txt	git-state	Exact remediation cached path allowlist
+F2R	.omo/evidence/20260930-jev-w2/F2R-typecheck.txt	verification	Final repository typecheck exits zero
+F2R	.omo/evidence/20260930-jev-w2/F2R-build.txt	verification	Final repository build including declaration generation exits zero
+F2R	.omo/evidence/20260930-jev-w2/F2R-build-dts-proof.txt	emptiness-proof	Nonempty receipt records zero untracked test-support declaration matches
+F2R	.omo/evidence/20260930-jev-w2/F2R-bun-runtime-audit.txt	verification	Production bun runtime audit passes one test
+F2R	.omo/evidence/20260930-jev-w2/F2R-coupling-audit.txt	verification	Harness coupling audit passes two tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-ordering-tests.txt	regression	Ordering-sensitive logger tests pass six tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-line-counts.txt	static	Per-file loop proves all 13 changed TypeScript files are at most 250 lines
+F2R	.omo/evidence/20260930-jev-w2/F2R-no-excuse.txt	static	Strict TypeScript no-excuse audit finds no violation in 13 changed files
+F2R	.omo/evidence/20260930-jev-w2/F2R-static-proof.txt	emptiness-proof	Nonempty receipt records zero forbidden F2 source-pattern matches
+F2R	.omo/evidence/20260930-jev-w2/F2R-lsp-diagnostics.txt	diagnostics	Changed-file LSP result with final compiler backstop
+F2R	.omo/evidence/20260930-jev-w2/F2R-test-fast.txt	verification	Fast gate passes 780 tests with zero failures
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite.txt	verification	Exact full-suite command raw output with 13106 pass and seven baseline failures
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-exit.txt	verification	Exact full-suite command records expected baseline-relative exit one
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-failures-observed.txt	verification	Seven directly observed sorted failure lines before timing canonicalization
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-identity-normalization.txt	verification	Exact duration-free identity equality precedes timing canonicalization
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-failures.txt	verification	Seven canonicalized normalized failures for required baseline diff
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-diff-proof.txt	emptiness-proof	Nonempty receipt records diff exit zero, zero output lines, and seven lines on both sides
+F2R	.omo/evidence/20260930-jev-w2/F2R-focused-jev-core.txt	regression	jev-core focused suite passes 223 tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-focused-feature-jev.txt	regression	OpenCode Jev feature suite passes 143 tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-focused-todo-continuation.txt	regression	Todo continuation suite passes 144 tests
+F2R	.omo/evidence/20260930-jev-w2/F2R-summary.txt	summary	Reviewer-readable tested observed sufficient and omitted summary
+F2R	.omo/evidence/20260930-jev-w2/F2R-scope-proof.txt	git-state	Audit tests untouched and peer or generated ambient paths identified for staging exclusion
+F5R	.omo/evidence/20260930-jev-w2/F5R-plan.txt	plan	F5 remediation plan: reproduced finding, window value provenance survey, file-by-file steps, preserved-property list
+F5R	.omo/evidence/20260930-jev-w2/F5R-red-test.txt	red	script/jev-w2-report.test.ts fails 2 of 8 before the change because the report renders no outcome_window_ms line
+F5R	.omo/evidence/20260930-jev-w2/F5R-green-test.txt	green	script/jev-w2-report.test.ts 8 pass 0 fail 103 expect calls exit 0 after the change
+F5R	.omo/evidence/20260930-jev-w2/F5R-f5-command.txt	acceptance	Verifier F5 exact invocation exit 0, 1 matching line for 120000, verbatim window line and full print order
+F5R	.omo/evidence/20260930-jev-w2/F5R-empty-corpus.txt	regression	Empty-corpus report exit 0, 126 insufficient-data rows preserved, window still rendered
+F5R	.omo/evidence/20260930-jev-w2/F5R-typecheck.txt	verification	bun run typecheck:script exit 0, 0 error lines, lsp_diagnostics clean on all four changed files
+F5R	.omo/evidence/20260930-jev-w2/F5R-preserved-properties.txt	verification	All nine F5-passing properties re-confirmed on the new output incl. both denominator names and the stuck denominator composition
+F5R	.omo/evidence/20260930-jev-w2/F5R-static.txt	static	Per-file line counts under 250 via loop, zero banned patterns, zero hardcoded 120000 in report source, three owned files byte-unchanged
+F5R	.omo/evidence/20260930-jev-w2/F5R-qa-summary.txt	qa-summary	What was tested, observed, why it is enough, remaining risk, what was omitted
+F5R	.omo/evidence/20260930-jev-w2/F5R-dirty-worktree.txt	git-state	Pre-staging status disclaiming peer-owned packages and task-19-drive.sh changes
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-secret-gate.txt	static	Mandated evidence secret gate re-run after the fix command exit 1 and zero matching lines
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-masking-demo.txt	adversarial	Deliberately inverted driver assertion turns both mandated commands from exit 0 into exit 1 with revert digest
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-manifest-narrowing.txt	verification	Ambient heartbeat survey stated exclusion and lifted-function probe proving the narrowed manifest check still bites
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-isolation.txt	acceptance	Every original acceptance criterion with its observed number from the fresh re-run plus 261 ids zero real-DB matches
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-line-counts.txt	static	Per-file 250 line cap loop shell syntax zero process matchers and final secret gate each with command exit and count
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-dirty-worktree.txt	git-state	Pre-staging porcelain with peer ownership disclaimer and untracked artifact list
+F13R	.omo/evidence/20260930-jev-w2/task-F13R-staged-paths.txt	git-state	Exact 12 path staging allowlist with the explicit not-staged list and the commit subject
+F2R	.omo/evidence/20260930-jev-w2/F2R-full-suite-identity-comparison.txt	verification	root-authored honest identity comparison: duration stripped from both sides, 7 identities equal, documents the plan byte-diff defect and the R1 artifact correction

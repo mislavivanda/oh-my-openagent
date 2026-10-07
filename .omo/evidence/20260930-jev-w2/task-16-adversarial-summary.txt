@@ -1,0 +1,23 @@
+WHAT WAS TESTED
+misleading_success_output: Applied. The divergent corpus gives every heuristic proxy 2/2 while every later-outcome comparison is 0/1.
+malformed_input: Applied. The corpus includes invalid JSON, an unknown closure, missing outcome facts, and a truncated JSON line.
+stale_state: Applied. Process p1 has two epochs and a lower tuple after the selected higher tuple.
+dirty_worktree: Applied. task-16-dirty-worktree.txt records the pre-stage porcelain status without modifying peer files.
+flaky_tests: Applied. The focused report suite ran three times in task-16-flaky-tests.txt.
+prompt_injection: Not applicable because the report reads validated local JSONL and emits text without consuming prompts.
+cancel_resume: Not applicable because this synchronous report has no resumable operation.
+hung_or_long_commands: Not applicable because corpus reads and scoring are bounded local operations.
+repeated_interruptions: Not applicable because the report has no checkpoint or recovery state.
+
+WHAT WAS OBSERVED
+The temporary shared-conditioning mutation made the divergence test fail with 0 pass and 1 fail, then was reverted.
+The temporary censored-stuck leak changed the stuck denominator from 1 to 2, made the exclusion test fail with 0 pass and 1 fail, then was reverted.
+Malformed input produced 1 pass, 0 fail and reported malformed_lines=6 without stopping the report.
+Stale-state selection produced 1 pass, 0 fail and selected starts=15 instead of either stale aggregate.
+All three full focused runs produced 7 pass, 0 fail, 96 expect calls, and exit 0.
+
+WHY IT IS ENOUGH
+The two mutation probes demonstrate that the separation and censor exclusions are active test conditions rather than matching fixture values by accident. The malformed and stale probes drive the real reader used by the CLI. The repeated focused runs cover deterministic output.
+
+WHAT WAS OMITTED
+No environment dump, credentials, auth headers, or private corpus content was captured.

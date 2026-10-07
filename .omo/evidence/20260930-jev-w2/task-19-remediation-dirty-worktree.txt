@@ -1,0 +1,13 @@
+ M .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+ M .omo/evidence/20260930-jev-w2/task-19-adversarial-qa.txt
+ M .omo/evidence/20260930-jev-w2/task-19-cleanup.txt
+ M .omo/evidence/20260930-jev-w2/task-19-disabled.txt
+ M .omo/evidence/20260930-jev-w2/task-19-drive.sh
+ M .omo/evidence/20260930-jev-w2/task-19-enabled.txt
+ M .omo/evidence/20260930-jev-w2/task-19-qa-summary.txt
+ M .omo/evidence/20260930-jev-w2/task-19-turn-script.jsonl
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js

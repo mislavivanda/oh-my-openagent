@@ -1,0 +1,9 @@
+misleading_success_output: record counts are printed (31 one-session, 535 total), while disabled proves zero files using the same driver.
+hung_or_long_commands: readiness and every process wait are bounded; readiness records attempt counts and elapsed milliseconds; the previously hanging bundled self-test was not invoked.
+dirty_worktree: exact runs recorded real DB count 485 to 485 and recursive real ~/.omo manifest diff line count 0; pre-staging status is retained separately.
+stale_state: one preserved session produced 31 records; boulder availability varied 21/514 and diff availability varied 534/1 through a fresh first-idle case.
+cancel_resume: timeout, human intervention, session deletion, and eviction were censored and never labelled stuck.
+repeated_interruptions: global dispose flushed 501 censored records while outcome windows remained in flight.
+malformed_input: the fake Jev endpoint returned malformed answers for one scripted prompt; three failed records were retained and later turns continued.
+flaky_tests: scripted prompts, local responses, and thresholds are deterministic; scheduling affects only ids, ports, timings, and exact disposal counts.
+prompt_injection: ruled out because fixture text is sent only as model state and no untrusted instruction is executed by the driver.

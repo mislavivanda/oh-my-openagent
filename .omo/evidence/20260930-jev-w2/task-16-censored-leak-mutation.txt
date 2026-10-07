@@ -1,0 +1,25 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w2-report.test.ts:
+83 | 
+84 |   test("#when censored records predict stuck #then they never enter the stuck denominator", () => {
+85 |     const analysis = analyzeCompletionContinuationSink(readCompletionContinuationSink(corpusDir))
+86 |     const stuck = analysis.outcomeAgreement.stuck
+87 | 
+88 |     expect(stuck.overall.denominator).toBe(1)
+                                           ^
+error: expect(received).toBe(expected)
+
+Expected: 1
+Received: 2
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/script/jev-w2-report.test.ts:88:39)
+(fail) #given an exhaustive completion-continuation corpus > #when censored records predict stuck #then they never enter the stuck denominator [6.14ms]
+
+ 0 pass
+ 6 filtered out
+ 1 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [141.00ms]
+mutation_exit=1
+expected=nonzero after temporarily admitting a censored stuck prediction

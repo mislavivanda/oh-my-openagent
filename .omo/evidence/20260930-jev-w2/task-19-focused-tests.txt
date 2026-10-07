@@ -1,0 +1,14 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts:
+[test-setup] vendored lsp-daemon dist missing; building once via `npm ci && npm run build`...
+preCapTodos=40 preCapTranscript=12 preCapDiff=40
+preCapBoulderTitleBytes=303
+
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts:
+ATTEMPTED_STARTS=20 MAX_INFLIGHT=8 IN_FLIGHT=8 PERSISTED_DROPS=12
+
+ 90 pass
+ 0 fail
+ 186 expect() calls
+Ran 90 tests across 3 files. [3.03s]

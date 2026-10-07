@@ -1,0 +1,72 @@
+=== DIRTY_WORKTREE PROBE (todo 2) ===
+date: 2026-09-30T11:02:05Z
+
+--- FULL git status --porcelain BEFORE staging ---
+ M assets/oh-my-opencode.schema.json
+ M assets/omo.schema.json
+ M packages/jev-core/src/index.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/config/schema/jev.test.ts
+ M packages/omo-opencode/src/config/schema/jev.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-reader.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-sink-files.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+ M packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/completion-continuation-record-types.ts
+?? packages/jev-core/src/completion-continuation-record-validation.test.ts
+?? packages/jev-core/src/completion-continuation-record-validation.ts
+?? packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts
+?? packages/omo-opencode/src/features/jev/observation-jsonl-files.ts
+?? packages/omo-opencode/src/features/jev/observation-process-identity.test.ts
+?? packages/omo-opencode/src/features/jev/observation-process-identity.ts
+
+CLASSIFICATION of every line above:
+  MINE (todo 2 owns): assets/oh-my-opencode.schema.json, assets/omo.schema.json,
+    packages/omo-opencode/src/config/schema/jev.ts, packages/omo-opencode/src/config/schema/jev.test.ts
+  AMBIENT pre-existing generated bundles dirtied by bun install prepare (NEVER staged):
+    packages/omo-codex/plugin/components/codegraph/dist/cli.js
+    packages/omo-codex/plugin/components/codegraph/dist/serve.js
+    packages/omo-codex/scripts/install-dist/install-local.mjs
+    packages/omo-senpi/plugin/extensions/omo.js
+    packages/omo-senpi/plugin/extensions/omo-member.js
+  PEER IN-PROGRESS work, left untouched (todo 3 owns jev-core completion-continuation
+    plus the jev-core barrel; todo 4 owns observation-* and the W1 intent-routing sink/reader):
+    packages/jev-core/src/index.ts
+    packages/jev-core/src/completion-continuation-record-types.ts
+    packages/jev-core/src/completion-continuation-record-validation.ts
+    packages/jev-core/src/completion-continuation-record-validation.test.ts
+    packages/omo-opencode/src/features/jev/intent-routing-reader.ts
+    packages/omo-opencode/src/features/jev/intent-routing-sink.ts
+    packages/omo-opencode/src/features/jev/intent-routing-sink.test.ts
+    packages/omo-opencode/src/features/jev/intent-routing-sink-files.ts
+    packages/omo-opencode/src/features/jev/observation-jsonl-files.ts
+    packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts
+    packages/omo-opencode/src/features/jev/observation-process-identity.ts
+    packages/omo-opencode/src/features/jev/observation-process-identity.test.ts
+  Nothing was reverted, checked out, restored, reset, stashed, or cleaned.
+
+--- index state BEFORE staging (must be empty) ---
+(empty above == clean index before this todo staged anything)
+
+--- git diff --cached --name-only AFTER staging, BEFORE commit ---
+.omo/evidence/20260930-jev-w2/MANIFEST.tsv
+.omo/evidence/20260930-jev-w2/task-2-adversarial-qa.txt
+.omo/evidence/20260930-jev-w2/task-2-cleanup.txt
+.omo/evidence/20260930-jev-w2/task-2-dirty-worktree.txt
+.omo/evidence/20260930-jev-w2/task-2-gate-output.txt
+.omo/evidence/20260930-jev-w2/task-2-observe-only-reject.txt
+.omo/evidence/20260930-jev-w2/task-2-schema-green.txt
+.omo/evidence/20260930-jev-w2/task-2-schema-red.txt
+.omo/evidence/20260930-jev-w2/task-2-two-schema-proof.txt
+assets/oh-my-opencode.schema.json
+assets/omo.schema.json
+packages/omo-opencode/src/config/schema/jev.test.ts
+packages/omo-opencode/src/config/schema/jev.ts
+
+VERIFIED: every staged path is a todo-2-owned source file, a todo-2-owned generated
+schema asset, or a todo-2 evidence file under .omo/evidence/20260930-jev-w2/.
+ZERO ambient generated bundles and ZERO peer files are staged.

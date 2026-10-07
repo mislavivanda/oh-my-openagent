@@ -1,6 +1,7 @@
 import { isSyntheticOrInternalUserMessage } from "../../shared/internal-initiator-marker"
-import { log } from "../../shared/logger"
+import { log as defaultLog } from "../../shared/logger"
 import { HOOK_NAME } from "./constants"
+import type { IdleEventLogger } from "./idle-event-types"
 
 interface MessagePart {
   type?: string
@@ -32,7 +33,10 @@ function isUnansweredQuestionTool(part: MessagePart): boolean {
   return part.state?.status !== "completed"
 }
 
-export function hasUnansweredQuestion(messages: Message[]): boolean {
+export function hasUnansweredQuestion(
+  messages: Message[],
+  logger: IdleEventLogger = defaultLog,
+): boolean {
   if (!messages || messages.length === 0) return false
 
   for (let i = messages.length - 1; i >= 0; i--) {
@@ -53,7 +57,7 @@ export function hasUnansweredQuestion(messages: Message[]): boolean {
           isUnansweredQuestionTool(part),
       )
       if (hasQuestion) {
-        log(`[${HOOK_NAME}] Detected pending question tool in last assistant message`)
+        logger(`[${HOOK_NAME}] Detected pending question tool in last assistant message`)
         return true
       }
       return false

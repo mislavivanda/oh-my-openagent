@@ -1,0 +1,43 @@
+RUN 1 exit=0
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+ 11 pass
+ 0 fail
+ 66 expect() calls
+Ran 11 tests across 2 files. [178.00ms]
+RUN 2 exit=0
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+ 11 pass
+ 0 fail
+ 66 expect() calls
+Ran 11 tests across 2 files. [179.00ms]
+RUN 3 exit=0
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+ 11 pass
+ 0 fail
+ 66 expect() calls
+Ran 11 tests across 2 files. [191.00ms]
+identical_counts=3/3 each 11_pass 0_fail

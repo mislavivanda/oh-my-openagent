@@ -1,0 +1,36 @@
+STATIC GATES for every file todo 18 created or modified
+
+1. PHYSICAL LINE COUNT, one wc invocation per file so no total row can hide a violation.
+    169  packages/jev-core/src/completion-continuation-accuracy.test.ts   ok
+    227  packages/jev-core/src/completion-continuation-accuracy-harness.ts   ok
+    153  packages/jev-core/src/completion-continuation-accuracy-real-run.ts   ok
+    143  packages/jev-core/src/completion-continuation-real-run.test.ts   ok
+   verdict: all at or under 250
+
+2. export * must not appear.
+   grep_exit=1 (1 means no match, the pass condition)
+
+3. Suppressions and casts must not appear.
+   grep_exit=1 (1 means no match)
+
+4. Empty catch blocks must not appear.
+   grep_exit=1 (1 means no match)
+
+5. Em dash and en dash must not appear.
+   grep_exit=1 (1 means no match)
+
+6. AI filler must not appear.
+   grep_exit=1 (1 means no match)
+
+7. No global process matcher anywhere in the new bytes.
+   grep_exit=1 (1 means no match)
+
+8. The Stop word guard for core packages, non-test sources only.
+   grep_exit=1 (1 means no match)
+
+9. The live endpoint host must not appear in any owned file; the sandbox test pins itself
+   to 127.0.0.1 and the paid path takes the SDK default without hardcoding a host.
+   grep_exit=1 (1 means no match)
+
+10. tsgo strict typecheck of the jev-core project.
+   exit=0

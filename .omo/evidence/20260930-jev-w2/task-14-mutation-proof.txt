@@ -1,0 +1,35 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts:
+165 | 
+166 |     // then
+167 |     expect(filtered.length).toBeGreaterThan(4)
+168 |     expect(filtered.map(([, effect]) => effect)).toEqual(expect.arrayContaining(["messages", "todos", "toast", "setInterval", "setTimeout"]))
+169 |     expect(removed).toEqual([...calls.map(({ method }) => method), ...runtimeEffects])
+170 |     expect(JSON.stringify(perturbed)).not.toBe(JSON.stringify(filtered))
+                                                ^
+error: expect(received).not.toBe(expected)
+
+Expected: not "[[\"gauntlet\",\"setInterval\",120000],[\"gauntlet\",\"messages\"],[\"gauntlet\",\"todos\"],[\"gauntlet\",\"toast\",{\"body\":{\"title\":\"Todo Continuation\",\"message\":\"Resuming in 2s... (1 tasks remaining)\",\"variant\":\"warning\",\"duration\":900}}],[\"gauntlet\",\"setInterval\",1000],[\"gauntlet\",\"setTimeout\",2000],[\"gauntlet\",\"clearTimeout\",42],[\"gauntlet\",\"clearInterval\",41],[\"gauntlet\",\"messages\"],[\"gauntlet\",\"todos\"],[\"gauntlet\",\"toast\",{\"body\":{\"title\":\"Todo Continuation\",\"message\":\"Resuming in 2s... (1 tasks remaining)\",\"variant\":\"warning\",\"duration\":900}}],[\"gauntlet\",\"setInterval\",1000],[\"gauntlet\",\"setTimeout\",2000],[\"gauntlet\",\"messages\"],[\"gauntlet\",\"todos\"],[\"gauntlet\",\"clearTimeout\",44],[\"gauntlet\",\"clearInterval\",43],[\"gauntlet\",\"toast\",{\"body\":{\"title\":\"Todo Continuation\",\"message\":\"Resuming in 2s... (1 tasks remaining)\",\"variant\":\"warning\",\"duration\":900}}],[\"gauntlet\",\"setInterval\",1000],[\"gauntlet\",\"setTimeout\",2000],[\"gauntlet\",\"clearTimeout\",46],[\"gauntlet\",\"clearInterval\",45],[\"gauntlet\",\"clearInterval\",40]]"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts:170:43)
+(fail) completion-continuation observer wiring > filters only owned W2 effects and detects a pre-existing trace perturbation [3.91ms]
+
+ 0 pass
+ 2 filtered out
+ 1 fail
+ 4 expect() calls
+Ran 1 test across 1 file. [134.00ms]
+
+DELIBERATE_PERTURBATION_EXIT=1
+REVERT_COMMAND=diff -u intended final
+REVERT_DIFF_EXIT=0
+REVERT_DIFF_LINES=0
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 2 filtered out
+ 0 fail
+ 4 expect() calls
+Ran 1 test across 1 file. [131.00ms]
+REVERTED_TEST_EXIT=0

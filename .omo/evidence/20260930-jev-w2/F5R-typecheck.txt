@@ -1,0 +1,13 @@
+F5R - typecheck gate
+COMMAND: bun run typecheck:script
+EXIT: 0
+OUTPUT LINE COUNT: 1
+ERROR LINES MATCHING 'error': 0
+FULL OUTPUT:
+$ tsgo --noEmit -p script/tsconfig.json
+
+LSP DIAGNOSTICS (lsp_diagnostics, severity=all) on each changed file: No diagnostics found
+  script/jev-w2-report-types.ts     -> No diagnostics found
+  script/jev-w2-report-analysis.ts  -> No diagnostics found
+  script/jev-w2-report-render.ts    -> No diagnostics found
+  script/jev-w2-report.test.ts      -> No diagnostics found

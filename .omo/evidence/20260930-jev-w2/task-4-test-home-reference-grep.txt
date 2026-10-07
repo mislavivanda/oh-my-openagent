@@ -1,0 +1,9 @@
+PROOF OF ABSENCE - todo 4 tests never resolve through homedir or HOME
+repaired_by: root orchestrator, re-run live on 2026-09-30T11:45:33Z
+command: grep -n 'homedir\|process\.env\.HOME' packages/omo-opencode/src/features/jev/observation-jsonl-files.test.ts packages/omo-opencode/src/features/jev/observation-process-identity.test.ts
+exit_status: 1
+matching_lines: 0
+verdict: PASS - zero matching lines is the expected result
+why_this_file_is_not_empty: a zero-byte artifact cannot be distinguished from a command that never ran, so the command, its exit status and its observed line count are recorded here. The proof remains the absence of output.
+--- captured output (expected empty) ---
+

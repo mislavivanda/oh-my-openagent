@@ -1,0 +1,15 @@
+bun test v1.4.0 (34cbb9a40)
+
+script/jev-w2-report.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './jev-w2-report-analysis' from '/home/opencode/projects/oh-my-openagent-jev-w2/script/jev-w2-report.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [112.00ms]
+red_exit=1

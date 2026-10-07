@@ -1,0 +1,19 @@
+WHAT WAS TESTED
+- Focused Bun validator suite for both entry variants, closed keys and vocabularies, mechanical outcome mapping, malformed inputs, and latest counter selection.
+- Filtered anti-circularity test requiring heuristic and observable-outcome facts to remain structurally separate.
+- Harness-neutral core extraction guard, jev-core package typecheck, file-size and export-star checks, and LSP diagnostics.
+
+WHAT WAS OBSERVED
+- RED failed before implementation because the validation module did not exist: task-3-record-red.txt.
+- GREEN reports 17 passing tests and 0 failures: task-3-record-green.txt.
+- Filtered anti-circularity QA reports 1 passing test and 16 filtered tests: task-3-circular-label-reject.txt.
+- Core extraction guard reports 3 passing tests and 0 failures: task-3-core-guard.txt.
+- The package typecheck exited 0 with no emitted diagnostics: task-3-typecheck.txt.
+
+WHY IT IS ENOUGH
+- The tests exercise accepted observations and counters plus every requested malformed-input and stale-counter class through the public validation behavior.
+- Exact nested-key checks and closed value sets prevent heuristic branch labels from entering outcome truth fields.
+- The core guard and per-file LSP results cover the harness-neutral and strict-TypeScript boundaries.
+
+WHAT WAS OMITTED
+- No raw environment dump, credentials, tokens, authentication headers, private data, or secret-bearing logs were captured.

@@ -1,0 +1,60 @@
+PROBE=mutable caller data
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 14 filtered out
+ 0 fail
+ 5 expect() calls
+Ran 1 test across 1 file. [136.00ms]
+PROBE=backend that never resolves
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 14 filtered out
+ 0 fail
+ 4 expect() calls
+Ran 1 test across 1 file. [132.00ms]
+PROBE=dispose during in-flight work
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 14 filtered out
+ 0 fail
+ 5 expect() calls
+Ran 1 test across 1 file. [141.00ms]
+PROBE=malformed answer and throwing sink
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 14 filtered out
+ 0 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [136.00ms]
+PROBE=no API key
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 14 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [133.00ms]
+PROBE=either gate disabled
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 14 filtered out
+ 0 fail
+ 16 expect() calls
+Ran 1 test across 1 file. [139.00ms]
+PROBE=rejection and a throwing logger
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 14 filtered out
+ 0 fail
+ 1 expect() calls
+Ran 1 test across 1 file. [148.00ms]
+prompt_injection: NOT APPLICABLE. Transcript text is bounded observation data and never becomes instructions or actionable output.
+cancel_resume: PASS. Dispose-during-in-flight probe censors once, preserves counters, rejects a later begin, and produces no later write.
+misleading_success_output: PASS. Dedicated cap run attempted 20 at cap 8, observed 8 active and 12 persisted drops; exact -t run reported Ran 1 test.
+flaky_tests: PASS. Five consecutive runs each reported 15 pass and 0 fail.

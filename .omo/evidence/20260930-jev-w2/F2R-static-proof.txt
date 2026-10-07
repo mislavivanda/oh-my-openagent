@@ -1,0 +1,4 @@
+command=grep external unsafe-test-value import, production bun:test import, and Bun.file across the four F2 source targets
+exit=1
+matching_lines=0
+result=no forbidden F2 pattern remains

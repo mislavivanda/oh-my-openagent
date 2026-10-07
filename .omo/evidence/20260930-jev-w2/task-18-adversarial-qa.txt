@@ -1,0 +1,82 @@
+TODO 18 ADVERSARIAL QA - probes for the applicable classes, one-line reasons for the rest
+
+Every probe below except the incident itself cost ZERO real API calls. The paid-path probes
+were run against a LOCAL fake systemOne endpoint on 127.0.0.1 driven by the exact production
+orchestration, so the counting fetch, the ceiling, the timeout, and the malformed class are
+all proven on the same code the paid run used. They are committed as a PERMANENT test rather
+than a throwaway script, so every future run re-proves them. Source and raw output:
+  packages/jev-core/src/completion-continuation-real-run.test.ts
+  .omo/evidence/20260930-jev-w2/task-18-sandbox-probe.txt
+
+1. misleading_success_output - APPLIES, dominant. PROBED. Three independent proofs.
+   a) The counting fetch really counts. Forcing extra calls through createForwardingCountingFetch
+      moved the counter 0 -> 1 -> 2 and the fake server saw exactly the same deltas:
+        B forcedExtraCall  counter=1 serverDelta=1 rose=true
+        B secondForcedCall counter=2 serverDelta=2 rose=true
+      Reverting to the plain orchestrated run put the count back at one per fixture.
+   b) The client-side count equals an independent server-side count. Over three fixtures:
+        A orchestrated clientCount=3 serverCount=3 perCallRequests=[1,1,1]
+        A verdict clientEqualsServer=true oneRequestPerThreeQuestionCall=true
+      So "18 requests" in the paid artifact is a measured number, not the fixture count
+      restated. The paid run independently reported perCallRequestCounts=[1 x18].
+   c) The ceiling ABORTS, it does not silently cap. With ceiling 2 over 3 fixtures:
+        C ceilingAbort error=PaidCallCeilingError nextOrdinal=3 serverCount=2
+          retainedStatus=partial retainedCallCount=2
+      The error escapes the orchestration, the third call never reaches the server, and the
+      artifact stays labelled partial rather than pretending to be complete. The committed
+      unit test proves the same at the real boundary: ceiling=18 abortedBeforeCall=19.
+
+2. hung_or_long_commands - APPLIES. PROBED.
+   With a fake endpoint that sleeps 1500 ms and a 300 ms hard timeout:
+     D hardTimeout status=partial failureReason=timeout elapsedMs=302 timeoutMs=300
+   The decision returned at 302 ms, two milliseconds past the deadline, so the hard timeout is
+   what ended it. Nothing was killed externally.
+   Real-run facts: per-call hard timeout 15000 ms, slowest observed call 215 ms, which is 1.4
+   percent of the budget. Total wall clock for all 18 paid calls was 2911 ms and the bun test
+   process exited on its own with status 0. No kill, no signal, no external interruption.
+
+3. cancel_resume - APPLIES. PROBED twice.
+   a) Mid-run interruption in a scratch mock run, committed as a permanent test
+      ("#given an interrupted run ... partial progress survives on disk"): after stale bytes
+      were pre-written to the artifact path, the run stopped at fixture 2 and the retained
+      file was status=partial with exactly 1 completed fixture, overwriting the stale bytes.
+        interrupted status=partial completed=1 failedFixtureId=complete-boulder-without-todos
+   b) Ceiling-triggered interruption in the sandbox probe, item C above: partial retained with
+      2 completed fixtures. The artifact is rewritten after every fixture, so an interruption
+      at any point leaves a correctly labelled partial on disk.
+
+4. malformed_input - APPLIES. PROBED at the real boundary.
+   A fake endpoint returning a body with no answers field produced:
+     E malformedResponse status=partial failureReason=malformed_response completed=[]
+   That is the classification a malformed live response would receive. No malformed live
+   response occurred during the paid run: all 18 calls returned well formed answers and the
+   artifact is status=complete with 0 invalid answers. The committed malformed-mock test also
+   pins the harness side (failureReason=unscripted, status=partial).
+
+5. stale_state - APPLIES. PROBED and recorded.
+   jev-latest is a floating alias. The artifact records BOTH:
+     requestedModel jev-latest   resolvedModel jev-1.13.0
+   and every one of the 18 per-call records carries resolvedModel jev-1.13.0, so the run was
+   homogeneous. The test asserts the retained resolved model is not the alias string. W1 had
+   already seen this alias float, which is why the concrete id is captured per call and not
+   just once.
+   Second stale-state axis: the todo-7 mock artifact must not drift. Its sha256 was captured
+   before any edit and re-verified after every run in this task:
+     9f00d4e82ea414359c87d53e5ba85267ec66c6f20baae7df8093c764481192b6  task-7-accuracy-result.json
+   It is byte identical after the machinery extraction, which is the proof the extraction was
+   behaviour preserving.
+
+6. dirty_worktree - APPLIES. Recorded in task-18-dirty-worktree.txt (porcelain before staging)
+   and task-18-staged-paths.txt (git diff --cached --name-only after staging). Neither .env nor
+   .env.local is staged, and the five permanently dirty generated bundles are untouched.
+
+RULED OUT, one line each
+  prompt_injection - the fixtures already carry the adversarial injected-directive cases and
+    todo 7 proved they stay inert state data; todo 18 changes no prompt text and no state
+    builder, so the injection surface is byte identical to what todo 7 already probed.
+  flaky_tests - the paid measurement is a one-shot budgeted run that must not be repeated, so
+    repetition is forbidden by the budget rather than skipped; the non-paid channels were each
+    run at least twice across this task with identical results.
+  repeated_interruptions - there is no long-lived process, no daemon and no resumable queue in
+    this todo; the only interruptible unit is a single 3 second test run whose partial-artifact
+    behaviour is already covered by cancel_resume above.

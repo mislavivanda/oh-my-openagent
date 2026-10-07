@@ -1,0 +1,8 @@
+Command: wc -l packages/jev-core/src/completion-continuation-record-{types,validation}.ts | awk '$1>250{exit 1}'
+Observed: exit 0. Physical lines are 178 for types and 223 for validation.
+
+Command: grep -n 'export \*' packages/jev-core/src/index.ts
+Observed: no output. New barrel exports are all named.
+
+Command: boundary and banned-pattern grep over the three new files
+Observed: no @opencode-ai import, omo-opencode import, as-any assertion, or TypeScript suppression directive.

@@ -27,6 +27,7 @@ Complete reference for Oh My OpenCode plugin configuration. Every omo harness re
   - [Comment Checker](#comment-checker)
   - [Notification](#notification)
   - [Jev Intent Routing](#jev-intent-routing)
+  - [Jev Completion Continuation](#jev-completion-continuation)
   - [MCPs](#mcps)
   - [LSP](#lsp)
   - [CodeGraph](#codegraph)
@@ -717,6 +718,96 @@ store prompt heads verbatim in `promptHeadChars`, plus a SHA-256 digest of the f
 Prompt heads are stored in the sink. They are not secret-scrubbed, so protect this directory
 as session data. Set `TYPESAFE_API_KEY` in the environment for the `real` backend; do not put
 the API key in config.
+
+### Jev Completion Continuation
+
+The W2 completion-continuation wire is default-off and observe-only. At each eligible idle
+decision it asks three independent Nouls, `actually_complete`, `progressing`, and `stuck`,
+records the live continuation gauntlet's exact outcome, then keeps the record open long
+enough to capture what actually happened next. Both `jev.enabled` and
+`jev.wires.completion_continuation.enabled` must be `true`.
+
+**It changes no behavior.** It does not gate loop exit, alter `<promise>DONE</promise>`
+handling, suppress or add a continuation, change countdowns, change prompt injection, or
+replace stagnation logic. `observe_only` is schema-only, rejects `false` with an
+apply-phase message, and is never read at runtime.
+
+This is the exact dogfood block for `~/.omo/omo.jsonc` (the unified config; the
+`[opencode]` block is the plugin's). The API key stays environment-only:
+
+```jsonc
+{
+  "[opencode]": {
+    "jev": {
+      "enabled": true,
+      "backend": "real",
+      "model": "jev-latest",
+      "wires": {
+        "completion_continuation": {
+          "enabled": true,
+          "observe_only": true,
+          "confidence_threshold": 0.8,
+          "timeout_ms": 2500,
+          "outcome_window_ms": 120000,
+          "max_inflight": 8,
+          "max_state_bytes": 24576
+        }
+      }
+    }
+  }
+}
+```
+
+```bash
+export TYPESAFE_API_KEY=...
+```
+
+| `jev.wires.completion_continuation` key | Default | Description |
+|-----------------------------------------|---------|-------------|
+| `enabled` | `false` | Enable W2 observation at eligible idle decisions |
+| `observe_only` | `true` | Required to remain `true`; the apply phase is not implemented |
+| `confidence_threshold` | `0.8` | Threshold used only to label each probability `would_true`, `would_false`, or `uncertain`, from `0` to `1` |
+| `timeout_ms` | `2500` | Prediction timeout in milliseconds, from `100` to `30000` |
+| `outcome_window_ms` | `120000` | How long a record stays open waiting for a later observable outcome, in milliseconds, from `1000` to `3600000`; must exceed `timeout_ms` |
+| `max_inflight` | `8` | Maximum concurrent completion-continuation dispatches, from `1` to `64` |
+| `max_state_bytes` | `24576` | Maximum serialized byte size of the bounded state sent with each decision, from `1024` to `262144` |
+
+**Data retention.** Enabling this wire writes session-derived data to disk, so read this
+before turning it on.
+
+- Records are written as process-specific `w2-*.jsonl` files under `~/.omo/jev/`,
+  alongside the W1 `w1-*.jsonl` files. The directory is created mode `0700` and each file
+  mode `0600`.
+- Input is bounded before it is sent and before it is stored: at most **32 todo items**
+  (256 UTF-8 bytes of content each), the last **8 non-synthetic transcript messages**
+  (1500 UTF-8 bytes each, **12000 UTF-8 bytes total**, oldest dropped first), at most
+  **32 changed diff paths** (256 bytes each, 4096 bytes total), a boulder summary with a
+  256-byte next-task title, and a **24576-byte cap on the final serialized state**. Every
+  truncation is recorded as a flag on the record.
+- **No `FileDiff` `before` or `after` content is ever retained.** Diff state comes only
+  from the latest in-memory `session.diff` event and keeps aggregates plus path names. No
+  shell command, git invocation, or awaited diff request runs on the idle path.
+- Each record stays open for up to the **120000 ms** `outcome_window_ms` waiting for a
+  decisive later snapshot. Timeout, dispose, session deletion, and human intervention are
+  recorded as censored, never as `stuck`.
+- The sink is not secret-scrubbed. Todo content and transcript text are stored as written,
+  so protect `~/.omo/jev/` as session data.
+
+**There is no accuracy threshold.** Nothing in this wire, its tests, its report, or its
+gates asserts a minimum score. Continuation was Jev's worst class in the W1 measurement,
+because W1 sent no conversation history at all; W2 sends a bounded transcript tail to
+narrow that gap and records the result rather than acting on it. Read the baseline in
+`docs/jev/HANDOFF.md` before you assume the signal is usable.
+
+Read the recorded observations with:
+
+```bash
+bun run script/jev-w2-report.ts --root ~/.omo/jev
+```
+
+The report prints denominators first, then heuristic agreement and observable-outcome
+agreement in separate sections with separate denominators. It never merges them into one
+headline.
 
 ### MCPs
 

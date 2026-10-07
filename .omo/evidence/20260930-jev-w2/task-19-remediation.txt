@@ -1,0 +1,4 @@
+Rejecting verification: todo 19 was rejected because the retained report had diff_available=544 and diff_unavailable=0.
+Remediation: scripted case 29 creates a fresh session, aborts it before any model response, waits for its real session.idle observation, then deletes it by recorded session id.
+Observed result: diff_available=534 and diff_unavailable=1 from the real enabled sink; no JSONL line was hand-written.
+Commit accounting: this remediation intentionally adds one commit beyond the plan's 18 Commit:Y subjects. Its required subject is not in planned-commit-subjects.txt, so F1 must account for it as the explicitly authorized rejecting-verification remediation.

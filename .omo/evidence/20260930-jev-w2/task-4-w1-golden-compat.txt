@@ -1,0 +1,18 @@
+bun test v1.4.0 (34cbb9a40)
+
+ 1 pass
+ 8 filtered out
+ 0 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [133.00ms]
+corpus_cmp=identical
+reader_cmp=identical
+17660ca7c9ac452ec395fcc799e2f8c61e909b7a0503d46198e498141a867531  .omo/evidence/20260930-jev-w2/task-4-w1-golden-pre.jsonl
+17660ca7c9ac452ec395fcc799e2f8c61e909b7a0503d46198e498141a867531  .omo/evidence/20260930-jev-w2/task-4-w1-golden-post.jsonl
+1f03f9269ede2fd4fafe276f118afb6a202be6bf223ac02f109c806f6c0e7b49  .omo/evidence/20260930-jev-w2/task-4-w1-golden-pre-reader.json
+1f03f9269ede2fd4fafe276f118afb6a202be6bf223ac02f109c806f6c0e7b49  .omo/evidence/20260930-jev-w2/task-4-w1-golden-post-reader.json
+ 3479 .omo/evidence/20260930-jev-w2/task-4-w1-golden-pre.jsonl
+ 3479 .omo/evidence/20260930-jev-w2/task-4-w1-golden-post.jsonl
+10344 .omo/evidence/20260930-jev-w2/task-4-w1-golden-pre-reader.json
+10344 .omo/evidence/20260930-jev-w2/task-4-w1-golden-post-reader.json
+27646 total

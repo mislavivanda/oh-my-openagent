@@ -1,0 +1,24 @@
+run=1
+bun test v1.4.0 (34cbb9a40)
+
+ 7 pass
+ 0 fail
+ 96 expect() calls
+Ran 7 tests across 1 file. [186.00ms]
+exit=0
+run=2
+bun test v1.4.0 (34cbb9a40)
+
+ 7 pass
+ 0 fail
+ 96 expect() calls
+Ran 7 tests across 1 file. [154.00ms]
+exit=0
+run=3
+bun test v1.4.0 (34cbb9a40)
+
+ 7 pass
+ 0 fail
+ 96 expect() calls
+Ran 7 tests across 1 file. [145.00ms]
+exit=0

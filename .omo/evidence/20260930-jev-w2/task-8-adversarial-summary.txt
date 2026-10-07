@@ -1,0 +1,26 @@
+WHAT WAS TESTED
+malformed_input: APPLIES. The filtered malformed-input run exercised an empty line, a truncated JSON tail, a valid JSON line over 64 KiB, a valid JSON line rejected by the closed-key validator, a counter entry carrying observation-only keys, and invalid UTF-8.
+stale_state: APPLIES. The cap test atomically replaced the file, retained only the current observation in epoch 1, and appended an epoch 0 sequence 999 counter after replacement.
+dirty_worktree: APPLIES. Git status was captured before staging without modifying or hiding peer and generated-file changes.
+misleading_success_output: APPLIES. The exact failure-channel filter reported 1 pass and 0 fail. The real-home before manifest was 8 bytes and contains MISSING, proving the isolation comparison is not based on two accidental empty strings.
+flaky_tests: APPLIES. The filesystem, timer, and two-writer test file ran five times.
+repeated_interruptions: APPLIES. Dispose reentered while its synchronous flush was obtaining counters, then dispose was called again.
+
+WHAT WAS OBSERVED
+malformed_input: Six filtered cases passed. Empty lines contributed 0 malformed lines. Each of the other five cases contributed exactly 1 malformed line, was skipped, and left the neighboring valid observation readable.
+stale_state: One filtered test passed. The latest counter was epoch 1 with starts=1 and recordsLostToCap=1; the lower epoch with sequence 999 did not win, and the pre-truncation observation was absent.
+dirty_worktree: task-8-dirty-worktree-before-staging.txt contains 24 status lines, including peer work and the five ambient generated bundles. None was reverted, stashed, cleaned, or staged by the probe.
+misleading_success_output: task-8-malformed-line.txt reports 1 pass, 12 filtered out, and 0 fail. task-8-real-home-before.txt contains the non-empty MISSING sentinel.
+flaky_tests: Runs 1 through 5 each report 13 pass, 0 fail, and 48 expect calls.
+repeated_interruptions: One filtered test passed with one persisted counter entry, starts=7, no throw, no double write, and no lost counter.
+
+RULED OUT
+prompt_injection: Not applicable because the sink and reader process typed records and JSONL bytes, not prompts or untrusted instruction text.
+cancel_resume: Not applicable because the synchronous append/read API has no resumable operation or cancellation token.
+hung_or_long_commands: Not applicable because all focused filesystem and timer commands completed in under one second and no external process was started.
+
+WHY IT IS ENOUGH
+The probes target each triggered adversarial class at the public sink and reader boundary. They assert persisted records and selected counters rather than relying on warning text.
+
+WHAT WAS OMITTED
+No secret-bearing logs, environment dumps, tokens, authentication headers, or private credentials were captured.

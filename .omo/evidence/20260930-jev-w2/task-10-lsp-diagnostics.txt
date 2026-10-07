@@ -1,0 +1,7 @@
+completion-continuation-input.ts: No diagnostics found
+completion-continuation-diff-cache.ts: No diagnostics found
+completion-continuation-boulder-snapshot.ts: No diagnostics found
+completion-continuation-input.test.ts: No diagnostics found
+index.ts: No diagnostics found
+
+The broader features/jev directory also reports one unrelated pre-existing error in intent-routing.test.ts and one unrelated hint in model-error-triage.test.ts. Neither file is owned or changed by todo 10.

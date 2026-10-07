@@ -1,0 +1,61 @@
+TODO 17 - MARKDOWN AUDIT FAILURE PROBE (machine-local path detected, then reverted)
+==================================================================================
+
+WHAT WAS TESTED
+  That bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts actually FAILS
+  when one of this todo' four docs carries a machine-local absolute path, so the later PASS
+  is a real signal and not a vacuous one.
+
+injected into: docs/jev/dogfood-log.md
+injected line:
+- 2026-09-30 | other | TEMPORARY AUDIT PROBE, reverted immediately: the W2 evidence lives at /home/opencode/projects/oh-my-openagent-jev-w2/.omo/evidence/20260930-jev-w2 | jev-w2 todo 17 markdown audit failure probe
+
+sha256 before injection: d40fc662e9b1831680c3f1bb68d1b37e4ad5108438036575e65c82e3bd7aa9c6
+sha256 after  injection: 9042624bb04252c488b4d46ee9d164390ea02cfb282dd50ada7f739e254063dc
+
+--- COMMAND: bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts ---
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/shared/markdown-link-audit.test.ts:
+242 | 
+243 |   test("#given checked-in markdown #when maintainer-local paths are audited #then none are present", async () => {
+244 |     const offenders = (await Promise.all(collectMarkdownFiles().map(async (filePath) => {
+245 |       return collectMaintainerLocalPathLines(await readFile(filePath, "utf-8")).map((line) => `${relativeWorkspacePath(filePath)}:${line}`)
+246 |     }))).flat()
+247 |     expect(offenders.sort()).toEqual([])
+                                   ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   "docs/jev/dogfood-log.md:20",
++ ]
+
+- Expected  - 1
++ Received  + 3
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/shared/markdown-link-audit.test.ts:247:30)
+(fail) markdown local link audit > #given checked-in markdown #when maintainer-local paths are audited #then none are present [46.24ms]
+
+ 15 pass
+ 1 fail
+ 21 expect() calls
+Ran 16 tests across 1 file. [307.00ms]
+exit=1 (nonzero is the intended RED)
+
+--- REVERT ---
+command: cp /tmp/jev-w2-dogfood-log.orig docs/jev/dogfood-log.md
+sha256 after revert: d40fc662e9b1831680c3f1bb68d1b37e4ad5108438036575e65c82e3bd7aa9c6
+byte-identical to pre-injection: yes
+grep for the probe marker after revert: 0
+matching_line_count above must be 0
+
+WHAT WAS OBSERVED
+  The audit failed while the injected machine-local path was present and named the exact
+  file and line. After the byte-exact revert the marker is gone.
+
+WHY IT IS ENOUGH
+  The detector was proven live on a doc this todo actually edits, not on a synthetic file.
+
+WHAT WAS OMITTED
+  The probe line is the only content injected, and it was removed by restoring the saved copy.

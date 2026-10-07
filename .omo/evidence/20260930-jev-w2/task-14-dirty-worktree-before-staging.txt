@@ -1,0 +1,20 @@
+ M .omo/evidence/20260930-jev-w2/MANIFEST.tsv
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-opencode/src/features/jev/completion-continuation.ts
+ M packages/omo-opencode/src/hooks/index.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/handler.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-preflight.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event-types.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/idle-event.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/index.ts
+ M packages/omo-opencode/src/hooks/todo-continuation-enforcer/types.ts
+ M packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.ts
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-events.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer-wiring.test.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-observer.ts
+?? packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-outcomes.test.ts
+?? packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts

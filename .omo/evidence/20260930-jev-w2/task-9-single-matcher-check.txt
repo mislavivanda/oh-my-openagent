@@ -1,0 +1,2 @@
+packages/omo-opencode/src/shared/completion-promise-pattern.ts:1:function escapeRegex(value: string): string {
+packages/omo-opencode/src/shared/completion-promise-pattern.ts:7:	return new RegExp(`<promise>\\s*${escapedPromise}\\s*</promise>`, "is").test(text)

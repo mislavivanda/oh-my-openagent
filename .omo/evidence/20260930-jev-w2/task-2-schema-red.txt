@@ -1,0 +1,29 @@
+=== RED CAPTURE (todo 2) - BEFORE implementing JevCompletionContinuationWireConfigSchema ===
+worktree: /home/opencode/projects/oh-my-openagent-jev-w2
+HEAD: 9cf67bef6e0b214bd46db25bfca8ea5211ec19cc
+date: 2026-09-30T10:57:56Z
+
+--- PART 1: focused runtime RED, no new import (proves the wire is absent and apply mode is NOT rejected) ---
+$ bun -e "JevConfigSchema.parse({}) -> wires.completion_continuation + observe_only:false acceptance"
+wires keys: ["model_error_triage","intent_routing"]
+wires.completion_continuation: null
+observe_only:false safeParse.success (expected false once implemented): true
+part1 exit=0
+
+--- PART 2: bun test on the new focused tests (expected RED: missing export) ---
+$ bun test packages/omo-opencode/src/config/schema/jev.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/config/schema/jev.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+SyntaxError: Export named 'JevCompletionContinuationWireConfigSchema' not found in module '/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/config/schema/jev.ts'.
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [125.00ms]
+part2 exit=1

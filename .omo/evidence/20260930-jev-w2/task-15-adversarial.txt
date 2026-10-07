@@ -1,0 +1,21 @@
+TODO 15 ADVERSARIAL QA
+
+misleading_success_output: APPLIES. The suite performed five negative controls before accepting green output. Prompt byte, countdown delay, pre-existing side-effect order, and W2-owned trace injection each raised InertTraceMismatchError. A removed timer unref raised W2HandleAuditError and made the hanging-backend child miss its deadline. The same intended traces and unref paths then passed after each in-memory perturbation was removed. Exact output is in task-15-inert-green.txt and task-15-unref-proof.txt.
+
+hung_or_long_commands: APPLIES. Each of five full runs exercised a never-resolving backend for 1000 turns plus the child process case. Wall times were 1148, 1121, 1115, 1108, and 1112 ms. Every suite exited 0 without a timeout wrapper or timeout kill. The deliberately perturbed child was killed by its recorded PID only after its expected clean-exit failure was observed.
+
+repeated_interruptions: APPLIES. The stress fixture called dispose twice while eight backend decisions remained in flight. Both calls completed, the sink interval was cleared, and no late result changed the recorded counters.
+
+cancel_resume: APPLIES. The perturbed child stayed alive with a hanging backend, was stopped by its recorded PID, and the reverted child then exited 0 in 97.02 to 99.79 ms across five runs after dispose.
+
+flaky_tests: APPLIES. Five measurement sets are retained in task-15-flaky-runs.txt. Sync seam p99 ranged 0.071706 to 0.180384 ms against a 1 ms budget. Added idle-handler p99 ranged 0.007686 to 0.015603 ms against a 5 ms budget. Heap delta ranged 2,981,759 to 2,992,286 bytes against 16 MiB. No budget was marginal.
+
+stale_state: APPLIES. Every stress run created a unique mkdtemp root, used changing transcript digests for all 1000 turns, retained at most 64 outcomes, forced their expiry, disposed, and removed the root. No warm cache or prior JSONL file supplied counters.
+
+dirty_worktree: APPLIES. task-15-dirty-worktree.txt records the pre-stage status. Five generated bundles, todo 16 report files, and todo 18 accuracy files are ambient peer work and are excluded from todo 15 staging.
+
+malformed_input: NOT APPLICABLE. Todo 15 adds internal test fixtures with typed inputs and no new parser or external input boundary.
+
+prompt_injection: NOT APPLICABLE. The suite compares an existing continuation prompt byte-for-byte and introduces no untrusted text flow or prompt interpretation path.
+
+All temporary perturbations are test-local values or child environment flags. No production source was edited for a negative control.

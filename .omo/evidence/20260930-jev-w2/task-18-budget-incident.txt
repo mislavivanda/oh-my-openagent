@@ -1,0 +1,54 @@
+TODO 18 BUDGET INCIDENT - the paid run happened under the plan's FAILURE command, not its HAPPY command
+
+WHAT HAPPENED
+  The plan's failure QA is, verbatim:
+    env -u TYPESAFE_API_KEY JEV_W2_REAL_API=1 bun test packages/jev-core/src/completion-continuation-accuracy.test.ts
+  I ran exactly that, expecting a keyless process and zero requests. Instead it executed the
+  full PAID path: 18 real calls against api.typesafe.ai.
+
+ROOT CAUSE
+  Bun auto-loads .env and .env.local from the project root into process.env. `env -u` removes
+  the variable from the parent environment, then Bun puts it straight back. Measured, with no
+  API call and without printing the value (see task-18-missing-key.txt for the live capture):
+    env -u <KEYVAR> bun -e ...                         -> defined=true  length=108
+    env -u <KEYVAR> bun --env-file=/dev/null bun -e ...-> defined=false length=-1
+  So the plan's failure command cannot ever produce missing_api_key in this repository. The
+  corrected form adds --env-file=/dev/null.
+
+COST AND CEILING ACCOUNTING
+  Real API calls made by todo 18, in total, across every command in this task:  18
+  Hard ceiling:                                                                 18
+  Remaining budget:                                                              0
+  The 18 calls are exactly the 18 fixtures, one call each, so the measurement the plan asked
+  for was fully obtained. Nothing was wasted and nothing was repeated. The only thing that
+  went wrong is which command produced it.
+  Raw log of that run: task-18-real-api-first-run.txt
+  Retained artifact:   task-18-real-api-result.json  (status "complete")
+
+WHAT I DID ABOUT IT
+  1. I did NOT re-run the paid path to satisfy the happy command literally. That would have
+     made 36 calls and broken the non-negotiable ceiling.
+  2. I added a persistent, cross-process budget guard:
+     readRetainedRealBaseline() in packages/jev-core/src/completion-continuation-accuracy-real-run.ts.
+     The in-process RequestBudget cannot bound spend across separate `bun test` invocations;
+     this on-disk check can. When a real-mode artifact already exists, the harness reports the
+     retained measurement and spends nothing. Re-arming is explicit and loud:
+     JEV_W2_REAL_API_REARM=1.
+  3. I then ran the plan's happy command verbatim. It exits 0, retains the artifact labelled
+     "complete", and spends zero additional calls. Proof of zero spend, recorded in
+     task-18-real-api.txt and re-checked here: the artifact sha256 and mtime are identical
+     before and after, and the run takes ~154 ms versus ~3.07 s for the paid run.
+  4. I re-ran the failure channel in the corrected keyless form and captured the real
+     missing_api_key result with requests=0.
+
+WHY THIS IS THE RIGHT CALL
+  The plan states the ceiling is mandatory and non-negotiable, and states the total must be at
+  most 18. Between "run the literal happy command" and "stay under the ceiling", the ceiling
+  wins. The happy command still exits 0 and still yields the labelled artifact the acceptance
+  criteria ask for, so nothing in the acceptance gate is lost.
+
+RESIDUAL RISK
+  A future executor who wants a fresh paid baseline must set JEV_W2_REAL_API_REARM=1 or delete
+  task-18-real-api-result.json. If they do neither, they get the retained measurement and may
+  mistake it for a fresh one. The log line makes this explicit on every reuse:
+  "real-api reused-retained-baseline newSpend=0 rearmWith=JEV_W2_REAL_API_REARM=1".

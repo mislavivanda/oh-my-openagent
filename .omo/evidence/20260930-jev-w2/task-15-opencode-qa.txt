@@ -1,0 +1,11 @@
+WHAT WAS TESTED
+OpenCode 1.18.32 was started as a real headless server with --pure and an isolated XDG data, config, cache, and state root. HOME was not changed. A bounded authenticated request checked /global/health, then a bounded SSE client watched /event for server.connected. The real OpenCode DB session count was read before and after.
+
+WHAT WAS OBSERVED
+The server reported {"healthy":true,"version":"1.18.32"}. The SSE stream emitted exactly one server.connected event. The real DB session count was 477 before and 477 after. Server PID 2030840 and curl PID 2030878 were recorded and gone after targeted cleanup. The temporary root was registered for removal by the shell trap. Raw output is in task-15-opencode-qa-raw.txt.
+
+WHY IT IS ENOUGH
+Todo 15 changes test files only, not a plugin hook or runtime registration. The real-harness check therefore proves the unchanged OpenCode server and event plumbing still boot in isolation, while the focused suites prove the local completion-continuation behavior. --pure prevents ambient external plugins or real ~/.omo state from contaminating this no-runtime-change proof.
+
+WHAT WAS OMITTED
+The initial bundled SSE self-test was stopped by the tool after 120 seconds and is retained in task-15-opencode-debug-journal.txt. It rewrites HOME, which todo 15 forbids, so it was not retried. No provider prompt, real API call, canonical full suite, secret, token, authorization header, or environment dump was captured.

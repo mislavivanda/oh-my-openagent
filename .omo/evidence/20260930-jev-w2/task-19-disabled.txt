@@ -1,0 +1,11 @@
+wire=disabled
+turns=29
+session_id=ses_f0cf60bccffe7v7eTMxXhZsw2J
+w2_files=0
+fake-model attempts=2 elapsed_ms=112
+fake-jev attempts=1 elapsed_ms=6
+opencode attempts=9 elapsed_ms=1889
+real_db_before=493 real_db_after=493
+real_omo_manifest_excluded_ambient=codegraph/worker-sweep.stamp codegraph/zombie-sweep.stamp lsp-daemon/lsp-proxy-sweep.stamp
+real_omo_manifest_diff_lines=0
+real_omo_jev_before=absent real_omo_jev_after=absent

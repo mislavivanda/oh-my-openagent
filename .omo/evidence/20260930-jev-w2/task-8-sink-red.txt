@@ -1,0 +1,96 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:51:21)
+(fail) completion-continuation sink > #given both entry kinds #when appended under an explicit root #then W2 bytes and modes are isolated [0.79ms]
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:67:21)
+(fail) completion-continuation sink > counts a malformed trailing line and keeps valid W2 entries [0.17ms]
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:82:19)
+(fail) completion-continuation sink > #given two concurrent writers #when entries interleave #then start-unique process files merge [0.13ms]
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:115:21)
+(fail) completion-continuation sink > #given a size cap #when atomic truncate starts a new epoch #then stale counters are not resurrected [0.29ms]
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:134:21)
+(fail) completion-continuation sink > #given a valid entry above 64 KiB #when appended #then the write is rejected and counted [0.19ms]
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:147:21)
+(fail) completion-continuation sink > #given the periodic counter timer #when time advances #then it flushes and remains unrefed [0.18ms]
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:163:15)
+(fail) completion-continuation sink > #given dispose reenters during a pending flush #when repeated #then one counter is written without loss [0.18ms]
+31 | }
+32 | 
+33 | export function createCompletionContinuationSink(
+34 |   _options: CompletionContinuationSinkOptions,
+35 | ): CompletionContinuationSink {
+36 |   throw new TypeError("Completion-continuation sink is not implemented")
+                                                                            ^
+TypeError: Completion-continuation sink is not implemented
+      at createCompletionContinuationSink (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.ts:36:72)
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts:179:21)
+(fail) completion-continuation sink > #given adversarial JSONL #when read #then each malformed class is skipped and empty lines are ignored [0.24ms]
+
+ 0 pass
+ 8 fail
+Ran 8 tests across 1 file. [133.00ms]
+exit=1

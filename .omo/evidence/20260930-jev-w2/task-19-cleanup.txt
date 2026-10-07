@@ -1,0 +1,7 @@
+enabled exact command: all PIDs listed in its external receipts file were checked individually with kill -0 and none survived (exit 0).
+enabled exact command: all three ports listed in its external receipts file were checked individually through /dev/tcp and none remained bound (exit 0).
+disabled exact command: driver cleanup terminated only recorded PIDs and released only recorded ports (exit 0).
+real OpenCode DB session count: 485 before, 485 after for both retained exact runs.
+real ~/.omo recursive manifest: 0 diff lines for both retained exact runs.
+sandbox policy: --keep retained ephemeral filesystem evidence for the exact caller; no process or port was retained.
+global matcher use: none; the remediation static byte scan records exit 1 and zero matches in task-19-remediation-static.txt.

@@ -1,0 +1,40 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts:
+1 | import { describe, expect, test } from "bun:test"
+2 | 
+3 | describe("completion-continuation runtime-effects proof", () => {
+4 |   test("#given todo 15 is not implemented #when the proof runs #then RED identifies the missing handle audit", () => {
+5 |     expect("missing-handle-audit").toBe("implemented-handle-audit")
+                                       ^
+error: expect(received).toBe(expected)
+
+Expected: "implemented-handle-audit"
+Received: "missing-handle-audit"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts:5:36)
+(fail) completion-continuation runtime-effects proof > #given todo 15 is not implemented #when the proof runs #then RED identifies the missing handle audit [0.81ms]
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts:
+1 | import { describe, expect, test } from "bun:test"
+2 | 
+3 | describe("completion-continuation inert proof", () => {
+4 |   test("#given todo 15 is not implemented #when the proof runs #then RED identifies the missing byte trace", () => {
+5 |     expect("missing-byte-trace").toBe("implemented-byte-trace")
+                                     ^
+error: expect(received).toBe(expected)
+
+Expected: "implemented-byte-trace"
+Received: "missing-byte-trace"
+
+      at <anonymous> (/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts:5:34)
+(fail) completion-continuation inert proof > #given todo 15 is not implemented #when the proof runs #then RED identifies the missing byte trace [0.11ms]
+
+ 0 pass
+ 2 fail
+ 2 expect() calls
+Ran 2 tests across 2 files. [128.00ms]
+
+COMMAND: bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts
+EXIT_STATUS: 1
+EXPECTED: nonzero RED from missing byte-trace and handle-audit proofs

@@ -1,0 +1,130 @@
+F13R FRESH RE-RUN: EVERY ORIGINAL ACCEPTANCE CRITERION WITH ITS OBSERVED NUMBER
+
+WHAT WAS TESTED
+
+After fixing the F1 secret-gate regression and the two F3 defects (masked driver failures,
+non-empty real-home manifest diff), both mandated QA channels were re-driven verbatim from
+/home/opencode/projects/oh-my-openagent-jev-w2 against fresh mktemp sandboxes and external
+receipt directories. `JEV_W2_REAL_API` was left unset, so the run used only the committed
+local fake model provider and local fake Jev endpoint. No paid request was made.
+
+  enabled  -> .omo/evidence/20260930-jev-w2/task-19-enabled.txt   observed exit status 0
+  disabled -> .omo/evidence/20260930-jev-w2/task-19-disabled.txt  observed exit status 0
+
+  enabled sandbox  /tmp/tmp.6vOevhQpVr   enabled receipts  /tmp/tmp.vy2ur3hoaY
+  disabled sandbox /tmp/tmp.yoWoEwUpk9   disabled receipts /tmp/tmp.mPoDohl4pl
+
+WHAT WAS OBSERVED
+
+ACCEPTANCE CRITERIA, ENABLED CHANNEL
+
+  at least 24 observations from ONE session      31  (ses_f0cfc5611ffeZjN4iTZHMk72Af)
+  total observation records                      533
+  all three predictions filled                   530 filled, 3 deliberately malformed
+  scripted turns driven                          29
+  report identity balanced                       starts=1066 records=533 in_flight=533 balanced=yes
+  invalid answers / uncertain answers            0 / 0
+  dispatches dropped / records lost to cap       0 / 0
+  malformed lines / write rejections             0 / 0
+
+  every censor reason present
+    timeout                                      2
+    dispose                                      499
+    session_deleted                              1
+    human_intervention                           23
+    evicted                                      2
+
+  every observable outcome closure present
+    tracked_work_complete                        4
+    tracked_work_progressed                      1
+    unchanged_next_idle                          1
+    outcome_status observed / censored           6 / 527
+
+  each observable outcome has both answers
+    actually_complete                            3 true of 5 eligible
+    progressing                                  2 true of 5 eligible
+    stuck                                        3 true of 5 eligible
+
+  every heuristic comparison has data
+    todo_complete                                398 of 529 eligible
+    promise_complete                             384 of 530 eligible
+    todo_progress                                384 of 515 eligible
+    stagnation_stop                              397 of 530 eligible
+
+  BOTH availabilities vary
+    diff_available / diff_unavailable            532 / 1
+    boulder_available / boulder_unavailable      21 / 512
+    transcript_available / unavailable           532 / 1
+    continuation candidate / non_candidate       529 / 4
+
+  readiness polled, never slept
+    fake-model                                   attempts=2  elapsed_ms=112
+    fake-jev                                     attempts=1  elapsed_ms=6
+    opencode                                     attempts=9  elapsed_ms=1860
+
+ACCEPTANCE CRITERIA, DISABLED CONTROL
+
+  W2 files produced                              0
+  scripted turns driven                          29  (ses_f0cf60bccffe7v7eTMxXhZsw2J)
+  sandbox sink path exists                       no
+  `find -type f -name 'w2-*.jsonl'` count        0
+  control glob `w2-*.jsonl` matches              no
+  readiness                                      model 2/112 ms, jev 1/6 ms, opencode 9/1889 ms
+
+  The enabled channel produced 533 records from the same committed driver in the same
+  session, so control emptiness is not a generally broken driver.
+
+ISOLATION AND NON-LEAKAGE
+
+  real OpenCode DB count, enabled window         before=493  after=493
+  real OpenCode DB count, disabled window        before=493  after=493
+  real OpenCode DB count, independent read-only  493
+  distinct driven session ids across both runs   261
+  of those, present in the real OpenCode DB      0
+  real ~/.omo/jev before / after, enabled        absent / absent
+  real ~/.omo/jev before / after, disabled       absent / absent
+  real ~/.omo/jev at verification time           absent
+  real ~/.omo manifest diff lines, enabled       0
+  real ~/.omo manifest diff lines, disabled      0
+  excluded ambient heartbeat paths (stated)      codegraph/worker-sweep.stamp
+                                                 codegraph/zombie-sweep.stamp
+                                                 lsp-daemon/lsp-proxy-sweep.stamp
+
+The exclusion is declared, not silent: it is printed as
+`real_omo_manifest_excluded_ambient=...` in both captured outputs and written as the first
+line of every before/after manifest. Its derivation and a probe proving the narrowed check
+still detects real changes are in task-F13R-manifest-narrowing.txt.
+
+  zero-match non-leakage query, read only:
+  python3 -c 'import pathlib,re,sqlite3; roots=[pathlib.Path("/tmp/tmp.vy2ur3hoaY"),pathlib.Path("/tmp/tmp.mPoDohl4pl")]; ids=set(); [ids.update(re.findall(rb"\bses_[A-Za-z0-9]+\b", p.read_bytes())) for root in roots for p in root.iterdir() if p.is_file()]; ids={x.decode() for x in ids}; db=pathlib.Path.home()/".local/share/opencode/opencode.db"; con=sqlite3.connect(f"file:{db}?mode=ro",uri=True); m=[]; L=list(ids); [m.extend(r[0] for r in con.execute("SELECT id FROM session WHERE id IN (%s)" % ",".join("?"*len(c)),c)) for c in [L[i:i+100] for i in range(0,len(L),100)]]; print(len(ids), len(set(m)))'
+  observed output: 261 0
+
+CLEANUP RECEIPTS, CHECKED PER RECORDED ENTRY ONLY
+
+  enabled   recorded pids 289, alive 0;  recorded ports 3, bound 0  (41903 36683 41299)
+  disabled  recorded pids 32,  alive 0;  recorded ports 3, bound 0  (40165 33565 40321)
+
+Only recorded pids were probed with `kill -0` and only recorded ports were probed with
+/dev/tcp. No global process matcher was used at any point, and the committed driver bytes
+still contain none:
+
+  grep -cE 'pkill|pgrep|killall' task-19-drive.sh
+  exit status = 1 (1 means no match), matching-line count = 0
+
+WHY IT IS ENOUGH
+
+Both channels were re-driven end to end through real isolated OpenCode servers after the
+fix, not inferred from older artifacts, and both exited 0 under the exact mandated shells.
+Every original acceptance criterion carries an observed number above, including the two
+that previously failed: the real-home manifest comparison is now 0 with its exclusion
+stated, and the sharper unexcluded `~/.omo/jev` invariant holds on both sides of both runs.
+The 261-id read-only database query is the decisive non-leakage proof, and the per-entry
+pid and port sweep shows the driver left nothing running or bound.
+
+WHAT WAS OMITTED
+
+Raw event streams, per-turn JSONL, provider request bodies, model logs, auth headers, and
+environment dumps were not copied into the evidence tree. The dummy sandbox credential
+value is a fixed placeholder and is not reproduced here. The 261 session ids are
+represented by their exact extraction and query procedure plus the two primary ids rather
+than by a long list. No real API was called and no real credential was read.

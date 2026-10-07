@@ -1,0 +1,14 @@
+censor_reason_timeout=2
+censor_reason_dispose=501
+censor_reason_session_deleted=1
+censor_reason_human_intervention=23
+censor_reason_evicted=2
+diff_available=534
+diff_unavailable=1
+boulder_available=21
+boulder_unavailable=514
+main_session_observations=31
+disabled_w2_files=0
+enabled_and_disabled_real_db_unchanged=yes
+enabled_and_disabled_real_omo_diff_lines=0
+result=PASS

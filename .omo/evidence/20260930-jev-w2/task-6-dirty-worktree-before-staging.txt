@@ -1,0 +1,10 @@
+ M packages/jev-core/src/index.ts
+ M packages/omo-codex/plugin/components/codegraph/dist/cli.js
+ M packages/omo-codex/plugin/components/codegraph/dist/serve.js
+ M packages/omo-codex/scripts/install-dist/install-local.mjs
+ M packages/omo-senpi/plugin/extensions/omo-member.js
+ M packages/omo-senpi/plugin/extensions/omo.js
+?? packages/jev-core/src/completion-continuation-answer-observation.ts
+?? packages/jev-core/src/completion-continuation.test.ts
+?? packages/jev-core/src/completion-continuation.ts
+?? packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts

@@ -1,0 +1,20 @@
+physical_line_counts
+  209 packages/omo-opencode/src/features/jev/completion-continuation-sink.ts
+  193 packages/omo-opencode/src/features/jev/completion-continuation-sink-counters.ts
+   58 packages/omo-opencode/src/features/jev/completion-continuation-reader.ts
+  207 packages/omo-opencode/src/features/jev/completion-continuation-sink.test.ts
+  126 packages/omo-opencode/src/features/jev/completion-continuation-sink.test-support.ts
+  793 total
+test_home_resolution_matches
+NONE
+barrel_export_star_matches
+NONE
+filename_pattern=w2-YYYYMMDD-<pid>-<processStartEpochNanos>-<randomSuffix>.jsonl
+directory_mode=0700
+file_mode=0600
+mode_assertions=PASS
+happy_count= 13 pass
+filtered_count= 1 pass
+real_home_before_bytes=8
+real_home_after_bytes=8
+real_home_diff_bytes=0

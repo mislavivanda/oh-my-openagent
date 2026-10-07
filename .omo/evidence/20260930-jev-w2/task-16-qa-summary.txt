@@ -1,0 +1,19 @@
+WHAT WAS TESTED
+bun test script/jev-w2-report.test.ts ran three times after both adversarial mutations were reverted.
+bun run typecheck:script checked every top-level script TypeScript file.
+LSP diagnostics ran on all seven created report files.
+The exact happy and empty CLI invocations ran with explicit temporary roots.
+The per-file physical-line loop and TypeScript no-excuse audit covered all seven created report files.
+
+WHAT WAS OBSERVED
+Each focused run reported 7 pass, 0 fail, 96 expect calls, and exit 0.
+Typecheck exited 0 and every LSP diagnostic result was clean.
+The happy CLI reported heuristic proxy rates of 2/2 and later-outcome rates of 0/1.
+The empty CLI reported starts=0, records=0, and insufficient data for every zero-denominator rate.
+Physical line counts were 29, 82, 158, 147, 118, 207, and 139, all at most 250.
+
+WHY IT IS ENOUGH
+The focused suite drives the production reader, analysis, scoring, rendering, and CLI-facing generator over every persisted bucket. Manual CLI runs cover populated and empty roots. Type and static checks cover compilation and source constraints.
+
+WHAT WAS OMITTED
+The canonical full suite was omitted by task instruction. No runtime harness component changed, so no OpenCode server or TUI was started. No credentials, environment dumps, auth headers, or private logs were retained.

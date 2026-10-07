@@ -1,0 +1,15 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/shared/completion-promise-pattern.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './completion-promise-pattern' from '/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/shared/completion-promise-pattern.test.ts'
+-------------------------------
+
+
+ 8 pass
+ 1 fail
+ 1 error
+ 8 expect() calls
+Ran 9 tests across 2 files. [132.00ms]

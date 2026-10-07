@@ -1,0 +1,51 @@
+=== CLEANUP RECEIPT (todo 2) ===
+date: 2026-09-30T11:00:58Z
+
+--- temp artifacts created by this todo, and their removal ---
+/tmp/jev-w2-omo-after-build-schema.json
+    before rm: present (873995 bytes)
+    rm -f exit=0; test -e exit=1  -> VERIFIED GONE
+/tmp/jev-w2-omo-first.json
+    before rm: present (873995 bytes)
+    rm -f exit=0; test -e exit=1  -> VERIFIED GONE
+/tmp/jev-w2-omo-final.json
+    before rm: present (873995 bytes)
+    rm -f exit=0; test -e exit=1  -> VERIFIED GONE
+/tmp/jev-w2-omo-guard.json
+    before rm: present (873995 bytes)
+    rm -f exit=0; test -e exit=1  -> VERIFIED GONE
+/tmp/jev-w2-oh-final.json
+    before rm: present (256571 bytes)
+    rm -f exit=0; test -e exit=1  -> VERIFIED GONE
+/tmp/jev-w2-oh-guard.json
+    before rm: present (256571 bytes)
+    rm -f exit=0; test -e exit=1  -> VERIFIED GONE
+/tmp/jev-w2-gate-out.txt
+    before rm: present (28827 bytes)
+    rm -f exit=0; test -e exit=1  -> VERIFIED GONE
+
+--- residual sweep: any /tmp/jev-w2-* left behind by this todo ---
+/tmp/jev-w2-manifest.lock
+
+--- processes, ports, containers ---
+NONE STARTED. This todo ran only synchronous one-shot commands: bun test, bun -e,
+bun run build:schema, bun run build:omo-schema, git diff, cp, cmp, sha256sum.
+No server, daemon, watcher, tmux session, listening port, or container was created,
+so there is nothing to kill and no port to release. No global process matcher was used.
+
+--- worktree state restored ---
+Probe 2b in task-2-adversarial-qa.txt deliberately restored the HEAD bytes of
+assets/omo.schema.json and then regenerated both assets; byte identity with the saved
+good copies was proven by cmp in that same artifact before those copies were deleted.
+Current generated asset hashes:
+  assets/oh-my-opencode.schema.json sha256=ab3e60a2c588f90b3b9da4f641dc39f1c1f435de7033666fecbafc7d497918ee size=256571
+  assets/omo.schema.json            sha256=e20ba98020d67ed0aec7a5df333113eeac0f637da71c43879181ec4505e58d74 size=873995
+
+--- NOTE on the residual sweep hit ---
+/tmp/jev-w2-manifest.lock (and /tmp/jev-w2-commit.lock, created when this todo commits)
+are the SHARED flock files that every concurrent todo in this worktree serializes on.
+They are deliberately NOT removed: deleting them would break peer agents' mutual
+exclusion mid-run. They are zero-byte lock handles, not artifacts of this todo's QA.
+  /tmp/jev-w2-manifest.lock size=0 bytes
+Every artifact this todo actually created under /tmp was a *.json copy or the gate
+stdout capture, and all 7 are VERIFIED GONE above.

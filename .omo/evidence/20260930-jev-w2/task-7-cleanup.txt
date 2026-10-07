@@ -1,0 +1,8 @@
+No processes were started outside bounded Bun test and typecheck commands.
+No ports were opened.
+No containers were created.
+Temporary accuracy roots used mkdtemp and were removed in finally blocks.
+Glob verification found no /tmp/jev-w2-accuracy-* roots.
+Glob verification found no task-7-accuracy-result.json.*.tmp pending artifact.
+No real ~/.omo path was read or modified.
+Cleanup result: PASS.

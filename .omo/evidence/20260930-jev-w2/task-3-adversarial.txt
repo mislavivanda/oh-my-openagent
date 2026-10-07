@@ -1,0 +1,9 @@
+malformed_input: APPLIES. The 17-test GREEN suite observed rejection for null, a non-object string, a missing discriminant, a string probability, a probability above 1, an extra top-level key, an extra nested digest key, an unknown outcomeClosedBy, a truncated JSON line, and a counter entry carrying outcomeFacts. The dedicated circular-label test also rejected continuation_scheduled in outcomeFacts.stuck.
+stale_state: APPLIES. The selection test supplied epoch 2 sequence 4 first, then epoch 1 sequence 99 and epoch 2 sequence 3; the selected counter remained epoch 2 sequence 4 with starts=9.
+misleading_success_output: APPLIES. task-3-circular-label-reject.txt reports 1 pass, 16 filtered out, 0 fail, so the filtered command matched one test rather than zero.
+dirty_worktree: APPLIES. task-3-dirty-before-staging.txt records the five ambient generated bundles, peer in-progress schema and JSONL paths, and this task's source paths without modifying or cleaning peer work. task-3-staged-paths.txt records the exact staged allowlist and excludes ambient bundles and peer-owned files.
+prompt_injection: NOT APPLICABLE. The deliverable parses local structured records and consumes no untrusted prompt text.
+cancel_resume: NOT APPLICABLE. The validators and counter selector are synchronous pure functions with no resumable state.
+hung_or_long_commands: NOT APPLICABLE. Focused tests, a core guard, static checks, and package typecheck are bounded local commands.
+flaky_tests: NOT APPLICABLE. Tests use fixed values, no timers, random input, network, filesystem, or wall clock.
+repeated_interruptions: NOT APPLICABLE. Validation and selection are atomic pure calls with no partial external writes.

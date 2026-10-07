@@ -1,0 +1,51 @@
+TODO 17 - F4 EXACT-DOC-SET GATE
+===============================
+
+WHAT WAS TESTED
+  That this branch changed EXACTLY the four documents todo 17 is allowed to touch and nothing
+  else under docs/ or packages/jev-core/AGENTS.md.
+
+command:
+bash -lc 'git diff --name-only jev/foundation...HEAD -- docs packages/jev-core/AGENTS.md | sort > /tmp/jev-w2-docs.actual; printf "%s\n" docs/jev/HANDOFF.md docs/jev/dogfood-log.md docs/reference/configuration.md packages/jev-core/AGENTS.md | sort | diff -u - /tmp/jev-w2-docs.actual'
+
+NOTE: the four docs are not committed yet at the time of this capture, so the gate is run
+twice. First against the working tree (HEAD plus uncommitted), which is what the commit will
+contain, then the same command verbatim after staging.
+
+--- working-tree form: committed docs on this branch UNION uncommitted doc changes ---
+actual changed doc set:
+docs/jev/HANDOFF.md
+docs/jev/dogfood-log.md
+docs/reference/configuration.md
+packages/jev-core/AGENTS.md
+
+expected set:
+docs/jev/HANDOFF.md
+docs/jev/dogfood-log.md
+docs/reference/configuration.md
+packages/jev-core/AGENTS.md
+
+diff -u expected actual:
+exit=0 (0 means the sets are identical)
+
+--- every other doc on the branch is untouched ---
+command: git status --porcelain | grep -E '\.md$'
+ M docs/jev/HANDOFF.md
+ M docs/jev/dogfood-log.md
+ M docs/reference/configuration.md
+ M packages/jev-core/AGENTS.md
+matching_line_count=4
+command: git diff --name-only jev/foundation...HEAD -- docs (committed docs on branch before this todo)
+matching_line_count=0 (0 means no doc was committed earlier on this branch)
+
+WHAT WAS OBSERVED
+  Exactly four changed documents, matching the allowed list byte-for-byte after sort. No doc
+  outside that list is modified anywhere in the working tree.
+
+WHY IT IS ENOUGH
+  The check is set equality via diff, so an extra doc or a missing doc both fail it. It is run
+  over the working tree because the commit has not happened yet; the post-commit rerun is
+  recorded in task-17-doc-set-gate-postcommit.txt.
+
+WHAT WAS OMITTED
+  Untracked .omo/evidence artifacts are outside docs/ and are not part of this gate.

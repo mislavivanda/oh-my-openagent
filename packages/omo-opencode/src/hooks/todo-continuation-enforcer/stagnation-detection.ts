@@ -1,17 +1,19 @@
-import { log } from "../../shared/logger"
+import { log as defaultLog } from "../../shared/logger"
 
 import { HOOK_NAME, MAX_STAGNATION_COUNT } from "./constants"
+import type { IdleEventLogger } from "./idle-event-types"
 import type { ContinuationProgressUpdate } from "./session-state"
 
 export function shouldStopForStagnation(args: {
   sessionID: string
   incompleteCount: number
   progressUpdate: ContinuationProgressUpdate
+  logger?: IdleEventLogger
 }): boolean {
-  const { sessionID, incompleteCount, progressUpdate } = args
+  const { sessionID, incompleteCount, progressUpdate, logger = defaultLog } = args
 
   if (progressUpdate.hasProgressed) {
-    log(`[${HOOK_NAME}] Progress detected: reset stagnation count`, {
+    logger(`[${HOOK_NAME}] Progress detected: reset stagnation count`, {
       sessionID,
       previousIncompleteCount: progressUpdate.previousIncompleteCount,
       previousStagnationCount: progressUpdate.previousStagnationCount,
@@ -25,7 +27,7 @@ export function shouldStopForStagnation(args: {
     return false
   }
 
-  log(`[${HOOK_NAME}] Skipped: todo continuation stagnated`, {
+  logger(`[${HOOK_NAME}] Skipped: todo continuation stagnated`, {
     sessionID,
     incompleteCount,
     previousIncompleteCount: progressUpdate.previousIncompleteCount,

@@ -1,0 +1,14 @@
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './completion-continuation-boulder-snapshot' from '/home/opencode/projects/oh-my-openagent-jev-w2/packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [129.00ms]

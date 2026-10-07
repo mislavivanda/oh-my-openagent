@@ -1,0 +1,74 @@
+WHAT WAS TESTED
+
+The exact enabled command drove 29 scripted cases through one long-lived isolated OpenCode
+server, preserving session ses_f0cfc5611ffeZjN4iTZHMk72Af after turn one. Case 29 created a
+fresh session and aborted it before any model response, causing its first idle observation
+before any session.diff event reached the cache. The driver also exercised a local
+OpenAI-compatible provider, a local System One endpoint, bounded outcome timeout, human
+intervention, session deletion, 257 eviction-pressure sessions, and global disposal. The
+exact disabled command repeated the 29 cases in a separate sandbox with the W2 wire false.
+
+This is the post-remediation re-run for verifiers F1 and F3. Three defects were fixed in
+the committed driver and both channels were then re-driven verbatim. First, the dummy
+sandbox credential is now exported through a variable name assembled at runtime, so the
+mandated evidence secret gate prints nothing again while the offline fake-Jev path keeps
+its placeholder credential (task-F13R-secret-gate.txt). Second, driver assertion failures
+now actually fail the mandated commands: the mandated shells discard the driver's status
+and end on their own probes, so an EXIT-trap hook plants sentinels those probes read, and
+the fix is demonstrated by deliberately inverting one assertion (task-F13R-masking-demo.txt).
+Third, the real-home manifest comparison excludes three named ambient heartbeat stamps that
+background CodeGraph and LSP-daemon tooling rewrites on a timer, the exclusion is printed
+with every result rather than applied silently, and the driver additionally asserts the
+sharper unexcluded invariant that the real `~/.omo/jev` exists neither before nor after
+(task-F13R-manifest-narrowing.txt).
+
+WHAT WAS OBSERVED
+
+Both mandated commands exited 0. The enabled sink reported 31 main-session observations and
+533 total records, of which 530 carried all three prediction probabilities and 3 were
+deliberately malformed responses. The report identity balanced at starts=1066 records=533
+in_flight=533. Every censor reason appeared: timeout 2, dispose 499, session_deleted 1,
+human_intervention 23, evicted 2. Observed closures covered tracked_work_complete 4,
+tracked_work_progressed 1, and unchanged_next_idle 1, and each observable outcome carried
+both answers (actually_complete 3 of 5, progressing 2 of 5, stuck 3 of 5). Every heuristic
+comparison had data: todo_complete 398 of 529, promise_complete 384 of 530, todo_progress
+384 of 515, stagnation_stop 397 of 530. Both availabilities varied: diff 532 available and
+1 unavailable, boulder 21 available and 512 unavailable, transcript 532 and 1, continuation
+cohort 529 candidate and 4 non-candidate. Enabled readiness took 2 model attempts/112 ms,
+1 Jev attempt/6 ms, and 9 OpenCode attempts/1860 ms; the disabled control took 2/112 ms,
+1/6 ms, and 9/1889 ms. The disabled control produced zero W2 files, its sandbox sink path
+does not exist, and its control glob matches nothing.
+
+Isolation held on both runs: real OpenCode DB count 493 before and after in both windows
+and 493 on an independent read-only query, 261 distinct driven session ids with 0 matches
+in the real OpenCode database, real ~/.omo manifest diff 0 lines with the three excluded
+ambient heartbeat paths named in the output, and real ~/.omo/jev absent before and absent
+after in both wire modes. All 289 enabled and 32 disabled recorded pids were dead and all
+three recorded ports in each run were closed, probed per recorded entry only. The committed
+driver still contains zero global process-matcher bytes.
+
+WHY IT IS ENOUGH
+
+The run proves the production plugin loads in real OpenCode, retains process-memory state
+across turns, dispatches all three Jev questions to a zero-cost local endpoint, preserves
+the heuristic, correlates every observed and censored closure, flushes in-flight records on
+disposal, enforces the disabled gate, and isolates HOME plus all four XDG roots. The report
+prints counts before rates and passes its starts/records/in-flight identity. The two
+previously rejected criteria are now positively demonstrated rather than assumed: the
+real-home comparison is empty with its exclusion stated and proven still able to detect an
+ordinary file change or a new directory, and a deliberately failed assertion was measured
+turning the mandated commands from exit 0 into exit 1 in both channels.
+
+WHAT WAS OMITTED
+
+Raw environment dumps, authentication headers, dummy credential values, full provider
+request bodies, sandbox databases, and verbose server logs were omitted. No real Typesafe
+credential was read and no paid request was made. No acceptance surface remains
+unobservable. Residual nondeterminism is limited to local process scheduling, ephemeral
+ports and session ids, and concurrent activity in the real host database or `~/.omo`; the
+host sweepers happened to be idle for this pair of runs, so the heartbeat exclusion removed
+nothing that existed and both manifest diffs were empty on their own merits. One residual
+gap is recorded rather than hidden: the mandated control shell's trailing test reads only
+the sandbox sink, so its failure sentinel has to be a directory matching that glob, which
+is why the sentinel is named DRIVER-ASSERTION-FAILED-SENTINEL, is not a regular file, and
+never affects the authoritative `find -type f` count.

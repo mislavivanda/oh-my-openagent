@@ -34,6 +34,34 @@ export const JevIntentRoutingWireConfigSchema = z
     path: ["turn_seal_timeout_ms"],
   })
 
+export const JevCompletionContinuationWireConfigSchema = z
+  .object({
+    /** Enable the completion-continuation wire (W2, default: false). */
+    enabled: z.boolean().default(false),
+    /** Keep completion-continuation in observation mode until the apply phase is implemented. */
+    observe_only: z
+      .boolean()
+      .default(true)
+      .refine((observeOnly) => observeOnly, {
+        message:
+          "The Jev completion-continuation apply phase is not yet implemented; observe_only must remain true.",
+      }),
+    /** Used ONLY to label records. */
+    confidence_threshold: z.number().min(0).max(1).default(0.8),
+    /** Per-wire prediction timeout in milliseconds for the three completion-continuation questions. */
+    timeout_ms: z.number().int().min(100).max(30000).default(2500),
+    /** Maximum time in milliseconds that a record stays open waiting for a later observable outcome. */
+    outcome_window_ms: z.number().int().min(1000).max(3600000).default(120000),
+    /** Maximum number of concurrent completion-continuation dispatches. */
+    max_inflight: z.number().int().min(1).max(64).default(8),
+    /** Maximum serialized byte size of the bounded Jev state sent with each decision. */
+    max_state_bytes: z.number().int().min(1024).max(262144).default(24576),
+  })
+  .refine(({ timeout_ms, outcome_window_ms }) => outcome_window_ms > timeout_ms, {
+    message: "outcome_window_ms must be strictly greater than timeout_ms",
+    path: ["outcome_window_ms"],
+  })
+
 export const JevWiresConfigSchema = z.object({
   /** Model-error triage wire (W4): retry, stop, or ignore a provider error. */
   model_error_triage: JevWireConfigSchema.default({ enabled: false, confidence_threshold: 0.8 }),
@@ -46,6 +74,16 @@ export const JevWiresConfigSchema = z.object({
     turn_seal_timeout_ms: 120000,
     max_prompt_chars: 8000,
     max_inflight: 8,
+  }),
+  /** Completion-continuation observation wire (W2). */
+  completion_continuation: JevCompletionContinuationWireConfigSchema.default({
+    enabled: false,
+    observe_only: true,
+    confidence_threshold: 0.8,
+    timeout_ms: 2500,
+    outcome_window_ms: 120000,
+    max_inflight: 8,
+    max_state_bytes: 24576,
   }),
 })
 
@@ -73,8 +111,18 @@ export const JevConfigSchema = z.object({
       max_prompt_chars: 8000,
       max_inflight: 8,
     },
+    completion_continuation: {
+      enabled: false,
+      observe_only: true,
+      confidence_threshold: 0.8,
+      timeout_ms: 2500,
+      outcome_window_ms: 120000,
+      max_inflight: 8,
+      max_state_bytes: 24576,
+    },
   }),
 })
 
 export type JevWireConfig = z.infer<typeof JevWireConfigSchema>
+export type JevCompletionContinuationWireConfig = z.infer<typeof JevCompletionContinuationWireConfigSchema>
 export type JevConfig = z.infer<typeof JevConfigSchema>

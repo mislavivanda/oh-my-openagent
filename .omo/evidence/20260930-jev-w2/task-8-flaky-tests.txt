@@ -1,0 +1,35 @@
+RUN 1
+bun test v1.4.0 (34cbb9a40)
+
+ 13 pass
+ 0 fail
+ 48 expect() calls
+Ran 13 tests across 1 file. [141.00ms]
+RUN 2
+bun test v1.4.0 (34cbb9a40)
+
+ 13 pass
+ 0 fail
+ 48 expect() calls
+Ran 13 tests across 1 file. [142.00ms]
+RUN 3
+bun test v1.4.0 (34cbb9a40)
+
+ 13 pass
+ 0 fail
+ 48 expect() calls
+Ran 13 tests across 1 file. [133.00ms]
+RUN 4
+bun test v1.4.0 (34cbb9a40)
+
+ 13 pass
+ 0 fail
+ 48 expect() calls
+Ran 13 tests across 1 file. [146.00ms]
+RUN 5
+bun test v1.4.0 (34cbb9a40)
+
+ 13 pass
+ 0 fail
+ 48 expect() calls
+Ran 13 tests across 1 file. [139.00ms]

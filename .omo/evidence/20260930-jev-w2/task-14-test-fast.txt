@@ -1,0 +1,47 @@
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts script/jev-w1-report.test.ts script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=1
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+
+packages/jev-core/src/completion-continuation-state.test.ts:
+preReductionBytes=86060
+postReductionBytes=23799
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+accuracy backend=mock paidApi=false fixtures=15 networkCalls=0 resolvedModel=mock questionVersion=1
+dry-run verified fixtures=15 callCount=0 networkCalls=0
+ceiling-abort name=IntentRoutingCallCeilingError ceiling=15 backendCalls=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts:
+TASK15_MAX_HANDLER_US=341.90
+TASK15_INFLIGHT_CEILING=2
+TASK15_DROPPED=48
+TASK15_HEAP_GROWTH_BYTES=464470
+TASK15_CHILD_EXIT=0 ELAPSED_MS=1185.48
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:
+TASK15_SYNC_P99_US=14.91
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+SYNC_P99_US=9.82
+
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts:
+preCapTodos=40 preCapTranscript=12 preCapDiff=40
+preCapBoulderTitleBytes=303
+
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts:
+ATTEMPTED_STARTS=20 MAX_INFLIGHT=8 IN_FLIGHT=8 PERSISTED_DROPS=12
+
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts:
+preEvictionSessions=256
+preEvictionRecordsPerSession=64
+
+ 610 pass
+ 0 fail
+ 1812 expect() calls
+Ran 610 tests across 64 files. [9.58s]
