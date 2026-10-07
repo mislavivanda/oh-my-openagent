@@ -1,0 +1,49 @@
+AUTONOMOUS ENABLED
+command: bash .omo/evidence/20260930-jev-w2/task-19-drive.sh --drive autonomous --wire enabled --sandbox /tmp/opencode/jev-w2c-auto-sandbox --receipts /tmp/opencode/jev-w2c-auto-receipts --keep
+exit_status: 0
+session_id: ses_eec2abb2affefDWPc6kxL8fSjK
+main_session_observations: 28
+observed: 27
+censored: 1
+observed_coverage: 27/28 = 96.43%
+closure_partition: {"session_deleted":1,"tracked_work_progressed":27}
+real_db_count: 557 before, 557 after
+real_db_session_id_count: 0
+real_omo_manifest_diff_lines: 0
+receipt_cleanup: 262/262 PIDs dead, 3/3 ports closed
+
+INTERACTIVE ENABLED
+command: bash .omo/evidence/20260930-jev-w2/task-19-drive.sh --drive interactive --wire enabled --sandbox /tmp/opencode/jev-w2c-interactive-sandbox --receipts /tmp/opencode/jev-w2c-interactive-receipts --keep
+exit_status: 0
+session_id: ses_eec24f9feffesxk5hdyoCQD8fZ
+main_session_observations: 31
+observed: 5
+censored: 26
+observed_coverage: 5/31 = 16.13%
+closure_partition: {"human_intervention":23,"session_deleted":1,"timeout":2,"tracked_work_complete":3,"tracked_work_progressed":1,"unchanged_next_idle":1}
+real_db_count: 557 before, 557 after
+real_db_session_id_count: 0
+real_omo_manifest_diff_lines: 0
+receipt_cleanup: 289/289 PIDs dead, 3/3 ports closed
+
+AUTONOMOUS DISABLED CONTROL
+command: bash .omo/evidence/20260930-jev-w2/task-19-drive.sh --drive autonomous --wire disabled --sandbox /tmp/opencode/jev-w2c-disabled-sandbox --receipts /tmp/opencode/jev-w2c-disabled-receipts --keep
+exit_status: 0
+session_id: ses_eec2576c9ffeOV2WRd2EKdHp7s
+w2_files: 0
+real_db_count: 557 before, 557 after
+real_db_session_id_count: 0
+real_omo_manifest_diff_lines: 0
+receipt_cleanup: 5/5 PIDs dead, 3/3 ports closed
+
+ASSERTION FAILURE PROPAGATION
+mutation: inserted an always-failing assertion immediately after free_port() is defined
+exit_status: 1
+propagation: one recorded sentinel PID and port were created, then killed and verified dead/closed individually
+checksum_before: 7ceb7ae079597a84f3bf871966bb592f75f6878a36a56626244e356070f27146
+checksum_after: 7ceb7ae079597a84f3bf871966bb592f75f6878a36a56626244e356070f27146
+byte_exact_revert: yes
+
+ROOT GATES
+bun run typecheck: exit 0
+bun run build: exit 0, ended with "build: all steps completed"

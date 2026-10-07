@@ -26,3 +26,6 @@ todo	artifact	command	exit_status	matching_line_count	claim
 5	task-5-verification.txt	package tests; extraction guard; typecheck; build; test:fast; LSP diagnostics	0	N/A	237 package tests and 799 fast tests pass; root gates clean
 5	task-5-static-gates.txt	TypeScript no-excuse scan and per-file physical line loop	0	0	zero forbidden-pattern matches and all five changed TypeScript files below 250 lines
 2	task-2-commit-scope.txt	explicit todo-2 commit pathspec audit	0	0	seven allowed paths and zero paths outside owned reports plus manifest
+3	task-3-results.txt	autonomous enabled; interactive enabled; autonomous disabled; assertion bite; root gates	0	N/A	autonomous 27/28 observed versus interactive 5/31; disabled wrote zero W2 files; host isolation and cleanup passed
+3	task-3-process-matcher.txt	grep -nE 'pkill|pgrep|killall' .omo/evidence/20260930-jev-w2/task-19-drive.sh	1	0	proof of emptiness: grep printed nothing and found zero global process matchers
+3	task-3-verification.md	reviewer-readable todo-3 QA synthesis	0	N/A	WHAT WAS TESTED, WHAT WAS OBSERVED, WHY IT IS ENOUGH, and WHAT WAS OMITTED recorded
