@@ -18,7 +18,7 @@ describe("completion-continuation questions", () => {
       "stuck",
     ])
     expect(Object.values(COMPLETION_CONTINUATION_QUESTIONS).every((question) => question.type === "noul")).toBe(true)
-    expect(COMPLETION_CONTINUATION_QUESTION_VERSION).toBe(2)
+    expect(COMPLETION_CONTINUATION_QUESTION_VERSION).toBe(3)
   })
 
   test("#given independent probability questions #when inspecting criteria #then each supports true and false evidence", () => {

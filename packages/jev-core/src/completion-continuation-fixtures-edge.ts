@@ -44,9 +44,9 @@ export const COMPLETION_CONTINUATION_EDGE_FIXTURES = [
       transcript: [{ role: "assistant", content: "요청한 수정과 검증이 모두 끝났습니다.", synthetic: false }],
       diff: { files: [{ path: "docs/install.ko.md", additions: 7, deletions: 2 }] }, boulder: null,
     },
-    label: { actuallyComplete: true, progressing: true, stuck: false },
+    label: { actuallyComplete: true, progressing: "unknown", stuck: false },
     cohorts: ["actually-complete", "multilingual"], groundTruthSource: "hand-assigned",
-    labelBasis: "A bilingual reviewer hand-marked the Korean completion statement and completed tracked item as complete. W2 plan line 45 makes tracked completion progressing=true and reserves progressing=false for a successful continuation followed by an unchanged next idle with known incomplete state; completion also makes stuck=false.",
+    labelBasis: "A bilingual reviewer hand-marked the Korean completion statement and completed tracked item as complete and not stuck. With no previous block, completion is a current state rather than an observed transition and progressing is unknown.",
   },
   {
     id: "multilingual-spanish-progress",

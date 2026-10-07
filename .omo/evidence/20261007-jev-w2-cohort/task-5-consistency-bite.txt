@@ -1,0 +1,49 @@
+TODO 5: fixture consistency assertion bite proof
+
+WHAT WAS TESTED
+
+The progressing label for complete-all-todos-verified was temporarily changed
+from unknown back to true. The focused fixture consistency test was run, the
+violating edit was reverted, and the same test was run again.
+
+FAILING RUN UNDER THE VIOLATING LABEL
+
+Command: bun test packages/jev-core/src/completion-continuation-fixture-consistency.test.ts
+Exit status: 1
+
+Observed failure 1:
+error: complete-all-todos-verified
+Expected: "unknown"
+Received: true
+(fail) #given complete tracked work #when the predecessor is inspected #then only a transition can label progressing true
+
+Observed failure 2:
+error: complete-all-todos-verified
+Expected: "unknown"
+Received: true
+(fail) #given a label claims completion #when no tracked transition exists #then completion does not imply progress
+
+Summary: 2 pass, 2 fail, 36 expect() calls, 4 tests across 1 file.
+
+PASSING RUN AFTER REVERT
+
+Command: bun test packages/jev-core/src/completion-continuation-fixture-consistency.test.ts
+Exit status: 0
+Summary: 4 pass, 0 fail, 49 expect() calls, 4 tests across 1 file.
+
+WHAT WAS OBSERVED
+
+The consistency test rejects a state-only progressing=true label and accepts the
+restored unknown label. It also derives the false/stuck shape from an available
+previous snapshot, successful continuation, known incomplete current work, and
+unchanged todo plus boulder digests.
+
+WHY IT IS ENOUGH
+
+The negative probe demonstrates that the new assertion is not vacuous and fails
+on the exact ambiguity fixed by todo 5.
+
+WHAT WAS OMITTED
+
+The temporary violating edit was reverted and is absent from the final diff. No
+secret-bearing output was produced.
