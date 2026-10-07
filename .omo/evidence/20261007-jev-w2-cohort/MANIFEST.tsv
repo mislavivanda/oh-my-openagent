@@ -44,3 +44,5 @@ todo	artifact	command	exit_status	matching_line_count	claim
 6	task-6-file-lines.txt	per-file physical line loop	0	0	all task-6 evidence and manifest files at or below 250 lines
 6	task-6-lsp-diagnostics.txt	lsp_diagnostics on changed evidence extensions	0	0	no LSP configured for md txt tsv; no source or diagnostic-bearing file changed
 6	task-6-verification.md	reviewer-readable final measurement synthesis and DoneClaim	0	N/A	honest cohort comparison, paid-result staleness, inertness, gates, and omissions recorded
+item-4\titem-4-per-question-adoption-assessment.md\tbun recompute from retained v1+v2 real-API artifacts\t0\t54\tbanding cross-checked against artifact thresholdLabels, 0 mismatches across 54 question-fixture pairs
+item-4\titem-4-per-question-adoption-assessment.md\tgrep -cP (em dash, en dash, AI filler) on the artifact\t1\t0\tno banned content patterns present
