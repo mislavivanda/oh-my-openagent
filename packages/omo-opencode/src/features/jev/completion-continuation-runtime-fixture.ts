@@ -34,7 +34,8 @@ function unsafeTestValue<TValue>(value: unknown): TValue {
 
 const BACKEND_TIMEOUT_MS = 100
 const OUTCOME_WINDOW_MS = 1_000
-const MAX_INFLIGHT = 8
+/** The stress run's in-flight cap; exported so the handle budget derives from it. */
+export const MAX_INFLIGHT = 8
 
 export type RuntimeMeasurements = {
   readonly activeHandles: number

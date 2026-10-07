@@ -1,0 +1,19 @@
+# todo-4 no-excuse scan over the touched files (every result must be 0 matching lines)
+pattern=[as any] exit=1 matching_lines=0
+pattern=[@ts-ignore] exit=1 matching_lines=0
+pattern=[@ts-expect-error] exit=1 matching_lines=0
+pattern=[catch[^)]*)[[:space:]]*\{[[:space:]]*\}] exit=1 matching_lines=0
+pattern=[^export \*] exit=1 matching_lines=0
+pattern=[—] exit=1 matching_lines=0
+pattern=[–] exit=1 matching_lines=0
+pattern=[\b(simply|obviously|clearly|moreover|furthermore)\b] exit=1 matching_lines=0
+
+# jev-core harness-neutrality guard: whole word Stop in non-test .ts under packages/jev-core/src
+$ grep -rnw Stop packages/jev-core/src --include='*.ts' --exclude='*.test.ts'
+exit=1 matching_lines=0
+
+$ bun test script/shared-core-extraction-guard.test.ts
+ 3 pass
+ 0 fail
+Ran 3 tests across 1 file. [153.00ms]
+exit=0

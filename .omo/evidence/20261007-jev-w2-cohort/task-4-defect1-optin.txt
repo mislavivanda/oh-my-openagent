@@ -1,0 +1,16 @@
+# todo-4 DEFECT 1: opt-in route still reaches the committed evidence path
+# (resolver evaluated directly; nothing written, the committed artifact stays untouched)
+$ bun -e ...
+env = JEV_W2_ACCURACY_EVIDENCE
+default  = /tmp/jev-w2-accuracy/task-7-accuracy-result.999.json
+opt-in   = /home/opencode/projects/oh-my-openagent-jev-w2c/.omo/evidence/20260930-jev-w2/task-7-accuracy-result.json
+exit=0
+
+# the real-API artifact path is unchanged by this todo:
+18:const REAL_ARTIFACT_V1_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-18-real-api-result.json")
+19:const REAL_ARTIFACT_PATH = join(process.cwd(), `.omo/evidence/20260930-jev-w2-validity/task-7-real-api-result-v${COMPLETION_CONTINUATION_QUESTION_VERSION}.json`)
+139:    const currentVersion = await readRetainedRealBaseline(REAL_ARTIFACT_PATH)
+140:    const retainedPath = currentVersion !== null ? REAL_ARTIFACT_PATH : REAL_ARTIFACT_V1_PATH
+
+# committed artifact still clean:
+matching_lines=0

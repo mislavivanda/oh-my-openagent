@@ -1,0 +1,24 @@
+# todo-4 DEFECT 2 proof: runtime-effects suite with the derived budget
+$ bun test packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts:
+w2_active_timer_handles_budget=73 derivation=1_sink_interval+64_outcome_windows+8_inflight_backend_timeouts
+w2_active_timer_handles<=73 actual=73
+w2_unref_missing=0 actual=0
+in_flight_max<=8 actual=8
+dispatches_dropped_persisted=992 attempted_excess=992
+heap_delta_bytes=2991791 threshold<16777216
+sync_seam_p99_ms=0.080223 threshold<1
+idle_handler_added_p99_ms=0.010123 threshold<5
+ANTI_VACUITY_UNREF_HANDLE=FAIL_DETECTED W2 handle unref audit failed: missing_or_duplicate=1
+ANTI_VACUITY_UNREF_HANDLE_REVERT=PASS normal audit restored
+ANTI_VACUITY_UNREF_CHILD=FAIL_DETECTED timed_out=true pid=3620741 elapsed_ms=767.71
+child_exit_ms=189.27 threshold<2000 pid=3620771 exit=0
+ANTI_VACUITY_UNREF_CHILD_REVERT=PASS unref restored
+
+ 3 pass
+ 0 fail
+ 14 expect() calls
+Ran 3 tests across 1 file. [1262.00ms]
+exit=0

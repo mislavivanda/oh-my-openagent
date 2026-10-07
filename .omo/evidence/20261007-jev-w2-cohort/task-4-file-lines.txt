@@ -1,0 +1,10 @@
+# todo-4 per-file 250-line loop over every file this todo touches
+32 OK packages/jev-core/src/completion-continuation-accuracy-artifact-path.ts
+33 OK packages/jev-core/src/completion-continuation-accuracy-artifact-path.test.ts
+179 OK packages/jev-core/src/completion-continuation-accuracy.test.ts
+124 OK packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts
+232 OK packages/omo-opencode/src/features/jev/completion-continuation-runtime-fixture.ts
+
+# PROOF OF EMPTINESS: no touched file exceeds 250 lines
+$ (loop) | awk '$1>250'
+matching_lines=0
