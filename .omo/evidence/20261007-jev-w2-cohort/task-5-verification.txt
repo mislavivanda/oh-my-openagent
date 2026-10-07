@@ -1,0 +1,52 @@
+TODO 5: verification results
+
+WHAT WAS TESTED AND OBSERVED
+
+1. bun test packages/jev-core
+   Exit status: 0
+   Result: 237 pass, 0 fail, 765 expect() calls across 22 files.
+   Accuracy path: mock, 18 fixtures, 18 calls, 0 network calls, question version 3.
+   Real API result: skipped because JEV_W2_REAL_API was not requested.
+
+2. bun test packages/jev-core/src/completion-continuation-questions.test.ts packages/jev-core/src/completion-continuation-fixture-consistency.test.ts
+   Exit status: 0
+   Result: 9 pass, 0 fail, 107 expect() calls across 2 files.
+
+3. bun test script/shared-core-extraction-guard.test.ts
+   Exit status: 0
+   Result: 3 pass, 0 fail, 4 expect() calls.
+
+4. bun run typecheck
+   Exit status: 0
+   Result: root, script, and package tsgo checks passed, including jev-core.
+
+5. bun run build
+   Exit status: 0
+   Result: all build steps completed.
+
+6. bun run test:fast
+   Exit status: 0
+   Result: 799 pass, 0 fail, 2470 expect() calls across 93 files.
+   Baseline note: the observed count is 799 because peer todo changes landed
+   concurrently; the plan baseline was 795.
+
+7. LSP diagnostics on all five changed TypeScript files
+   Exit status: 0
+   Result: no diagnostics found in every file.
+
+8. Serialized actually_complete question before and after
+   Exit status: 0
+   Result: both are 416 bytes with SHA-256
+   071debc6939e5a35ccbe68df6fcddceae1892a3023e599d00b551424ba776ccc.
+
+WHY IT IS ENOUGH
+
+The package suite covers the complete core surface, the harness-neutrality gate
+passes, strict type checking and the root build pass, and test:fast covers the
+cross-package W2 adapter path. The focused bite proof is recorded separately.
+
+WHAT WAS OMITTED
+
+Build output from generated bundles and dependency audit notices were summarized.
+No environment values, API keys, auth headers, or credentials were copied. No
+real API call was enabled or made.

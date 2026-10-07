@@ -1,0 +1,98 @@
+COMMAND: bun run test:fast
+$ bun test --timeout 20000 packages/jev-core packages/model-core/src/model-error-classifier.test.ts packages/model-core/src/model-error-classifier-openai-usage-limit.test.ts packages/omo-opencode/src/plugin/event.model-fallback.test.ts packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts packages/omo-opencode/src/plugin/event.model-fallback-jev.test.ts packages/omo-opencode/src/features/jev packages/omo-opencode/src/config/schema packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts packages/omo-opencode/src/plugin/tool-execute-before.intent-routing-inert.test.ts packages/omo-opencode/src/testing/jev-intent-routing-disabled.test.ts packages/omo-opencode/src/testing/jev-intent-routing-wiring.test.ts script/jev-w1-report.test.ts script/package-registration-audit.test.ts script/shared-core-extraction-guard.test.ts packages/omo-opencode/src/hooks/todo-continuation-enforcer packages/omo-opencode/src/plugin/hooks/create-continuation-hooks.test.ts packages/omo-opencode/src/shared/completion-promise-pattern.test.ts script/jev-w2-report.test.ts
+bun test v1.4.0 (34cbb9a40)
+
+packages/jev-core/src/completion-continuation-accuracy.test.ts:
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=3
+accuracy artifact=/tmp/jev-w2-accuracy/task-7-accuracy-result.3792895.json evidenceOptIn=unset
+ceiling=18 abortedBeforeCall=19 backendCalls=1 retained=1
+interrupted status=partial completed=1 failedFixtureId=complete-boulder-without-todos
+missing-key probe skipped realApiRequested=false keyPresent=true
+real-api baseline skipped realApiRequested=false keyPresent=true
+
+packages/jev-core/src/completion-continuation-state.test.ts:
+protectedReductionPreBytes=59122
+protectedReductionPostBytes=24063
+preReductionBytes=86386
+postReductionBytes=24125
+
+packages/jev-core/src/intent-routing-accuracy.test.ts:
+accuracy backend=mock paidApi=false fixtures=15 networkCalls=0 resolvedModel=mock questionVersion=1
+dry-run verified fixtures=15 callCount=0 networkCalls=0
+ceiling-abort name=IntentRoutingCallCeilingError ceiling=15 backendCalls=1
+
+packages/jev-core/src/completion-continuation-real-run.test.ts:
+A orchestrated status=complete reserved=3 clientCount=3 serverCount=3 perCallRequests=[1,1,1] tokensIn=33 tokensOut=9 resolvedModel=fake-jev-9.9.9
+A verdict clientEqualsServer=true oneRequestPerThreeQuestionCall=true
+B forcedExtraCall counter=1 serverCount=1 rose=true
+B secondForcedCall counter=2 serverCount=2 rose=true
+C ceilingAbort error=PaidCallCeilingError nextOrdinal=3 serverCount=2 retainedStatus=partial retainedCallCount=2
+D hardTimeout status=partial failureReason=timeout elapsedMs=301 timeoutMs=300 serverCount=1
+E malformedResponse status=partial failureReason=malformed_response completed=[] serverCount=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+packages/omo-opencode/src/plugin/intent-routing-hanging-backend.test.ts:
+TASK15_MAX_HANDLER_US=209.50
+TASK15_INFLIGHT_CEILING=2
+TASK15_DROPPED=48
+TASK15_HEAP_GROWTH_BYTES=472144
+TASK15_CHILD_EXIT=0 ELAPSED_MS=431.30
+
+packages/omo-opencode/src/plugin/chat-message.intent-routing-inert.test.ts:
+TASK15_SYNC_P99_US=8.93
+
+packages/omo-opencode/src/features/jev/intent-routing.test.ts:
+SYNC_P99_US=6.46
+
+packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts:
+w2_active_timer_handles_budget=73 derivation=1_sink_interval+64_outcome_windows+8_inflight_backend_timeouts
+w2_active_timer_handles<=73 actual=73
+w2_unref_missing=0 actual=0
+in_flight_max<=8 actual=8
+dispatches_dropped_persisted=992 attempted_excess=992
+heap_delta_bytes=2584265 threshold<16777216
+sync_seam_p99_ms=0.061822 threshold<1
+idle_handler_added_p99_ms=0.018153 threshold<5
+ANTI_VACUITY_UNREF_HANDLE=FAIL_DETECTED W2 handle unref audit failed: missing_or_duplicate=1
+ANTI_VACUITY_UNREF_HANDLE_REVERT=PASS normal audit restored
+ANTI_VACUITY_UNREF_CHILD=FAIL_DETECTED timed_out=true pid=3792943 elapsed_ms=754.24
+child_exit_ms=103.98 threshold<2000 pid=3792964 exit=0
+ANTI_VACUITY_UNREF_CHILD_REVERT=PASS unref restored
+
+packages/omo-opencode/src/features/jev/completion-continuation-input.test.ts:
+preCapTodos=40 preCapTranscript=12 preCapDiff=40
+preCapBoulderTitleBytes=303
+
+packages/omo-opencode/src/features/jev/completion-continuation.test.ts:
+ATTEMPTED_STARTS=20 MAX_INFLIGHT=8 IN_FLIGHT=8 PERSISTED_DROPS=12
+
+packages/omo-opencode/src/features/jev/completion-continuation-outcome-store.test.ts:
+preEvictionSessions=256
+preEvictionRecordsPerSession=64
+
+packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts:
+PART_A_MODE=success TRACE_COUNT=16
+[["gauntlet","state_before","{\"stagnationCount\":0,\"consecutiveFailures\":0}"],["gauntlet","completion_detector",false],["gauntlet","messages"],["gauntlet","todos"],["gauntlet","semantic_branch","continuation_scheduled"],["gauntlet","toast","{\"body\":{\"title\":\"Todo Continuation\",\"message\":\"Resuming in 2s... (1 tasks remaining)\",\"variant\":\"warning\",\"duration\":900}}"],["gauntlet","setInterval","41:1000"],["gauntlet","setTimeout","42:2000"],["gauntlet","handler_return","null"],["gauntlet","event_mutation","{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-success\"}}:{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-success\"}}"],["gauntlet","clearTimeout",42],["gauntlet","clearInterval",41],["gauntlet","todos"],["gauntlet","messages"],["gauntlet","prompt","{\"path\":{\"id\":\"inert-success\"},\"body\":{\"agent\":\"Sisyphus - ultraworker\",\"model\":{\"providerID\":\"test\",\"modelID\":\"test\"},\"parts\":[{\"type\":\"text\",\"text\":\"[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION]\\n\\nIncomplete tasks remain in your todo list. Continue working on the next pending task.\\n\\n- Proceed without asking for permission\\n- Mark each task complete when finished\\n- Do not stop until all tasks are done\\n- If you believe all work is already complete, the system is questioning your completion claim. Critically re-examine each todo item from a skeptical perspective, verify the work was actually done correctly, and update the todo list accordingly.\\n\\n[Status: 0/1 completed, 1 remaining]\\n\\nRemaining tasks:\\n- [pending] Finish todo 15\\n<!-- OMO_INTERNAL_INITIATOR -->\",\"synthetic\":true,\"metadata\":{\"compaction_continue\":true}}]},\"query\":{\"directory\":\"/tmp/jev-w2-inert\"}}"],["gauntlet","state_after","{\"stagnationCount\":0,\"consecutiveFailures\":0,\"lastIncompleteCount\":1,\"inFlight\":false,\"lastInjectedAt\":1000000,\"awaitingPostInjectionProgressCheck\":true,\"continuationResponseObserved\":false}"]]
+PART_A_W2_REMOVED_success=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+PART_A_MODE=sync-throw TRACE_COUNT=16
+[["gauntlet","state_before","{\"stagnationCount\":0,\"consecutiveFailures\":0}"],["gauntlet","completion_detector",false],["gauntlet","messages"],["gauntlet","todos"],["gauntlet","semantic_branch","continuation_scheduled"],["gauntlet","toast","{\"body\":{\"title\":\"Todo Continuation\",\"message\":\"Resuming in 2s... (1 tasks remaining)\",\"variant\":\"warning\",\"duration\":900}}"],["gauntlet","setInterval","41:1000"],["gauntlet","setTimeout","42:2000"],["gauntlet","handler_return","null"],["gauntlet","event_mutation","{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-sync-throw\"}}:{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-sync-throw\"}}"],["gauntlet","clearTimeout",42],["gauntlet","clearInterval",41],["gauntlet","todos"],["gauntlet","messages"],["gauntlet","prompt","{\"path\":{\"id\":\"inert-sync-throw\"},\"body\":{\"agent\":\"Sisyphus - ultraworker\",\"model\":{\"providerID\":\"test\",\"modelID\":\"test\"},\"parts\":[{\"type\":\"text\",\"text\":\"[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION]\\n\\nIncomplete tasks remain in your todo list. Continue working on the next pending task.\\n\\n- Proceed without asking for permission\\n- Mark each task complete when finished\\n- Do not stop until all tasks are done\\n- If you believe all work is already complete, the system is questioning your completion claim. Critically re-examine each todo item from a skeptical perspective, verify the work was actually done correctly, and update the todo list accordingly.\\n\\n[Status: 0/1 completed, 1 remaining]\\n\\nRemaining tasks:\\n- [pending] Finish todo 15\\n<!-- OMO_INTERNAL_INITIATOR -->\",\"synthetic\":true,\"metadata\":{\"compaction_continue\":true}}]},\"query\":{\"directory\":\"/tmp/jev-w2-inert\"}}"],["gauntlet","state_after","{\"stagnationCount\":0,\"consecutiveFailures\":0,\"lastIncompleteCount\":1,\"inFlight\":false,\"lastInjectedAt\":1000000,\"awaitingPostInjectionProgressCheck\":true,\"continuationResponseObserved\":false}"]]
+PART_A_W2_REMOVED_sync-throw=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+PART_A_MODE=rejection TRACE_COUNT=16
+[["gauntlet","state_before","{\"stagnationCount\":0,\"consecutiveFailures\":0}"],["gauntlet","completion_detector",false],["gauntlet","messages"],["gauntlet","todos"],["gauntlet","semantic_branch","continuation_scheduled"],["gauntlet","toast","{\"body\":{\"title\":\"Todo Continuation\",\"message\":\"Resuming in 2s... (1 tasks remaining)\",\"variant\":\"warning\",\"duration\":900}}"],["gauntlet","setInterval","41:1000"],["gauntlet","setTimeout","42:2000"],["gauntlet","handler_return","null"],["gauntlet","event_mutation","{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-rejection\"}}:{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-rejection\"}}"],["gauntlet","clearTimeout",42],["gauntlet","clearInterval",41],["gauntlet","todos"],["gauntlet","messages"],["gauntlet","prompt","{\"path\":{\"id\":\"inert-rejection\"},\"body\":{\"agent\":\"Sisyphus - ultraworker\",\"model\":{\"providerID\":\"test\",\"modelID\":\"test\"},\"parts\":[{\"type\":\"text\",\"text\":\"[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION]\\n\\nIncomplete tasks remain in your todo list. Continue working on the next pending task.\\n\\n- Proceed without asking for permission\\n- Mark each task complete when finished\\n- Do not stop until all tasks are done\\n- If you believe all work is already complete, the system is questioning your completion claim. Critically re-examine each todo item from a skeptical perspective, verify the work was actually done correctly, and update the todo list accordingly.\\n\\n[Status: 0/1 completed, 1 remaining]\\n\\nRemaining tasks:\\n- [pending] Finish todo 15\\n<!-- OMO_INTERNAL_INITIATOR -->\",\"synthetic\":true,\"metadata\":{\"compaction_continue\":true}}]},\"query\":{\"directory\":\"/tmp/jev-w2-inert\"}}"],["gauntlet","state_after","{\"stagnationCount\":0,\"consecutiveFailures\":0,\"lastIncompleteCount\":1,\"inFlight\":false,\"lastInjectedAt\":1000000,\"awaitingPostInjectionProgressCheck\":true,\"continuationResponseObserved\":false}"]]
+PART_A_W2_REMOVED_rejection=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+PART_A_MODE=timeout TRACE_COUNT=16
+[["gauntlet","state_before","{\"stagnationCount\":0,\"consecutiveFailures\":0}"],["gauntlet","completion_detector",false],["gauntlet","messages"],["gauntlet","todos"],["gauntlet","semantic_branch","continuation_scheduled"],["gauntlet","toast","{\"body\":{\"title\":\"Todo Continuation\",\"message\":\"Resuming in 2s... (1 tasks remaining)\",\"variant\":\"warning\",\"duration\":900}}"],["gauntlet","setInterval","41:1000"],["gauntlet","setTimeout","42:2000"],["gauntlet","handler_return","null"],["gauntlet","event_mutation","{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-timeout\"}}:{\"type\":\"session.idle\",\"properties\":{\"sessionID\":\"inert-timeout\"}}"],["gauntlet","clearTimeout",42],["gauntlet","clearInterval",41],["gauntlet","todos"],["gauntlet","messages"],["gauntlet","prompt","{\"path\":{\"id\":\"inert-timeout\"},\"body\":{\"agent\":\"Sisyphus - ultraworker\",\"model\":{\"providerID\":\"test\",\"modelID\":\"test\"},\"parts\":[{\"type\":\"text\",\"text\":\"[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION]\\n\\nIncomplete tasks remain in your todo list. Continue working on the next pending task.\\n\\n- Proceed without asking for permission\\n- Mark each task complete when finished\\n- Do not stop until all tasks are done\\n- If you believe all work is already complete, the system is questioning your completion claim. Critically re-examine each todo item from a skeptical perspective, verify the work was actually done correctly, and update the todo list accordingly.\\n\\n[Status: 0/1 completed, 1 remaining]\\n\\nRemaining tasks:\\n- [pending] Finish todo 15\\n<!-- OMO_INTERNAL_INITIATOR -->\",\"synthetic\":true,\"metadata\":{\"compaction_continue\":true}}]},\"query\":{\"directory\":\"/tmp/jev-w2-inert\"}}"],["gauntlet","state_after","{\"stagnationCount\":0,\"consecutiveFailures\":0,\"lastIncompleteCount\":1,\"inFlight\":false,\"lastInjectedAt\":1000000,\"awaitingPostInjectionProgressCheck\":true,\"continuationResponseObserved\":false}"]]
+PART_A_W2_REMOVED_timeout=["sink_interval","beginIdle","macrotask","finishHeuristic","outcome_timer","backend_call","backend_call","file","file","counter","sink_interval"]
+ANTI_VACUITY_PROMPT_BYTE=FAIL_DETECTED existing trace byte mismatch
+ANTI_VACUITY_COUNTDOWN_DELAY=FAIL_DETECTED existing trace byte mismatch
+ANTI_VACUITY_SIDE_EFFECT_ORDER=FAIL_DETECTED existing trace byte mismatch
+ANTI_VACUITY_W2_OWNED_INJECTION=FAIL_DETECTED W2-owned effect leaked into Part A: backend_call
+ANTI_VACUITY_PART_A_REVERT=PASS intended trace restored
+
+ 799 pass
+ 0 fail
+ 2470 expect() calls
+Ran 799 tests across 93 files. [8.48s]
+EXIT_STATUS: 0

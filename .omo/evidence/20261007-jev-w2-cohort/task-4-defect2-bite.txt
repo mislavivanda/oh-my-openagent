@@ -1,0 +1,40 @@
+# todo-4 DEFECT 2 BITE proof
+# A. perturbation 1: drop the sink-interval term so the derived budget becomes 72 (< the measured 73).
+#    If the derived assertion were slack, this would still pass.
+16:const SINK_FLUSH_INTERVAL_HANDLES = 0
+w2_active_timer_handles_budget=72 derivation=0_sink_interval+64_outcome_windows+8_inflight_backend_timeouts
+w2_active_timer_handles<=72 actual=73
+83 |     expect(measurements.activeHandles).toBeLessThanOrEqual(ACTIVE_HANDLE_BUDGET)
+error: expect(received).toBeLessThanOrEqual(expected)
+Expected: <= 72
+Received: 73
+(fail) completion-continuation Part B runtime effects > bounds handles, in-flight work, persisted drops, heap, and repeated dispose [150.98ms]
+ANTI_VACUITY_UNREF_HANDLE=FAIL_DETECTED W2 handle unref audit failed: missing_or_duplicate=1
+ 2 pass
+ 1 fail
+perturbed_exit=1
+
+# B. revert and re-run
+16:const SINK_FLUSH_INTERVAL_HANDLES = 1
+w2_active_timer_handles_budget=73 derivation=1_sink_interval+64_outcome_windows+8_inflight_backend_timeouts
+w2_active_timer_handles<=73 actual=73
+in_flight_max<=8 actual=8
+ANTI_VACUITY_UNREF_HANDLE=FAIL_DETECTED W2 handle unref audit failed: missing_or_duplicate=1
+ANTI_VACUITY_UNREF_HANDLE_REVERT=PASS normal audit restored
+ANTI_VACUITY_UNREF_CHILD=FAIL_DETECTED timed_out=true pid=3622793 elapsed_ms=755.55
+ANTI_VACUITY_UNREF_CHILD_REVERT=PASS unref restored
+ 3 pass
+ 0 fail
+Ran 3 tests across 1 file. [1267.00ms]
+reverted_exit=0
+
+# C. unref-removal still fails, from the suite's own built-in perturbations:
+#    - ANTI_VACUITY_UNREF_HANDLE: removedUnrefFailure() drives AuditedClock(omitFirstUnref=true);
+#      assertW2HandleAudit then throws 'W2 handle unref audit failed: missing_or_duplicate=1'.
+#      That is the same audit feeding measurements.unrefMissing / activeHandles in the budget test.
+#    - ANTI_VACUITY_UNREF_CHILD: a real child process spawned with W2_TEST_OMIT_UNREF=1 fails to
+#      exit (timed_out=true), while the reverted child exits 0 in <2000ms.
+#    Both FAIL_DETECTED lines are captured in task-4-defect2-runtime-effects.txt.
+
+# D. the budget was NOT widened: derived=73, measured=73, unchanged from the pre-change literal 73.
+#    in_flight_max budget derived from MAX_INFLIGHT=8, measured=8, unchanged from the literal 8.

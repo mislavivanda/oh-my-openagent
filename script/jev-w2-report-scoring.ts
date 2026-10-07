@@ -9,6 +9,7 @@ import {
   type AgreementSpec,
   type CompletionContinuationQuestionKey,
   type HeuristicAgreementKey,
+  type OutcomeAgreementCohort,
 } from "./jev-w2-report-types"
 
 function predictedValue(
@@ -54,6 +55,31 @@ function presence(value: string | null): string {
 
 function cohortBucket(record: CompletionContinuationObservation): string {
   return record.isContinuationCandidate ? "candidate" : "non_candidate"
+}
+
+export function completionContinuationOutcomeCohort(
+  record: CompletionContinuationObservation,
+): OutcomeAgreementCohort {
+  const closedBy = record.outcomeClosedBy
+  switch (closedBy) {
+    case "tracked_work_complete":
+    case "tracked_work_progressed":
+    case "unchanged_next_idle":
+      return "autonomous"
+    case "human_intervention":
+      return "human_interactive"
+    case "timeout":
+    case "dispose":
+    case "session_deleted":
+    case "evicted":
+      return closedBy
+    case null:
+      return "pending"
+    default: {
+      const exhaustive: never = closedBy
+      throw new TypeError(`Unsupported outcome closure: ${String(exhaustive)}`)
+    }
+  }
 }
 
 const CROSS_TAB_DIMENSIONS = [

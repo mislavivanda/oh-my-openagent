@@ -17,12 +17,37 @@ const port = z.coerce.number().int().positive().parse(process.env.TASK19_MODEL_P
 const logPath = z.string().min(1).parse(process.env.TASK19_MODEL_LOG)
 const scriptPath = z.string().min(1).parse(process.env.TASK19_TURN_SCRIPT)
 const workDir = z.string().min(1).parse(process.env.TASK19_WORK_DIR)
+const drive = z.enum(["autonomous", "interactive"]).parse(process.env.TASK19_DRIVE)
 const turns = readFileSync(scriptPath, "utf8").trim().split("\n")
   .map((line) => TurnSchema.parse(JSON.parse(line)))
 const nextToolIndex = new Map<number, number>()
 let requestSequence = 0
+let autonomousStep = 1
+
+function createAutonomousTurn(step: number): Turn {
+  const finalStep = step === turns.length
+  const todos = turns.map((_, index) => ({
+    id: `autonomous-${index + 1}`,
+    content: `Autonomous successor ${index + 1}`,
+    status: index + 1 < step || (finalStep && index + 1 === step)
+      ? "completed"
+      : index + 1 === step ? "in_progress" : "pending",
+    priority: "high",
+  }))
+  return TurnSchema.parse({
+    turn: step,
+    prompt: turns[step - 1]?.prompt ?? `[W2-${step}]`,
+    action: "autonomous",
+    tools: [{ name: "todowrite", args: { todos } }],
+    response: finalStep ? "<promise>DONE</promise>" : `Autonomous step ${step} recorded.`,
+  })
+}
 
 function matchingTurn(bodyText: string): Turn | undefined {
+  if (
+    drive === "autonomous"
+    && (bodyText.includes("<!-- OMO_INTERNAL_INITIATOR -->") || bodyText.includes(turns[0]?.prompt ?? ""))
+  ) return createAutonomousTurn(autonomousStep)
   let match: Turn | undefined
   let matchIndex = -1
   for (const turn of turns) {
@@ -55,7 +80,7 @@ function matchingTurn(bodyText: string): Turn | undefined {
   return match
 }
 
-function responseEvents(turn: Turn | undefined): string {
+async function responseEvents(turn: Turn | undefined): Promise<string> {
   requestSequence += 1
   const responseId = `resp_w2_${requestSequence}`
   const events: unknown[] = [{
@@ -77,6 +102,9 @@ function responseEvents(turn: Turn | undefined): string {
       { type: "response.output_item.done", output_index: 0, item: { type: "function_call", id: itemId, call_id: itemId, name: tool.name, arguments: args, status: "completed" } },
     )
   } else {
+    if (turn?.action === "autonomous" && turn.turn > 1 && turn.turn < turns.length) {
+      await Bun.sleep(5_200)
+    }
     const text = turn?.response ?? "Internal continuation acknowledged."
     const itemId = `msg_w2_${requestSequence}`
     events.push(
@@ -84,6 +112,7 @@ function responseEvents(turn: Turn | undefined): string {
       { type: "response.output_text.delta", item_id: itemId, output_index: 0, delta: text },
       { type: "response.output_item.done", output_index: 0, item: { type: "message", id: itemId } },
     )
+    if (turn?.action === "autonomous" && turn.turn === autonomousStep) autonomousStep += 1
   }
   events.push({ type: "response.completed", response: { id: responseId, model: "gpt-w2-task19", usage: { input_tokens: 10, output_tokens: 5, input_tokens_details: { cached_tokens: 0 }, output_tokens_details: { reasoning_tokens: 0 } } } })
   return `${events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join("")}data: [DONE]\n\n`
@@ -99,7 +128,7 @@ const server = Bun.serve({
     const bodyText = await request.text()
     const turn = matchingTurn(bodyText)
     appendFileSync(logPath, `${Date.now()} request=${requestSequence + 1} turn=${turn?.turn ?? "internal"}\n`)
-    return new Response(responseEvents(turn), { headers: { "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache" } })
+    return new Response(await responseEvents(turn), { headers: { "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache" } })
   },
 })
 process.stdout.write(`fake model ready port=${server.port}\n`)

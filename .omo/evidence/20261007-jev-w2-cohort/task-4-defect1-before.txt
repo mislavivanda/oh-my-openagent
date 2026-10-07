@@ -1,0 +1,33 @@
+# todo-4 DEFECT 1 BEFORE proof
+# cwd: /home/opencode/projects/oh-my-openagent-jev-w2c
+# step 1: confirm the tracked artifact is clean before the run
+exit=0 matching_lines=0
+# step 2: run the jev-core suite on the UNMODIFIED tree
+$ bun test packages/jev-core
+accuracy backend=mock paidApi=false fixtures=15 networkCalls=0 resolvedModel=mock questionVersion=1
+dry-run verified fixtures=15 callCount=0 networkCalls=0
+ceiling-abort name=IntentRoutingCallCeilingError ceiling=15 backendCalls=1
+
+packages/jev-core/src/completion-continuation-real-run.test.ts:
+A orchestrated status=complete reserved=3 clientCount=3 serverCount=3 perCallRequests=[1,1,1] tokensIn=33 tokensOut=9 resolvedModel=fake-jev-9.9.9
+A verdict clientEqualsServer=true oneRequestPerThreeQuestionCall=true
+B forcedExtraCall counter=1 serverCount=1 rose=true
+B secondForcedCall counter=2 serverCount=2 rose=true
+C ceilingAbort error=PaidCallCeilingError nextOrdinal=3 serverCount=2 retainedStatus=partial retainedCallCount=2
+D hardTimeout status=partial failureReason=timeout elapsedMs=301 timeoutMs=300 serverCount=1
+E malformedResponse status=partial failureReason=malformed_response completed=[] serverCount=1
+
+packages/jev-core/src/completion-continuation-fixtures.test.ts:
+fixture-cohorts {"actually-complete":5,"progressing":8,"stuck":2,"no-todos":2,"stale-todos":1,"promise-done":1,"false-promise-text":1,"continue":1,"go-on":1,"transcript-tail":2,"multilingual":2,"adversarial":2,"human-intervention":1,"slow-censored":1,"empty-transcript":1,"oversized-content":1}
+
+ 234 pass
+ 0 fail
+ 753 expect() calls
+Ran 234 tests across 21 files. [618.00ms]
+exit=0
+# step 3: git status --porcelain for the tracked artifact AFTER the run
+ M .omo/evidence/20260930-jev-w2/task-7-accuracy-result.json
+matching_lines=1
+# step 4: the diff the run produced
+ .omo/evidence/20260930-jev-w2/task-7-accuracy-result.json | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)

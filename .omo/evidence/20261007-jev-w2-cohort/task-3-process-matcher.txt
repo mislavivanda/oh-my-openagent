@@ -1,0 +1,4 @@
+command: grep -nE 'pkill|pgrep|killall' .omo/evidence/20260930-jev-w2/task-19-drive.sh
+exit_status: 1
+matching_line_count: 0
+stdout: empty

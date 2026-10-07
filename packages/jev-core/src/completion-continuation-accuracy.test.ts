@@ -1,6 +1,9 @@
 import { describe, expect, test } from "bun:test"
 import { readFile, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
 import { join } from "node:path"
+import { COMPLETION_CONTINUATION_ACCURACY_EVIDENCE_ENV,
+  resolveCompletionContinuationAccuracyArtifactPath } from "./completion-continuation-accuracy-artifact-path"
 import { COMPLETION_CONTINUATION_FIXTURES } from "./completion-continuation-fixtures"
 import { COMPLETION_CONTINUATION_QUESTION_KEYS, COMPLETION_CONTINUATION_QUESTION_VERSION } from "./completion-continuation-questions"
 import { buildCompletionContinuationState } from "./completion-continuation-state"
@@ -8,7 +11,10 @@ import { PAID_CALL_CEILING, PaidCallCeilingError, RequestBudget, UnexpectedNetwo
   matrixTotal, mockBackend, runAccuracy, runDryRun, withTempArtifact, type HarnessArtifact } from "./completion-continuation-accuracy-harness"
 import { readRetainedRealBaseline, runMissingKeyProbe, runRealCompletionContinuationBaseline } from "./completion-continuation-accuracy-real-run"
 import { createMockDecisionBackend } from "./mock-backend"
-const ARTIFACT_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-7-accuracy-result.json")
+const ARTIFACT_PATH = resolveCompletionContinuationAccuracyArtifactPath({
+  cwd: process.cwd(), tmpDir: tmpdir(), pid: process.pid,
+  evidenceOptIn: process.env[COMPLETION_CONTINUATION_ACCURACY_EVIDENCE_ENV],
+})
 const REAL_ARTIFACT_V1_PATH = join(process.cwd(), ".omo/evidence/20260930-jev-w2/task-18-real-api-result.json")
 const REAL_ARTIFACT_PATH = join(process.cwd(), `.omo/evidence/20260930-jev-w2-validity/task-7-real-api-result-v${COMPLETION_CONTINUATION_QUESTION_VERSION}.json`)
 const REAL_API_REQUESTED = process.env.JEV_W2_REAL_API === "1"
@@ -40,6 +46,7 @@ describe("completion-continuation accuracy harness", () => {
       for (const question of COMPLETION_CONTINUATION_QUESTION_KEYS) expect(matrixTotal(result.confusionMatrices[question])).toBe(COMPLETION_CONTINUATION_FIXTURES.length)
     }
     console.log(`accuracy mode=${result.mode} fixtures=${result.completedFixtureIds.length} calls=${result.callCount} networkCalls=${result.networkCallCount} resolvedModel=${result.resolvedModel} questionVersion=${result.questionVersion}`)
+    console.log(`accuracy artifact=${ARTIFACT_PATH} evidenceOptIn=${process.env[COMPLETION_CONTINUATION_ACCURACY_EVIDENCE_ENV] ?? "unset"}`)
   })
   test("#given dry-run mode #when all fixture states are built #then requests stay capped and no backend call is reserved", async () => {
     await withTempArtifact(async (path) => {

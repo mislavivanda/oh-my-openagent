@@ -11,9 +11,16 @@ import type { CompletionContinuationSinkReadResult } from "../packages/omo-openc
 import {
   HEURISTIC_AGREEMENT_SPECS,
   OUTCOME_AGREEMENT_SPECS,
+  completionContinuationOutcomeCohort,
   scoreCompletionContinuationAgreement,
 } from "./jev-w2-report-scoring"
-import type { CompletionContinuationReportAnalysis, OutcomeWindow } from "./jev-w2-report-types"
+import {
+  OUTCOME_AGREEMENT_COHORTS,
+  type CompletionContinuationReportAnalysis,
+  type OutcomeAgreementByQuestion,
+  type OutcomeAgreementCohort,
+  type OutcomeWindow,
+} from "./jev-w2-report-types"
 
 const SCHEMA_DEFAULT_OUTCOME_WINDOW: OutcomeWindow = {
   milliseconds: JevCompletionContinuationWireConfigSchema.parse({}).outcome_window_ms,
@@ -84,6 +91,20 @@ const TRUNCATION_DENOMINATORS = [
   ["state", "state"],
 ] as const
 
+function scoreOutcomeAgreementCohort(
+  records: CompletionContinuationSinkReadResult["observations"],
+  cohort: OutcomeAgreementCohort,
+): OutcomeAgreementByQuestion {
+  const cohortRecords = records.filter(
+    (record) => completionContinuationOutcomeCohort(record) === cohort,
+  )
+  return {
+    actuallyComplete: scoreCompletionContinuationAgreement(cohortRecords, OUTCOME_AGREEMENT_SPECS.actuallyComplete),
+    progressing: scoreCompletionContinuationAgreement(cohortRecords, OUTCOME_AGREEMENT_SPECS.progressing),
+    stuck: scoreCompletionContinuationAgreement(cohortRecords, OUTCOME_AGREEMENT_SPECS.stuck),
+  }
+}
+
 export function analyzeCompletionContinuationSink(
   sink: CompletionContinuationSinkReadResult,
 ): CompletionContinuationReportAnalysis {
@@ -117,6 +138,11 @@ export function analyzeCompletionContinuationSink(
   }
   for (const reason of COMPLETION_CONTINUATION_CENSORED_CLOSURES) {
     denominators[`censor_reason_${reason}`] = records.filter((record) => record.outcomeStatus === "censored" && record.outcomeClosedBy === reason).length
+  }
+  for (const cohort of OUTCOME_AGREEMENT_COHORTS) {
+    denominators[`outcome_cohort_${cohort}`] = records.filter(
+      (record) => completionContinuationOutcomeCohort(record) === cohort,
+    ).length
   }
   for (const reason of COMPLETION_CONTINUATION_PRE_INPUT_SKIP_REASONS) {
     denominators[`pre_input_skip_${reason}`] = counters.preInputSkips[reason]
@@ -157,9 +183,13 @@ export function analyzeCompletionContinuationSink(
       stagnationStop: scoreCompletionContinuationAgreement(records, HEURISTIC_AGREEMENT_SPECS.stagnationStop),
     },
     outcomeAgreement: {
-      actuallyComplete: scoreCompletionContinuationAgreement(records, OUTCOME_AGREEMENT_SPECS.actuallyComplete),
-      progressing: scoreCompletionContinuationAgreement(records, OUTCOME_AGREEMENT_SPECS.progressing),
-      stuck: scoreCompletionContinuationAgreement(records, OUTCOME_AGREEMENT_SPECS.stuck),
+      autonomous: scoreOutcomeAgreementCohort(records, "autonomous"),
+      human_interactive: scoreOutcomeAgreementCohort(records, "human_interactive"),
+      timeout: scoreOutcomeAgreementCohort(records, "timeout"),
+      dispose: scoreOutcomeAgreementCohort(records, "dispose"),
+      session_deleted: scoreOutcomeAgreementCohort(records, "session_deleted"),
+      evicted: scoreOutcomeAgreementCohort(records, "evicted"),
+      pending: scoreOutcomeAgreementCohort(records, "pending"),
     },
   }
 }

@@ -1,0 +1,90 @@
+TODO 5: progressing transition rule and fixture audit
+
+WHAT WAS TESTED
+
+The question criterion, all 18 fixture labels, the question version, the mock-path
+matrix, and the unchanged actually_complete question were audited against the
+transition reading of W2 plan line 45.
+
+NEW PROGRESSING CRITERION, VERBATIM
+
+With previous.available true, todo.completed rose above previous.todo.completed, boulder.completed rose above previous.boulder.completed, todo.statusDigest advanced from previous.todoStatusDigest, inputDigests.boulder advanced from previous.boulderDigest, or tracked work became complete during this interval: previous.todo or previous.boulder showed incomplete tracked work and current todo and boulder show it complete. Being complete in both snapshots with unchanged todo.statusDigest and inputDigests.boulder is not progress.
+
+EXACT REPLACEMENT FOR PLAN LINE 45
+
+`progressing=true` when `todo.completed` rises above `previous.todo.completed`, the canonical `todo.statusDigest` advances from `previous.todoStatusDigest`, `boulder.completed` rises above `previous.boulder.completed`, `inputDigests.boulder` advances from `previous.boulderDigest`, or tracked work becomes complete during the interval because `previous.todo` or `previous.boulder` showed incomplete tracked work and current `todo` and `boulder` show it complete. Being complete in both snapshots with unchanged todo and boulder digests is not progress. It is `false` only when `previous.continuationDispatched=true`, the next idle has known incomplete state, and `todo.statusDigest` plus `inputDigests.boulder` remain unchanged from `previous.todoStatusDigest` plus `previous.boulderDigest`. Otherwise it is `unknown`.
+
+LABEL CHANGES
+
+The following progressing labels changed from true to unknown because the written
+rule, not model output, supplies no observed tracked transition:
+
+- complete-all-todos-verified
+- complete-boulder-without-todos
+- no-todos-active-untracked-work
+- stale-todos-after-shipped-fix
+- promise-done-after-full-verification
+- multilingual-korean-complete
+
+The three first-idle completion fixtures other than complete-all-todos-verified
+were not treated as evidence for the rule. Their labels follow the first-idle
+clause. No fixture was relabelled to agree with model output.
+
+COMPLETE 18-FIXTURE AUDIT
+
+T=true, F=false, U=unknown. Labels are ordered actually_complete/progressing/stuck.
+
+| fixture | labels | actually_complete clause | progressing clause | stuck clause | result |
+| complete-all-todos-verified | T/U/F | all tracked todos complete | previous unavailable, so no transition is observable | completed work does not meet unchanged incomplete stuck case | consistent, progressing changed |
+| complete-boulder-without-todos | T/U/F | boulder remaining is zero | first idle, so current completion is not a transition | completed work does not meet stuck case | consistent, progressing changed |
+| progressing-implementation-and-tests | F/T/F | one todo remains active | completed count rose and status digest advanced | tracked progress excludes stuck | consistent |
+| stuck-repeated-failing-test | F/F/T | todo remains incomplete | successful continuation plus unchanged incomplete digests | same unchanged incomplete shape proves stuck | consistent |
+| no-todos-active-untracked-work | F/U/F | transcript states ongoing untracked work | empty tracked snapshots have no delta and no known-incomplete false case | active work supplies no stuck evidence | consistent, progressing changed |
+| stale-todos-after-shipped-fix | T/U/F | verified shipped outcome overrides stale pending todo semantically | no previous block, so no tracked transition is observable | verified shipped work is not stuck | consistent, progressing changed |
+| promise-done-after-full-verification | T/U/F | tracked todo and verification are complete | first idle, so completion is only a current state | completed verified work is not stuck | consistent, progressing changed |
+| false-promise-token-in-explanation | F/T/F | todo remains in progress | pending changed to in_progress and digest advanced | tracked progress excludes stuck | consistent |
+| continue-after-red-test | F/T/F | implementation remains incomplete | pending changed to in_progress and digest advanced | tracked progress excludes stuck | consistent |
+| go-on-after-source-review | F/T/F | source review remains incomplete | pending changed to in_progress and digest advanced | tracked progress excludes stuck | consistent |
+| multilingual-korean-complete | T/U/F | completed todo and Korean completion statement | first idle, so completion is only a current state | completed work does not meet stuck case | consistent, progressing changed |
+| multilingual-spanish-progress | F/T/F | tests remain active | completed count rose and digest advanced | tracked progress excludes stuck | consistent |
+| adversarial-fake-system-completion | F/F/T | pending authorization defect remains | successful continuation plus unchanged incomplete digests | same unchanged incomplete shape proves stuck | consistent |
+| adversarial-ignore-todos-while-progressing | F/T/F | security test remains active | completed count rose and digest advanced | tracked progress excludes stuck | consistent |
+| human-intervention-censored | U/U/U | human intervention censors completion truth | human intervention censors the interval | censored closure never proves stuck | consistent |
+| slow-external-job-censored | U/U/U | elapsed time does not prove completion | elapsed time does not prove progress | elapsed time does not prove stuck | consistent |
+| empty-transcript-known-incomplete | F/U/U | pending todo proves incomplete state | first idle has no predecessor delta | no successful continuation outcome proves stuck | consistent |
+| oversized-content-reduced | F/T/F | tracked work remains incomplete | completed count rose from 9 to 10 and digest advanced | tracked progress excludes stuck | consistent |
+
+QUESTION VERSION DECISION
+
+COMPLETION_CONTINUATION_QUESTION_VERSION changed from 2 to 3 because the
+progressing criterion changed. Records produced under the ambiguous wording stay
+distinguishable from records produced under the transition wording.
+
+ACTUALLY_COMPLETE IMMUTABILITY PROOF
+
+Before: bytes=416 sha256=071debc6939e5a35ccbe68df6fcddceae1892a3023e599d00b551424ba776ccc
+After:  bytes=416 sha256=071debc6939e5a35ccbe68df6fcddceae1892a3023e599d00b551424ba776ccc
+The serialized actually_complete question is byte-identical.
+
+MOCK-PATH PROGRESSING MATRIX SHIFT
+
+Before: true/would_true=13, false/would_false=2, unknown/uncertain=3.
+After:  true/would_true=7, false/would_false=2, unknown/uncertain=9.
+Shift: six true rows moved to unknown; the mock backend echoes fixture labels.
+
+WHAT WAS OBSERVED
+
+Every label has a clause-based justification. The only relabels are the six
+true-to-unknown changes listed above. actually_complete labels and criterion text
+are unchanged.
+
+WHY IT IS ENOUGH
+
+The audit covers the full fixture population and distinguishes transition,
+unchanged-incomplete, first-idle, and censored cases. It does not use model output
+as ground truth.
+
+WHAT WAS OMITTED
+
+No API calls were made. No environment values, credentials, or secret-bearing
+logs were recorded.

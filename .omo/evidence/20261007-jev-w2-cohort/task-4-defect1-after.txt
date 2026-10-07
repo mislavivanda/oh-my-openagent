@@ -1,0 +1,30 @@
+# todo-4 DEFECT 1 AFTER proof (post-fix)
+# step 1: tracked artifact clean before the run
+matching_lines=0
+
+# step 2: run the suite and show where the mock artifact landed
+$ bun test packages/jev-core
+accuracy mode=mock fixtures=18 calls=18 networkCalls=0 resolvedModel=mock questionVersion=2
+accuracy artifact=/tmp/jev-w2-accuracy/task-7-accuracy-result.3612509.json evidenceOptIn=unset
+accuracy backend=mock paidApi=false fixtures=15 networkCalls=0 resolvedModel=mock questionVersion=1
+ 237 pass
+ 0 fail
+Ran 237 tests across 22 files. [663.00ms]
+pipeline_head_exit=0
+
+# step 3: PROOF OF EMPTINESS - the committed artifact is untouched by the run
+$ git status --porcelain -- .omo/evidence/20260930-jev-w2/task-7-accuracy-result.json
+exit=0 matching_lines=0
+
+# step 4: PROOF OF EMPTINESS - the run writes nothing under .omo/evidence at all
+$ git status --porcelain -- .omo/evidence/ | grep -v 'task-19-' 
+grep_exit=1 matching_lines=0
+# note: the two excluded task-19-* paths are peer todo-3's in-flight files, not touched by this todo
+ M .omo/evidence/20260930-jev-w2/task-19-drive.sh
+ M .omo/evidence/20260930-jev-w2/task-19-fake-model-provider.ts
+
+# step 5: the scratch artifact that the run actually wrote
+/tmp/jev-w2-accuracy/:
+total 8
+-rw-r--r-- 1 opencode opencode 1688 Oct  7 00:47 task-7-accuracy-result.3611453.json
+-rw-r--r-- 1 opencode opencode 1688 Oct  7 00:47 task-7-accuracy-result.3612509.json

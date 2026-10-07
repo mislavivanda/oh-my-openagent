@@ -1,0 +1,6 @@
+COMMAND: lsp_diagnostics severity=all on representative .md, .txt, and .tsv changed files; all changed files use only those extensions
+RESULT: no LSP server configured for .md, .txt, or .tsv; no source files changed and no diagnostic-bearing extension was touched
+INITIAL_PROXY_RESULT: daemon auto-start failed because cached package CLI path was absent; manually started built worktree daemon by exact PID
+DAEMON_PID_WAS_ALIVE: 1
+DAEMON_PID_ALIVE_AFTER_EXACT_KILL_MATCHING_LINE_COUNT: 0
+EXIT_STATUS: 0

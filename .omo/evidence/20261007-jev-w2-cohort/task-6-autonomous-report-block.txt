@@ -1,0 +1,12 @@
+COMMAND: bun run script/jev-w2-report.ts --root /tmp/opencode/jev-w2c-task6-auto-main | grep cohort rendered lines
+outcome_cohort_autonomous: 27
+outcome_cohort_human_interactive: 0
+OUTCOME COHORT autonomous
+actually_complete cohort=autonomous overall: 21/27 (77.78%); coverage=27/27
+progressing cohort=autonomous overall: 7/27 (25.93%); coverage=27/27
+stuck cohort=autonomous overall: 20/27 (74.07%); coverage=27/27
+OUTCOME COHORT human_interactive
+actually_complete cohort=human_interactive overall: insufficient data (eligible denominator=0); coverage=0/0
+progressing cohort=human_interactive overall: insufficient data (eligible denominator=0); coverage=0/0
+stuck cohort=human_interactive overall: insufficient data (eligible denominator=0); coverage=0/0
+EXIT_STATUS: 0

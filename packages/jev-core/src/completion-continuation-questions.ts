@@ -1,6 +1,6 @@
 import type { NoulQuestion, Questions } from "./types"
 
-export const COMPLETION_CONTINUATION_QUESTION_VERSION = 2
+export const COMPLETION_CONTINUATION_QUESTION_VERSION = 3
 
 export const COMPLETION_CONTINUATION_QUESTION_KEYS = [
   "actually_complete",
@@ -34,7 +34,7 @@ export const COMPLETION_CONTINUATION_QUESTIONS = {
     type: "noul",
     instructions: `Estimate whether the tracked work progressed since the previous idle. ${PREVIOUS_DELTA_NOTE} ${FIRST_IDLE_NOTE} ${INDEPENDENT_PROBABILITY_NOTE}`,
     criteria: {
-      true: "With previous.available true, todo.completed or boulder.completed increased, todo or boulder remaining work decreased, todo.statusDigest or inputDigests.boulder changed in a way that reflects tracked progress, or tracked work became complete relative to previous.todo and previous.boulder.",
+      true: "With previous.available true, todo.completed rose above previous.todo.completed, boulder.completed rose above previous.boulder.completed, todo.statusDigest advanced from previous.todoStatusDigest, inputDigests.boulder advanced from previous.boulderDigest, or tracked work became complete during this interval: previous.todo or previous.boulder showed incomplete tracked work and current todo and boulder show it complete. Being complete in both snapshots with unchanged todo.statusDigest and inputDigests.boulder is not progress.",
       false: "With previous.available true and previous.continuationDispatched true, tracked work remains incomplete and current todo.statusDigest, todo.total, todo.completed, inputDigests.boulder, boulder.total, boulder.completed, and boulder.remaining stayed unchanged from previous.todoStatusDigest, previous.todo, previous.boulderDigest, and previous.boulder.",
     },
   },

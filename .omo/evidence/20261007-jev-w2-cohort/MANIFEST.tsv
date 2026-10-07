@@ -1,0 +1,48 @@
+todo	artifact	command	exit_status	matching_line_count	claim
+2	task-2-targeted-tests.txt	bun test script/jev-w2-report.test.ts	0	N/A	9 pass, 0 fail, 122 assertions
+2	task-2-f5-window-and-cohorts.txt	F5 synthetic corpus report command	0	N/A	120000 ms window provenance and all cohort denominators rendered
+2	task-2-empty-corpus.txt	empty corpus report command	0	N/A	zero denominators render insufficient data
+2	task-2-divergent-cohorts.txt	divergent cohort report filter	0	8	autonomous coverage 5/6 differs from human-interactive coverage 0/1
+2	task-2-censored-leak.txt	confident stuck human-intervention injection	0	4	censored record leaves stuck denominator at zero
+2	task-2-root-gates.txt	bun run typecheck; bun run build	0	N/A	both mandatory root gates passed
+2	task-2-static-gates.txt	LSP diagnostics; per-file line loop; forbidden-pattern scan	0	0	no diagnostics, every report file <=250 lines, zero forbidden-pattern matches
+4	task-4-defect1-before.txt	bun test packages/jev-core ; git status --porcelain -- .omo/evidence/20260930-jev-w2/task-7-accuracy-result.json	0	1	DEFECT 1 BEFORE: the tracked artifact starts clean at 0 lines and one suite run leaves it dirty at 1 line with a 5-insertion 5-deletion diff
+4	task-4-defect1-after.txt	bun test packages/jev-core ; git status --porcelain -- .omo/evidence/20260930-jev-w2/task-7-accuracy-result.json	0	0	DEFECT 1 AFTER: suite exits 0 and the committed artifact stays clean; emptiness proven by git status exit 0 with 0 matching lines, and by a scoped .omo/evidence scan (grep exit 1, 0 matching lines) excluding peer todo-3 task-19 files; the artifact now lands at /tmp/jev-w2-accuracy/task-7-accuracy-result.PID.json
+4	task-4-defect1-optin.txt	bun -e resolveCompletionContinuationAccuracyArtifactPath default vs JEV_W2_ACCURACY_EVIDENCE=1	0	0	DEFECT 1 opt-in: the explicit opt-in still resolves to the committed evidence artifact while the default resolves under tmp; real-API artifact paths unchanged; committed artifact still 0 dirty lines
+4	task-4-defect2-runtime-effects.txt	bun test packages/omo-opencode/src/features/jev/completion-continuation-runtime-effects.test.ts	0	N/A	DEFECT 2: 3 pass 0 fail; derived budget logged as 73 = 1 sink interval + 64 outcome windows + 8 in-flight backend timeouts, actual 73; in_flight_max<=8 actual 8; ANTI_VACUITY_UNREF_HANDLE and ANTI_VACUITY_UNREF_CHILD both FAIL_DETECTED
+4	task-4-defect2-bite.txt	perturb SINK_FLUSH_INTERVAL_HANDLES to 0 then bun test the runtime-effects suite, then revert	1	N/A	DEFECT 2 bite: the derived budget drops to 72 and the suite fails with Expected <= 72 Received 73 at exit 1; revert restores exit 0 and the file is byte-identical to the backup, so the assertion is tight and was not widened
+4	task-4-inertness.txt	bun test packages/omo-opencode/src/hooks/todo-continuation-enforcer/completion-continuation-inert.test.ts	0	0	W2 zero-behavior-change re-proved: 2 pass 0 fail with PROMPT_BYTE, COUNTDOWN_DELAY, SIDE_EFFECT_ORDER and W2_OWNED_INJECTION all FAIL_DETECTED plus PART_A_REVERT=PASS; git status on the inert test file returns 0 matching lines, so the guarantee survives untouched
+4	task-4-typecheck.txt	bun run typecheck	0	N/A	Root typecheck exits 0 with zero diagnostics across every workspace tsconfig
+4	task-4-build.txt	bun run build	0	N/A	Root build exits 0 and ends with build: all steps completed
+4	task-4-test-fast.txt	bun run test:fast	0	0	799 pass 0 fail across 93 files against the 795 baseline; 3 of the 4 added tests are this todo's artifact-path tests and 1 comes from a concurrent peer todo; the tracked artifact is still at 0 dirty lines afterwards
+4	task-4-file-lines.txt	per-file wc -l over the five touched files piped through awk $1>250	0	0	Every touched file is at or under 250 physical lines, largest 232; the over-limit filter returns 0 matching lines
+4	task-4-no-excuse.txt	grep -nE over the touched files for 8 banned patterns ; grep -rnw Stop packages/jev-core/src ; bun test script/shared-core-extraction-guard.test.ts	1	0	Each banned pattern scan returns grep exit 1 with 0 matching lines; the jev-core harness-neutrality Stop scan returns exit 1 with 0 matching lines and the guard test passes 3 of 3
+4	task-4-verification.md	manual writeup	0	N/A	Reviewer-readable record of what was tested, what was observed, why it is enough and what was omitted for both defects, including the no-real-API confirmation
+2	task-2-test-fast.txt	bun run test:fast	0	N/A	799 pass, 0 fail, 2470 assertions across 93 files
+2	task-2-qa-summary.txt	reviewer-readable todo-2 QA synthesis	0	N/A	what, observed behavior, sufficiency, and omissions recorded
+5	task-5-rule-and-fixture-audit.txt	manual 18-fixture rule audit; Bun hash and matrix probes	0	N/A	all 18 labels justified; six progressing labels move true to unknown; actually_complete hash unchanged
+5	task-5-consistency-bite.txt	bun test packages/jev-core/src/completion-continuation-fixture-consistency.test.ts with violating label	1	N/A	assertion rejected state-only progressing=true with 2 focused failures
+5	task-5-consistency-bite.txt	bun test packages/jev-core/src/completion-continuation-fixture-consistency.test.ts after revert	0	N/A	4 pass, 0 fail, 49 assertions
+5	task-5-verification.txt	package tests; extraction guard; typecheck; build; test:fast; LSP diagnostics	0	N/A	237 package tests and 799 fast tests pass; root gates clean
+5	task-5-static-gates.txt	TypeScript no-excuse scan and per-file physical line loop	0	0	zero forbidden-pattern matches and all five changed TypeScript files below 250 lines
+2	task-2-commit-scope.txt	explicit todo-2 commit pathspec audit	0	0	seven allowed paths and zero paths outside owned reports plus manifest
+3	task-3-results.txt	autonomous enabled; interactive enabled; autonomous disabled; assertion bite; root gates	0	N/A	autonomous 27/28 observed versus interactive 5/31; disabled wrote zero W2 files; host isolation and cleanup passed
+3	task-3-process-matcher.txt	grep -nE 'pkill|pgrep|killall' .omo/evidence/20260930-jev-w2/task-19-drive.sh	1	0	proof of emptiness: grep printed nothing and found zero global process matchers
+3	task-3-verification.md	reviewer-readable todo-3 QA synthesis	0	N/A	WHAT WAS TESTED, WHAT WAS OBSERVED, WHY IT IS ENOUGH, and WHAT WAS OMITTED recorded
+6	task-6-autonomous-drive.txt	autonomous task-19 driver with Bun real-API env guard	0	N/A	fresh autonomous drive: 27 observed of 28 main records; host isolation passed
+6	task-6-interactive-drive.txt	interactive task-19 driver with Bun real-API env guard	0	N/A	fresh interactive drive: 5 observed of 31 main records; host isolation passed
+6	task-6-main-session-corpora.txt	Bun validate session-filtered report corpora	0	0	28 autonomous and 31 interactive rows with zero foreign-session rows
+6	task-6-autonomous-report-block.txt	cohort report over autonomous main-session corpus	0	N/A	report renders autonomous outcome coverage 27/27 for all three questions
+6	task-6-interactive-report-block.txt	cohort report over interactive main-session corpus	0	N/A	report renders observed autonomous subcohort 4/5 and human-interactive cohort 0/23
+6	task-6-inertness.txt	bun test completion-continuation-inert.test.ts	0	N/A	2 pass 0 fail; four trace anti-vacuity failures and revert PASS
+6	task-6-runtime-effects.txt	bun test completion-continuation-runtime-effects.test.ts	0	N/A	3 pass 0 fail; two runtime anti-vacuity failures and revert PASS
+6	task-6-typecheck.txt	bun run typecheck	0	N/A	root typecheck passed
+6	task-6-build.txt	bun run build	0	N/A	root build passed and all steps completed
+6	task-6-test-fast.txt	bun run test:fast	0	N/A	799 pass 0 fail 2470 assertions across 93 files
+6	task-6-full-suite-gate.txt	no-env-file full suite plus duration-stripped identity diff	0	0	exactly seven normalized failing identities equal canonical baseline
+6	task-6-process-cleanup.txt	exact receipt PID and port checks	0	0	551 PIDs dead and six ports closed without global matchers
+6	task-6-file-lines.txt	per-file physical line loop	0	0	all task-6 evidence and manifest files at or below 250 lines
+6	task-6-lsp-diagnostics.txt	lsp_diagnostics on changed evidence extensions	0	0	no LSP configured for md txt tsv; no source or diagnostic-bearing file changed
+6	task-6-verification.md	reviewer-readable final measurement synthesis and DoneClaim	0	N/A	honest cohort comparison, paid-result staleness, inertness, gates, and omissions recorded
+item-4\titem-4-per-question-adoption-assessment.md\tbun recompute from retained v1+v2 real-API artifacts\t0\t54\tbanding cross-checked against artifact thresholdLabels, 0 mismatches across 54 question-fixture pairs
+item-4\titem-4-per-question-adoption-assessment.md\tgrep -cP (em dash, en dash, AI filler) on the artifact\t1\t0\tno banned content patterns present

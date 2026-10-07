@@ -1,0 +1,33 @@
+# todo-4 root build
+$ bun run build
+
+> @sisyphuslabs/codex-git-bash-hook@4.19.4 build
+> tsc -p tsconfig.build.json
+
+Bundling components/git-bash/dist/cli.js
+Bundled 2 modules in 7ms
+
+  cli.js  5.75 KB  (entry point)
+
+Building components/lazycodex-executor-verify
+
+> @code-yeongyu/codex-lazycodex-executor-verify@4.19.4 build
+> tsc -p tsconfig.build.json
+
+Bundling components/lazycodex-executor-verify/dist/cli.js
+Bundled 5 modules in 3ms
+
+  cli.js  8.33 KB  (entry point)
+
+Building components/ulw-loop
+
+> @code-yeongyu/codex-ulw-loop@4.19.4 build
+> tsc -p tsconfig.build.json
+
+Bundling components/ulw-loop/dist/cli.js
+Bundled 38 modules in 5ms
+
+  cli.js  153.31 KB  (entry point)
+
+build: all steps completed
+exit=0

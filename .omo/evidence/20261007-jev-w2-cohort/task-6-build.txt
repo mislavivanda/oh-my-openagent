@@ -1,0 +1,4 @@
+COMMAND: bun run build
+EXIT_STATUS: 0
+OBSERVED: every build stage completed; final line was "build: all steps completed"
+NOTE: verbose 300-line build output was not committed so every touched evidence file remains within the 250-physical-line limit.

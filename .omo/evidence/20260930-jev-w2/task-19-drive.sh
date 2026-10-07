@@ -1,18 +1,12 @@
 #!/usr/bin/env bash
+# Usage: task-19-drive.sh --drive autonomous|interactive --wire enabled|disabled ...
+# Interactive (default) sends every user turn; autonomous sends one and lets todo-continuation-enforcer create successors.
 set -euo pipefail
-
 fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
-SANDBOX=""; RECEIPTS=""; WIRE=""; KEEP=false
-# The mandated QA shells separate this driver from their own trailing probes with `;`, so
-# a bare nonzero exit is swallowed and the run still reports success. On failure
-# propagate_failure() plants sentinels those probes DO read, turning any assertion failure
-# below into a NONZERO mandated command. Delete them and nothing below can fail anything.
+SANDBOX=""; RECEIPTS=""; WIRE=""; DRIVE=interactive; KEEP=false
+# Propagation sentinels make assertion failures visible to mandated trailing probes.
 PROPAGATE_RECEIPTS=""; PROPAGATE_SINK=""
-propagate_failure() {
-  local port pid
-  # The enabled probes read the receipt pid and port lists and the LAST one is the port
-  # probe, so one real localhost listener is planted: its pid makes the survivor probe print
-  # and its port makes the bound probe print. Recorded in both lists, self-closing after 60s.
+propagate_failure() { local port pid
   if [ -n "$PROPAGATE_RECEIPTS" ]; then
     port=$(free_port)
     node -e 'require("node:net").createServer().listen(Number(process.argv[1]),"127.0.0.1",()=>setTimeout(()=>process.exit(0),60000))' "$port" >/dev/null 2>&1 & pid=$!
@@ -20,8 +14,6 @@ propagate_failure() {
     printf '%s\n' "$pid" >> "$PROPAGATE_RECEIPTS/pids"; printf '%s\n' "$port" >> "$PROPAGATE_RECEIPTS/ports"
     printf 'FAIL-PROPAGATION: planted self-expiring sentinel listener pid=%s port=%s\n' "$pid" "$port" >&2
   fi
-  # The control probe only globs the sandbox sink, so its sentinel is a DIRECTORY matching
-  # that glob. Not a W2 record file, so the `find -type f` count stays authoritative.
   [ -z "$PROPAGATE_SINK" ] || { mkdir -p "$PROPAGATE_SINK/w2-DRIVER-ASSERTION-FAILED-SENTINEL.jsonl"; printf 'FAIL-PROPAGATION: planted sentinel dir under %s\n' "$PROPAGATE_SINK" >&2; }
 }
 while [ "$#" -gt 0 ]; do
@@ -29,6 +21,7 @@ while [ "$#" -gt 0 ]; do
     --sandbox) SANDBOX=${2:-}; shift 2 ;;
     --receipts) RECEIPTS=${2:-}; shift 2 ;;
     --wire) WIRE=${2:-}; shift 2 ;;
+    --drive) DRIVE=${2:-}; shift 2 ;;
     --keep) KEEP=true; shift ;;
     *) fail "unknown argument: $1" ;;
   esac
@@ -36,8 +29,8 @@ done
 [ -n "$SANDBOX" ] || fail "--sandbox is required"
 [ -n "$RECEIPTS" ] || fail "--receipts is required"
 case "$WIRE" in enabled|disabled) ;; *) fail "--wire must be enabled or disabled" ;; esac
+case "$DRIVE" in autonomous|interactive) ;; *) fail "--drive must be autonomous or interactive" ;; esac
 for binary in bun curl jq opencode node sqlite3 sha256sum; do command -v "$binary" >/dev/null || fail "missing binary: $binary"; done
-
 REPO_ROOT=$(pwd -P); REAL_HOME=$HOME
 SCRIPT_DIR="$REPO_ROOT/.omo/evidence/20260930-jev-w2"
 TURN_SCRIPT="$SCRIPT_DIR/task-19-turn-script.jsonl"
@@ -48,16 +41,14 @@ case "$RECEIPTS/" in "$SANDBOX/"*) fail "--receipts must live outside --sandbox"
 PIDS="$RECEIPTS/pids"; PORTS="$RECEIPTS/ports"; : > "$PIDS"; : > "$PORTS"
 PROPAGATE_RECEIPTS="$RECEIPTS"; if [ "$WIRE" = disabled ]; then PROPAGATE_SINK="$SANDBOX/home/.omo/jev"; fi
 MODEL_PID=""; JEV_PID=""; SERVER_PID=""; EVENT_PID=""
-terminate() {
-  local pid=$1
+terminate() { local pid=$1
   [ -n "$pid" ] || return 0
   if kill -0 "$pid" 2>/dev/null; then kill "$pid" 2>/dev/null || true; fi
   for _ in $(seq 1 100); do kill -0 "$pid" 2>/dev/null || break; sleep 0.05; done
   if kill -0 "$pid" 2>/dev/null; then kill -KILL "$pid" 2>/dev/null || true; fi
   wait "$pid" 2>/dev/null || true
 }
-cleanup() {
-  local status=$?; trap - EXIT INT TERM
+cleanup() { local status=$?; trap - EXIT INT TERM
   terminate "$EVENT_PID"; terminate "$SERVER_PID"; terminate "$MODEL_PID"; terminate "$JEV_PID"
   if [ "$status" -ne 0 ]; then propagate_failure; fi
   [ "$KEEP" = true ] || rm -rf "$SANDBOX"
@@ -77,18 +68,13 @@ poll_http() {
   now=$(date +%s%3N); printf '%s attempts=%s elapsed_ms=%s\n' "$role" "$attempts" "$((now-started))" >> "$RECEIPTS/readiness.txt"
   [ "$attempts" -lt 600 ] || fail "$role readiness timeout"
 }
-# Ambient heartbeat paths under the real ~/.omo are rewritten on a timer by background
-# CodeGraph tooling unrelated to this driver, so they are excluded by name from the
-# before/after comparison and the exclusion is printed with the result instead of being
-# filtered silently. Keep the list minimal: only foreign timer-driven files belong here.
+# Only foreign timer-driven heartbeat files are excluded from the real ~/.omo manifest.
 AMBIENT_HEARTBEAT_PATHS="codegraph/worker-sweep.stamp codegraph/zombie-sweep.stamp lsp-daemon/lsp-proxy-sweep.stamp"
-ambient_heartbeat() {
-  local candidate
+ambient_heartbeat() { local candidate
   for candidate in $AMBIENT_HEARTBEAT_PATHS; do if [ "$1" = "$candidate" ]; then return 0; fi; done
   return 1
 }
-manifest() {
-  local root=$1 output=$2 rel
+manifest() { local root=$1 output=$2 rel
   printf '# excluded-ambient-heartbeat\t%s\n' "$AMBIENT_HEARTBEAT_PATHS" > "$output"
   if [ ! -d "$root" ]; then printf 'ABSENT\t%s\n' "$root" >> "$output"; return; fi
   while IFS= read -r path; do
@@ -99,19 +85,14 @@ manifest() {
   done < <(find "$root" -mindepth 1 -print | sort) >> "$output"
 }
 REAL_DB="$REAL_HOME/.local/share/opencode/opencode.db"
-# Sharper than the manifest diff and unaffected by the exclusion: no real W2 sink, ever.
 REAL_JEV="$REAL_HOME/.omo/jev"
 if [ -e "$REAL_JEV" ]; then REAL_JEV_BEFORE=present; else REAL_JEV_BEFORE=absent; fi
 [ "$REAL_JEV_BEFORE" = absent ] || fail "real ~/.omo/jev exists before the run"
 if [ -f "$REAL_DB" ]; then sqlite3 "$REAL_DB" 'SELECT count(*) FROM session;' > "$RECEIPTS/real-db-before.txt"; else printf 'ABSENT\n' > "$RECEIPTS/real-db-before.txt"; fi
 manifest "$REAL_HOME/.omo" "$RECEIPTS/real-omo-before.tsv"
-
 export HOME="$SANDBOX/home" XDG_DATA_HOME="$SANDBOX/data" XDG_CONFIG_HOME="$SANDBOX/config" XDG_STATE_HOME="$SANDBOX/state" XDG_CACHE_HOME="$SANDBOX/cache" TMPDIR="$SANDBOX/tmp"
 export OPENCODE_DISABLE_AUTOUPDATE=1 OPENCODE_DISABLE_MODELS_FETCH=1 OMO_DISABLE_PROCESS_CLEANUP=1 OMO_DISABLE_POSTHOG=1
-# The evidence secret gate greps this directory for a credential-shaped assignment and must
-# print nothing, so the dummy sandbox credential is exported through a name assembled at
-# runtime. Deliberate: do NOT collapse it back into a direct assignment or the gate
-# regresses. It is a fixed placeholder; removing it breaks the offline fake-Jev path.
+# Keep the dummy credential name assembled so the evidence secret gate stays empty.
 DUMMY_CREDENTIAL_PREFIX=TYPESAFE_API; DUMMY_CREDENTIAL_SUFFIX=KEY
 export "${DUMMY_CREDENTIAL_PREFIX}_${DUMMY_CREDENTIAL_SUFFIX}=dummy-task19-sandbox-key"
 WORK_DIR="$SANDBOX/work"; mkdir -p "$HOME/.omo" "$XDG_CONFIG_HOME/opencode" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME" "$TMPDIR" "$WORK_DIR/.omo/plans"
@@ -119,7 +100,7 @@ GIT_MASTER=1 git init -q "$WORK_DIR"; printf 'w2 baseline\n' > "$WORK_DIR/diff-p
 BLOB=$(GIT_MASTER=1 git -C "$WORK_DIR" hash-object -w diff-proof.txt); GIT_MASTER=1 git -C "$WORK_DIR" update-index --add --cacheinfo 100644 "$BLOB" diff-proof.txt
 TREE=$(GIT_MASTER=1 git -C "$WORK_DIR" write-tree); COMMIT=$(printf 'task19 fixture\n' | GIT_MASTER=1 GIT_AUTHOR_NAME=task19 GIT_AUTHOR_EMAIL=task19@invalid GIT_COMMITTER_NAME=task19 GIT_COMMITTER_EMAIL=task19@invalid git -C "$WORK_DIR" commit-tree "$TREE"); GIT_MASTER=1 git -C "$WORK_DIR" update-ref refs/heads/master "$COMMIT"
 MODEL_PORT=$(free_port); JEV_PORT=$(free_port); SERVER_PORT=$(free_port); printf '%s\n%s\n%s\n' "$MODEL_PORT" "$JEV_PORT" "$SERVER_PORT" > "$PORTS"
-TASK19_MODEL_PORT=$MODEL_PORT TASK19_MODEL_LOG="$RECEIPTS/fake-model.log" TASK19_TURN_SCRIPT="$TURN_SCRIPT" TASK19_WORK_DIR="$WORK_DIR" bun "$MODEL_SERVER" > "$RECEIPTS/fake-model.stdout" 2>&1 & MODEL_PID=$!; printf '%s\n' "$MODEL_PID" >> "$PIDS"
+TASK19_MODEL_PORT=$MODEL_PORT TASK19_MODEL_LOG="$RECEIPTS/fake-model.log" TASK19_TURN_SCRIPT="$TURN_SCRIPT" TASK19_WORK_DIR="$WORK_DIR" TASK19_DRIVE="$DRIVE" bun "$MODEL_SERVER" > "$RECEIPTS/fake-model.stdout" 2>&1 & MODEL_PID=$!; printf '%s\n' "$MODEL_PID" >> "$PIDS"
 TASK19_JEV_PORT=$JEV_PORT TASK19_JEV_LOG="$RECEIPTS/fake-jev.log" TASK19_TURN_SCRIPT="$TURN_SCRIPT" bun "$JEV_SERVER" > "$RECEIPTS/fake-jev.stdout" 2>&1 & JEV_PID=$!; printf '%s\n' "$JEV_PID" >> "$PIDS"
 : > "$RECEIPTS/fake-model.log"; : > "$RECEIPTS/fake-jev.log"; : > "$RECEIPTS/readiness.txt"
 poll_http fake-model "http://127.0.0.1:$MODEL_PORT/health" ""; poll_http fake-jev "http://127.0.0.1:$JEV_PORT/health" ""
@@ -160,7 +141,24 @@ wait_eviction_batch() {
   for item in "${EVICTION_PIDS[@]}"; do pid=${item%%:*}; turn=${item#*:}; rc=0; wait "$pid" || rc=$?; [ "$rc" -eq 0 ] || fail "eviction turn $turn failed"; done
   EVICTION_PIDS=()
 }
-SID=""; TURN_COUNT=0
+SID=""; TURN_COUNT=0; SINK="$HOME/.omo/jev"
+if [ "$DRIVE" = autonomous ]; then
+  FIRST=$(sed -n '1p' "$TURN_SCRIPT"); TURN=$(jq -r .turn <<< "$FIRST"); PROMPT=$(jq -r .prompt <<< "$FIRST")
+  printf '{"schema_version":2,"active_work_id":"live","works":{"live":{"work_id":"live","active_plan":".omo/plans/live.md","plan_name":"live","status":"active","started_at":"2026-09-30T00:00:00.000Z","session_ids":[]}},"active_plan":".omo/plans/live.md","plan_name":"live","status":"active","started_at":"2026-09-30T00:00:00.000Z","session_ids":[],"session_origins":{},"task_sessions":{}}\n' > "$WORK_DIR/.omo/boulder.json"
+  printf '# Live\n- [ ] first\n- [ ] second\n' > "$WORK_DIR/.omo/plans/live.md"
+  run_turn "$TURN" "$PROMPT" --title "JEV W2 task 19 autonomous"; TURN_COUNT=1
+  SID=$(jq -r '..|objects|(.sessionID? // .session_id? // .id? // empty)|select(type=="string" and startswith("ses_"))' "$RECEIPTS/turn-01.jsonl" | sort -u | sed -n '1p'); [ -n "$SID" ] || fail "missing session id"
+  if [ "$WIRE" = enabled ]; then
+    COMPLETE=0
+    for _ in $(seq 1 2400); do
+      COMPLETE=$(curl --max-time 2 -fsS -u "opencode:$OPENCODE_SERVER_PASSWORD" "$SERVER_URL/session/$SID/todo?directory=$WORK_DIR" | jq '[.[]|select(.status=="completed")]|length')
+      [ "$COMPLETE" -eq 29 ] && break
+      sleep 0.1
+    done
+    [ "$COMPLETE" -eq 29 ] || fail "autonomous continuation reached only $COMPLETE completed todos"
+    TURN_COUNT=29
+  fi
+else
 while IFS= read -r line; do
   TURN=$(jq -r .turn <<< "$line"); PROMPT=$(jq -r .prompt <<< "$line"); ACTION=$(jq -r '.action // ""' <<< "$line")
   case "$ACTION" in
@@ -201,9 +199,8 @@ while IFS= read -r line; do
     boulder_reset_wait_timeout) for _ in $(seq 1 1820); do sleep 0.1; done ;;
   esac
 done < "$TURN_SCRIPT"
-[ "$TURN_COUNT" -ge 24 ] || fail "turn count $TURN_COUNT"
-
-SINK="$HOME/.omo/jev"
+fi
+if [ "$DRIVE" = interactive ]; then [ "$TURN_COUNT" -ge 24 ] || fail "turn count $TURN_COUNT"; else [ "$TURN_COUNT" -ge 1 ] || fail "turn count $TURN_COUNT"; fi
 if [ "$WIRE" = enabled ]; then
   DELETE_CODE=$(curl --max-time 30 -sS -o "$RECEIPTS/delete-response.txt" -w '%{http_code}' -u "opencode:$OPENCODE_SERVER_PASSWORD" -X DELETE "$SERVER_URL/session/$SID?directory=$WORK_DIR")
   [ "$DELETE_CODE" = 200 ] || fail "delete HTTP $DELETE_CODE"
@@ -223,19 +220,21 @@ fi
 DISPOSE_CODE=$(curl --max-time 30 -sS -o "$RECEIPTS/dispose-response.txt" -w '%{http_code}' -u "opencode:$OPENCODE_SERVER_PASSWORD" -X POST "$SERVER_URL/global/dispose")
 [ "$DISPOSE_CODE" = 200 ] || fail "dispose HTTP $DISPOSE_CODE"
 terminate "$EVENT_PID"; EVENT_PID=""; terminate "$SERVER_PID"; SERVER_PID=""; terminate "$MODEL_PID"; MODEL_PID=""; terminate "$JEV_PID"; JEV_PID=""
-
 if [ "$WIRE" = enabled ]; then
   compgen -G "$SINK/w2-*.jsonl" >/dev/null || fail "no W2 sink"
   OBS=$(jq -s '[.[]|select(.kind=="observation")] | length' "$SINK"/w2-*.jsonl); MAIN_OBS=$(jq -s --arg sid "$SID" '[.[]|select(.kind=="observation" and .sessionID==$sid)]|length' "$SINK"/w2-*.jsonl)
   FILLED=$(jq -s '[.[]|select(.kind=="observation" and .probabilities.actuallyComplete!=null and .probabilities.progressing!=null and .probabilities.stuck!=null)]|length' "$SINK"/w2-*.jsonl)
-  [ "$MAIN_OBS" -ge 24 ] || fail "only $MAIN_OBS main-session observations"; [ "$FILLED" -ge 24 ] || fail "only $FILLED filled predictions"
-  printf 'wire=enabled\nturns=%s\nsession_id=%s\nmain_session_observations=%s\nobservations=%s\nfilled_three=%s\n' "$TURN_COUNT" "$SID" "$MAIN_OBS" "$OBS" "$FILLED" > "$RECEIPTS/summary.txt"
+  if [ "$DRIVE" = autonomous ]; then MIN_MAIN=28; else MIN_MAIN=24; fi
+  [ "$MAIN_OBS" -ge "$MIN_MAIN" ] || fail "only $MAIN_OBS main-session observations"; [ "$FILLED" -ge "$MIN_MAIN" ] || fail "only $FILLED filled predictions"
+  PARTITION=$(jq -cs --arg sid "$SID" '[.[]|select(.kind=="observation" and .sessionID==$sid)]|sort_by(.outcomeClosedBy // "pending")|group_by(.outcomeClosedBy // "pending")|map({key:(.[0].outcomeClosedBy // "pending"),value:length})|from_entries' "$SINK"/w2-*.jsonl)
+  OBSERVED=$(jq -s --arg sid "$SID" '[.[]|select(.kind=="observation" and .sessionID==$sid and .outcomeStatus=="observed")]|length' "$SINK"/w2-*.jsonl); CENSORED=$(jq -s --arg sid "$SID" '[.[]|select(.kind=="observation" and .sessionID==$sid and .outcomeStatus=="censored")]|length' "$SINK"/w2-*.jsonl)
+  printf 'wire=enabled\ndrive=%s\nturns=%s\nsession_id=%s\nmain_session_observations=%s\nobserved=%s\ncensored=%s\nclosure_partition=%s\nobservations=%s\nfilled_three=%s\n' "$DRIVE" "$TURN_COUNT" "$SID" "$MAIN_OBS" "$OBSERVED" "$CENSORED" "$PARTITION" "$OBS" "$FILLED" > "$RECEIPTS/summary.txt"
 else
   FILES=0; if [ -d "$SINK" ]; then FILES=$(find "$SINK" -name 'w2-*.jsonl' -type f | wc -l); fi
-  [ "$FILES" -eq 0 ] || fail "disabled wrote $FILES W2 files"; printf 'wire=disabled\nturns=%s\nsession_id=%s\nw2_files=0\n' "$TURN_COUNT" "$SID" > "$RECEIPTS/summary.txt"
+  [ "$FILES" -eq 0 ] || fail "disabled wrote $FILES W2 files"; printf 'wire=disabled\ndrive=%s\nturns=%s\nsession_id=%s\nw2_files=0\n' "$DRIVE" "$TURN_COUNT" "$SID" > "$RECEIPTS/summary.txt"
 fi
-
 if [ -f "$REAL_DB" ]; then sqlite3 "$REAL_DB" 'SELECT count(*) FROM session;' > "$RECEIPTS/real-db-after.txt"; else printf 'ABSENT\n' > "$RECEIPTS/real-db-after.txt"; fi
+if [ -f "$REAL_DB" ]; then sqlite3 "$REAL_DB" "SELECT count(*) FROM session WHERE id='$SID';" > "$RECEIPTS/real-db-session-id-count.txt"; else printf '0\n' > "$RECEIPTS/real-db-session-id-count.txt"; fi
 manifest "$REAL_HOME/.omo" "$RECEIPTS/real-omo-after.tsv"
 if diff -u "$RECEIPTS/real-omo-before.tsv" "$RECEIPTS/real-omo-after.tsv" > "$RECEIPTS/real-omo.diff"; then MANIFEST_DIFF_LINES=0; else MANIFEST_DIFF_LINES=$(wc -l < "$RECEIPTS/real-omo.diff"); fi
 cat "$RECEIPTS/summary.txt"
@@ -246,5 +245,6 @@ printf 'real_omo_manifest_diff_lines=%s\n' "$MANIFEST_DIFF_LINES"
 if [ -e "$REAL_JEV" ]; then REAL_JEV_AFTER=present; else REAL_JEV_AFTER=absent; fi
 printf 'real_omo_jev_before=%s real_omo_jev_after=%s\n' "$REAL_JEV_BEFORE" "$REAL_JEV_AFTER"
 cmp "$RECEIPTS/real-db-before.txt" "$RECEIPTS/real-db-after.txt" || fail "real DB count changed"
+[ "$(cat "$RECEIPTS/real-db-session-id-count.txt")" -eq 0 ] || fail "driven session leaked into real DB"
 [ "$MANIFEST_DIFF_LINES" -eq 0 ] || { cat "$RECEIPTS/real-omo.diff" >&2; fail "real omo manifest changed outside the declared ambient heartbeat exclusion"; }
 [ "$REAL_JEV_AFTER" = absent ] || fail "real ~/.omo/jev exists after the run"

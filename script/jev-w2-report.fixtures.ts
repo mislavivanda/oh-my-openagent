@@ -42,23 +42,31 @@ type OutcomeFields = Pick<
   "outcomeFacts" | "outcomeStatus" | "outcomeClosedBy"
 >
 
+function filledPrediction(
+  actuallyComplete: boolean,
+  progressing: boolean,
+  stuck: boolean,
+): PredictionFields {
+  return {
+    probabilities: {
+      actuallyComplete: actuallyComplete ? 0.95 : 0.05,
+      progressing: progressing ? 0.95 : 0.05,
+      stuck: stuck ? 0.95 : 0.05,
+    },
+    thresholdLabels: {
+      actuallyComplete: actuallyComplete ? "would_true" : "would_false",
+      progressing: progressing ? "would_true" : "would_false",
+      stuck: stuck ? "would_true" : "would_false",
+    },
+    predictionStatus: "filled", notDispatchedReason: null, unavailableReason: null,
+    resolvedModel: "synthetic-jev", invalidAnswerCount: 0,
+  }
+}
+
 function predictionFields(index: number): PredictionFields {
-  if (index === 0) {
-    return {
-      probabilities: { actuallyComplete: 0.95, progressing: 0.92, stuck: 0.05 },
-      thresholdLabels: { actuallyComplete: "would_true", progressing: "would_true", stuck: "would_false" },
-      predictionStatus: "filled", notDispatchedReason: null, unavailableReason: null,
-      resolvedModel: "synthetic-jev", invalidAnswerCount: 0,
-    }
-  }
-  if (index === 1) {
-    return {
-      probabilities: { actuallyComplete: 0.05, progressing: 0.08, stuck: 0.95 },
-      thresholdLabels: { actuallyComplete: "would_false", progressing: "would_false", stuck: "would_true" },
-      predictionStatus: "filled", notDispatchedReason: null, unavailableReason: null,
-      resolvedModel: "synthetic-jev", invalidAnswerCount: 0,
-    }
-  }
+  if (index === 0 || index === 2 || index === 9) return filledPrediction(true, true, false)
+  if (index === 1 || index === 6 || index === 11) return filledPrediction(false, false, true)
+  if (index === 10) return filledPrediction(false, true, false)
   if (index === 3) {
     return {
       probabilities: { actuallyComplete: null, progressing: null, stuck: null },

@@ -4,12 +4,29 @@ import { join } from "node:path"
 
 import { describe, expect, test } from "bun:test"
 
+import { DEFAULT_COMPLETION_CONTINUATION_OUTCOME_MAX_RECORDS_PER_SESSION } from "./completion-continuation-outcome-types"
 import {
+  MAX_INFLIGHT,
   measureAddedIdleHandlerP99,
   measureSynchronousSeamP99,
   removedUnrefFailure,
   runOneSessionStress,
 } from "./completion-continuation-runtime-fixture"
+
+const SINK_FLUSH_INTERVAL_HANDLES = 1
+
+/**
+ * Every timer the one-session stress can still hold at the end of the run, derived from the
+ * bounds that produce them rather than pinned to a literal:
+ *   - one repeating sink flush interval,
+ *   - one retention timer per retained outcome window (`maxRecordsPerSession`),
+ *   - one backend timeout per decision still in flight (`max_inflight`).
+ * Today that is 1 + 64 + 8 = 73. Raise either bound and this recomputes, so the budget stays a
+ * real ceiling instead of a literal that a future observer silently outgrows. Never widen it by
+ * hand to create slack; change the bound the extra handles actually come from.
+ */
+const ACTIVE_HANDLE_BUDGET =
+  SINK_FLUSH_INTERVAL_HANDLES + DEFAULT_COMPLETION_CONTINUATION_OUTCOME_MAX_RECORDS_PER_SESSION + MAX_INFLIGHT
 
 type ChildResult = {
   readonly exitCode: number
@@ -56,15 +73,16 @@ describe("completion-continuation Part B runtime effects", () => {
   test("bounds handles, in-flight work, persisted drops, heap, and repeated dispose", async () => {
     const measurements = await runOneSessionStress()
 
-    console.log(`w2_active_timer_handles<=73 actual=${measurements.activeHandles}`)
+    console.log(`w2_active_timer_handles_budget=${ACTIVE_HANDLE_BUDGET} derivation=${SINK_FLUSH_INTERVAL_HANDLES}_sink_interval+${DEFAULT_COMPLETION_CONTINUATION_OUTCOME_MAX_RECORDS_PER_SESSION}_outcome_windows+${MAX_INFLIGHT}_inflight_backend_timeouts`)
+    console.log(`w2_active_timer_handles<=${ACTIVE_HANDLE_BUDGET} actual=${measurements.activeHandles}`)
     console.log(`w2_unref_missing=0 actual=${measurements.unrefMissing}`)
-    console.log(`in_flight_max<=8 actual=${measurements.inFlightMax}`)
+    console.log(`in_flight_max<=${MAX_INFLIGHT} actual=${measurements.inFlightMax}`)
     console.log(`dispatches_dropped_persisted=${measurements.persistedDrops} attempted_excess=${measurements.attemptedExcess}`)
     console.log(`heap_delta_bytes=${measurements.heapDeltaBytes} threshold<${16 * 1024 * 1024}`)
 
-    expect(measurements.activeHandles).toBeLessThanOrEqual(73)
+    expect(measurements.activeHandles).toBeLessThanOrEqual(ACTIVE_HANDLE_BUDGET)
     expect(measurements.unrefMissing).toBe(0)
-    expect(measurements.inFlightMax).toBeLessThanOrEqual(8)
+    expect(measurements.inFlightMax).toBeLessThanOrEqual(MAX_INFLIGHT)
     expect(measurements.persistedDrops).toBe(measurements.attemptedExcess)
     expect(measurements.heapDeltaBytes).toBeLessThan(16 * 1024 * 1024)
   })

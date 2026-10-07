@@ -1,0 +1,33 @@
+TODO 5: per-file and forbidden-pattern gates
+
+WHAT WAS TESTED
+
+Command: bun run packages/shared-skills/skills/programming/scripts/typescript/check-no-excuse-rules.ts packages/jev-core/src/completion-continuation-questions.ts packages/jev-core/src/completion-continuation-questions.test.ts packages/jev-core/src/completion-continuation-fixtures-primary.ts packages/jev-core/src/completion-continuation-fixtures-edge.ts packages/jev-core/src/completion-continuation-fixture-consistency.test.ts
+Exit status: 0
+Matching violation lines: 0
+Observed: No violations in 5 file(s).
+
+Physical line command: wc -l on each changed TypeScript file, followed by an
+individual <=250 assertion for every file.
+Exit status: 0
+
+- completion-continuation-questions.ts: 49
+- completion-continuation-questions.test.ts: 80
+- completion-continuation-fixtures-primary.ts: 144
+- completion-continuation-fixtures-edge.ts: 168
+- completion-continuation-fixture-consistency.test.ts: 110
+
+WHAT WAS OBSERVED
+
+Every changed source file is below 250 physical lines. The strict scanner found
+zero any assertions, suppression directives, enum declarations, non-null
+assertions, mutable exports, or invalid catch blocks.
+
+WHY IT IS ENOUGH
+
+The project-provided scanner covers the TypeScript escape hatches and the explicit
+physical-line loop covers the todo-specific per-file cap.
+
+WHAT WAS OMITTED
+
+No secret-bearing files or environment values were scanned or recorded.
