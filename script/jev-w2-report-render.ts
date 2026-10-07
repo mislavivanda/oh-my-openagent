@@ -5,6 +5,7 @@ import {
   COMPLETION_CONTINUATION_PREDICTION_STATUSES,
   COMPLETION_CONTINUATION_PRE_INPUT_SKIP_REASONS,
 } from "../packages/jev-core/src"
+import { OUTCOME_AGREEMENT_COHORTS } from "./jev-w2-report-types"
 import type {
   AgreementBlock,
   AgreementRate,
@@ -27,6 +28,7 @@ const DENOMINATOR_ORDER: readonly string[] = [
   ...COMPLETION_CONTINUATION_OBSERVED_CLOSURES.map((closure) => `outcome_closure_${closure}`),
   ...COMPLETION_CONTINUATION_CENSORED_CLOSURES.map((closure) => `outcome_closure_${closure}`),
   ...COMPLETION_CONTINUATION_CENSORED_CLOSURES.map((reason) => `censor_reason_${reason}`),
+  ...OUTCOME_AGREEMENT_COHORTS.map((cohort) => `outcome_cohort_${cohort}`),
   ...COMPLETION_CONTINUATION_PRE_INPUT_SKIP_REASONS.map((reason) => `pre_input_skip_${reason}`),
   "dispatches_dropped",
   "records_evicted",
@@ -129,11 +131,20 @@ export function renderCompletionContinuationReport(
     lines.push(...renderBlock(HEURISTIC_LABELS[key], analysis.heuristicAgreement[key]), "")
   }
   lines.push(
-    "OUTCOME AGREEMENT (observed non-censored labels only)",
-    "eligible denominator: confident prediction + observed non-censored outcome label",
+    "OUTCOME AGREEMENT BY COHORT (observed non-censored labels only)",
+    "eligible denominator: confident prediction + observed non-censored outcome label within each cohort",
   )
-  for (const key of ["actuallyComplete", "progressing", "stuck"] as const) {
-    lines.push(...renderBlock(OUTCOME_LABELS[key], analysis.outcomeAgreement[key]), "")
+  for (const cohort of OUTCOME_AGREEMENT_COHORTS) {
+    lines.push(
+      `OUTCOME COHORT ${cohort}`,
+      `cohort record denominator: ${analysis.denominators[`outcome_cohort_${cohort}`] ?? 0}`,
+    )
+    for (const key of ["actuallyComplete", "progressing", "stuck"] as const) {
+      lines.push(
+        ...renderBlock(`${OUTCOME_LABELS[key]} cohort=${cohort}`, analysis.outcomeAgreement[cohort][key]),
+        "",
+      )
+    }
   }
   return `${lines.join("\n")}\n`
 }

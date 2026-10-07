@@ -61,7 +61,7 @@ describe("#given an exhaustive completion-continuation corpus", () => {
       outcome_status_pending: 2,
       outcome_status_observed: 6,
       outcome_status_censored: 5,
-      uncertain_answers: 24,
+      uncertain_answers: 9,
       transcript_available: 7,
       transcript_unavailable: 6,
       diff_available: 5,
@@ -93,18 +93,35 @@ describe("#given an exhaustive completion-continuation corpus", () => {
       expect(report).toContain(`${metric} overall: 2/2 (100.00%); coverage=2/13`)
     }
     for (const question of ["actually_complete", "progressing", "stuck"]) {
-      expect(report).toContain(`${question} overall: 0/1 (0.00%); coverage=1/13`)
+      expect(report).toContain(`${question} cohort=autonomous overall: 4/5 (80.00%); coverage=5/6`)
+      expect(report).toContain(`${question} cohort=human_interactive overall: insufficient data (eligible denominator=0); coverage=0/1`)
     }
   })
 
   test("#when censored records predict stuck #then they never enter the stuck denominator", () => {
     const analysis = analyzeCompletionContinuationSink(readCompletionContinuationSink(corpusDir))
-    const stuck = analysis.outcomeAgreement.stuck
+    const autonomousStuck = analysis.outcomeAgreement.autonomous.stuck
 
-    expect(stuck.overall.denominator).toBe(1)
-    for (const closure of ["timeout", "human_intervention", "session_deleted"] as const) {
-      const row = stuck.crossTabs.find((item) => item.dimension === "closure_reason" && item.bucket === closure)
-      expect(row?.rate.denominator).toBe(0)
+    expect(autonomousStuck.overall.denominator).toBe(5)
+    for (const cohort of ["human_interactive", "timeout", "dispose", "session_deleted", "evicted"] as const) {
+      expect(analysis.outcomeAgreement[cohort].stuck.overall.denominator).toBe(0)
+    }
+  })
+
+  test("#when autonomous and human-interactive records coexist #then each cohort has its own denominator", () => {
+    const report = generateCompletionContinuationReport(corpusDir)
+
+    for (const [cohort, count] of Object.entries({
+      autonomous: 6,
+      human_interactive: 1,
+      timeout: 1,
+      dispose: 1,
+      session_deleted: 1,
+      evicted: 1,
+      pending: 2,
+    })) {
+      expect(report).toContain(`outcome_cohort_${cohort}: ${count}`)
+      expect(report).toContain(`OUTCOME COHORT ${cohort}`)
     }
   })
 
@@ -128,7 +145,7 @@ describe("#given an exhaustive completion-continuation corpus", () => {
 
     expect(report).toContain("malformed_lines: 6")
     expect(report).toContain("outcome_closure_pending: 2")
-    expect(report).toContain("OUTCOME AGREEMENT (observed non-censored labels only)")
+    expect(report).toContain("OUTCOME AGREEMENT BY COHORT (observed non-censored labels only)")
   })
 
   test("#when counter epochs and sequences regress #then only the highest tuple contributes", () => {

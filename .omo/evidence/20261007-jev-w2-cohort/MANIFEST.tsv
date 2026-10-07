@@ -20,3 +20,9 @@ todo	artifact	command	exit_status	matching_line_count	claim
 4	task-4-verification.md	manual writeup	0	N/A	Reviewer-readable record of what was tested, what was observed, why it is enough and what was omitted for both defects, including the no-real-API confirmation
 2	task-2-test-fast.txt	bun run test:fast	0	N/A	799 pass, 0 fail, 2470 assertions across 93 files
 2	task-2-qa-summary.txt	reviewer-readable todo-2 QA synthesis	0	N/A	what, observed behavior, sufficiency, and omissions recorded
+5	task-5-rule-and-fixture-audit.txt	manual 18-fixture rule audit; Bun hash and matrix probes	0	N/A	all 18 labels justified; six progressing labels move true to unknown; actually_complete hash unchanged
+5	task-5-consistency-bite.txt	bun test packages/jev-core/src/completion-continuation-fixture-consistency.test.ts with violating label	1	N/A	assertion rejected state-only progressing=true with 2 focused failures
+5	task-5-consistency-bite.txt	bun test packages/jev-core/src/completion-continuation-fixture-consistency.test.ts after revert	0	N/A	4 pass, 0 fail, 49 assertions
+5	task-5-verification.txt	package tests; extraction guard; typecheck; build; test:fast; LSP diagnostics	0	N/A	237 package tests and 799 fast tests pass; root gates clean
+5	task-5-static-gates.txt	TypeScript no-excuse scan and per-file physical line loop	0	0	zero forbidden-pattern matches and all five changed TypeScript files below 250 lines
+2	task-2-commit-scope.txt	explicit todo-2 commit pathspec audit	0	0	seven allowed paths and zero paths outside owned reports plus manifest

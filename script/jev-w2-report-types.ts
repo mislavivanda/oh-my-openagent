@@ -31,10 +31,20 @@ export const CLOSURE_REASON_BUCKETS = [
 
 export const PRESENCE_BUCKETS = ["present", "absent"] as const
 export const CONTINUATION_FIXTURE_COHORTS = ["candidate", "non_candidate"] as const
+export const OUTCOME_AGREEMENT_COHORTS = [
+  "autonomous",
+  "human_interactive",
+  "timeout",
+  "dispose",
+  "session_deleted",
+  "evicted",
+  "pending",
+] as const
 
 export type CompletionContinuationQuestionKey =
   (typeof COMPLETION_CONTINUATION_QUESTION_KEYS)[number]
 export type HeuristicAgreementKey = (typeof HEURISTIC_AGREEMENT_KEYS)[number]
+export type OutcomeAgreementCohort = (typeof OUTCOME_AGREEMENT_COHORTS)[number]
 export type ClosureReasonBucket =
   | CompletionContinuationObservedClosure
   | CompletionContinuationCensoredClosure
@@ -64,6 +74,10 @@ export type AgreementBlock = {
   readonly crossTabs: readonly AgreementCrossTab[]
 }
 
+export type OutcomeAgreementByQuestion = Readonly<
+  Record<CompletionContinuationQuestionKey, AgreementBlock>
+>
+
 export type OutcomeWindowSource = "config_schema_default"
 
 export type OutcomeWindow = {
@@ -81,7 +95,7 @@ export type CompletionContinuationReportAnalysis = {
     readonly balanced: boolean
   }
   readonly heuristicAgreement: Readonly<Record<HeuristicAgreementKey, AgreementBlock>>
-  readonly outcomeAgreement: Readonly<Record<CompletionContinuationQuestionKey, AgreementBlock>>
+  readonly outcomeAgreement: Readonly<Record<OutcomeAgreementCohort, OutcomeAgreementByQuestion>>
 }
 
 export type AgreementSpec = {
